@@ -261,6 +261,26 @@ class Article extends Model
     }
 
     // =========================================================================
+    // RELATIONS PHASE 13 (Quality & Golden Examples)
+    // =========================================================================
+
+    /**
+     * Relation avec QualityCheck (Phase 13)
+     */
+    public function qualityChecks(): HasMany
+    {
+        return $this->hasMany(QualityCheck::class);
+    }
+
+    /**
+     * Relation avec GoldenExample (Phase 13)
+     */
+    public function goldenExamples(): HasMany
+    {
+        return $this->hasMany(GoldenExample::class);
+    }
+
+    // =========================================================================
     // SCOPES
     // =========================================================================
 

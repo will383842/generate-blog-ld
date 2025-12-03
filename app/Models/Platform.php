@@ -87,6 +87,10 @@ class Platform extends Model
         return $this->hasMany(ImageConfig::class);
     }
 
+    public function countries()
+{
+    return $this->hasMany(Country::class);
+}
     // =========================================================================
     // SCOPES
     // =========================================================================

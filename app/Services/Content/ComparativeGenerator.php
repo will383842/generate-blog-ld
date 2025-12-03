@@ -12,6 +12,8 @@ use App\Services\AI\PerplexityService;
 use App\Services\AI\DalleService;
 use App\Services\Content\PlatformKnowledgeService;
 use App\Services\Content\BrandValidationService;
+use App\Services\Quality\ContentQualityEnforcer;      // ← AJOUTÉ PHASE 13
+use App\Services\Quality\GoldenExamplesService;       // ← AJOUTÉ PHASE 13
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
@@ -58,6 +60,8 @@ class ComparativeGenerator
     protected ComparisonDataFetcher $dataFetcher;
     protected PlatformKnowledgeService $knowledgeService;
     protected BrandValidationService $brandValidator;
+    protected ContentQualityEnforcer $qualityEnforcer;      // ← AJOUTÉ PHASE 13
+    protected GoldenExamplesService $goldenService;         // ← AJOUTÉ PHASE 13
 
     // Configuration génération
     protected array $config = [
@@ -97,7 +101,9 @@ class ComparativeGenerator
         ChartGenerator $chartGenerator,
         ComparisonDataFetcher $dataFetcher,
         PlatformKnowledgeService $knowledgeService,
-        BrandValidationService $brandValidator
+        BrandValidationService $brandValidator,
+        ContentQualityEnforcer $qualityEnforcer,            // ← AJOUTÉ PHASE 13
+        GoldenExamplesService $goldenService                // ← AJOUTÉ PHASE 13
     ) {
         $this->gpt = $gpt;
         $this->perplexity = $perplexity;
@@ -109,6 +115,8 @@ class ComparativeGenerator
         $this->dataFetcher = $dataFetcher;
         $this->knowledgeService = $knowledgeService;
         $this->brandValidator = $brandValidator;
+        $this->qualityEnforcer = $qualityEnforcer;          // ← AJOUTÉ PHASE 13
+        $this->goldenService = $goldenService;              // ← AJOUTÉ PHASE 13
     }
 
     /**
@@ -209,6 +217,7 @@ class ComparativeGenerator
                 'language_code' => $language->code,
                 'competitors' => $comparisonData['competitors'],
                 'platform_name' => $platform->name,
+                'platform' => $platform,  // ← AJOUTÉ pour golden examples
             ]);
 
             // 5. Génération tableau comparatif avec scores
@@ -256,6 +265,7 @@ class ComparativeGenerator
                 'country' => $country->name,
                 'language_code' => $language->code,
                 'competitors' => $comparisonData['competitors'],
+                'platform_id' => $params['platform_id'],  // ← AJOUTÉ pour golden examples
             ]);
 
             // 10. Génération conclusion
@@ -328,52 +338,48 @@ class ComparativeGenerator
                 'generation_cost' => $this->calculateTotalCost(),
             ]);
 
-            // ========== VALIDATION DOUBLE (Knowledge + Brand) ==========
-            $knowledgeValidation = $this->knowledgeService->validateContent(
-                $article->content,
-                $platform,
-                $language->code
-            );
+            // ========== ✅ VALIDATION PHASE 13 (6 CRITÈRES) ==========
+            $qualityCheck = $this->qualityEnforcer->validateArticle($article);
 
-            $brandValidation = $this->brandValidator->validateCompliance(
-                $article->content,
-                $platform,
-                $language->code
-            );
-
-            // Score global = moyenne des 2 validations
-            $globalScore = ($knowledgeValidation['score'] + $brandValidation['score']) / 2;
-
-            // Stocker résultats validation
-            $article->quality_score = round($globalScore);
+            // Mettre à jour article avec score et notes
+            $article->quality_score = $qualityCheck->overall_score;
             $article->validation_notes = json_encode([
-                'knowledge' => $knowledgeValidation,
-                'brand' => $brandValidation,
-                'global_score' => $globalScore,
-                'validated_at' => now()->toISOString(),
+                'quality_check_id' => $qualityCheck->id,
+                'knowledge_score' => $qualityCheck->knowledge_score,
+                'brand_score' => $qualityCheck->brand_score,
+                'seo_score' => $qualityCheck->seo_score,
+                'readability_score' => $qualityCheck->readability_score,
+                'structure_score' => $qualityCheck->structure_score,
+                'originality_score' => $qualityCheck->originality_score,
+                'status' => $qualityCheck->status,
+                'validated_at' => now()->toIso8601String(),
             ], JSON_PRETTY_PRINT);
 
-            // Déterminer status selon conformité
-            if ($globalScore < 70 || !$knowledgeValidation['valid'] || !$brandValidation['compliant']) {
+            // Status automatique basé sur résultat validation
+            if ($qualityCheck->status === 'failed' || $qualityCheck->overall_score < 70) {
                 $article->status = 'review_needed';
                 
                 Log::warning("Comparative #{$article->id} nécessite review", [
-                    'knowledge_score' => $knowledgeValidation['score'],
-                    'brand_score' => $brandValidation['score'],
-                    'global_score' => $globalScore,
-                    'knowledge_errors' => count($knowledgeValidation['errors']),
-                    'brand_errors' => count($brandValidation['errors']),
+                    'overall_score' => $qualityCheck->overall_score,
+                    'status' => $qualityCheck->status,
                 ]);
+            } elseif ($qualityCheck->status === 'warning') {
+                $article->status = 'pending';
             } else {
-                // Article conforme, peut rester en status actuel
+                $article->status = 'draft';
+                
                 Log::info("Comparative #{$article->id} conforme", [
-                    'global_score' => $globalScore,
+                    'overall_score' => $qualityCheck->overall_score,
                 ]);
             }
-            // ========== FIN VALIDATION DOUBLE ==========
 
-            // Sauvegarder l'article avec les validations
             $article->save();
+
+            // Auto-marking golden examples si score ≥90
+            if ($qualityCheck->overall_score >= 90) {
+                $this->qualityEnforcer->autoMarkAsGolden($article);
+            }
+            // ========== FIN VALIDATION PHASE 13 ==========
 
             // 15. Sauvegarde FAQs
             foreach ($faqs as $index => $faq) {
@@ -397,6 +403,7 @@ class ComparativeGenerator
                 'article_id' => $article->id,
                 'word_count' => $wordCount,
                 'competitors' => $competitorsCount,
+                'quality_score' => $article->quality_score,
                 'duration' => $this->stats['duration_seconds'] . 's',
                 'cost' => '$' . number_format($this->stats['total_cost'], 4),
             ]);
@@ -636,6 +643,27 @@ Ton : Professionnel, objectif, informatif
 IMPORTANT : Mentionner que {$params['platform_name']} se distingue par sa couverture exceptionnelle
 PROMPT;
 
+        // ✅ ENRICHISSEMENT AVEC GOLDEN EXAMPLES (PHASE 13)
+        if (isset($params['platform'])) {
+            $goldenExamples = $this->goldenService->getExamplesForContext(
+                $params['platform'],
+                'comparative',
+                $params['language_code'],
+                'intro',
+                null,
+                3
+            );
+
+            if (count($goldenExamples) >= 2) {
+                $prompt = $this->goldenService->enrichPromptWithExamples($prompt, $goldenExamples);
+                
+                Log::info('Prompt enrichi avec golden examples (intro comparative)', [
+                    'count' => count($goldenExamples),
+                    'platform' => $params['platform']->slug,
+                ]);
+            }
+        }
+
         $response = $this->gpt->chat([
             'model' => GptService::MODEL_GPT4O_MINI,
             'messages' => [
@@ -713,6 +741,30 @@ Réponds en JSON :
     ]
 }
 PROMPT;
+
+        // ✅ ENRICHISSEMENT AVEC GOLDEN EXAMPLES (PHASE 13)
+        if (isset($params['platform_id'])) {
+            $platform = Platform::find($params['platform_id']);
+            if ($platform) {
+                $goldenExamples = $this->goldenService->getExamplesForContext(
+                    $platform,
+                    'comparative',
+                    $params['language_code'],
+                    'faq',
+                    null,
+                    3
+                );
+
+                if (count($goldenExamples) >= 2) {
+                    $prompt = $this->goldenService->enrichPromptWithExamples($prompt, $goldenExamples);
+                    
+                    Log::info('Prompt enrichi avec golden examples (faq comparative)', [
+                        'count' => count($goldenExamples),
+                        'platform' => $platform->slug,
+                    ]);
+                }
+            }
+        }
 
         $response = $this->gpt->chat([
             'model' => GptService::MODEL_GPT4O_MINI,

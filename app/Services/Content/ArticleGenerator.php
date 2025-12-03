@@ -17,6 +17,8 @@ use App\Services\AI\PerplexityService;
 use App\Services\AI\DalleService;
 use App\Services\Content\PlatformKnowledgeService;
 use App\Services\Content\BrandValidationService;
+use App\Services\Quality\ContentQualityEnforcer;
+use App\Services\Quality\GoldenExamplesService;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -47,6 +49,8 @@ class ArticleGenerator
     protected QualityChecker $qualityChecker;
     protected PlatformKnowledgeService $knowledgeService;
     protected BrandValidationService $brandValidator;
+    protected ContentQualityEnforcer $qualityEnforcer;      // ← AJOUTÉ
+    protected GoldenExamplesService $goldenService;         // ← AJOUTÉ
 
     // Configuration génération
     protected array $config = [
@@ -84,7 +88,9 @@ class ArticleGenerator
         LinkService $linkService,
         QualityChecker $qualityChecker,
         PlatformKnowledgeService $knowledgeService,
-        BrandValidationService $brandValidator
+        BrandValidationService $brandValidator,
+        ContentQualityEnforcer $qualityEnforcer,            // ← AJOUTÉ
+        GoldenExamplesService $goldenService                // ← AJOUTÉ
     ) {
         $this->gpt = $gpt;
         $this->perplexity = $perplexity;
@@ -94,6 +100,8 @@ class ArticleGenerator
         $this->qualityChecker = $qualityChecker;
         $this->knowledgeService = $knowledgeService;
         $this->brandValidator = $brandValidator;
+        $this->qualityEnforcer = $qualityEnforcer;          // ← AJOUTÉ
+        $this->goldenService = $goldenService;              // ← AJOUTÉ
     }
 
     /**
@@ -415,6 +423,25 @@ Règles :
 Réponds en {$context['language']->native_name}.
 PROMPT;
 
+        // ✅ ENRICHISSEMENT AVEC GOLDEN EXAMPLES (MODIFICATION 3)
+        $goldenExamples = $this->goldenService->getExamplesForContext(
+            $context['platform'],
+            'article',
+            $context['language']->code,
+            'intro',
+            $context['theme']->slug ?? null,
+            3
+        );
+
+        if (count($goldenExamples) >= 2) {
+            $userPrompt = $this->goldenService->enrichPromptWithExamples($userPrompt, $goldenExamples);
+            
+            Log::info('Prompt enrichi avec golden examples (intro)', [
+                'count' => count($goldenExamples),
+                'platform' => $context['platform']->slug,
+            ]);
+        }
+
         $response = $this->gpt->chat([
             'model' => 'gpt-4o',
             'messages' => [
@@ -481,6 +508,25 @@ Règles SEO :
 
 Réponds en {$context['language']->native_name} avec le HTML complet.
 PROMPT;
+
+        // ✅ ENRICHISSEMENT AVEC GOLDEN EXAMPLES (MODIFICATION 3)
+        $goldenExamples = $this->goldenService->getExamplesForContext(
+            $context['platform'],
+            'article',
+            $context['language']->code,
+            'content',
+            $context['theme']->slug ?? null,
+            3
+        );
+
+        if (count($goldenExamples) >= 2) {
+            $userPrompt = $this->goldenService->enrichPromptWithExamples($userPrompt, $goldenExamples);
+            
+            Log::info('Prompt enrichi avec golden examples (content)', [
+                'count' => count($goldenExamples),
+                'platform' => $context['platform']->slug,
+            ]);
+        }
 
         $response = $this->gpt->chat([
             'model' => 'gpt-4o',
@@ -681,52 +727,39 @@ PROMPT;
                 'generation_cost' => $this->stats['total_cost'],
             ]);
 
-            // ========== VALIDATION DOUBLE (Knowledge + Brand) ==========
-            $knowledgeValidation = $this->knowledgeService->validateContent(
-                $article->content,
-                $context['platform'],
-                $context['language']->code
-            );
+            // ========== ✅ MODIFICATION 2 : VALIDATION COMPLÈTE AVEC 6 CRITÈRES ==========
+            $qualityCheck = $this->qualityEnforcer->validateArticle($article);
 
-            $brandValidation = $this->brandValidator->validateCompliance(
-                $article->content,
-                $context['platform'],
-                $context['language']->code
-            );
-
-            // Score global = moyenne des 2 validations
-            $globalScore = ($knowledgeValidation['score'] + $brandValidation['score']) / 2;
-
-            // Stocker résultats validation
-            $article->quality_score = round($globalScore);
+            // Mettre à jour article avec score et notes
+            $article->quality_score = $qualityCheck->overall_score;
             $article->validation_notes = json_encode([
-                'knowledge' => $knowledgeValidation,
-                'brand' => $brandValidation,
-                'global_score' => $globalScore,
-                'validated_at' => now()->toISOString(),
+                'quality_check_id' => $qualityCheck->id,
+                'knowledge_score' => $qualityCheck->knowledge_score,
+                'brand_score' => $qualityCheck->brand_score,
+                'seo_score' => $qualityCheck->seo_score,
+                'readability_score' => $qualityCheck->readability_score,
+                'structure_score' => $qualityCheck->structure_score,
+                'originality_score' => $qualityCheck->originality_score,
+                'status' => $qualityCheck->status,
+                'validated_at' => now()->toIso8601String(),
             ], JSON_PRETTY_PRINT);
 
-            // Déterminer status selon conformité
-            if ($globalScore < 70 || !$knowledgeValidation['valid'] || !$brandValidation['compliant']) {
+            // Status automatique basé sur résultat validation
+            if ($qualityCheck->status === 'failed' || $qualityCheck->overall_score < 70) {
                 $article->status = 'review_needed';
-                
-                Log::warning("Article #{$article->id} nécessite review", [
-                    'knowledge_score' => $knowledgeValidation['score'],
-                    'brand_score' => $brandValidation['score'],
-                    'global_score' => $globalScore,
-                    'knowledge_errors' => count($knowledgeValidation['errors']),
-                    'brand_errors' => count($brandValidation['errors']),
-                ]);
+            } elseif ($qualityCheck->status === 'warning') {
+                $article->status = 'pending';
             } else {
-                // Article conforme, peut rester en status actuel
-                Log::info("Article #{$article->id} conforme", [
-                    'global_score' => $globalScore,
-                ]);
+                $article->status = 'draft';
             }
-            // ========== FIN VALIDATION DOUBLE ==========
 
-            // Sauvegarder l'article avec les validations
             $article->save();
+
+            // Auto-marking golden examples si score ≥90
+            if ($qualityCheck->overall_score >= 90) {
+                $this->qualityEnforcer->autoMarkAsGolden($article);
+            }
+            // ========== FIN VALIDATION COMPLÈTE ==========
 
             // 2. ✅ Créer les FAQs en base avec language_id
             if (!empty($data['faqs'])) {

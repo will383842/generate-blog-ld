@@ -113,6 +113,10 @@ class Country extends Model
         return $this->hasMany(Article::class);
     }
 
+    public function platform()
+{
+    return $this->belongsTo(Platform::class);
+}
     // =========================================================================
     // SCOPES
     // =========================================================================

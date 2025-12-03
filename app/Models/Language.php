@@ -22,6 +22,13 @@ class Language extends Model
         'is_active' => 'boolean',
     ];
 
+    // =========================================================================
+    // RELATIONS
+    // =========================================================================
+
+    /**
+     * Pays qui parlent cette langue
+     */
     public function countries(): BelongsToMany
     {
         return $this->belongsToMany(Country::class, 'country_language')
@@ -29,11 +36,17 @@ class Language extends Model
             ->withTimestamps();
     }
 
+    /**
+     * Articles dans cette langue
+     */
     public function articles(): HasMany
     {
         return $this->hasMany(Article::class);
     }
 
+    /**
+     * Traductions d'articles dans cette langue
+     */
     public function articleTranslations(): HasMany
     {
         return $this->hasMany(ArticleTranslation::class);

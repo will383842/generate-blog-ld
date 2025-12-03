@@ -7,6 +7,8 @@ use App\Models\ArticleFaq;
 use App\Models\Country;
 use App\Models\Language;
 use App\Models\Platform;
+use App\Services\Quality\ContentQualityEnforcer;
+use App\Services\Quality\GoldenExamplesService;
 use App\Services\AI\GptService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
