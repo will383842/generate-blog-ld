@@ -12,6 +12,7 @@ use App\Models\PillarStatistic;
 use App\Services\AI\GptService;
 use App\Services\AI\PerplexityService;
 use App\Services\AI\DalleService;
+use App\Services\UnsplashService;
 use App\Services\Content\TitleService;
 use App\Services\Content\LinkService;
 use App\Services\Seo\MetaService;
@@ -38,6 +39,7 @@ class PillarArticleGenerator
     protected GptService $gpt;
     protected PerplexityService $perplexity;
     protected DalleService $dalle;
+    protected UnsplashService $unsplash;
     protected TitleService $titleService;
     protected LinkService $linkService;
     protected MetaService $metaService;
@@ -75,6 +77,7 @@ class PillarArticleGenerator
         GptService $gpt,
         PerplexityService $perplexity,
         DalleService $dalle,
+        UnsplashService $unsplash,
         TitleService $titleService,
         LinkService $linkService,
         MetaService $metaService
@@ -82,6 +85,7 @@ class PillarArticleGenerator
         $this->gpt = $gpt;
         $this->perplexity = $perplexity;
         $this->dalle = $dalle;
+        $this->unsplash = $unsplash;
         $this->titleService = $titleService;
         $this->linkService = $linkService;
         $this->metaService = $metaService;
@@ -671,18 +675,62 @@ Rédige la conclusion :";
         try {
             $theme = Theme::find($params['theme_id']);
             $country = Country::find($params['country_id']);
+            $language = Language::find($params['language_id']);
 
-            $prompt = "Professional cover image for article about {$theme->name} in {$country->name}, modern, clean, editorial style";
+            // 1. Essayer Unsplash d'abord
+            $keywords = [
+                $theme->name,
+                $country->name,
+                $language->name,
+            ];
             
+            $unsplashImage = $this->unsplash->findContextualImage([
+                'keywords' => $keywords,
+                'theme' => $theme->name,
+                'country' => $country->name,
+                'orientation' => 'landscape',
+            ]);
+            
+            if ($unsplashImage) {
+                Log::info('✅ Unsplash image found', [
+                    'theme' => $theme->name,
+                    'photographer' => $unsplashImage['photographer'],
+                ]);
+                
+                $article->update([
+                    'image_url' => $unsplashImage['url'],
+                    'image_alt' => $unsplashImage['alt_description'] ?: "{$theme->name} - {$country->name}",
+                    'image_attribution' => $unsplashImage['attribution_html'],
+                    'image_photographer' => $unsplashImage['photographer'],
+                    'image_photographer_url' => $unsplashImage['photographer_url'],
+                    'image_width' => $unsplashImage['width'],
+                    'image_height' => $unsplashImage['height'],
+                    'image_color' => $unsplashImage['color'],
+                    'image_source' => 'unsplash',
+                ]);
+                
+                return;
+            }
+            
+            // 2. Fallback DALL-E
+            Log::info('⚠️ No Unsplash image, using DALL-E fallback', [
+                'theme' => $theme->name,
+            ]);
+            
+            $prompt = "Professional cover image for article about {$theme->name} in {$country->name}, {$language->name} language context, high quality, business professional style";
             $imageUrl = $this->dalle->generate($prompt);
             
             $article->update([
                 'image_url' => $imageUrl,
                 'image_alt' => "{$theme->name} - {$country->name}",
+                'image_source' => 'dalle',
             ]);
 
         } catch (\Exception $e) {
-            Log::warning('⚠️ Erreur génération image', ['error' => $e->getMessage()]);
+            Log::error('❌ Image generation failed completely', [
+                'error' => $e->getMessage(),
+                'theme' => $theme->name,
+            ]);
         }
     }
 }

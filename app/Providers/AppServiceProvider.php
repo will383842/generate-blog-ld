@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use App\Services\Content\PlatformKnowledgeService;
+use App\Services\Export\UniversalExportService;
+use App\Services\Export\WordExportService;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -18,6 +20,10 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(\App\Services\Content\QualityChecker::class);
         $this->app->singleton(\App\Services\Content\LinkService::class);
         $this->app->singleton(PlatformKnowledgeService::class);
+        
+        // Services d'export PDF/WORD multi-langues (Phase 18) ✨
+        $this->app->singleton(UniversalExportService::class);
+        $this->app->singleton(WordExportService::class);
     }
 
     /**

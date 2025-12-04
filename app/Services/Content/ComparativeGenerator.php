@@ -9,11 +9,11 @@ use App\Models\Language;
 use App\Models\Platform;
 use App\Services\AI\GptService;
 use App\Services\AI\PerplexityService;
-use App\Services\AI\DalleService;
+use App\Services\UnsplashService;
 use App\Services\Content\PlatformKnowledgeService;
 use App\Services\Content\BrandValidationService;
-use App\Services\Quality\ContentQualityEnforcer;      // ← AJOUTÉ PHASE 13
-use App\Services\Quality\GoldenExamplesService;       // ← AJOUTÉ PHASE 13
+use App\Services\Quality\ContentQualityEnforcer;
+use App\Services\Quality\GoldenExamplesService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
@@ -52,7 +52,7 @@ class ComparativeGenerator
 {
     protected GptService $gpt;
     protected PerplexityService $perplexity;
-    protected DalleService $dalle;
+    protected UnsplashService $unsplash;
     protected TitleService $titleService;
     protected LinkService $linkService;
     protected QualityChecker $qualityChecker;
@@ -60,8 +60,8 @@ class ComparativeGenerator
     protected ComparisonDataFetcher $dataFetcher;
     protected PlatformKnowledgeService $knowledgeService;
     protected BrandValidationService $brandValidator;
-    protected ContentQualityEnforcer $qualityEnforcer;      // ← AJOUTÉ PHASE 13
-    protected GoldenExamplesService $goldenService;         // ← AJOUTÉ PHASE 13
+    protected ContentQualityEnforcer $qualityEnforcer;
+    protected GoldenExamplesService $goldenService;
 
     // Configuration génération
     protected array $config = [
@@ -85,7 +85,7 @@ class ComparativeGenerator
         'total_cost' => 0,
         'gpt_calls' => 0,
         'perplexity_calls' => 0,
-        'dalle_calls' => 0,
+        'unsplash_calls' => 0,
     ];
 
     /**
@@ -94,7 +94,7 @@ class ComparativeGenerator
     public function __construct(
         GptService $gpt,
         PerplexityService $perplexity,
-        DalleService $dalle,
+        UnsplashService $unsplash,
         TitleService $titleService,
         LinkService $linkService,
         QualityChecker $qualityChecker,
@@ -102,12 +102,12 @@ class ComparativeGenerator
         ComparisonDataFetcher $dataFetcher,
         PlatformKnowledgeService $knowledgeService,
         BrandValidationService $brandValidator,
-        ContentQualityEnforcer $qualityEnforcer,            // ← AJOUTÉ PHASE 13
-        GoldenExamplesService $goldenService                // ← AJOUTÉ PHASE 13
+        ContentQualityEnforcer $qualityEnforcer,
+        GoldenExamplesService $goldenService
     ) {
         $this->gpt = $gpt;
         $this->perplexity = $perplexity;
-        $this->dalle = $dalle;
+        $this->unsplash = $unsplash;
         $this->titleService = $titleService;
         $this->linkService = $linkService;
         $this->qualityChecker = $qualityChecker;
@@ -115,8 +115,8 @@ class ComparativeGenerator
         $this->dataFetcher = $dataFetcher;
         $this->knowledgeService = $knowledgeService;
         $this->brandValidator = $brandValidator;
-        $this->qualityEnforcer = $qualityEnforcer;          // ← AJOUTÉ PHASE 13
-        $this->goldenService = $goldenService;              // ← AJOUTÉ PHASE 13
+        $this->qualityEnforcer = $qualityEnforcer;
+        $this->goldenService = $goldenService;
     }
 
     /**
@@ -217,7 +217,7 @@ class ComparativeGenerator
                 'language_code' => $language->code,
                 'competitors' => $comparisonData['competitors'],
                 'platform_name' => $platform->name,
-                'platform' => $platform,  // ← AJOUTÉ pour golden examples
+                'platform' => $platform,
             ]);
 
             // 5. Génération tableau comparatif avec scores
@@ -239,7 +239,7 @@ class ComparativeGenerator
                 $comparisonData['criteria']
             );
 
-            // 7. Génération podium avec CTA vers plateforme
+            // 8. Génération podium avec CTA vers plateforme
             $podium = $this->generatePodium(
                 array_slice($comparisonData['competitors'], 0, 3),
                 $params['with_cta'] ?? true,
@@ -247,7 +247,7 @@ class ComparativeGenerator
                 $platform->name
             );
 
-            // 8. Génération sections détaillées par concurrent
+            // 9. Génération sections détaillées par concurrent
             $detailedSections = [];
             foreach ($comparisonData['competitors'] as $index => $competitor) {
                 $detailedSections[] = $this->generateElementSection(
@@ -259,16 +259,16 @@ class ComparativeGenerator
                 $this->stats['gpt_calls']++;
             }
 
-            // 9. Génération FAQ spécifique aux comparatifs
+            // 10. Génération FAQ spécifique aux comparatifs
             $faqs = $this->generateComparativeFaqs([
                 'service_type' => $params['service_type'],
                 'country' => $country->name,
                 'language_code' => $language->code,
                 'competitors' => $comparisonData['competitors'],
-                'platform_id' => $params['platform_id'],  // ← AJOUTÉ pour golden examples
+                'platform_id' => $params['platform_id'],
             ]);
 
-            // 10. Génération conclusion
+            // 11. Génération conclusion
             $conclusion = $this->generateConclusion([
                 'service_type' => $params['service_type'],
                 'country' => $country->name,
@@ -277,7 +277,7 @@ class ComparativeGenerator
                 'platform_name' => $platform->name,
             ]);
 
-            // 11. Assemblage contenu HTML
+            // 12. Assemblage contenu HTML
             $content = $this->assembleComparativeContent([
                 'introduction' => $introduction,
                 'comparison_table' => $comparisonTable,
@@ -288,19 +288,39 @@ class ComparativeGenerator
                 'conclusion' => $conclusion,
             ]);
 
-            // 12. Génération image DALL-E (optionnel)
+            // 13. Génération image Unsplash (optionnel)
             $imageUrl = null;
             if ($params['generate_image'] ?? false) {
-                $image = $this->dalle->generateForArticle([
-                    'title' => $title,
-                    'theme' => $params['service_type'],
-                    'country' => $country->name,
-                ]);
-                $imageUrl = $image->path;
-                $this->stats['dalle_calls']++;
+                try {
+                    $searchQuery = $this->buildUnsplashQuery([
+                        'service_type' => $params['service_type'],
+                        'country' => $country->name,
+                        'context' => 'comparison',
+                    ]);
+
+                    $image = $this->unsplash->searchAndDownload($searchQuery, [
+                        'orientation' => 'landscape',
+                        'per_page' => 1,
+                    ]);
+
+                    if ($image) {
+                        $imageUrl = $image['path'];
+                        $this->stats['unsplash_calls']++;
+                        
+                        Log::info('Image Unsplash récupérée', [
+                            'query' => $searchQuery,
+                            'url' => $imageUrl,
+                        ]);
+                    }
+                } catch (\Exception $e) {
+                    Log::warning('Erreur récupération image Unsplash', [
+                        'error' => $e->getMessage(),
+                    ]);
+                    // Continue sans image plutôt que de fail
+                }
             }
 
-            // 13. Insertion liens internes/externes
+            // 14. Insertion liens internes/externes
             $content = $this->linkService->insertLinks($content, [
                 'platform_id' => $params['platform_id'],
                 'country_id' => $params['country_id'],
@@ -308,7 +328,7 @@ class ComparativeGenerator
                 'service_type' => $params['service_type'],
             ]);
 
-            // 14. Création article
+            // 15. Création article
             $wordCount = ContentHelper::countWords($content);
             
             $article = Article::create([
@@ -381,7 +401,7 @@ class ComparativeGenerator
             }
             // ========== FIN VALIDATION PHASE 13 ==========
 
-            // 15. Sauvegarde FAQs
+            // 16. Sauvegarde FAQs
             foreach ($faqs as $index => $faq) {
                 ArticleFaq::create([
                     'article_id' => $article->id,
@@ -820,6 +840,26 @@ PROMPT;
     // =========================================================================
     // MÉTHODES PRIVÉES - HELPERS
     // =========================================================================
+
+    /**
+     * Construire requête Unsplash optimisée
+     */
+    private function buildUnsplashQuery(array $params): string
+    {
+        $keywords = [
+            $params['service_type'],
+            'comparison',
+            'choice',
+            'decision',
+        ];
+
+        // Ajouter contexte géographique si pertinent
+        if (!empty($params['country'])) {
+            $keywords[] = $params['country'];
+        }
+
+        return implode(' ', array_slice($keywords, 0, 4));
+    }
 
     /**
      * Assembler le contenu HTML complet

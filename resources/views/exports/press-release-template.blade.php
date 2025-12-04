@@ -111,6 +111,22 @@
             font-style: italic;
         }
 
+        .image-credit {
+            font-size: 10px;
+            color: #666;
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        .image-credit a {
+            color: #666;
+            text-decoration: none;
+        }
+
+        .image-credit a:hover {
+            text-decoration: underline;
+        }
+
         .section-title {
             font-size: 14pt;
             font-weight: bold;
@@ -205,13 +221,29 @@
     @if($pressRelease->media->count() > 0)
         @foreach($pressRelease->media as $media)
         <div class="media-container">
-            @if(file_exists(storage_path('app/' . $media->file_path)))
+            {{-- Support URLs Unsplash ET chemins locaux --}}
+            @if($media->source_type === 'unsplash' || filter_var($media->file_path, FILTER_VALIDATE_URL))
+                <img src="{{ $media->file_path }}" 
+                     alt="{{ $media->caption }}" 
+                     class="media-image"
+                     width="{{ $media->width }}"
+                     height="{{ $media->height }}">
+            @elseif(file_exists(storage_path('app/' . $media->file_path)))
                 <img src="{{ storage_path('app/' . $media->file_path) }}" 
                      alt="{{ $media->caption }}" 
                      class="media-image">
             @endif
+            
+            {{-- Caption --}}
             @if($media->caption)
                 <div class="media-caption">{{ $media->caption }}</div>
+            @endif
+            
+            {{-- Attribution Unsplash --}}
+            @if($media->source_type === 'unsplash' && $media->attribution_html)
+                <div class="image-credit">
+                    {!! $media->attribution_html !!}
+                </div>
             @endif
         </div>
         @endforeach

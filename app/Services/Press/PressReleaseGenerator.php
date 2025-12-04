@@ -4,9 +4,12 @@ namespace App\Services\Press;
 
 use App\Models\Platform;
 use App\Models\PressRelease;
+use App\Models\PressReleaseMedia;
 use App\Models\PressReleaseTemplate;
 use App\Services\AI\GptService;
 use App\Services\AI\CostTracker;
+use App\Services\Media\UnsplashService;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 /**
@@ -28,6 +31,7 @@ class PressReleaseGenerator
 {
     protected GptService $gptService;
     protected CostTracker $costTracker;
+    protected ?UnsplashService $unsplash = null;
     
     // Types de communiqués
     const TYPE_PRODUCT_LAUNCH = 'lancement_produit';
@@ -39,10 +43,15 @@ class PressReleaseGenerator
     // Langues supportées
     const SUPPORTED_LANGUAGES = ['fr', 'en', 'de', 'es', 'pt', 'ru', 'zh', 'ar', 'hi'];
 
-    public function __construct(GptService $gptService, CostTracker $costTracker)
+    public function __construct(
+        GptService $gptService,
+        CostTracker $costTracker,
+        UnsplashService $unsplash = null
+    )
     {
         $this->gptService = $gptService;
         $this->costTracker = $costTracker;
+        $this->unsplash = $unsplash;
     }
 
     /**
@@ -102,6 +111,9 @@ class PressReleaseGenerator
             'status' => 'draft',
             'generation_cost' => $this->costTracker->getSessionCost(),
         ]);
+        
+        // Ajouter une image si demandé
+        $this->addFeaturedImage($pressRelease, $context);
         
         return $pressRelease;
     }
@@ -323,6 +335,47 @@ class PressReleaseGenerator
             'body2' => $paragraphs[1] ?? null,
             'body3' => $paragraphs[2] ?? null,
         ];
+    }
+
+    /**
+     * Ajouter une image Unsplash au communiqué
+     */
+    protected function addFeaturedImage(PressRelease $pressRelease, array $context): void
+    {
+        if (!$this->unsplash || !($context['add_image'] ?? false)) {
+            return;
+        }
+        
+        try {
+            $image = $this->unsplash->findContextualImage([
+                'keywords' => [
+                    $pressRelease->title,
+                    $context['company_name'] ?? '',
+                    $context['industry'] ?? 'business',
+                ],
+            ]);
+            
+            if ($image) {
+                PressReleaseMedia::create([
+                    'press_release_id' => $pressRelease->id,
+                    'media_type' => 'photo',
+                    'file_path' => $image['url'],
+                    'source_type' => 'unsplash',
+                    'caption' => $image['alt_description'],
+                    'photographer' => $image['photographer'],
+                    'photographer_url' => $image['photographer_url'],
+                    'attribution_html' => $image['attribution_html'],
+                    'width' => $image['width'],
+                    'height' => $image['height'],
+                    'source_id' => $image['id'],
+                    'order_index' => 0,
+                ]);
+            }
+        } catch (\Exception $e) {
+            Log::warning('Press release image failed', [
+                'error' => $e->getMessage(),
+            ]);
+        }
     }
 
     /**

@@ -15,6 +15,7 @@ use App\Models\ExternalLink;
 use App\Services\AI\GptService;
 use App\Services\AI\PerplexityService;
 use App\Services\AI\DalleService;
+use App\Services\UnsplashService;
 use App\Services\Content\PlatformKnowledgeService;
 use App\Services\Content\BrandValidationService;
 use App\Services\Quality\ContentQualityEnforcer;
@@ -44,13 +45,14 @@ class ArticleGenerator
     protected GptService $gpt;
     protected PerplexityService $perplexity;
     protected DalleService $dalle;
+    protected UnsplashService $unsplash;                    // ← AJOUTÉ
     protected TitleService $titleService;
     protected LinkService $linkService;
     protected QualityChecker $qualityChecker;
     protected PlatformKnowledgeService $knowledgeService;
     protected BrandValidationService $brandValidator;
-    protected ContentQualityEnforcer $qualityEnforcer;      // ← AJOUTÉ
-    protected GoldenExamplesService $goldenService;         // ← AJOUTÉ
+    protected ContentQualityEnforcer $qualityEnforcer;
+    protected GoldenExamplesService $goldenService;
 
     // Configuration génération
     protected array $config = [
@@ -84,24 +86,26 @@ class ArticleGenerator
         GptService $gpt,
         PerplexityService $perplexity,
         DalleService $dalle,
+        UnsplashService $unsplash,                          // ← AJOUTÉ
         TitleService $titleService,
         LinkService $linkService,
         QualityChecker $qualityChecker,
         PlatformKnowledgeService $knowledgeService,
         BrandValidationService $brandValidator,
-        ContentQualityEnforcer $qualityEnforcer,            // ← AJOUTÉ
-        GoldenExamplesService $goldenService                // ← AJOUTÉ
+        ContentQualityEnforcer $qualityEnforcer,
+        GoldenExamplesService $goldenService
     ) {
         $this->gpt = $gpt;
         $this->perplexity = $perplexity;
         $this->dalle = $dalle;
+        $this->unsplash = $unsplash;                        // ← AJOUTÉ
         $this->titleService = $titleService;
         $this->linkService = $linkService;
         $this->qualityChecker = $qualityChecker;
         $this->knowledgeService = $knowledgeService;
         $this->brandValidator = $brandValidator;
-        $this->qualityEnforcer = $qualityEnforcer;          // ← AJOUTÉ
-        $this->goldenService = $goldenService;              // ← AJOUTÉ
+        $this->qualityEnforcer = $qualityEnforcer;
+        $this->goldenService = $goldenService;
     }
 
     /**
@@ -667,22 +671,59 @@ PROMPT;
     }
 
     /**
-     * Générer l'image à la une avec DALL-E
+     * ✅ MODIFIÉ : Générer l'image à la une avec Unsplash en priorité, DALL-E en fallback
      */
     protected function generateFeaturedImage(array $context, string $title): ?int
     {
         try {
+            // 1. Chercher Unsplash en priorité
+            $unsplashImage = $this->unsplash->findContextualImage([
+                'keywords' => [
+                    $context['theme']->name ?? 'business',
+                    $context['country']->name ?? 'travel',
+                ],
+                'orientation' => 'landscape',
+            ]);
+            
+            if ($unsplashImage) {
+                // Sauvegarder dans image_library
+                $image = \App\Models\ImageLibrary::create([
+                    'filename' => basename($unsplashImage['url']),
+                    'path' => $unsplashImage['url'],
+                    'url' => $unsplashImage['url'],
+                    'source' => 'unsplash',
+                    'source_id' => $unsplashImage['id'],
+                    'source_url' => $unsplashImage['unsplash_url'],
+                    'photographer' => $unsplashImage['photographer'],
+                    'photographer_url' => $unsplashImage['photographer_url'],
+                    'mime_type' => 'image/jpeg',
+                    'width' => $unsplashImage['width'],
+                    'height' => $unsplashImage['height'],
+                    'file_size' => 0, // Externe, pas de taille locale
+                ]);
+                
+                Log::info('ArticleGenerator: Image Unsplash trouvée', [
+                    'image_id' => $image->id,
+                    'photographer' => $unsplashImage['photographer'],
+                ]);
+                
+                return $image->id;
+            }
+            
+            // 2. Fallback DALL-E si Unsplash ne retourne rien
+            Log::info('ArticleGenerator: Aucune image Unsplash, génération DALL-E');
+            
             $image = $this->dalle->generateForArticle([
                 'title' => $title,
-                'theme' => $context['theme']->name,
-                'country' => $context['country']->name,
+                'theme' => $context['theme']->name ?? '',
+                'country' => $context['country']->name ?? '',
                 'style' => 'professional photography',
             ]);
-
+            
             $this->stats['total_cost'] += $image->generation_cost;
-
+            
             return $image->id;
-
+            
         } catch (\Exception $e) {
             Log::warning('ArticleGenerator: Échec génération image', [
                 'error' => $e->getMessage(),

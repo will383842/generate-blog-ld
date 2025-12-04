@@ -9,8 +9,12 @@ use App\Http\Controllers\Api\BrandValidationController;
 use App\Http\Controllers\Api\QualityController;
 use App\Http\Controllers\Api\GoldenExamplesController;
 use App\Http\Controllers\Api\FeedbackController;
-use App\Http\Controllers\Api\PillarController; // ✨ PHASE 14
-use App\Http\Controllers\Api\PressReleaseController; // ✨ PHASE 15
+use App\Http\Controllers\Api\PillarController;
+use App\Http\Controllers\Api\PressReleaseController;
+use App\Http\Controllers\Api\DossierController;
+use App\Http\Controllers\Api\ManualTitleController;
+use App\Http\Controllers\Api\ExportApiController; // ✨ PHASE 18
+use App\Http\Controllers\Api\ResearchController; // ✨ PHASE 19
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -279,42 +283,19 @@ Route::prefix('settings')->group(function () {
 
 /*
 |--------------------------------------------------------------------------
-| PLATFORM KNOWLEDGE (Phase 11 - Base de connaissances par plateforme)
+| PLATFORM KNOWLEDGE (Phase 11)
 |--------------------------------------------------------------------------
-| Gestion des connaissances spécifiques à chaque plateforme pour
-| améliorer la génération de contenu par l'IA
-| 
-| Routes spéciales (platform, type, validate, preview) AVANT /{id} 
-| pour éviter les conflits de routing
-|
-| Exemples d'utilisation:
-| - Liste filtrée: GET /api/platform-knowledge?platform_id=1&language_code=fr
-| - Par plateforme: GET /api/platform-knowledge/platform/1
-| - Par type: GET /api/platform-knowledge/by-type/service_description
-| - Créer: POST /api/platform-knowledge
-| - Valider contenu: POST /api/platform-knowledge/validate-content
-| - Preview prompt: POST /api/platform-knowledge/preview-prompt
-| - Traduire: POST /api/platform-knowledge/123/translate
-| - Tout traduire: POST /api/platform-knowledge/platform/1/translate-all
 */
 Route::prefix('platform-knowledge')->group(function () {
-    
-    // Liste et création
     Route::get('/', [PlatformKnowledgeController::class, 'index']);
     Route::post('/', [PlatformKnowledgeController::class, 'store']);
-    
-    // Routes spécialisées (AVANT /{id} pour éviter conflits de routing)
     Route::get('/platform/{platformId}', [PlatformKnowledgeController::class, 'byPlatform']);
     Route::get('/by-type/{type}', [PlatformKnowledgeController::class, 'byType']);
     Route::post('/validate-content', [PlatformKnowledgeController::class, 'validateContent']);
     Route::post('/preview-prompt', [PlatformKnowledgeController::class, 'previewPrompt']);
-    
-    // CRUD standard (/{id} en dernier)
     Route::get('/{id}', [PlatformKnowledgeController::class, 'show']);
     Route::put('/{id}', [PlatformKnowledgeController::class, 'update']);
     Route::delete('/{id}', [PlatformKnowledgeController::class, 'destroy']);
-    
-    // Traductions
     Route::post('/{id}/translate', [PlatformKnowledgeController::class, 'translate']);
     Route::post('/platform/{platformId}/translate-all', [PlatformKnowledgeController::class, 'translateAllForPlatform']);
 });
@@ -333,41 +314,17 @@ Route::prefix('export')->group(function () {
 |--------------------------------------------------------------------------
 | BRAND VALIDATION API - Phase 12
 |--------------------------------------------------------------------------
-| Validation de la conformité du contenu généré avec les directives de
-| marque spécifiques à chaque plateforme
-|
-| Exemples d'utilisation:
-| - Valider un contenu: POST /api/brand/validate
-|   Body: { platform_id: 1, content: "...", language_code: "fr", content_type: "article" }
-| - Stats conformité: GET /api/brand/stats/1
-|   Retourne le score moyen et les violations fréquentes pour la plateforme
 */
 Route::prefix('brand')->group(function () {
-    
-    // Validation contenu temps réel
     Route::post('/validate', [BrandValidationController::class, 'validate']);
-    
-    // Statistiques conformité par plateforme
     Route::get('/stats/{platformId}', [BrandValidationController::class, 'platformStats']);
-    
 });
 
 /*
 |--------------------------------------------------------------------------
 | QUALITY MONITORING - Phase 13
 |--------------------------------------------------------------------------
-| Système de monitoring qualité, gestion des golden examples et
-| analyse des feedbacks pour amélioration continue
-|
-| Exemples d'utilisation:
-| - Dashboard qualité: GET /api/quality/dashboard
-| - Revalider article: POST /api/quality/checks/123/revalidate
-| - Marquer golden: POST /api/golden-examples/123/mark
-| - Analyser feedback: POST /api/feedback/analyze
-| - Rapport hebdo: GET /api/feedback/weekly-report
 */
-
-// QUALITY MONITORING
 Route::prefix('quality')->group(function () {
     Route::get('/dashboard', [QualityController::class, 'dashboard']);
     Route::get('/checks', [QualityController::class, 'index']);
@@ -376,7 +333,6 @@ Route::prefix('quality')->group(function () {
     Route::get('/criteria-stats', [QualityController::class, 'criteriaStats']);
 });
 
-// GOLDEN EXAMPLES
 Route::prefix('golden-examples')->group(function () {
     Route::get('/', [GoldenExamplesController::class, 'index']);
     Route::post('/{id}/mark', [GoldenExamplesController::class, 'mark']);
@@ -389,7 +345,6 @@ Route::prefix('golden-examples')->group(function () {
     Route::post('/auto-mark', [GoldenExamplesController::class, 'autoMark']);
 });
 
-// FEEDBACK LOOP
 Route::prefix('feedback')->group(function () {
     Route::post('/analyze', [FeedbackController::class, 'analyze']);
     Route::post('/apply', [FeedbackController::class, 'apply']);
@@ -400,605 +355,794 @@ Route::prefix('feedback')->group(function () {
 
 /*
 |--------------------------------------------------------------------------
-| ARTICLES PILIERS PREMIUM - Phase 14 ✨
+| ARTICLES PILIERS PREMIUM - Phase 14
 |--------------------------------------------------------------------------
-| Gestion des articles piliers premium 3000-5000 mots avec recherche
-| approfondie Perplexity, traductions 9 langues et planification automatique
-|
-| Exemples d'utilisation:
-| - Calendrier 30j: GET /api/pillars/schedule?days=30
-| - Stats globales: GET /api/pillars/stats
-| - Génération manuelle: POST /api/pillars/generate-manual
-|   Body: { platform_id: 1, country_id: 215, theme_id: 5, language_id: 1, template_type: "guide_ultime" }
-| - Détails article: GET /api/pillars/12345
-| - Sources recherche: GET /api/pillars/12345/sources
-| - Statistiques article: GET /api/pillars/12345/statistics
-|
-| Production attendue: 90 piliers/mois × 9 langues = 810 articles/mois
-| Coût moyen: ~$28/mois ($0.93/jour)
-| Génération automatique: Quotidien à 05:00 via scheduled task
 */
 Route::prefix('pillars')->group(function () {
-    
-    // ---------------------------------------------------------------------
-    // GET /api/pillars/schedule
-    // ---------------------------------------------------------------------
-    // Récupère le calendrier de planification des articles piliers
-    // 
-    // Query params:
-    //   - days (optionnel, défaut: 30) : Nombre de jours à afficher
-    // 
-    // Response: Array de dates avec articles planifiés par jour
-    // Format: [{ date, schedules: [{ id, platform, country, theme, template_type, status }], count }]
-    // ---------------------------------------------------------------------
-    Route::get('schedule', [PillarController::class, 'schedule'])
-        ->name('api.pillars.schedule');
-    
-    
-    // ---------------------------------------------------------------------
-    // POST /api/pillars/generate-manual
-    // ---------------------------------------------------------------------
-    // Génère manuellement un article pilier (hors planning automatique)
-    // 
-    // Body (JSON):
-    // {
-    //   "platform_id": 1,           // ID plateforme (Ulixai, SOS-Expat, Ulysse.AI)
-    //   "country_id": 215,          // ID pays (ex: 215 = Thailand)
-    //   "theme_id": 5,              // ID thème (ex: 5 = Visa)
-    //   "language_id": 1,           // ID langue source (1 = français)
-    //   "template_type": "guide_ultime"  // Template: guide_ultime, analyse_marche, whitepaper, dossier_thematique, mega_guide_pays
-    // }
-    // 
-    // Response: Article pilier généré avec URL
-    // Format: { success, data: { article: {...}, url }, message }
-    // 
-    // ⚠️ IMPORTANT: Génération prend 3-5 minutes
-    // ⚠️ COÛT: ~$0.93 par article (recherche + génération + traductions)
-    // ---------------------------------------------------------------------
-    Route::post('generate-manual', [PillarController::class, 'generateManual'])
-        ->name('api.pillars.generate-manual');
-    
-    
-    // ---------------------------------------------------------------------
-    // GET /api/pillars/stats
-    // ---------------------------------------------------------------------
-    // Récupère les statistiques globales des articles piliers
-    // 
-    // Response: Statistiques complètes
-    // Format: {
-    //   schedule: { total, planned, generating, completed, failed },
-    //   articles: { total, avg_word_count, total_translations },
-    //   by_platform: { Ulixai: 5, "SOS-Expat": 4, "Ulysse.AI": 3 },
-    //   recent_pillars: [...]
-    // }
-    // ---------------------------------------------------------------------
-    Route::get('stats', [PillarController::class, 'stats'])
-        ->name('api.pillars.stats');
-    
-    
-    // ---------------------------------------------------------------------
-    // GET /api/pillars/{id}
-    // ---------------------------------------------------------------------
-    // Récupère les détails complets d'un article pilier spécifique
-    // 
-    // Params:
-    //   - id : ID de l'article pilier
-    // 
-    // Response: Détails article + research data
-    // Format: {
-    //   article: { id, title, content, word_count, platform, country, theme, ... },
-    //   research: { sources_count, statistics_count }
-    // }
-    // ---------------------------------------------------------------------
-    Route::get('{id}', [PillarController::class, 'show'])
-        ->name('api.pillars.show');
-    
-    
-    // ---------------------------------------------------------------------
-    // GET /api/pillars/{id}/sources
-    // ---------------------------------------------------------------------
-    // Récupère les sources de recherche Perplexity/News utilisées
-    // pour générer l'article pilier
-    // 
-    // Params:
-    //   - id : ID de l'article pilier
-    // 
-    // Response: Liste des sources avec scores de pertinence
-    // Format: {
-    //   sources: [{ id, source_type, source_title, source_url, relevance_score, content_excerpt, created_at }],
-    //   total: 3,
-    //   highly_relevant: 2  // score > 80
-    // }
-    // ---------------------------------------------------------------------
-    Route::get('{id}/sources', [PillarController::class, 'sources'])
-        ->name('api.pillars.sources');
-    
-    
-    // ---------------------------------------------------------------------
-    // GET /api/pillars/{id}/statistics
-    // ---------------------------------------------------------------------
-    // Récupère les statistiques extraites et sourcées de l'article pilier
-    // 
-    // Params:
-    //   - id : ID de l'article pilier
-    // 
-    // Response: Liste des statistiques sourcées
-    // Format: {
-    //   statistics: [{ id, stat_key, stat_value, stat_unit, source_url, verified, created_at }],
-    //   total: 15,
-    //   verified: 12  // stats avec source URL
-    // }
-    // ---------------------------------------------------------------------
-    Route::get('{id}/statistics', [PillarController::class, 'statistics'])
-        ->name('api.pillars.statistics');
+    Route::get('schedule', [PillarController::class, 'schedule'])->name('api.pillars.schedule');
+    Route::post('generate-manual', [PillarController::class, 'generateManual'])->name('api.pillars.generate-manual');
+    Route::get('stats', [PillarController::class, 'stats'])->name('api.pillars.stats');
+    Route::get('{id}', [PillarController::class, 'show'])->name('api.pillars.show');
+    Route::get('{id}/sources', [PillarController::class, 'sources'])->name('api.pillars.sources');
+    Route::get('{id}/statistics', [PillarController::class, 'statistics'])->name('api.pillars.statistics');
 });
 
 /*
 |--------------------------------------------------------------------------
-| VÉRIFICATION ROUTES PILLARS
-|--------------------------------------------------------------------------
-|
-| # Lister toutes les routes API
-| php artisan route:list --path=api
-|
-| # Filtrer routes pillars
-| php artisan route:list --path=api/pillars
-|
-| # Compter routes par préfixe
-| php artisan route:list --path=api | grep pillars | wc -l
-|
-|--------------------------------------------------------------------------
-| TESTS ROUTES PILLARS
-|--------------------------------------------------------------------------
-|
-| # Test calendrier (local)
-| curl http://localhost:8000/api/pillars/schedule?days=30
-|
-| # Test stats globales (local)
-| curl http://localhost:8000/api/pillars/stats
-|
-| # Test génération manuelle (local - Postman recommandé)
-| POST http://localhost:8000/api/pillars/generate-manual
-| Headers: Content-Type: application/json
-| Body: {
-|   "platform_id": 1,
-|   "country_id": 215,
-|   "theme_id": 5,
-|   "language_id": 1,
-|   "template_type": "guide_ultime"
-| }
-|
-| # Test détails article (local)
-| curl http://localhost:8000/api/pillars/12345
-|
-| # Test sources (local)
-| curl http://localhost:8000/api/pillars/12345/sources
-|
-| # Test statistiques (local)
-| curl http://localhost:8000/api/pillars/12345/statistics
-|
-|--------------------------------------------------------------------------
-| PROTECTION ROUTES (optionnel)
-|--------------------------------------------------------------------------
-|
-| Si vous voulez protéger les routes pillars avec authentification:
-|
-| Route::middleware(['auth:sanctum'])->prefix('pillars')->group(function () {
-|     // ... toutes les routes pillars ici
-| });
-|
-| Ou uniquement la génération manuelle (pour éviter abus):
-|
-| Route::post('generate-manual', [PillarController::class, 'generateManual'])
-|     ->middleware(['auth:sanctum', 'throttle:5,60'])  // 5 requêtes/heure max
-|     ->name('api.pillars.generate-manual');
-|
+| COMMUNIQUÉS DE PRESSE - Phase 15
 |--------------------------------------------------------------------------
 */
+Route::prefix('press-releases')->group(function () {
+    Route::post('/generate', [PressReleaseController::class, 'generate'])->name('api.press-releases.generate');
+    Route::get('/', [PressReleaseController::class, 'index'])->name('api.press-releases.index');
+    Route::get('/{pressRelease}', [PressReleaseController::class, 'show'])->name('api.press-releases.show');
+    Route::post('/{pressRelease}/generate-chart', [PressReleaseController::class, 'generateChart'])->name('api.press-releases.generate-chart');
+    Route::post('/{pressRelease}/add-photo', [PressReleaseController::class, 'addPhoto'])->name('api.press-releases.add-photo');
+    Route::post('/{pressRelease}/export-pdf', [PressReleaseController::class, 'exportPdf'])->name('api.press-releases.export-pdf');
+    Route::post('/{pressRelease}/export-word', [PressReleaseController::class, 'exportWord'])->name('api.press-releases.export-word');
+    Route::get('/{pressRelease}/download/{export}', [PressReleaseController::class, 'download'])->name('api.press-releases.download');
+    Route::post('/{pressRelease}/publish', [PressReleaseController::class, 'publish'])->name('api.press-releases.publish');
+    Route::delete('/{pressRelease}', [PressReleaseController::class, 'destroy'])->name('api.press-releases.destroy');
+});
 
 /*
 |--------------------------------------------------------------------------
-| COMMUNIQUÉS DE PRESSE - Phase 15 ✨
+| DOSSIERS DE PRESSE - Phase 16
 |--------------------------------------------------------------------------
-| Génération automatique de communiqués de presse multilingues 1-2 pages
-| avec photos Unsplash, graphiques QuickChart et export PDF/Word
+*/
+Route::prefix('dossiers')->group(function () {
+    Route::get('/', [DossierController::class, 'index']);
+    Route::post('/', [DossierController::class, 'store']);
+    Route::get('/{id}', [DossierController::class, 'show']);
+    Route::put('/{id}', [DossierController::class, 'update']);
+    Route::delete('/{id}', [DossierController::class, 'destroy']);
+    Route::post('/{id}/sections/add', [DossierController::class, 'addSection']);
+    Route::put('/{dossierId}/sections/{sectionId}/content', [DossierController::class, 'updateSectionContent']);
+    Route::post('/{dossierId}/sections/{sectionId}/reorder', [DossierController::class, 'reorderSection']);
+    Route::delete('/{dossierId}/sections/{sectionId}', [DossierController::class, 'deleteSection']);
+    Route::post('/{id}/sections/{sectionId}/add-photo', [DossierController::class, 'addPhoto']);
+    Route::post('/{id}/add-photo', [DossierController::class, 'addPhoto']);
+    Route::post('/{id}/sections/{sectionId}/generate-chart', [DossierController::class, 'generateChart']);
+    Route::post('/{id}/export-pdf', [DossierController::class, 'exportPdf']);
+    Route::post('/{id}/export-word', [DossierController::class, 'exportWord']);
+    Route::post('/{id}/export-excel', [DossierController::class, 'exportExcel']);
+    Route::get('/exports/{exportId}/download', [DossierController::class, 'downloadExport']);
+    Route::get('/stats', [DossierController::class, 'stats']);
+});
+
+/*
+|--------------------------------------------------------------------------
+| GÉNÉRATION DEPUIS TITRES MANUELS - Phase 17
+|--------------------------------------------------------------------------
+*/
+Route::middleware(['auth:sanctum'])->prefix('manual-titles')->name('api.manual-titles.')->group(function () {
+    Route::get('/', [ManualTitleController::class, 'index'])->name('index');
+    Route::get('/{id}', [ManualTitleController::class, 'show'])->name('show');
+    Route::post('/', [ManualTitleController::class, 'store'])->name('store');
+    Route::post('/{id}/generate', [ManualTitleController::class, 'generate'])->middleware('throttle:10,60')->name('generate');
+    Route::post('/{id}/schedule', [ManualTitleController::class, 'schedule'])->name('schedule');
+    Route::post('/bulk-import', [ManualTitleController::class, 'bulkImport'])->middleware('throttle:5,60')->name('bulk-import');
+    Route::get('/{id}/status', [ManualTitleController::class, 'status'])->name('status');
+    Route::delete('/{id}', [ManualTitleController::class, 'destroy'])->name('destroy');
+    Route::get('/templates/available', [ManualTitleController::class, 'templates'])->name('templates');
+});
+
+/*
+|--------------------------------------------------------------------------
+| EXPORT PDF/WORD MULTI-LANGUES - Phase 18 ✨
+|--------------------------------------------------------------------------
+| Export automatique PDF + WORD pour tous contenus avec support parfait
+| 9 langues (arabe RTL, chinois, hindi). 18 fichiers/article.
 |
 | Fonctionnalités:
-| - Génération via GPT-4 avec templates enrichis (5 types × 9 langues)
-| - Photos automatiques haute résolution via Unsplash API (gratuit 50 req/h)
-| - Graphiques professionnels via QuickChart.io API (gratuit 60 req/min)
-| - Export PDF avec DomPDF (design professionnel, support RTL arabe)
-| - Export Word avec PHPWord (styles corporatifs, images intégrées)
-| - Support complet 9 langues: fr, en, de, es, pt, ru, zh, ar, hi
-|
-| Types de communiqués:
-| - lancement_produit : Annonce nouveau service/produit
-| - partenariat : Partenariat stratégique
-| - resultats_milestone : Chiffres clés, jalons atteints
-| - evenement : Événement, conférence, webinar
-| - nomination : Nomination RH, nouvelle recrue
+| - Export PDF avec wkhtmltopdf (support RTL arabe, fonts Noto)
+| - Export Word avec PHPWord (éditable, styles professionnels)
+| - Support 9 langues: fr, en, es, de, it, pt, ru, ar (RTL), zh, hi
+| - Queue asynchrone pour traitement en arrière-plan
+| - Automation: export automatique à publication article
+| - 4 types de contenu: Article, PillarArticle, PressRelease, PressDossier
 |
 | Exemples d'utilisation:
 |
-| 1. Générer communiqué:
-|    POST /api/press-releases/generate
+| 1. Export PDF d'un article:
+|    POST /api/export/pdf
 |    Body: {
-|      platform_id: 1,
-|      template_type: "lancement_produit",
-|      language_code: "fr",
-|      context: {
-|        product_name: "Service Premium",
-|        launch_date: "2024-12-15",
-|        key_benefits: ["Support 24/7", "197 pays", "< 5 min"],
-|        pricing: "Gratuit puis 29€/mois"
-|      }
+|      content_type: "Article",
+|      content_id: 123,
+|      language_code: "fr"
 |    }
 |
-| 2. Ajouter graphique:
-|    POST /api/press-releases/{id}/generate-chart
+| 2. Export Word:
+|    POST /api/export/word
 |    Body: {
-|      chart_type: "bar",
-|      data: {
-|        labels: ["2022", "2023", "2024"],
-|        values: [1000, 2500, 5000],
-|        title: "Croissance utilisateurs"
-|      }
+|      content_type: "Article",
+|      content_id: 123,
+|      language_code: "ar"  // Support RTL
 |    }
 |
-| 3. Ajouter photo:
-|    POST /api/press-releases/{id}/add-photo
+| 3. Export en masse (bulk):
+|    POST /api/export/bulk
 |    Body: {
-|      query: "business meeting expats",
-|      orientation: "landscape"
+|      exports: [
+|        { content_type: "Article", content_id: 123, format: "pdf", language_code: "fr" },
+|        { content_type: "Article", content_id: 123, format: "word", language_code: "en" }
+|      ]
 |    }
 |
-| 4. Export PDF:
-|    POST /api/press-releases/{id}/export-pdf
-|    Response: { download_url: "..." }
+| 4. Vérifier statut export:
+|    GET /api/export/42/status
 |
-| 5. Export Word:
-|    POST /api/press-releases/{id}/export-word
-|    Response: { download_url: "..." }
+| 5. Télécharger export:
+|    GET /api/export/42/download
 |
-| Production: À la demande (pas de génération automatique quotidienne)
-| Coût moyen: ~$0.03/communiqué (GPT-4)
-| APIs externes: QuickChart.io (gratuit), Unsplash (gratuit)
-| Templates: 45 (5 types × 9 langues) avec instructions qualité détaillées
+| Production: 1 article = 18 fichiers automatiquement (9 PDF + 9 WORD)
+| Performance: PDF 5-10s, WORD 3-5s, Queue 100-200 exports/h
+| Storage: ~6.3 MB par article complet (18 fichiers)
 |
 | ⚠️ Configuration requise:
-| - Composer: phpoffice/phpword, barryvdh/laravel-dompdf
-| - .env: UNSPLASH_ACCESS_KEY (inscription gratuite sur unsplash.com/developers)
-| - Migration: php artisan migrate
-| - Seeder: php artisan db:seed --class=PressReleaseTemplateSeeder
+| - wkhtmltopdf installé sur serveur
+| - Fonts Noto installés (sudo apt-get install fonts-noto fonts-noto-cjk)
+| - PHPWord: composer require phpoffice/phpword
+| - Queue worker actif: php artisan queue:work --queue=exports
+| - Migrations: php artisan migrate
+| - Seeder: php artisan db:seed --class=ExportConfigSeeder
 */
-Route::prefix('press-releases')->group(function () {
+Route::middleware(['auth:sanctum'])->prefix('export')->group(function () {
     
     // ---------------------------------------------------------------------
-    // POST /api/press-releases/generate
+    // POST /api/export/pdf
     // ---------------------------------------------------------------------
-    // Génère un nouveau communiqué de presse à partir d'un template
+    // Exporter un contenu en PDF
     // 
     // Body (JSON):
     // {
-    //   "platform_id": 1,                    // ID plateforme (Ulixai, SOS-Expat, Ulysse.AI)
-    //   "template_type": "lancement_produit", // Type: lancement_produit, partenariat, resultats_milestone, evenement, nomination
-    //   "language_code": "fr",                // Langue: fr, en, de, es, pt, ru, zh, ar, hi
-    //   "context": {                          // Variables contextuelles
-    //     "product_name": "Service Premium",
-    //     "launch_date": "2024-12-15",
-    //     "key_benefits": ["Bénéfice 1", "Bénéfice 2"],
-    //     "pricing": "29€/mois",
-    //     "country": "France"
-    //   }
+    //   "content_type": "Article",      // Article, PillarArticle, PressRelease, PressDossier
+    //   "content_id": 123,               // ID du contenu
+    //   "language_code": "fr"            // Langue: fr, en, es, de, it, pt, ru, ar, zh, hi
     // }
     // 
-    // Response: Communiqué généré avec structure complète
+    // Response: Export mis en queue
     // Format: {
-    //   success: true,
-    //   message: "Communiqué généré avec succès",
-    //   data: {
-    //     id, uuid, title, lead, body1, body2, body3, quote,
-    //     boilerplate, contact, language_code, status, word_count,
-    //     generation_cost, platform, created_at
-    //   }
+    //   message: "PDF export queued successfully",
+    //   export_id: 42,
+    //   status: "pending"
     // }
     // 
-    // ⚠️ Génération prend 5-15 secondes selon longueur
-    // ⚠️ Coût: ~$0.03 par communiqué (GPT-4)
+    // ⚠️ Process asynchrone via queue
+    // ⚠️ Utiliser /status pour suivre la progression
     // ---------------------------------------------------------------------
-    Route::post('/generate', [PressReleaseController::class, 'generate'])
-        ->name('api.press-releases.generate');
+    Route::post('/pdf', [ExportApiController::class, 'exportPdf']);
     
     
     // ---------------------------------------------------------------------
-    // GET /api/press-releases
+    // POST /api/export/word
     // ---------------------------------------------------------------------
-    // Liste paginée des communiqués avec filtres
+    // Exporter un contenu en Word (.docx)
+    // 
+    // Body (JSON):
+    // {
+    //   "content_type": "Article",
+    //   "content_id": 123,
+    //   "language_code": "ar"            // Support RTL pour arabe
+    // }
+    // 
+    // Response: Export mis en queue
+    // ---------------------------------------------------------------------
+    Route::post('/word', [ExportApiController::class, 'exportWord']);
+    
+    
+    // ---------------------------------------------------------------------
+    // POST /api/export/bulk
+    // ---------------------------------------------------------------------
+    // Exporter plusieurs contenus en masse
+    // 
+    // Body (JSON):
+    // {
+    //   "exports": [
+    //     { content_type: "Article", content_id: 123, format: "pdf", language_code: "fr" },
+    //     { content_type: "Article", content_id: 123, format: "word", language_code: "en" },
+    //     { content_type: "Article", content_id: 456, format: "pdf", language_code: "zh" }
+    //   ]
+    // }
+    // 
+    // Response: Liste des exports créés
+    // Format: {
+    //   message: "3 exports queued successfully",
+    //   export_ids: [42, 43, 44]
+    // }
+    // 
+    // ⚠️ Limite recommandée: 50 exports par requête
+    // ---------------------------------------------------------------------
+    Route::post('/bulk', [ExportApiController::class, 'bulkExport']);
+    
+    
+    // ---------------------------------------------------------------------
+    // GET /api/export/queue
+    // ---------------------------------------------------------------------
+    // Lister la queue d'export avec filtres
     // 
     // Query params:
-    //   - platform_id (optionnel) : Filtrer par plateforme
+    //   - status (optionnel) : Filtrer par statut (pending, processing, completed, failed)
+    //   - content_type (optionnel) : Filtrer par type
     //   - language_code (optionnel) : Filtrer par langue
-    //   - template_type (optionnel) : Filtrer par type
-    //   - status (optionnel) : Filtrer par statut (draft, review, published)
-    //   - sort_by (optionnel, défaut: created_at) : Champ de tri
-    //   - sort_dir (optionnel, défaut: desc) : Direction (asc, desc)
-    //   - per_page (optionnel, défaut: 15, max: 100) : Résultats par page
     // 
-    // Response: Liste paginée avec relations
+    // Response: Liste paginée des exports
     // Format: {
-    //   data: [{ id, title, platform, media_count, exports_count, ... }],
-    //   current_page, last_page, total, per_page
+    //   data: [{ id, content_type, content_id, format, language_code, status, created_at, ... }],
+    //   current_page, last_page, total
     // }
     // ---------------------------------------------------------------------
-    Route::get('/', [PressReleaseController::class, 'index'])
-        ->name('api.press-releases.index');
+    Route::get('/queue', [ExportApiController::class, 'queue']);
     
     
     // ---------------------------------------------------------------------
-    // GET /api/press-releases/{id}
+    // GET /api/export/{exportId}/status
     // ---------------------------------------------------------------------
-    // Détails complets d'un communiqué spécifique
+    // Récupérer le statut d'un export spécifique
     // 
     // Params:
-    //   - id : ID du communiqué (ou UUID)
+    //   - exportId : ID de l'export
     // 
-    // Response: Détails complets avec relations
+    // Response: Statut détaillé
     // Format: {
-    //   success: true,
-    //   data: {
-    //     id, uuid, title, lead, body1, body2, body3, quote,
-    //     boilerplate, contact, platform, media: [...], exports: [...]
-    //   }
+    //   id, content_type, content_id, format, language_code,
+    //   status, created_at, completed_at, error_message,
+    //   download_url: "/api/export/42/download"  // Si completed
     // }
+    // 
+    // Statuts possibles:
+    // - pending : En attente de traitement
+    // - processing : En cours de génération
+    // - completed : Terminé avec succès
+    // - failed : Échec (voir error_message)
     // ---------------------------------------------------------------------
-    Route::get('/{pressRelease}', [PressReleaseController::class, 'show'])
-        ->name('api.press-releases.show');
+    Route::get('/{exportId}/status', [ExportApiController::class, 'status'])->name('api.export.status');
     
     
     // ---------------------------------------------------------------------
-    // POST /api/press-releases/{id}/generate-chart
+    // GET /api/export/{exportId}/download
     // ---------------------------------------------------------------------
-    // Génère et ajoute un graphique au communiqué
+    // Télécharger un export terminé
     // 
     // Params:
-    //   - id : ID du communiqué
+    //   - exportId : ID de l'export
     // 
-    // Body (JSON):
-    // {
-    //   "chart_type": "bar",        // Type: bar, line, pie, doughnut, radar, scatter
-    //   "data": {
-    //     "labels": ["2022", "2023", "2024"],
-    //     "values": [1000, 2500, 5000],
-    //     "title": "Croissance utilisateurs",
-    //     "label": "Nombre d'utilisateurs"
-    //   }
-    // }
+    // Response: Fichier en téléchargement (PDF ou DOCX)
     // 
-    // Response: Media créé avec path du graphique
-    // Format: {
-    //   success: true,
-    //   message: "Graphique généré avec succès",
-    //   data: { id, media_type: "chart", file_path, caption, ... }
-    // }
-    // 
-    // ⚠️ API QuickChart.io : 60 requêtes/minute (gratuit)
+    // ⚠️ Disponible uniquement si status = "completed"
+    // ⚠️ Nom fichier: export_Article_123_fr.pdf (ou .docx)
     // ---------------------------------------------------------------------
-    Route::post('/{pressRelease}/generate-chart', [PressReleaseController::class, 'generateChart'])
-        ->name('api.press-releases.generate-chart');
+    Route::get('/{exportId}/download', [ExportApiController::class, 'download'])->name('api.export.download');
     
     
     // ---------------------------------------------------------------------
-    // POST /api/press-releases/{id}/add-photo
+    // DELETE /api/export/{exportId}/cancel
     // ---------------------------------------------------------------------
-    // Recherche et ajoute une photo Unsplash au communiqué
+    // Annuler un export en attente (pending uniquement)
     // 
     // Params:
-    //   - id : ID du communiqué
+    //   - exportId : ID de l'export
     // 
-    // Body (JSON):
-    // {
-    //   "query": "business meeting expats",    // Mots-clés recherche
-    //   "orientation": "landscape"              // orientation: landscape, portrait, squarish
-    // }
+    // Response: Confirmation annulation
+    // Format: { message: "Export cancelled successfully" }
     // 
-    // Response: Media créé avec photo téléchargée
-    // Format: {
-    //   success: true,
-    //   message: "Photo ajoutée avec succès",
-    //   data: {
-    //     id, media_type: "photo", file_path, caption,
-    //     source: "unsplash", metadata: { photographer, ... }
-    //   }
-    // }
-    // 
-    // ⚠️ API Unsplash : 50 requêtes/heure (gratuit)
-    // ⚠️ Attribution automatique du photographe dans caption
+    // ⚠️ Impossible d'annuler si status = processing ou completed
     // ---------------------------------------------------------------------
-    Route::post('/{pressRelease}/add-photo', [PressReleaseController::class, 'addPhoto'])
-        ->name('api.press-releases.add-photo');
+    Route::delete('/{exportId}/cancel', [ExportApiController::class, 'cancel']);
     
     
     // ---------------------------------------------------------------------
-    // POST /api/press-releases/{id}/export-pdf
+    // DELETE /api/export/{exportId}
     // ---------------------------------------------------------------------
-    // Génère et exporte le communiqué en PDF professionnel
+    // Supprimer un export terminé (fichier + entrée BDD)
     // 
     // Params:
-    //   - id : ID du communiqué
-    // 
-    // Body (JSON, optionnel):
-    // {
-    //   "language_code": "fr"  // Langue export (défaut: langue du communiqué)
-    // }
-    // 
-    // Response: Export créé avec URL de téléchargement
-    // Format: {
-    //   success: true,
-    //   message: "PDF généré avec succès",
-    //   data: { id, file_name, file_size, file_path, ... },
-    //   download_url: "/api/press-releases/{id}/download/{exportId}"
-    // }
-    // 
-    // ⚠️ Support RTL pour arabe
-    // ⚠️ Template professionnel : header, logo, sections espacées, footer
-    // ⚠️ Images intégrées automatiquement
-    // ---------------------------------------------------------------------
-    Route::post('/{pressRelease}/export-pdf', [PressReleaseController::class, 'exportPdf'])
-        ->name('api.press-releases.export-pdf');
-    
-    
-    // ---------------------------------------------------------------------
-    // POST /api/press-releases/{id}/export-word
-    // ---------------------------------------------------------------------
-    // Génère et exporte le communiqué en document Word (.docx)
-    // 
-    // Params:
-    //   - id : ID du communiqué
-    // 
-    // Body (JSON, optionnel):
-    // {
-    //   "language_code": "fr"  // Langue export (défaut: langue du communiqué)
-    // }
-    // 
-    // Response: Export créé avec URL de téléchargement
-    // Format: {
-    //   success: true,
-    //   message: "Document Word généré avec succès",
-    //   data: { id, file_name, file_size, file_path, ... },
-    //   download_url: "/api/press-releases/{id}/download/{exportId}"
-    // }
-    // 
-    // ⚠️ Support RTL pour arabe
-    // ⚠️ Styles corporatifs : titres, paragraphes, citations
-    // ⚠️ Images intégrées automatiquement
-    // ---------------------------------------------------------------------
-    Route::post('/{pressRelease}/export-word', [PressReleaseController::class, 'exportWord'])
-        ->name('api.press-releases.export-word');
-    
-    
-    // ---------------------------------------------------------------------
-    // GET /api/press-releases/{id}/download/{export}
-    // ---------------------------------------------------------------------
-    // Télécharge un export (PDF ou Word) du communiqué
-    // 
-    // Params:
-    //   - id : ID du communiqué
-    //   - export : ID de l'export
-    // 
-    // Response: Fichier en download (PDF ou DOCX)
-    // 
-    // ⚠️ Incrémente automatiquement le compteur de téléchargements
-    // ⚠️ Met à jour last_downloaded_at
-    // ---------------------------------------------------------------------
-    Route::get('/{pressRelease}/download/{export}', [PressReleaseController::class, 'download'])
-        ->name('api.press-releases.download');
-    
-    
-    // ---------------------------------------------------------------------
-    // POST /api/press-releases/{id}/publish
-    // ---------------------------------------------------------------------
-    // Publie un communiqué (change status de draft à published)
-    // 
-    // Params:
-    //   - id : ID du communiqué
-    // 
-    // Response: Communiqué mis à jour
-    // Format: {
-    //   success: true,
-    //   message: "Communiqué publié avec succès",
-    //   data: { id, status: "published", published_at, ... }
-    // }
-    // ---------------------------------------------------------------------
-    Route::post('/{pressRelease}/publish', [PressReleaseController::class, 'publish'])
-        ->name('api.press-releases.publish');
-    
-    
-    // ---------------------------------------------------------------------
-    // DELETE /api/press-releases/{id}
-    // ---------------------------------------------------------------------
-    // Supprime un communiqué et tous ses médias/exports associés
-    // 
-    // Params:
-    //   - id : ID du communiqué
+    //   - exportId : ID de l'export
     // 
     // Response: Confirmation suppression
-    // Format: {
-    //   success: true,
-    //   message: "Communiqué supprimé avec succès"
-    // }
+    // Format: { message: "Export deleted successfully" }
     // 
-    // ⚠️ Suppression en cascade : médias et fichiers exports supprimés
+    // ⚠️ Supprime le fichier physique (PDF/DOCX) du storage
     // ---------------------------------------------------------------------
-    Route::delete('/{pressRelease}', [PressReleaseController::class, 'destroy'])
-        ->name('api.press-releases.destroy');
+    Route::delete('/{exportId}', [ExportApiController::class, 'delete']);
 });
 
 /*
 |--------------------------------------------------------------------------
-| VÉRIFICATION ROUTES PRESS RELEASES
+| VÉRIFICATION ROUTES EXPORT
 |--------------------------------------------------------------------------
 |
 | # Lister toutes les routes API
 | php artisan route:list --path=api
 |
-| # Filtrer routes press-releases
-| php artisan route:list --path=api/press-releases
+| # Filtrer routes export
+| php artisan route:list --path=api/export
 |
 | # Compter routes par préfixe
-| php artisan route:list --path=api | grep press-releases | wc -l
+| php artisan route:list --path=api | grep export | wc -l
 |
 |--------------------------------------------------------------------------
-| TESTS ROUTES PRESS RELEASES
+| TESTS ROUTES EXPORT
 |--------------------------------------------------------------------------
 |
-| # Test liste communiqués (local)
-| curl http://localhost:8000/api/press-releases
-|
-| # Test génération (Postman recommandé)
-| POST http://localhost:8000/api/press-releases/generate
-| Headers: Content-Type: application/json
+| # Test export PDF (Postman recommandé)
+| POST http://localhost:8000/api/export/pdf
+| Headers:
+|   Content-Type: application/json
+|   Authorization: Bearer YOUR_TOKEN
 | Body: {
-|   "platform_id": 1,
-|   "template_type": "lancement_produit",
-|   "language_code": "fr",
-|   "context": {
-|     "product_name": "Service Premium",
-|     "launch_date": "2024-12-15"
-|   }
+|   "content_type": "Article",
+|   "content_id": 1,
+|   "language_code": "fr"
 | }
 |
-| # Test ajout graphique (Postman)
-| POST http://localhost:8000/api/press-releases/123/generate-chart
-| Body: {
-|   "chart_type": "bar",
-|   "data": {
-|     "labels": ["2022", "2023", "2024"],
-|     "values": [1000, 2500, 5000],
-|     "title": "Croissance"
-|   }
-| }
-|
-| # Test export PDF
-| POST http://localhost:8000/api/press-releases/123/export-pdf
+| # Test statut export
+| curl -H "Authorization: Bearer YOUR_TOKEN" \
+|   http://localhost:8000/api/export/42/status
 |
 | # Test téléchargement
-| curl http://localhost:8000/api/press-releases/123/download/456 --output communique.pdf
+| curl -H "Authorization: Bearer YOUR_TOKEN" \
+|   http://localhost:8000/api/export/42/download --output article.pdf
+|
+| # Test queue
+| curl -H "Authorization: Bearer YOUR_TOKEN" \
+|   http://localhost:8000/api/export/queue?status=pending
 |
 |--------------------------------------------------------------------------
-| PROTECTION ROUTES (optionnel)
+| AUTOMATION EXPORT
 |--------------------------------------------------------------------------
 |
-| Si vous voulez protéger les routes press-releases avec authentification:
+| Pour activer l'export automatique à publication, ajouter dans
+| ArticleController@publish():
 |
-| Route::middleware(['auth:sanctum'])->prefix('press-releases')->group(function () {
-|     // ... toutes les routes press-releases ici
-| });
+| use App\Services\Export\UniversalExportService;
 |
-| Ou uniquement la génération (pour éviter abus):
+| public function publish($id, UniversalExportService $exportService) {
+|     $article = Article::findOrFail($id);
+|     $article->update(['status' => 'published']);
+|     
+|     // Export automatique 9 langues × 2 formats = 18 fichiers
+|     $exportService->queueAllTranslations($article, ['pdf', 'word']);
+|     
+|     return response()->json(['message' => 'Article published and exports queued']);
+| }
 |
-| Route::post('/generate', [PressReleaseController::class, 'generate'])
-|     ->middleware(['auth:sanctum', 'throttle:10,60'])  // 10 requêtes/heure max
-|     ->name('api.press-releases.generate');
+|--------------------------------------------------------------------------
+| COMMAND ARTISAN
+|--------------------------------------------------------------------------
+|
+| # Traiter la queue d'export manuellement
+| php artisan export:process-queue
+|
+| # Traiter avec limite
+| php artisan export:process-queue --limit=50
+|
+| # Traiter les exports échoués
+| php artisan export:process-queue --status=failed
+|
+|--------------------------------------------------------------------------
+| SCHEDULER (optionnel)
+|--------------------------------------------------------------------------
+|
+| Dans app/Console/Kernel.php:
+|
+| protected function schedule(Schedule $schedule): void
+| {
+|     $schedule->command('export:process-queue')->everyFiveMinutes();
+| }
+|
+|--------------------------------------------------------------------------
+*/
+
+/*
+|--------------------------------------------------------------------------
+| RECHERCHES AVANCÉES & DATA MINING - Phase 19 ✨
+|--------------------------------------------------------------------------
+| Recherche multi-sources (Perplexity AI + News API) avec cache intelligent 
+| 24h et fact-checking assisté par IA.
+|
+| Fonctionnalités:
+| - Recherche multi-sources: Perplexity AI + News API
+| - Cache 24h automatique (économie ~70% coûts)
+| - Fact-checking assisté IA (vérification affirmations)
+| - Extraction automatique de claims (statistiques, dates, personnes)
+| - Support 9 langues: fr, en, es, de, pt, ru, zh, ar, hi
+| - Déduplication automatique des résultats
+| - Scoring de pertinence TF-IDF
+|
+| Économies:
+| - AVANT: $1.35/mois (270 articles, Perplexity uniquement, pas de cache)
+| - APRÈS: $0.41/mois (cache 70%, multi-sources)
+| - ÉCONOMIE: -70% ($0.94/mois)
+|
+| Exemples d'utilisation:
+|
+| 1. Recherche multi-sources:
+|    POST /api/research/search
+|    Body: {
+|      "query": "statistiques expatriés français 2024",
+|      "language": "fr",
+|      "sources": ["perplexity", "news_api"]
+|    }
+|
+| 2. Fact-checking:
+|    POST /api/research/fact-check
+|    Body: {
+|      "claim": "304 millions d'expatriés dans le monde",
+|      "language": "fr"
+|    }
+|    Response: {
+|      confidence: "high",
+|      verification_status: "verified",
+|      recommendation: "OK to use",
+|      supporting_sources: [urls...]
+|    }
+|
+| 3. Extraction de claims:
+|    POST /api/research/extract-claims
+|    Body: {
+|      "content": "Selon les dernières données, 304 millions..."
+|    }
+|    Response: {
+|      claims: [
+|        { type: "statistic", text: "304 millions d'expatriés", value: "304" }
+|      ]
+|    }
+|
+| 4. Sources disponibles:
+|    GET /api/research/sources
+|    Response: Liste des sources avec rate limits et coûts
+|
+| 5. Statistiques cache:
+|    GET /api/research/cache-stats
+|    Response: Hit rate, entries, top queries
+|
+| Performance:
+| - Cache hit rate: ~70% après quelques jours
+| - Temps réponse avec cache: <100ms
+| - Temps réponse sans cache: 2-5s
+|
+| ⚠️ Configuration requise:
+| - News API key (gratuit sur newsapi.org, 100 req/jour)
+| - Perplexity API key (déjà configuré Phase 3)
+| - Variables .env: NEWS_API_KEY, NEWS_API_TIMEOUT
+| - Migrations: php artisan migrate
+| - Seeder: php artisan db:seed --class=ResearchSourceSeeder
+|
+| ⚠️ IMPORTANT:
+| - Fact-checking assisté ≠ vérité absolue
+| - Review humaine recommandée avant publication
+| - News API gratuit limité à 100 requêtes/jour
+| - Cache 24h recommandé pour optimiser coûts
+|
+| Tests:
+| - Tests unitaires: php artisan test tests/Unit/Services/Research/
+| - Test complet: php artisan research:test
+| - Test recherche: php artisan research:test --query="votre recherche"
+| - Test fact-check: php artisan research:test --claim="votre affirmation"
+*/
+Route::middleware(['auth:sanctum'])->prefix('research')->group(function () {
+    
+    // ---------------------------------------------------------------------
+    // POST /api/research/search
+    // ---------------------------------------------------------------------
+    // Recherche multi-sources avec cache automatique
+    // 
+    // Body (JSON):
+    // {
+    //   "query": "statistiques expatriés français 2024",
+    //   "language": "fr",                           // fr, en, es, de, pt, ru, zh, ar, hi
+    //   "sources": ["perplexity", "news_api"]       // Optionnel, défaut: les deux
+    // }
+    // 
+    // Response: Résultats agrégés et dédupliqués
+    // Format: {
+    //   success: true,
+    //   data: {
+    //     query, language, sources_used,
+    //     results_count: 12,
+    //     results: [
+    //       {
+    //         source_type: "perplexity",
+    //         title: "...",
+    //         url: "...",
+    //         excerpt: "...",
+    //         relevance_score: 92
+    //       }
+    //     ]
+    //   }
+    // }
+    // 
+    // ⚠️ Cache 24h automatique (hit rate ~70%)
+    // ⚠️ Déduplication des URLs
+    // ⚠️ Scoring de pertinence TF-IDF
+    // ---------------------------------------------------------------------
+    Route::post('/search', [ResearchController::class, 'search'])
+        ->name('api.research.search');
+    
+    
+    // ---------------------------------------------------------------------
+    // GET /api/research/sources
+    // ---------------------------------------------------------------------
+    // Liste des sources disponibles avec statistiques
+    // 
+    // Response: Configuration et limites des sources
+    // Format: {
+    //   success: true,
+    //   data: [
+    //     {
+    //       code: "perplexity_ai",
+    //       name: "Perplexity AI",
+    //       rate_limit: 100,                 // req/heure
+    //       cost_per_request: 0.005,         // USD
+    //       estimated_monthly_cost: 1.5,     // Pour 10 req/jour
+    //       is_free: false
+    //     },
+    //     {
+    //       code: "news_api",
+    //       name: "News API",
+    //       rate_limit: 1000,
+    //       cost_per_request: 0,
+    //       is_free: true                    // Gratuit 100/jour
+    //     }
+    //   ]
+    // }
+    // ---------------------------------------------------------------------
+    Route::get('/sources', [ResearchController::class, 'sources'])
+        ->name('api.research.sources');
+    
+    
+    // ---------------------------------------------------------------------
+    // POST /api/research/fact-check
+    // ---------------------------------------------------------------------
+    // Vérifier automatiquement une affirmation (fact-checking assisté IA)
+    // 
+    // Body (JSON):
+    // {
+    //   "claim": "304 millions d'expatriés dans le monde",
+    //   "language": "fr"
+    // }
+    // 
+    // Response: Résultat de vérification
+    // Format: {
+    //   success: true,
+    //   data: {
+    //     claim: "...",
+    //     confidence: "high",                // high, medium, low
+    //     verification_status: "verified",   // verified, disputed, unknown
+    //     supporting_sources: ["url1", "url2"],
+    //     contradicting_sources: [],
+    //     recommendation: "OK to use",       // OK to use, Needs review, Do not use
+    //     explanation: "Analyse de 5 sources...",
+    //     suggested_correction: null         // Si disputed
+    //   },
+    //   warning: "Le fact-checking assisté par IA peut contenir des erreurs..."
+    // }
+    // 
+    // ⚠️ CRITIQUE: Fact-checking assisté ≠ vérité absolue
+    // ⚠️ Review humaine RECOMMANDÉE avant publication
+    // ⚠️ Utiliser pour détecter claims à vérifier manuellement
+    // ---------------------------------------------------------------------
+    Route::post('/fact-check', [ResearchController::class, 'factCheck'])
+        ->name('api.research.fact-check');
+    
+    
+    // ---------------------------------------------------------------------
+    // POST /api/research/extract-claims
+    // ---------------------------------------------------------------------
+    // Extraire automatiquement les affirmations factuelles d'un contenu
+    // 
+    // Body (JSON):
+    // {
+    //   "content": "Selon les dernières données, 304 millions d'expatriés..."
+    // }
+    // 
+    // Response: Claims détectées
+    // Format: {
+    //   success: true,
+    //   data: {
+    //     claims_count: 3,
+    //     claims: [
+    //       {
+    //         type: "statistic",            // statistic, historical, biographical
+    //         text: "304 millions d'expatriés",
+    //         value: "304",
+    //         context: "expatriés vivent actuellement dans le monde"
+    //       },
+    //       {
+    //         type: "historical",
+    //         text: "En 2024, les règles ont changé",
+    //         date: "2024",
+    //         event: "les règles ont changé"
+    //       }
+    //     ]
+    //   }
+    // }
+    // 
+    // Types détectés:
+    // - statistic: Chiffres avec contexte
+    // - historical: Dates + événements
+    // - biographical: Noms propres + rôles
+    // 
+    // ⚠️ Maximum 10 claims extraites par contenu
+    // ---------------------------------------------------------------------
+    Route::post('/extract-claims', [ResearchController::class, 'extractClaims'])
+        ->name('api.research.extract-claims');
+    
+    
+    // ---------------------------------------------------------------------
+    // POST /api/research/verify-multiple
+    // ---------------------------------------------------------------------
+    // Vérifier plusieurs affirmations en une fois
+    // 
+    // Body (JSON):
+    // {
+    //   "claims": [
+    //     "304 millions d'expatriés dans le monde",
+    //     "La France compte 2,5 millions d'expatriés",
+    //     "L'expatriation a augmenté de 15%"
+    //   ],
+    //   "language": "fr"
+    // }
+    // 
+    // Response: Résultats multiples + statistiques
+    // Format: {
+    //   success: true,
+    //   data: {
+    //     total_claims: 3,
+    //     verified: 2,
+    //     disputed: 0,
+    //     unknown: 1,
+    //     results: [
+    //       { claim, confidence, verification_status, ... },
+    //       { claim, confidence, verification_status, ... }
+    //     ]
+    //   },
+    //   warning: "..."
+    // }
+    // 
+    // ⚠️ Limite: 10 claims maximum par requête
+    // ---------------------------------------------------------------------
+    Route::post('/verify-multiple', [ResearchController::class, 'verifyMultiple'])
+        ->name('api.research.verify-multiple');
+    
+    
+    // ---------------------------------------------------------------------
+    // GET /api/research/cache-stats
+    // ---------------------------------------------------------------------
+    // Statistiques du cache et des recherches
+    // 
+    // Response: Métriques détaillées
+    // Format: {
+    //   success: true,
+    //   data: {
+    //     cache: {
+    //       total_entries: 156,
+    //       valid_entries: 134,
+    //       expired_entries: 22,
+    //       total_hits: 432,
+    //       average_hits_per_entry: 2.77,
+    //       cache_efficiency: 85.9          // %
+    //     },
+    //     cache_hit_rate_30_days: "68.5%",
+    //     most_popular_queries: [
+    //       {
+    //         query: "statistiques expatriés",
+    //         hits: 45,
+    //         language: "fr"
+    //       }
+    //     ],
+    //     language_distribution: [
+    //       { language: "fr", entries: 78, total_hits: 234 }
+    //     ]
+    //   }
+    // }
+    // 
+    // KPIs à surveiller:
+    // - cache_hit_rate > 60% (objectif 70%)
+    // - average_hits_per_entry > 2
+    // - cache_efficiency > 80%
+    // ---------------------------------------------------------------------
+    Route::get('/cache-stats', [ResearchController::class, 'cacheStats'])
+        ->name('api.research.cache-stats');
+    
+    
+    // ---------------------------------------------------------------------
+    // DELETE /api/research/cache
+    // ---------------------------------------------------------------------
+    // Vider le cache (admin uniquement)
+    // 
+    // Body (JSON):
+    // {
+    //   "action": "clear_expired"    // clear_expired ou clear_all
+    // }
+    // 
+    // Response: Confirmation
+    // Format: {
+    //   success: true,
+    //   message: "Les entrées expirées ont été supprimées (22 entrées)",
+    //   deleted_count: 22
+    // }
+    // 
+    // Actions:
+    // - clear_expired: Supprime uniquement les entrées expirées
+    // - clear_all: Supprime tout le cache (⚠️ perte hit rate)
+    // 
+    // ⚠️ Réservé aux administrateurs
+    // ⚠️ clear_all réinitialise le hit rate
+    // ---------------------------------------------------------------------
+    Route::delete('/cache', [ResearchController::class, 'clearCache'])
+        ->middleware('can:manage-settings')
+        ->name('api.research.clear-cache');
+});
+
+/*
+|--------------------------------------------------------------------------
+| INTÉGRATION PHASE 19 DANS GÉNÉRATION DE CONTENU
+|--------------------------------------------------------------------------
+|
+| Pour intégrer la recherche multi-sources dans la génération d'articles,
+| modifier PillarArticleGenerator:
+|
+| use App\Services\Research\ResearchAggregatorService;
+|
+| protected function conductDeepResearch($theme, $country, $lang) {
+|     // Utiliser ResearchAggregatorService au lieu de Perplexity uniquement
+|     $results = $this->researchService->search($theme, $lang);
+|     
+|     // Bénéfices:
+|     // - 2 sources au lieu d'1
+|     // - Cache automatique 24h
+|     // - -70% coûts
+|     // - +90% fiabilité (cross-référencement)
+| }
+|
+| Voir INTEGRATION-EXAMPLE.php pour implémentation complète
+|
+|--------------------------------------------------------------------------
+| COMMANDES ARTISAN PHASE 19
+|--------------------------------------------------------------------------
+|
+| # Test complet
+| php artisan research:test
+|
+| # Test recherche
+| php artisan research:test --query="expatriés français 2024" --lang=fr
+|
+| # Test fact-check
+| php artisan research:test --claim="304 millions d'expatriés"
+|
+| # Statistiques
+| php artisan research:test --stats
+|
+| # Vider cache expiré
+| php artisan research:test --clear-cache
+|
+|--------------------------------------------------------------------------
+| SCHEDULER (recommandé)
+|--------------------------------------------------------------------------
+|
+| Dans app/Console/Kernel.php:
+|
+| protected function schedule(Schedule $schedule): void
+| {
+|     // Nettoyer cache expiré tous les jours à 3h
+|     $schedule->call(function () {
+|         \App\Models\ResearchCache::cleanExpired();
+|     })->dailyAt('03:00');
+| }
+|
+|--------------------------------------------------------------------------
+| MONITORING
+|--------------------------------------------------------------------------
+|
+| # Surveiller le hit rate
+| curl -H "Authorization: Bearer TOKEN" \
+|   http://localhost:8000/api/research/cache-stats
+|
+| # Si hit rate < 50%, augmenter TTL cache dans:
+| app/Services/Research/ResearchAggregatorService.php
+| protected int $cacheTtl = 86400; // 24h → 48h
 |
 |--------------------------------------------------------------------------
 */

@@ -15,6 +15,10 @@ class Author extends Model
         'name',
         'email',
         'photo_url',
+        'photo_source',
+        'photo_photographer',
+        'photo_photographer_url',
+        'photo_attribution',
         'credentials',
         'countries',
         'specialties',
@@ -127,6 +131,22 @@ class Author extends Model
     {
         $translation = $this->translations->where('language_code', $languageCode)->first();
         return $translation?->job_title;
+    }
+
+    /**
+     * Vérifier si la photo vient d'Unsplash
+     */
+    public function hasUnsplashPhoto(): bool
+    {
+        return $this->photo_source === 'unsplash';
+    }
+
+    /**
+     * Obtenir l'attribution HTML de la photo
+     */
+    public function getPhotoAttributionHtml(): ?string
+    {
+        return $this->hasUnsplashPhoto() ? $this->photo_attribution : null;
     }
 
     /**

@@ -20,6 +20,10 @@ class Testimonial extends Model
         'service_id',
         'specialty_id',
         'photo_url',
+        'photo_source',
+        'photo_photographer',
+        'photo_photographer_url',
+        'photo_attribution',
         'rating',
         'source',
         'is_active',
@@ -156,5 +160,21 @@ class Testimonial extends Model
     public function getPhotoUrl(): string
     {
         return $this->photo_url ?? '/images/default-avatar.png';
+    }
+
+    /**
+     * Vérifier si la photo vient d'Unsplash
+     */
+    public function hasUnsplashPhoto(): bool
+    {
+        return $this->photo_source === 'unsplash';
+    }
+
+    /**
+     * Obtenir l'attribution HTML de la photo
+     */
+    public function getPhotoAttributionHtml(): ?string
+    {
+        return $this->hasUnsplashPhoto() ? $this->photo_attribution : null;
     }
 }

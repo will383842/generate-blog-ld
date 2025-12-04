@@ -39,6 +39,13 @@ class Article extends Model
         // Image
         'image_url',
         'image_alt',
+        'image_attribution',
+        'image_photographer',
+        'image_photographer_url',
+        'image_width',
+        'image_height',
+        'image_color',
+        'image_source',
         
         // Relations thématiques
         'theme_type',
@@ -61,6 +68,8 @@ class Article extends Model
         'reading_time' => 'integer',
         'quality_score' => 'integer',
         'generation_cost' => 'float',
+        'image_width' => 'integer',
+        'image_height' => 'integer',
         'json_ld' => 'array',
         'published_at' => 'datetime',
         'scheduled_at' => 'datetime',
@@ -372,5 +381,45 @@ class Article extends Model
     {
         // Moyenne de 200 mots par minute
         return max(1, (int) ceil($this->word_count / 200));
+    }
+
+    // =========================================================================
+    // IMAGE HELPERS (Phase 14 - Unsplash Integration)
+    // =========================================================================
+
+    /**
+     * Vérifier si l'image vient d'Unsplash
+     */
+    public function hasUnsplashImage(): bool
+    {
+        return $this->image_source === 'unsplash';
+    }
+
+    /**
+     * Obtenir l'attribution formatée
+     */
+    public function getImageAttributionAttribute(): ?string
+    {
+        if ($this->image_source === 'unsplash' && $this->attributes['image_attribution']) {
+            return $this->attributes['image_attribution'];
+        }
+        
+        return null;
+    }
+
+    /**
+     * Obtenir URL image optimisée
+     */
+    public function getOptimizedImageUrl(int $width = 1200, int $quality = 85): string
+    {
+        if ($this->hasUnsplashImage() && str_contains($this->image_url, 'unsplash.com')) {
+            $separator = str_contains($this->image_url, '?') ? '&' : '?';
+            return $this->image_url . $separator . http_build_query([
+                'w' => $width,
+                'q' => $quality,
+            ]);
+        }
+        
+        return $this->image_url;
     }
 }

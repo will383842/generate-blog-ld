@@ -1,3 +1,112 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ==============================================
+   UNSPLASH ATTRIBUTION STYLES
+   ============================================== */
+
+@layer components {
+    .image-credit {
+        font-size: 0.75rem; /* 12px */
+        color: #666;
+        margin-top: 0.5rem; /* 8px */
+        font-style: italic;
+        line-height: 1.4;
+    }
+
+    .image-credit a {
+        color: #666;
+        text-decoration: none;
+        border-bottom: 1px dotted #999;
+        transition: all 0.2s ease;
+    }
+
+    .image-credit a:hover {
+        color: #000;
+        border-bottom-color: #000;
+    }
+
+    /* Pour PDF exports */
+    @media print {
+        .image-credit {
+            font-size: 0.625rem; /* 10px */
+            color: #444;
+        }
+        
+        .image-credit a {
+            color: #444;
+            text-decoration: none;
+        }
+    }
+
+    /* Pour mobile */
+    @media (max-width: 768px) {
+        .image-credit {
+            font-size: 0.6875rem; /* 11px */
+        }
+    }
+}
+
+/* ==============================================
+   STYLES ADDITIONNELS POUR IMAGES UNSPLASH
+   ============================================== */
+
+@layer components {
+    /* Container pour image avec attribution */
+    .unsplash-image-container {
+        @apply relative mb-6;
+    }
+
+    /* Image responsive */
+    .unsplash-image {
+        @apply w-full h-auto rounded-lg shadow-md;
+    }
+
+    /* Attribution visible mais discrète */
+    .image-credit-overlay {
+        @apply absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white text-xs p-2 rounded-b-lg;
+    }
+
+    .image-credit-overlay a {
+        @apply text-white underline hover:text-gray-200;
+    }
+
+    /* Attribution sous l'image (recommandé) */
+    .image-credit-below {
+        @apply text-xs text-gray-600 italic mt-2 text-center;
+    }
+
+    .image-credit-below a {
+        @apply text-gray-600 border-b border-dotted border-gray-400 hover:text-black hover:border-black transition-colors;
+    }
+}
+
+/* ==============================================
+   UTILITIES POUR IMAGES OPTIMISÉES
+   ============================================== */
+
+@layer utilities {
+    /* Ratio d'aspect pour images */
+    .aspect-unsplash {
+        aspect-ratio: 16 / 9;
+    }
+
+    .aspect-unsplash-square {
+        aspect-ratio: 1 / 1;
+    }
+
+    .aspect-unsplash-portrait {
+        aspect-ratio: 2 / 3;
+    }
+
+    /* Loading states */
+    .image-loading {
+        @apply bg-gray-200 animate-pulse;
+    }
+
+    /* Effets hover pour galleries */
+    .image-hover-zoom {
+        @apply transition-transform duration-300 hover:scale-105;
+    }
+}
