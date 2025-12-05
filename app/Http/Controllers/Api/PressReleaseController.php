@@ -7,7 +7,7 @@ use App\Models\PressRelease;
 use App\Models\PressReleaseMedia;
 use App\Services\Press\PressReleaseGenerator;
 use App\Services\Press\ChartGeneratorService;
-use App\Services\Press\UnsplashService;
+use App\Services\UnsplashService;
 use App\Services\Press\PressReleaseExportService;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
@@ -46,7 +46,6 @@ class PressReleaseController extends Controller
     {
         $query = PressRelease::query()->with(['platform', 'media', 'exports']);
 
-        // Filtres
         if ($request->has('platform_id')) {
             $query->where('platform_id', $request->platform_id);
         }
@@ -63,12 +62,10 @@ class PressReleaseController extends Controller
             $query->where('status', $request->status);
         }
 
-        // Tri
         $sortBy = $request->get('sort_by', 'created_at');
         $sortDir = $request->get('sort_dir', 'desc');
         $query->orderBy($sortBy, $sortDir);
 
-        // Pagination
         $perPage = min($request->get('per_page', 15), 100);
         $pressReleases = $query->paginate($perPage);
 
@@ -153,13 +150,11 @@ class PressReleaseController extends Controller
         }
 
         try {
-            // Générer le graphique
             $chartPath = $this->chartGenerator->generateChart(
                 $request->data,
                 $request->chart_type
             );
 
-            // Créer l'entrée média
             $media = PressReleaseMedia::create([
                 'press_release_id' => $pressRelease->id,
                 'media_type' => 'chart',
@@ -205,7 +200,6 @@ class PressReleaseController extends Controller
         }
 
         try {
-            // Rechercher et télécharger la photo
             $result = $this->unsplashService->searchAndDownload(
                 $request->query,
                 $request->get('orientation', 'landscape')
@@ -218,7 +212,6 @@ class PressReleaseController extends Controller
                 ], 404);
             }
 
-            // Créer l'entrée média
             $media = PressReleaseMedia::create([
                 'press_release_id' => $pressRelease->id,
                 'media_type' => 'photo',

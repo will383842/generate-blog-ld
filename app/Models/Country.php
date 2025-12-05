@@ -9,9 +9,21 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * Model Country
+ * 
+ * Gère les 197 pays avec traductions en 9 langues.
+ * 
+ * Placement: app/Models/Country.php
+ */
 class Country extends Model
 {
     use HasFactory, HasTranslations;
+
+    /**
+     * Les 9 langues supportées
+     */
+    protected static array $supportedLanguages = ['fr', 'en', 'de', 'es', 'pt', 'ru', 'zh', 'ar', 'hi'];
 
     protected $fillable = [
         'code',
@@ -50,7 +62,7 @@ class Country extends Model
     ];
 
     /**
-     * ✅ AJOUT : Attributs à ajouter lors de la sérialisation
+     * Attributs à ajouter lors de la sérialisation
      */
     protected $appends = ['name'];
 
@@ -59,7 +71,7 @@ class Country extends Model
     // =========================================================================
 
     /**
-     * ✅ AJOUT : Accesseur pour 'name'
+     * Accesseur pour 'name'
      * Retourne le nom du pays dans la langue actuelle (défaut: français)
      */
     public function getNameAttribute(): string
@@ -113,10 +125,11 @@ class Country extends Model
         return $this->hasMany(Article::class);
     }
 
-    public function platform()
-{
-    return $this->belongsTo(Platform::class);
-}
+    public function platform(): BelongsTo
+    {
+        return $this->belongsTo(Platform::class);
+    }
+
     // =========================================================================
     // SCOPES
     // =========================================================================
@@ -134,6 +147,74 @@ class Country extends Model
     public function scopeInRegion($query, int $regionId)
     {
         return $query->where('region_id', $regionId);
+    }
+
+    /**
+     * Scope pour chercher par slug dans n'importe quelle langue
+     * 
+     * Usage: Country::bySlug('allemagne')->first()
+     *        Country::bySlug('germany')->first()
+     *        Country::bySlug('deguo')->first()  // chinois
+     */
+    public function scopeBySlug($query, string $slug)
+    {
+        return $query->where(function ($q) use ($slug) {
+            foreach (self::$supportedLanguages as $lang) {
+                $q->orWhere("slug_{$lang}", $slug);
+            }
+        });
+    }
+
+    // =========================================================================
+    // MÉTHODES STATIQUES
+    // =========================================================================
+
+    /**
+     * Trouver un pays par son slug (dans n'importe quelle langue)
+     * 
+     * Usage: Country::findBySlug('allemagne')  // FR
+     *        Country::findBySlug('germany')    // EN
+     *        Country::findBySlug('deguo')      // ZH (pinyin)
+     *        Country::findBySlug('almania')    // AR (translittéré)
+     * 
+     * @param string $slug Le slug à rechercher
+     * @return Country|null
+     */
+    public static function findBySlug(string $slug): ?self
+    {
+        $slug = strtolower(trim($slug));
+        
+        foreach (self::$supportedLanguages as $lang) {
+            $country = self::where("slug_{$lang}", $slug)->first();
+            if ($country) {
+                return $country;
+            }
+        }
+        
+        return null;
+    }
+
+    /**
+     * Trouver un pays par son slug avec la langue détectée
+     * 
+     * Usage: [$country, $detectedLang] = Country::findBySlugWithLang('allemagne');
+     *        // $country = Country model, $detectedLang = 'fr'
+     * 
+     * @param string $slug
+     * @return array{0: Country|null, 1: string|null} [Country, langue]
+     */
+    public static function findBySlugWithLang(string $slug): array
+    {
+        $slug = strtolower(trim($slug));
+        
+        foreach (self::$supportedLanguages as $lang) {
+            $country = self::where("slug_{$lang}", $slug)->first();
+            if ($country) {
+                return [$country, $lang];
+            }
+        }
+        
+        return [null, null];
     }
 
     // =========================================================================
@@ -199,10 +280,62 @@ class Country extends Model
     }
 
     /**
+     * Obtenir tous les slugs dans toutes les langues
+     * 
+     * Usage: $country->getAllSlugs()
+     * Retourne: ['fr' => 'allemagne', 'en' => 'germany', 'de' => 'deutschland', ...]
+     * 
+     * @return array<string, string>
+     */
+    public function getAllSlugs(): array
+    {
+        $slugs = [];
+        foreach (self::$supportedLanguages as $lang) {
+            $slugs[$lang] = $this->getSlug($lang);
+        }
+        return $slugs;
+    }
+
+    /**
+     * Obtenir tous les noms dans toutes les langues
+     * 
+     * @return array<string, string>
+     */
+    public function getAllNames(): array
+    {
+        $names = [];
+        foreach (self::$supportedLanguages as $lang) {
+            $names[$lang] = $this->getName($lang);
+        }
+        return $names;
+    }
+
+    /**
+     * Obtenir le code ISO 3166-1 alpha-2 en majuscules
+     * Utile pour les hreflang (fr-DE, en-DE, etc.)
+     * 
+     * @return string
+     */
+    public function getIsoCode(): string
+    {
+        return strtoupper($this->code);
+    }
+
+    /**
      * Obtenir le fuseau horaire par défaut
      */
     public function getTimezone(): string
     {
         return $this->timezone ?? 'UTC';
+    }
+
+    /**
+     * Obtenir les langues supportées
+     * 
+     * @return array<string>
+     */
+    public static function getSupportedLanguages(): array
+    {
+        return self::$supportedLanguages;
     }
 }

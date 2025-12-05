@@ -1,31 +1,17 @@
 ﻿import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@/hooks/useAuth';
 import { Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
-import api from '@/lib/api';
 
 export default function Login() {
-  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const { login } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
-    setLoading(true);
-
-    try {
-      const response = await api.post('/api/admin/login', { email, password });
-      localStorage.setItem('admin_token', response.data.token);
-      navigate('/admin');
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Identifiants invalides');
-    } finally {
-      setLoading(false);
-    }
+    login.mutate({ email, password });
   };
 
   return (
@@ -60,17 +46,15 @@ export default function Login() {
               required
             />
 
-            {error && (
+            {login.isError && (
               <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
-                <p className="text-sm text-red-600">{error}</p>
+                <p className="text-sm text-red-600">
+                  {(login.error as any)?.response?.data?.message || 'Identifiants invalides'}
+                </p>
               </div>
             )}
 
-            <Button
-              type="submit"
-              loading={loading}
-              className="w-full"
-            >
+            <Button type="submit" loading={login.isPending} className="w-full">
               Se connecter
             </Button>
           </form>

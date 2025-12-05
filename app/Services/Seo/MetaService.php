@@ -12,6 +12,11 @@ use Illuminate\Support\Str;
 /**
  * Service de génération de métadonnées SEO
  * Génère meta tags, JSON-LD, hreflang, OpenGraph et Twitter Cards
+ * 
+ * ✅ CORRIGÉ: hreflang avec format langue-PAYS (fr-DE, en-DE, etc.)
+ * ✅ CORRIGÉ: URLs avec structure /{pays}/{article}
+ * 
+ * Placement: app/Services/Seo/MetaService.php
  */
 class MetaService
 {
@@ -27,10 +32,6 @@ class MetaService
 
     /**
      * Génère les meta tags de base pour un article
-     * 
-     * @param Article $article Article source
-     * @param string $lang Code langue
-     * @return array Meta tags générés
      */
     public function generateMeta(Article $article, string $lang = 'fr'): array
     {
@@ -56,25 +57,17 @@ class MetaService
 
     /**
      * Génère un meta title optimisé SEO
-     * 
-     * @param string $title Titre original
-     * @return string Meta title (max 60 chars)
      */
     public function generateMetaTitle(string $title): string
     {
-        // Nettoyage HTML
         $title = strip_tags($title);
 
-        // Troncature intelligente
         if (mb_strlen($title) > self::META_TITLE_MAX_LENGTH) {
             $title = mb_substr($title, 0, self::META_TITLE_MAX_LENGTH - 3);
-            
-            // Coupe au dernier mot complet
             $lastSpace = mb_strrpos($title, ' ');
             if ($lastSpace !== false) {
                 $title = mb_substr($title, 0, $lastSpace);
             }
-            
             $title .= '...';
         }
 
@@ -83,26 +76,18 @@ class MetaService
 
     /**
      * Génère une meta description optimisée SEO
-     * 
-     * @param string $excerpt Extrait original
-     * @return string Meta description (max 160 chars)
      */
     public function generateMetaDescription(string $excerpt): string
     {
-        // Nettoyage HTML
         $description = strip_tags($excerpt);
         $description = preg_replace('/\s+/', ' ', $description);
 
-        // Troncature intelligente
         if (mb_strlen($description) > self::META_DESCRIPTION_MAX_LENGTH) {
             $description = mb_substr($description, 0, self::META_DESCRIPTION_MAX_LENGTH - 3);
-            
-            // Coupe au dernier mot complet
             $lastSpace = mb_strrpos($description, ' ');
             if ($lastSpace !== false) {
                 $description = mb_substr($description, 0, $lastSpace);
             }
-            
             $description .= '...';
         }
 
@@ -110,26 +95,15 @@ class MetaService
     }
 
     /**
-     * Génère les keywords SEO
-     * 
-     * @param Article $article Article source
-     * @param string $lang Code langue
-     * @return string Keywords séparés par virgules
+     * Génère les mots-clés SEO
      */
-    protected function generateKeywords(Article $article, string $lang): array
+    public function generateKeywords(Article $article, string $lang = 'fr'): string
     {
         $keywords = [];
 
         // Pays
         if ($article->country) {
-            $countryTranslation = $article->country->translations()
-                ->whereHas('language', fn($q) => $q->where('code', $lang))
-                ->first();
-            
-            if ($countryTranslation) {
-                $keywords[] = $countryTranslation->name;
-                $keywords[] = $countryTranslation->adjective;
-            }
+            $keywords[] = $article->country->getName($lang);
         }
 
         // Thème
@@ -137,242 +111,130 @@ class MetaService
             $themeTranslation = $article->theme->translations()
                 ->whereHas('language', fn($q) => $q->where('code', $lang))
                 ->first();
-            
-            if ($themeTranslation) {
-                $keywords[] = $themeTranslation->name;
-            }
+            $keywords[] = $themeTranslation?->name ?? $article->theme->name;
         }
 
-        // Mots-clés génériques
-        $genericKeywords = [
-            'fr' => ['expatrié', 'expat', 'immigration', 'visa', 'séjour'],
-            'en' => ['expatriate', 'expat', 'immigration', 'visa', 'residence'],
-            'de' => ['Auswanderer', 'Expat', 'Einwanderung', 'Visum', 'Aufenthalt'],
-            'es' => ['expatriado', 'expat', 'inmigración', 'visa', 'estancia'],
-            'pt' => ['expatriado', 'expat', 'imigração', 'visto', 'estadia'],
-            'ru' => ['экспат', 'иммиграция', 'виза', 'проживание'],
-            'zh' => ['外籍人士', '移民', '签证', '居住'],
-            'ar' => ['مغترب', 'هجرة', 'تأشيرة', 'إقامة'],
-            'hi' => ['प्रवासी', 'आप्रवासन', 'वीज़ा', 'निवास'],
-        ];
+        // Plateforme
+        $keywords[] = $article->platform->name ?? 'expatriation';
 
-        if (isset($genericKeywords[$lang])) {
-            $keywords = array_merge($keywords, array_slice($genericKeywords[$lang], 0, 3));
-        }
+        // Ajouter des mots-clés contextuels
+        $contextKeywords = $this->getContextKeywords($lang);
+        $keywords = array_merge($keywords, $contextKeywords);
 
-        return array_unique($keywords);
-    }
-
-    // =========================================================================
-    // JSON-LD SCHEMA.ORG
-    // =========================================================================
-
-    /**
-     * Génère le JSON-LD Article complet
-     * 
-     * @param Article $article Article source
-     * @param string $lang Code langue
-     * @return array JSON-LD structuré
-     */
-    public function generateJsonLdArticle(Article $article, string $lang = 'fr'): array
-    {
-        $translation = $this->getTranslation($article, $lang);
-        $url = $this->generateCanonicalUrl($article, $lang);
-
-        $jsonLd = [
-            '@context' => 'https://schema.org',
-            '@type' => 'Article',
-            'headline' => $translation->title ?? $article->title,
-            'description' => $translation->excerpt ?? $article->excerpt,
-            'datePublished' => $article->published_at?->toIso8601String() ?? $article->created_at->toIso8601String(),
-            'dateModified' => $article->updated_at->toIso8601String(),
-            'author' => [
-                '@type' => 'Person',
-                'name' => $article->author->name ?? 'SOS-Expat',
-            ],
-            'publisher' => [
-                '@type' => 'Organization',
-                'name' => $article->platform->name ?? 'SOS-Expat',
-                'logo' => [
-                    '@type' => 'ImageObject',
-                    'url' => $this->getPlatformLogoUrl($article->platform),
-                ],
-            ],
-            'mainEntityOfPage' => [
-                '@type' => 'WebPage',
-                '@id' => $url,
-            ],
-            'url' => $url,
-            'inLanguage' => $lang,
-        ];
-
-        // Image si présente
-        if ($article->image_url) {
-            $jsonLd['image'] = [
-                '@type' => 'ImageObject',
-                'url' => $article->image_url,
-                'caption' => $translation->image_alt ?? $article->image_alt,
-            ];
-        }
-
-        // Nombre de mots
-        $jsonLd['wordCount'] = $article->word_count;
-
-        // Temps de lecture
-        if ($article->reading_time) {
-            $jsonLd['timeRequired'] = "PT{$article->reading_time}M";
-        }
-
-        Log::debug("📄 JSON-LD Article généré", ['lang' => $lang]);
-
-        return $jsonLd;
+        return implode(', ', array_filter(array_unique($keywords)));
     }
 
     /**
-     * Génère le JSON-LD FAQPage
-     * 
-     * @param array $faqs Tableau de FAQs ['question' => '', 'answer' => '']
-     * @param string $pageUrl URL de la page
-     * @return array JSON-LD FAQPage
+     * Mots-clés contextuels par langue
      */
-    public function generateJsonLdFaq(array $faqs, string $pageUrl = ''): array
+    private function getContextKeywords(string $lang): array
     {
-        if (empty($faqs)) {
-            return [];
-        }
-
-        $mainEntity = [];
-
-        foreach ($faqs as $faq) {
-            $mainEntity[] = [
-                '@type' => 'Question',
-                'name' => strip_tags($faq['question']),
-                'acceptedAnswer' => [
-                    '@type' => 'Answer',
-                    'text' => strip_tags($faq['answer']),
-                ],
-            ];
-        }
-
-        $jsonLd = [
-            '@context' => 'https://schema.org',
-            '@type' => 'FAQPage',
-            'mainEntity' => $mainEntity,
+        $keywords = [
+            'fr' => ['expatriation', 'vivre à l\'étranger', 'démarches', 'conseils'],
+            'en' => ['expatriation', 'living abroad', 'procedures', 'tips'],
+            'de' => ['Auswanderung', 'Auslandsaufenthalt', 'Formalitäten', 'Tipps'],
+            'es' => ['expatriación', 'vivir en el extranjero', 'trámites', 'consejos'],
+            'pt' => ['expatriação', 'viver no exterior', 'procedimentos', 'dicas'],
+            'ru' => ['эмиграция', 'жизнь за рубежом', 'процедуры', 'советы'],
+            'zh' => ['移居海外', '海外生活', '手续', '建议'],
+            'ar' => ['الهجرة', 'العيش في الخارج', 'الإجراءات', 'النصائح'],
+            'hi' => ['प्रवास', 'विदेश में रहना', 'प्रक्रियाएं', 'सुझाव'],
         ];
 
-        if ($pageUrl) {
-            $jsonLd['url'] = $pageUrl;
-        }
-
-        Log::debug("❓ JSON-LD FAQPage généré", ['faqs_count' => count($faqs)]);
-
-        return $jsonLd;
-    }
-
-    /**
-     * Génère le JSON-LD Breadcrumb
-     * 
-     * @param Article $article Article source
-     * @param string $lang Code langue
-     * @return array JSON-LD BreadcrumbList
-     */
-    public function generateJsonLdBreadcrumb(Article $article, string $lang = 'fr'): array
-    {
-        $items = [];
-        $position = 1;
-
-        // Home
-        $items[] = [
-            '@type' => 'ListItem',
-            'position' => $position++,
-            'name' => 'Accueil',
-            'item' => $this->getPlatformUrl($article->platform),
-        ];
-
-        // Pays
-        if ($article->country) {
-            $countryTranslation = $article->country->translations()
-                ->whereHas('language', fn($q) => $q->where('code', $lang))
-                ->first();
-
-            $items[] = [
-                '@type' => 'ListItem',
-                'position' => $position++,
-                'name' => $countryTranslation?->name ?? $article->country->name,
-                'item' => $this->getPlatformUrl($article->platform) . '/pays/' . $article->country->slug,
-            ];
-        }
-
-        // Thème
-        if ($article->theme) {
-            $themeTranslation = $article->theme->translations()
-                ->whereHas('language', fn($q) => $q->where('code', $lang))
-                ->first();
-
-            $items[] = [
-                '@type' => 'ListItem',
-                'position' => $position++,
-                'name' => $themeTranslation?->name ?? $article->theme->name,
-                'item' => $this->getPlatformUrl($article->platform) . '/themes/' . $article->theme->slug,
-            ];
-        }
-
-        // Article actuel
-        $translation = $this->getTranslation($article, $lang);
-        $items[] = [
-            '@type' => 'ListItem',
-            'position' => $position,
-            'name' => $translation->title ?? $article->title,
-            'item' => $this->generateCanonicalUrl($article, $lang),
-        ];
-
-        return [
-            '@context' => 'https://schema.org',
-            '@type' => 'BreadcrumbList',
-            'itemListElement' => $items,
-        ];
+        return $keywords[$lang] ?? $keywords['en'];
     }
 
     // =========================================================================
-    // HREFLANG
+    // ✅ HREFLANG CORRIGÉ - AVEC CODE PAYS (fr-DE, en-DE, etc.)
     // =========================================================================
 
     /**
      * Génère les données hreflang pour toutes les langues
      * 
-     * @param Article $article Article source
-     * @return array Tableau de hreflang ['lang' => 'url']
+     * Format corrigé: langue-PAYS (ex: fr-DE pour français en Allemagne)
+     * 
+     * Exemple de sortie pour un article sur l'Allemagne:
+     * [
+     *   'fr-DE' => 'https://sos-expat.com/allemagne/visa-travail',
+     *   'en-DE' => 'https://sos-expat.com/en/germany/work-visa',
+     *   'de-DE' => 'https://sos-expat.com/de/deutschland/arbeitsvisum',
+     *   'ar-DE' => 'https://sos-expat.com/ar/almania/tashira-amal',
+     *   'x-default' => 'https://sos-expat.com/allemagne/visa-travail',
+     * ]
      */
     public function generateHreflangData(Article $article): array
     {
         $hreflang = [];
-        $platform = $article->platform;
+        $country = $article->country;
 
-        // Langue source
-        $hreflang[$article->language->code] = $this->generateCanonicalUrl($article, $article->language->code);
-
-        // Traductions
-        foreach ($article->translations as $translation) {
-            $lang = $translation->language->code;
-            $hreflang[$lang] = $this->generateCanonicalUrl($article, $lang);
+        // Si pas de pays, utiliser l'ancien format (fallback)
+        if (!$country) {
+            Log::warning("⚠️ Article sans pays pour hreflang", ['article_id' => $article->id]);
+            return $this->generateHreflangDataWithoutCountry($article);
         }
 
-        // x-default (langue par défaut pour trafic international)
+        // Code pays ISO (ex: DE, FR, US)
+        $countryCode = strtoupper($country->code);
+
+        // Langue source avec code pays
+        $sourceLang = $article->language?->code ?? 'fr';
+        $hreflangCode = "{$sourceLang}-{$countryCode}"; // ex: fr-DE
+        $hreflang[$hreflangCode] = $this->generateCanonicalUrlWithCountry($article, $sourceLang);
+
+        // Traductions avec code pays
+        foreach ($article->translations as $translation) {
+            if ($translation->status !== 'completed') {
+                continue;
+            }
+            
+            $lang = $translation->language?->code;
+            if ($lang) {
+                $hreflangCode = "{$lang}-{$countryCode}"; // ex: en-DE, ar-DE
+                $hreflang[$hreflangCode] = $this->generateCanonicalUrlWithCountry($article, $lang);
+            }
+        }
+
+        // x-default (langue par défaut = FR pour trafic international)
+        $defaultLang = config('languages.default', 'fr');
+        $defaultHreflang = "{$defaultLang}-{$countryCode}";
+        if (isset($hreflang[$defaultHreflang])) {
+            $hreflang['x-default'] = $hreflang[$defaultHreflang];
+        }
+
+        Log::debug("🌍 Hreflang généré avec pays", [
+            'country' => $countryCode,
+            'languages' => array_keys($hreflang),
+        ]);
+
+        return $hreflang;
+    }
+
+    /**
+     * Fallback hreflang pour articles sans pays (ancien format)
+     */
+    private function generateHreflangDataWithoutCountry(Article $article): array
+    {
+        $hreflang = [];
+
+        $hreflang[$article->language->code] = $this->generateCanonicalUrl($article, $article->language->code);
+
+        foreach ($article->translations as $translation) {
+            if ($translation->status === 'completed') {
+                $lang = $translation->language->code;
+                $hreflang[$lang] = $this->generateCanonicalUrl($article, $lang);
+            }
+        }
+
         $defaultLang = config('languages.default', 'fr');
         if (isset($hreflang[$defaultLang])) {
             $hreflang['x-default'] = $hreflang[$defaultLang];
         }
-
-        Log::debug("🌍 Hreflang généré", ['languages' => array_keys($hreflang)]);
 
         return $hreflang;
     }
 
     /**
      * Génère les balises hreflang HTML
-     * 
-     * @param Article $article Article source
-     * @return string HTML des balises hreflang
      */
     public function generateHreflangTags(Article $article): string
     {
@@ -387,25 +249,65 @@ class MetaService
     }
 
     // =========================================================================
-    // CANONICAL URL
+    // ✅ CANONICAL URL CORRIGÉ - AVEC PAYS
     // =========================================================================
 
     /**
-     * Génère l'URL canonique d'un article
+     * Génère l'URL canonique avec pays
      * 
-     * @param Article $article Article source
-     * @param string $lang Code langue
-     * @return string URL canonique
+     * Structure:
+     * - FR (défaut): https://domain.com/{pays-slug-fr}/{article-slug}
+     * - Autres: https://domain.com/{lang}/{pays-slug-lang}/{article-slug-lang}
+     * 
+     * Exemples pour un article sur l'Allemagne:
+     * - FR: https://sos-expat.com/allemagne/visa-travail
+     * - EN: https://sos-expat.com/en/germany/work-visa
+     * - DE: https://sos-expat.com/de/deutschland/arbeitsvisum
+     * - AR: https://sos-expat.com/ar/almania/tashira-amal
+     */
+    public function generateCanonicalUrlWithCountry(Article $article, string $lang = 'fr'): string
+    {
+        $baseUrl = $this->getPlatformUrl($article->platform);
+        $country = $article->country;
+
+        // Si pas de pays, fallback ancien format
+        if (!$country) {
+            return $this->generateCanonicalUrl($article, $lang);
+        }
+
+        // Slug du pays dans la langue cible
+        $countrySlug = $country->getSlug($lang);
+
+        // Slug de l'article dans la langue cible
+        $translation = $this->getTranslation($article, $lang);
+        $articleSlug = $translation->slug ?? $article->slug;
+
+        // Langue par défaut = pas de préfixe
+        $defaultLang = config('languages.default', 'fr');
+
+        if ($lang === $defaultLang) {
+            return rtrim($baseUrl, '/') . "/{$countrySlug}/{$articleSlug}";
+        }
+
+        // Autres langues = préfixe /{lang}/
+        return rtrim($baseUrl, '/') . "/{$lang}/{$countrySlug}/{$articleSlug}";
+    }
+
+    /**
+     * Génère l'URL canonique (ancien format sans pays - pour compatibilité)
      */
     public function generateCanonicalUrl(Article $article, string $lang = 'fr'): string
     {
-        $platform = $article->platform;
-        $baseUrl = $this->getPlatformUrl($platform);
-        
+        // Si l'article a un pays, utiliser le nouveau format
+        if ($article->country) {
+            return $this->generateCanonicalUrlWithCountry($article, $lang);
+        }
+
+        // Ancien format pour articles sans pays
+        $baseUrl = $this->getPlatformUrl($article->platform);
         $translation = $this->getTranslation($article, $lang);
         $slug = $translation->slug ?? $article->slug;
 
-        // Structure URL selon plateforme
         if ($lang === config('languages.default', 'fr')) {
             return "{$baseUrl}/articles/{$slug}";
         }
@@ -414,20 +316,96 @@ class MetaService
     }
 
     // =========================================================================
+    // ✅ JSON-LD BREADCRUMB CORRIGÉ - AVEC PAYS
+    // =========================================================================
+
+    /**
+     * Génère le JSON-LD BreadcrumbList avec pays
+     */
+    public function generateJsonLdBreadcrumb(Article $article, string $lang = 'fr'): array
+    {
+        $items = [];
+        $position = 1;
+        $baseUrl = $this->getPlatformUrl($article->platform);
+        $country = $article->country;
+
+        // Labels traduits pour "Accueil"
+        $homeLabels = [
+            'fr' => 'Accueil',
+            'en' => 'Home',
+            'de' => 'Startseite',
+            'es' => 'Inicio',
+            'pt' => 'Início',
+            'ru' => 'Главная',
+            'zh' => '首页',
+            'ar' => 'الرئيسية',
+            'hi' => 'होम',
+        ];
+
+        // 1. Accueil
+        $homeUrl = ($lang === 'fr') ? $baseUrl : "{$baseUrl}/{$lang}";
+        $items[] = [
+            '@type' => 'ListItem',
+            'position' => $position++,
+            'name' => $homeLabels[$lang] ?? 'Home',
+            'item' => $homeUrl,
+        ];
+
+        // 2. Pays (si présent)
+        if ($country) {
+            $countrySlug = $country->getSlug($lang);
+            $countryUrl = ($lang === 'fr')
+                ? "{$baseUrl}/{$countrySlug}"
+                : "{$baseUrl}/{$lang}/{$countrySlug}";
+
+            $items[] = [
+                '@type' => 'ListItem',
+                'position' => $position++,
+                'name' => $country->getName($lang),
+                'item' => $countryUrl,
+            ];
+        }
+
+        // 3. Thème (si présent)
+        if ($article->theme) {
+            $themeTranslation = $article->theme->translations()
+                ->whereHas('language', fn($q) => $q->where('code', $lang))
+                ->first();
+
+            $items[] = [
+                '@type' => 'ListItem',
+                'position' => $position++,
+                'name' => $themeTranslation?->name ?? $article->theme->name ?? 'Thème',
+            ];
+        }
+
+        // 4. Article (dernier élément)
+        $translation = $this->getTranslation($article, $lang);
+        $items[] = [
+            '@type' => 'ListItem',
+            'position' => $position,
+            'name' => $translation->title ?? $article->title,
+            'item' => $this->generateCanonicalUrlWithCountry($article, $lang),
+        ];
+
+        return [
+            '@context' => 'https://schema.org',
+            '@type' => 'BreadcrumbList',
+            'itemListElement' => $items,
+        ];
+    }
+
+    // =========================================================================
     // OPEN GRAPH
     // =========================================================================
 
     /**
      * Génère les meta tags OpenGraph
-     * 
-     * @param Article $article Article source
-     * @param string $lang Code langue
-     * @return array OpenGraph tags
      */
     public function generateOpenGraph(Article $article, string $lang = 'fr'): array
     {
         $translation = $this->getTranslation($article, $lang);
-        $url = $this->generateCanonicalUrl($article, $lang);
+        $url = $this->generateCanonicalUrlWithCountry($article, $lang);
 
         $og = [
             'og:type' => 'article',
@@ -442,13 +420,15 @@ class MetaService
         if ($article->image_url) {
             $og['og:image'] = $article->image_url;
             $og['og:image:alt'] = strip_tags($translation->image_alt ?? $article->image_alt ?? '');
-            $og['og:image:width'] = '1200';
-            $og['og:image:height'] = '630';
+            $og['og:image:width'] = $article->image_width ?? '1200';
+            $og['og:image:height'] = $article->image_height ?? '630';
         }
 
         // Dates pour articles
         if ($article->published_at) {
             $og['article:published_time'] = $article->published_at->toIso8601String();
+        }
+        if ($article->updated_at) {
             $og['article:modified_time'] = $article->updated_at->toIso8601String();
         }
 
@@ -457,123 +437,176 @@ class MetaService
             $og['article:author'] = $article->author->name;
         }
 
-        // Langues alternatives
-        $alternateLocales = $this->getOgAlternateLocales($article, $lang);
-        foreach ($alternateLocales as $locale) {
-            $og['og:locale:alternate'][] = $locale;
+        // Locales alternatifs
+        foreach ($article->translations as $trans) {
+            if ($trans->status === 'completed' && $trans->language) {
+                $og['og:locale:alternate'][] = $this->getOgLocale($trans->language->code);
+            }
         }
-
-        Log::debug("📘 OpenGraph généré", ['lang' => $lang]);
 
         return $og;
     }
 
     /**
-     * Génère les balises OpenGraph HTML
-     * 
-     * @param Article $article Article source
-     * @param string $lang Code langue
-     * @return string HTML des balises OG
+     * Tronque pour OpenGraph
      */
-    public function generateOpenGraphTags(Article $article, string $lang = 'fr'): string
+    private function truncateForOg(string $text, int $maxLength): string
     {
-        $ogData = $this->generateOpenGraph($article, $lang);
-        $tags = [];
+        $text = strip_tags($text);
+        $text = preg_replace('/\s+/', ' ', $text);
 
-        foreach ($ogData as $property => $content) {
-            if (is_array($content)) {
-                foreach ($content as $value) {
-                    $tags[] = sprintf('<meta property="%s" content="%s" />', $property, htmlspecialchars($value));
-                }
-            } else {
-                $tags[] = sprintf('<meta property="%s" content="%s" />', $property, htmlspecialchars($content));
+        if (mb_strlen($text) > $maxLength) {
+            $text = mb_substr($text, 0, $maxLength - 3);
+            $lastSpace = mb_strrpos($text, ' ');
+            if ($lastSpace !== false) {
+                $text = mb_substr($text, 0, $lastSpace);
             }
+            $text .= '...';
         }
 
-        return implode("\n", $tags);
+        return trim($text);
+    }
+
+    /**
+     * Convertit code langue en locale OpenGraph
+     */
+    private function getOgLocale(string $lang): string
+    {
+        $locales = [
+            'fr' => 'fr_FR',
+            'en' => 'en_US',
+            'de' => 'de_DE',
+            'es' => 'es_ES',
+            'pt' => 'pt_PT',
+            'ru' => 'ru_RU',
+            'zh' => 'zh_CN',
+            'ar' => 'ar_SA',
+            'hi' => 'hi_IN',
+        ];
+
+        return $locales[$lang] ?? 'en_US';
     }
 
     // =========================================================================
-    // TWITTER CARD
+    // TWITTER CARDS
     // =========================================================================
 
     /**
-     * Génère les meta tags Twitter Card
-     * 
-     * @param Article $article Article source
-     * @param string $lang Code langue
-     * @return array Twitter Card tags
+     * Génère les meta tags Twitter Cards
      */
-    public function generateTwitterCard(Article $article, string $lang = 'fr'): array
+    public function generateTwitterCards(Article $article, string $lang = 'fr'): array
     {
         $translation = $this->getTranslation($article, $lang);
 
         $twitter = [
-            'twitter:card' => $article->image_url ? 'summary_large_image' : 'summary',
-            'twitter:title' => $this->truncateForOg($translation->title ?? $article->title, 70),
-            'twitter:description' => $this->truncateForOg($translation->excerpt ?? $article->excerpt, 200),
+            'twitter:card' => 'summary_large_image',
+            'twitter:title' => $this->truncateForOg($translation->title ?? $article->title, self::OG_TITLE_MAX_LENGTH),
+            'twitter:description' => $this->truncateForOg($translation->excerpt ?? $article->excerpt, self::OG_DESCRIPTION_MAX_LENGTH),
         ];
 
-        // Image
         if ($article->image_url) {
             $twitter['twitter:image'] = $article->image_url;
             $twitter['twitter:image:alt'] = strip_tags($translation->image_alt ?? $article->image_alt ?? '');
         }
 
-        // Site Twitter si configuré
-        $twitterHandle = config('platforms.twitter_handle', '@SOSExpat');
+        // Handle Twitter si configuré
+        $twitterHandle = config('services.twitter.handle');
         if ($twitterHandle) {
             $twitter['twitter:site'] = $twitterHandle;
             $twitter['twitter:creator'] = $twitterHandle;
         }
 
-        Log::debug("🐦 Twitter Card généré", ['lang' => $lang]);
-
         return $twitter;
     }
 
-    /**
-     * Génère les balises Twitter Card HTML
-     * 
-     * @param Article $article Article source
-     * @param string $lang Code langue
-     * @return string HTML des balises Twitter
-     */
-    public function generateTwitterCardTags(Article $article, string $lang = 'fr'): string
-    {
-        $twitterData = $this->generateTwitterCard($article, $lang);
-        $tags = [];
+    // =========================================================================
+    // JSON-LD ARTICLE
+    // =========================================================================
 
-        foreach ($twitterData as $name => $content) {
-            $tags[] = sprintf('<meta name="%s" content="%s" />', $name, htmlspecialchars($content));
+    /**
+     * Génère le JSON-LD complet pour un article
+     */
+    public function generateJsonLd(Article $article, string $lang = 'fr'): array
+    {
+        $translation = $this->getTranslation($article, $lang);
+        $url = $this->generateCanonicalUrlWithCountry($article, $lang);
+
+        $jsonLd = [
+            '@context' => 'https://schema.org',
+            '@type' => 'Article',
+            'headline' => $translation->title ?? $article->title,
+            'description' => $translation->excerpt ?? $article->excerpt,
+            'url' => $url,
+            'mainEntityOfPage' => [
+                '@type' => 'WebPage',
+                '@id' => $url,
+            ],
+            'inLanguage' => $lang,
+        ];
+
+        // Dates
+        if ($article->published_at) {
+            $jsonLd['datePublished'] = $article->published_at->toIso8601String();
+        }
+        if ($article->updated_at) {
+            $jsonLd['dateModified'] = $article->updated_at->toIso8601String();
         }
 
-        return implode("\n", $tags);
+        // Image
+        if ($article->image_url) {
+            $jsonLd['image'] = [
+                '@type' => 'ImageObject',
+                'url' => $article->image_url,
+                'width' => $article->image_width ?? 1200,
+                'height' => $article->image_height ?? 630,
+            ];
+        }
+
+        // Auteur
+        if ($article->author) {
+            $jsonLd['author'] = [
+                '@type' => 'Person',
+                'name' => $article->author->name,
+            ];
+        }
+
+        // Publisher (plateforme)
+        $jsonLd['publisher'] = [
+            '@type' => 'Organization',
+            'name' => $article->platform->name ?? 'SOS-Expat',
+            'logo' => [
+                '@type' => 'ImageObject',
+                'url' => $article->platform->logo_url ?? config('app.url') . '/logo.png',
+            ],
+        ];
+
+        // Compteur de mots
+        if ($article->word_count) {
+            $jsonLd['wordCount'] = $article->word_count;
+        }
+
+        return $jsonLd;
     }
 
     // =========================================================================
-    // MÉTHODE TOUT-EN-UN
+    // GÉNÉRATION COMPLÈTE
     // =========================================================================
 
     /**
-     * Génère TOUTES les métadonnées SEO d'un coup
-     * 
-     * @param Article $article Article source
-     * @param string $lang Code langue
-     * @return array Toutes les métadonnées
+     * Génère toutes les métadonnées SEO pour un article
      */
     public function generateAllMeta(Article $article, string $lang = 'fr'): array
     {
         return [
-            'basic' => $this->generateMeta($article, $lang),
-            'canonical' => $this->generateCanonicalUrl($article, $lang),
-            'json_ld' => [
-                'article' => $this->generateJsonLdArticle($article, $lang),
+            'meta' => $this->generateMeta($article, $lang),
+            'canonical' => $this->generateCanonicalUrlWithCountry($article, $lang),
+            'hreflang' => $this->generateHreflangData($article),
+            'openGraph' => $this->generateOpenGraph($article, $lang),
+            'twitter' => $this->generateTwitterCards($article, $lang),
+            'jsonLd' => [
+                'article' => $this->generateJsonLd($article, $lang),
                 'breadcrumb' => $this->generateJsonLdBreadcrumb($article, $lang),
             ],
-            'hreflang' => $this->generateHreflangData($article),
-            'opengraph' => $this->generateOpenGraph($article, $lang),
-            'twitter' => $this->generateTwitterCard($article, $lang),
         ];
     }
 
@@ -584,88 +617,28 @@ class MetaService
     /**
      * Récupère la traduction d'un article
      */
-    protected function getTranslation(Article $article, string $lang): Article|ArticleTranslation
+    protected function getTranslation(Article $article, string $lang): ?ArticleTranslation
     {
-        if ($article->language->code === $lang) {
-            return $article;
+        // Si c'est la langue source, pas besoin de traduction
+        if ($article->language && $article->language->code === $lang) {
+            return null;
         }
 
         return $article->translations()
             ->whereHas('language', fn($q) => $q->where('code', $lang))
-            ->first() ?? $article;
+            ->where('status', 'completed')
+            ->first();
     }
 
     /**
-     * Tronque un texte pour OpenGraph
-     */
-    protected function truncateForOg(string $text, int $maxLength): string
-    {
-        $text = strip_tags($text);
-        
-        if (mb_strlen($text) <= $maxLength) {
-            return $text;
-        }
-
-        $text = mb_substr($text, 0, $maxLength - 3);
-        $lastSpace = mb_strrpos($text, ' ');
-        
-        if ($lastSpace !== false) {
-            $text = mb_substr($text, 0, $lastSpace);
-        }
-
-        return trim($text) . '...';
-    }
-
-    /**
-     * Obtient le locale OpenGraph
-     */
-    protected function getOgLocale(string $lang): string
-    {
-        $locales = [
-            'fr' => 'fr_FR',
-            'en' => 'en_US',
-            'de' => 'de_DE',
-            'es' => 'es_ES',
-            'pt' => 'pt_PT',
-            'ru' => 'ru_RU',
-            'zh' => 'zh_CN',
-            'ar' => 'ar_AR',
-            'hi' => 'hi_IN',
-        ];
-
-        return $locales[$lang] ?? 'fr_FR';
-    }
-
-    /**
-     * Obtient les locales alternatives pour OpenGraph
-     */
-    protected function getOgAlternateLocales(Article $article, string $currentLang): array
-    {
-        $alternates = [];
-
-        foreach ($article->translations as $translation) {
-            $lang = $translation->language->code;
-            if ($lang !== $currentLang) {
-                $alternates[] = $this->getOgLocale($lang);
-            }
-        }
-
-        return $alternates;
-    }
-
-    /**
-     * Obtient l'URL de base d'une plateforme
+     * Récupère l'URL de base d'une plateforme
      */
     protected function getPlatformUrl(?Platform $platform): string
     {
-        return $platform?->url ?? config('app.url', 'https://sos-expat.com');
-    }
+        if ($platform && $platform->url) {
+            return rtrim($platform->url, '/');
+        }
 
-    /**
-     * Obtient l'URL du logo d'une plateforme
-     */
-    protected function getPlatformLogoUrl(?Platform $platform): string
-    {
-        return $platform?->logo_url ?? config('app.url') . '/images/logo.png';
+        return rtrim(config('app.url'), '/');
     }
 }

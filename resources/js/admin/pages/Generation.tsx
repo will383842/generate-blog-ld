@@ -17,10 +17,25 @@ export default function Generation() {
     language_code: 'fr',
   });
 
-  const { data: countries, isLoading: loadingCountries } = useCountries();
-  const { data: themes, isLoading: loadingThemes } = useThemes();
-  const { data: queue } = useGenerationQueue();
+  const { data: countriesData, isLoading: loadingCountries } = useCountries();
+  const { data: themesData, isLoading: loadingThemes } = useThemes();
+  const { data: queueData } = useGenerationQueue();
   const generateArticle = useGenerateArticle();
+
+  // ✅ CORRECTION : Extraction sécurisée des données
+  const countries = Array.isArray(countriesData) 
+    ? countriesData 
+    : Array.isArray(countriesData?.data) 
+      ? countriesData.data 
+      : [];
+
+  const themes = Array.isArray(themesData) 
+    ? themesData 
+    : Array.isArray(themesData?.data) 
+      ? themesData.data 
+      : [];
+
+  const queue = queueData?.data || queueData || {};
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -73,19 +88,21 @@ export default function Generation() {
                   <label className="block text-sm font-medium mb-2">Pays *</label>
                   {loadingCountries ? (
                     <LoadingSpinner />
-                  ) : (
+                  ) : countries.length > 0 ? (
                     <Select
                       value={formData.country_id}
                       onChange={(e) => setFormData({ ...formData, country_id: e.target.value })}
                       required
                     >
                       <option value="">Sélectionnez un pays</option>
-                      {countries?.data?.map((country: any) => (
+                      {countries.map((country: any) => (
                         <option key={country.id} value={country.id}>
-                          {country.flag_emoji} {country.name}
+                          {country.flag_emoji || ''} {country.name}
                         </option>
                       ))}
                     </Select>
+                  ) : (
+                    <p className="text-sm text-red-600">Aucun pays disponible</p>
                   )}
                 </div>
 
@@ -94,19 +111,21 @@ export default function Generation() {
                   <label className="block text-sm font-medium mb-2">Thème *</label>
                   {loadingThemes ? (
                     <LoadingSpinner />
-                  ) : (
+                  ) : themes.length > 0 ? (
                     <Select
                       value={formData.theme_id}
                       onChange={(e) => setFormData({ ...formData, theme_id: e.target.value })}
                       required
                     >
                       <option value="">Sélectionnez un thème</option>
-                      {themes?.data?.map((theme: any) => (
+                      {themes.map((theme: any) => (
                         <option key={theme.id} value={theme.id}>
-                          {theme.icon} {theme.name}
+                          {theme.icon || ''} {theme.name}
                         </option>
                       ))}
                     </Select>
+                  ) : (
+                    <p className="text-sm text-red-600">Aucun thème disponible</p>
                   )}
                 </div>
 
@@ -137,7 +156,7 @@ export default function Generation() {
                 >
                   {generateArticle.isPending ? (
                     <>
-                      <LoadingSpinner className="mr-2 h-4 w-4" />
+                      <LoadingSpinner size="sm" className="mr-2" />
                       Génération en cours...
                     </>
                   ) : (
@@ -156,28 +175,24 @@ export default function Generation() {
               <CardTitle>File d'attente</CardTitle>
             </CardHeader>
             <CardContent>
-              {queue ? (
-                <div className="space-y-3">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-600">En attente</span>
-                    <span className="font-bold">{queue.pending || 0}</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-600">En cours</span>
-                    <span className="font-bold text-blue-600">{queue.processing || 0}</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-600">Complétés</span>
-                    <span className="font-bold text-green-600">{queue.completed || 0}</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-600">Erreurs</span>
-                    <span className="font-bold text-red-600">{queue.failed || 0}</span>
-                  </div>
+              <div className="space-y-3">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-gray-600">En attente</span>
+                  <span className="font-bold">{queue.pending || 0}</span>
                 </div>
-              ) : (
-                <LoadingSpinner />
-              )}
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-gray-600">En cours</span>
+                  <span className="font-bold text-blue-600">{queue.processing || 0}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-gray-600">Complétés</span>
+                  <span className="font-bold text-green-600">{queue.completed || 0}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-gray-600">Erreurs</span>
+                  <span className="font-bold text-red-600">{queue.failed || 0}</span>
+                </div>
+              </div>
             </CardContent>
           </Card>
 

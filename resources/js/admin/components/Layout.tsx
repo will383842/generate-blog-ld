@@ -22,7 +22,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   const navigation = [
     { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
-    { name: 'Content Hub', href: '/admin/content-hub', icon: FileText },
+    { name: 'Content Hub', href: '/admin/content', icon: FileText },
     { name: 'Coverage', href: '/admin/coverage', icon: MapPin },
     { name: 'Generation', href: '/admin/generation', icon: BarChart3 },
     { name: 'Settings', href: '/admin/settings', icon: Settings },

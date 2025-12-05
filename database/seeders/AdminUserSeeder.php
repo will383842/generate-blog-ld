@@ -10,25 +10,25 @@ class AdminUserSeeder extends Seeder
 {
     public function run(): void
     {
-        // Compte administrateur principal
+        // ✅ TON COMPTE PRINCIPAL
         AdminUser::updateOrCreate(
-            ['email' => 'admin@content-engine.local'],
+            ['email' => 'williamsjullin@gmail.com'],
             [
-                'name' => 'Williams',
-                'password' => Hash::make('admin123!'),
-                'role' => 'super_admin', // ✅ CORRIGÉ : Ajout du rôle super_admin
+                'name' => 'Williams Jullin',
+                'password' => Hash::make('11111111'),
+                'role' => 'super_admin',
                 'is_active' => true,
                 'last_login_at' => null,
             ]
         );
         
-        // Compte de développement secondaire
+        // Compte de développement secondaire (optionnel)
         AdminUser::updateOrCreate(
             ['email' => 'dev@content-engine.local'],
             [
                 'name' => 'Dev User',
                 'password' => Hash::make('dev123!'),
-                'role' => 'admin', // Rôle admin pour le dev
+                'role' => 'admin',
                 'is_active' => true,
                 'last_login_at' => null,
             ]

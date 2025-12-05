@@ -13,15 +13,14 @@ class Article extends Model
 {
     use HasFactory;
 
+    protected static array $supportedLanguages = ['fr', 'en', 'de', 'es', 'pt', 'ru', 'zh', 'ar', 'hi'];
+
     protected $fillable = [
-        // Identifiants
         'uuid',
         'platform_id',
         'country_id',
         'language_id',
         'type',
-        
-        // Contenu
         'title',
         'title_hash',
         'slug',
@@ -29,14 +28,10 @@ class Article extends Model
         'content',
         'word_count',
         'reading_time',
-        
-        // SEO
         'meta_title',
         'meta_description',
         'canonical_url',
         'json_ld',
-        
-        // Image
         'image_url',
         'image_alt',
         'image_attribution',
@@ -46,20 +41,14 @@ class Article extends Model
         'image_height',
         'image_color',
         'image_source',
-        
-        // Relations thématiques
         'theme_type',
         'theme_id',
         'author_id',
-        
-        // Qualité et statut
         'quality_score',
         'status',
         'published_at',
         'scheduled_at',
         'indexed_at',
-        
-        // Coûts
         'generation_cost',
     ];
 
@@ -76,10 +65,6 @@ class Article extends Model
         'indexed_at' => 'datetime',
     ];
 
-    // =========================================================================
-    // BOOT
-    // =========================================================================
-
     protected static function boot()
     {
         parent::boot();
@@ -91,18 +76,10 @@ class Article extends Model
         });
     }
 
-    // =========================================================================
-    // CONSTANTES STATUS
-    // =========================================================================
-
     const STATUS_DRAFT = 'draft';
     const STATUS_PENDING = 'pending';
     const STATUS_PUBLISHED = 'published';
     const STATUS_FAILED = 'failed';
-
-    // =========================================================================
-    // CONSTANTES TYPE - ✅ TOUTES LES 8 TYPES (PHASE 20.5 CORRECTION)
-    // =========================================================================
 
     const TYPE_ARTICLE = 'article';
     const TYPE_PILLAR = 'pillar';
@@ -113,38 +90,21 @@ class Article extends Model
     const TYPE_MANUAL = 'manual';
     const TYPE_KNOWLEDGE = 'knowledge';
 
-    // =========================================================================
-    // SLUG GENERATION (🔧 AJOUT)
-    // =========================================================================
-
-    /**
-     * Générer un slug unique pour l'article
-     * 
-     * @param string $title Titre de l'article
-     * @param int $platformId ID de la plateforme
-     * @param int $languageId ID de la langue
-     * @param int|null $excludeId ID de l'article à exclure (pour les updates)
-     * @return string Slug unique
-     */
     public static function generateUniqueSlug(
         string $title,
         int $platformId,
         int $languageId,
         ?int $excludeId = null
     ): string {
-        // Générer le slug de base
         $baseSlug = Str::slug($title);
         $slug = $baseSlug;
         $counter = 1;
         
-        // Vérifier l'unicité et incrémenter si nécessaire
         while (self::slugExists($slug, $platformId, $languageId, $excludeId)) {
             $slug = $baseSlug . '-' . $counter;
             $counter++;
             
-            // Sécurité : éviter les boucles infinies
             if ($counter > 1000) {
-                // Ajouter un UUID court en dernier recours
                 $slug = $baseSlug . '-' . Str::random(6);
                 break;
             }
@@ -153,15 +113,6 @@ class Article extends Model
         return $slug;
     }
 
-    /**
-     * Vérifier si un slug existe déjà
-     * 
-     * @param string $slug Slug à vérifier
-     * @param int $platformId ID de la plateforme
-     * @param int $languageId ID de la langue
-     * @param int|null $excludeId ID de l'article à exclure
-     * @return bool True si le slug existe déjà
-     */
     protected static function slugExists(
         string $slug,
         int $platformId,
@@ -179,25 +130,15 @@ class Article extends Model
         return $query->exists();
     }
 
-    /**
-     * Générer un slug unique pour cet article (méthode d'instance)
-     * 
-     * @param string $title Titre de l'article
-     * @return string Slug unique
-     */
     public function generateSlug(string $title): string
     {
         return self::generateUniqueSlug(
             $title,
             $this->platform_id,
             $this->language_id,
-            $this->id // Exclure l'article actuel si c'est un update
+            $this->id
         );
     }
-
-    // =========================================================================
-    // RELATIONS
-    // =========================================================================
 
     public function platform(): BelongsTo
     {
@@ -279,29 +220,15 @@ class Article extends Model
         return $this->hasOne(IndexingQueue::class);
     }
 
-    // =========================================================================
-    // RELATIONS PHASE 13 (Quality & Golden Examples)
-    // =========================================================================
-
-    /**
-     * Relation avec QualityCheck (Phase 13)
-     */
     public function qualityChecks(): HasMany
     {
         return $this->hasMany(QualityCheck::class);
     }
 
-    /**
-     * Relation avec GoldenExample (Phase 13)
-     */
     public function goldenExamples(): HasMany
     {
         return $this->hasMany(GoldenExample::class);
     }
-
-    // =========================================================================
-    // SCOPES
-    // =========================================================================
 
     public function scopePublished($query)
     {
@@ -343,9 +270,149 @@ class Article extends Model
         return $query->where('type', $type);
     }
 
-    // =========================================================================
-    // HELPERS
-    // =========================================================================
+    public function getTitle(string $lang = 'fr'): string
+    {
+        if ($this->language && $this->language->code === $lang) {
+            return $this->title;
+        }
+        
+        $translation = $this->translations()
+            ->whereHas('language', fn($q) => $q->where('code', $lang))
+            ->first();
+        
+        return $translation?->title ?? $this->title;
+    }
+
+    public function getTranslatedSlug(string $lang = 'fr'): string
+    {
+        if ($this->language && $this->language->code === $lang) {
+            return $this->slug;
+        }
+        
+        $translation = $this->translations()
+            ->whereHas('language', fn($q) => $q->where('code', $lang))
+            ->first();
+        
+        return $translation?->slug ?? $this->slug;
+    }
+
+    public function getFullUrlWithCountry(string $lang = 'fr'): string
+    {
+        $baseUrl = $this->platform?->url ?? config('app.url');
+        $countrySlug = $this->country?->getSlug($lang) ?? '';
+        $articleSlug = $this->getTranslatedSlug($lang);
+        
+        $defaultLang = config('languages.default', 'fr');
+        
+        if ($lang === $defaultLang) {
+            return rtrim($baseUrl, '/') . "/{$countrySlug}/{$articleSlug}";
+        }
+        
+        return rtrim($baseUrl, '/') . "/{$lang}/{$countrySlug}/{$articleSlug}";
+    }
+
+    public function hasTranslation(string $lang): bool
+    {
+        if ($this->language && $this->language->code === $lang) {
+            return true;
+        }
+        
+        return $this->translations()
+            ->whereHas('language', fn($q) => $q->where('code', $lang))
+            ->where('status', 'completed')
+            ->exists();
+    }
+
+    public function getAvailableLanguages(): array
+    {
+        $available = [];
+        
+        if ($this->language) {
+            $available[] = $this->language->code;
+        }
+        
+        $translationLangs = $this->translations()
+            ->where('status', 'completed')
+            ->with('language')
+            ->get()
+            ->pluck('language.code')
+            ->filter()
+            ->toArray();
+        
+        return array_unique(array_merge($available, $translationLangs));
+    }
+
+    public function getAllUrlsWithCountry(): array
+    {
+        $urls = [];
+        
+        foreach ($this->getAvailableLanguages() as $lang) {
+            $urls[$lang] = $this->getFullUrlWithCountry($lang);
+        }
+        
+        return $urls;
+    }
+
+    public static function findByCountryAndSlug(
+        string $countrySlug,
+        string $articleSlug,
+        string $lang = 'fr'
+    ): ?self {
+        $country = Country::findBySlug($countrySlug);
+        if (!$country) {
+            return null;
+        }
+        
+        $article = self::where('country_id', $country->id)
+            ->whereHas('translations', function($q) use ($lang, $articleSlug) {
+                $q->where('slug', $articleSlug)
+                  ->whereHas('language', fn($lq) => $lq->where('code', $lang));
+            })
+            ->first();
+        
+        if ($article) {
+            return $article;
+        }
+        
+        return self::where('country_id', $country->id)
+            ->where('slug', $articleSlug)
+            ->whereHas('language', fn($q) => $q->where('code', $lang))
+            ->first();
+    }
+
+    public function getTranslatedMeta(string $lang = 'fr'): array
+    {
+        if ($this->language && $this->language->code === $lang) {
+            return [
+                'title' => $this->meta_title ?? $this->title,
+                'description' => $this->meta_description ?? $this->excerpt,
+                'excerpt' => $this->excerpt,
+            ];
+        }
+        
+        $translation = $this->translations()
+            ->whereHas('language', fn($q) => $q->where('code', $lang))
+            ->first();
+        
+        if ($translation) {
+            return [
+                'title' => $translation->meta_title ?? $translation->title,
+                'description' => $translation->meta_description ?? $translation->excerpt,
+                'excerpt' => $translation->excerpt,
+            ];
+        }
+        
+        return [
+            'title' => $this->meta_title ?? $this->title,
+            'description' => $this->meta_description ?? $this->excerpt,
+            'excerpt' => $this->excerpt,
+        ];
+    }
+
+    public static function getSupportedLanguages(): array
+    {
+        return self::$supportedLanguages;
+    }
 
     public function isPublished(): bool
     {
@@ -389,37 +456,22 @@ class Article extends Model
 
     public function getReadingTime(): int
     {
-        // Moyenne de 200 mots par minute
         return max(1, (int) ceil($this->word_count / 200));
     }
 
-    // =========================================================================
-    // IMAGE HELPERS (Phase 14 - Unsplash Integration)
-    // =========================================================================
-
-    /**
-     * Vérifier si l'image vient d'Unsplash
-     */
     public function hasUnsplashImage(): bool
     {
         return $this->image_source === 'unsplash';
     }
 
-    /**
-     * Obtenir l'attribution formatée
-     */
     public function getImageAttributionAttribute(): ?string
     {
         if ($this->image_source === 'unsplash' && $this->attributes['image_attribution']) {
             return $this->attributes['image_attribution'];
         }
-        
         return null;
     }
 
-    /**
-     * Obtenir URL image optimisée
-     */
     public function getOptimizedImageUrl(int $width = 1200, int $quality = 85): string
     {
         if ($this->hasUnsplashImage() && str_contains($this->image_url, 'unsplash.com')) {
@@ -429,7 +481,6 @@ class Article extends Model
                 'q' => $quality,
             ]);
         }
-        
         return $this->image_url;
     }
 }

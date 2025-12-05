@@ -83,17 +83,30 @@ export default function ContentHub() {
                   className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                 />
               </div>
+              
+              {/* ✅ PLATEFORME */}
               <Select defaultValue="all">
                 <option value="all">Toutes plateformes</option>
                 <option value="sos-expat">SOS-Expat</option>
                 <option value="ulixai">Ulixai</option>
+                <option value="ulysse">Ulysse.AI</option>
               </Select>
+              
+              {/* ✅ LANGUES - CORRIGÉ AVEC 9 LANGUES */}
               <Select defaultValue="all">
                 <option value="all">Toutes langues</option>
-                <option value="fr">Français</option>
-                <option value="en">Anglais</option>
+                <option value="fr">🇫🇷 Français</option>
+                <option value="en">🇬🇧 English</option>
+                <option value="de">🇩🇪 Deutsch</option>
+                <option value="es">🇪🇸 Español</option>
+                <option value="pt">🇵🇹 Português</option>
+                <option value="ru">🇷🇺 Русский</option>
+                <option value="zh">🇨🇳 中文</option>
+                <option value="ar">🇸🇦 العربية</option>
+                <option value="hi">🇮🇳 हिन्दी</option>
               </Select>
             </div>
+            
             <div className="flex items-center gap-2">
               <Button variant="outline" size="sm">
                 <Filter className="w-4 h-4 mr-2" />

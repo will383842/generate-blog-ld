@@ -6,7 +6,10 @@ import path from 'path';
 export default defineConfig({
   plugins: [
     laravel({
-      input: ['resources/js/admin/main.tsx'],
+      input: [
+        'resources/css/app.css',      // ✅ AJOUTÉ
+        'resources/js/admin/main.tsx'
+      ],
       refresh: true,
     }),
     react(),
@@ -15,5 +18,17 @@ export default defineConfig({
     alias: {
       '@': path.resolve(__dirname, './resources/js/admin'),
     },
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
+          'query-vendor': ['@tanstack/react-query'],
+          'ui-vendor': ['lucide-react', 'recharts'],
+        },
+      },
+    },
+    chunkSizeWarningLimit: 1000,
   },
 });
