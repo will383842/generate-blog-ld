@@ -100,8 +100,18 @@ class Article extends Model
     const STATUS_PUBLISHED = 'published';
     const STATUS_FAILED = 'failed';
 
+    // =========================================================================
+    // CONSTANTES TYPE - ✅ TOUTES LES 8 TYPES (PHASE 20.5 CORRECTION)
+    // =========================================================================
+
     const TYPE_ARTICLE = 'article';
+    const TYPE_PILLAR = 'pillar';
+    const TYPE_PRESS_RELEASE = 'press_release';
+    const TYPE_PRESS_DOSSIER = 'press_dossier';
     const TYPE_LANDING = 'landing';
+    const TYPE_COMPARATIVE = 'comparative';
+    const TYPE_MANUAL = 'manual';
+    const TYPE_KNOWLEDGE = 'knowledge';
 
     // =========================================================================
     // SLUG GENERATION (🔧 AJOUT)

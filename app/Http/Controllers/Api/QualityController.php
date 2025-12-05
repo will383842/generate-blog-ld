@@ -5,9 +5,12 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\QualityCheck;
 use App\Models\Article;
+use App\Models\PressRelease;
+use App\Models\PressDossier;
 use App\Services\Quality\ContentQualityEnforcer;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Log;
 
 /**
  * =============================================================================
@@ -15,6 +18,7 @@ use Illuminate\Http\JsonResponse;
  * =============================================================================
  * 
  * ROUTES :
+ * - POST /api/quality/check
  * - GET  /api/quality/dashboard
  * - GET  /api/quality/checks
  * - POST /api/quality/checks/{articleId}/revalidate
@@ -31,6 +35,70 @@ class QualityController extends Controller
     public function __construct(ContentQualityEnforcer $qualityEnforcer)
     {
         $this->qualityEnforcer = $qualityEnforcer;
+    }
+
+    /**
+     * POST /api/quality/check
+     * Run quality check
+     * ✅ CORRECTION: Support polymorphique pour tous types
+     */
+    public function check(Request $request): JsonResponse
+    {
+        try {
+            $validated = $request->validate([
+                'content_type' => 'required|in:Article,PillarArticle,PressRelease,PressDossier',
+                'content_id' => 'required|integer|min:1',
+            ]);
+
+            // Charger le contenu
+            $content = $this->loadContent($request->content_type, $request->content_id);
+            
+            if (!$content) {
+                return response()->json([
+                    'error' => 'Content not found'
+                ], 404);
+            }
+
+            // Run quality check selon le type
+            $qualityCheck = match ($request->content_type) {
+                'Article', 'PillarArticle' => $this->qualityEnforcer->checkArticle($content),
+                'PressRelease' => $this->qualityEnforcer->checkPressRelease($content),
+                'PressDossier' => $this->qualityEnforcer->checkDossier($content),
+                default => throw new \Exception('Unsupported content type')
+            };
+
+            return response()->json([
+                'quality_check' => $qualityCheck,
+                'score' => $qualityCheck->score,
+                'passed' => $qualityCheck->score >= 70,
+                'issues' => $qualityCheck->issues,
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Quality check failed', [
+                'error' => $e->getMessage(),
+                'request' => $request->all()
+            ]);
+
+            return response()->json([
+                'error' => 'Quality check failed',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Charger contenu par type
+     */
+    protected function loadContent(string $contentType, int $contentId)
+    {
+        return match ($contentType) {
+            'Article' => Article::where('type', 'article')->find($contentId),
+            'PillarArticle' => Article::where('type', 'pillar')->find($contentId),
+            'PressRelease' => PressRelease::find($contentId),
+            'PressDossier' => PressDossier::find($contentId),
+            default => null
+        };
     }
 
     /**
@@ -211,6 +279,11 @@ class QualityController extends Controller
 |--------------------------------------------------------------------------
 | EXEMPLES UTILISATION API
 |--------------------------------------------------------------------------
+|
+| # Quality check sur contenu
+| curl -X POST http://localhost:8000/api/quality/check \
+|   -H "Content-Type: application/json" \
+|   -d '{"content_type":"Article","content_id":123}'
 |
 | # Dashboard global
 | curl http://localhost:8000/api/quality/dashboard

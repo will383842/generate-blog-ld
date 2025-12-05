@@ -95,6 +95,21 @@ class DossierSection extends Model
         return $this->hasMany(DossierMedia::class, 'section_id')->orderBy('order_index');
     }
 
+    /**
+     * ✅ CORRECTION: Relation traductions
+     */
+    public function translations(): HasMany
+    {
+        return $this->hasMany(DossierSectionTranslation::class);
+    }
+
+    public function getTranslation(string $languageCode)
+    {
+        return $this->translations()
+                    ->where('language_code', $languageCode)
+                    ->first();
+    }
+
     // ============================================
     // SCOPES
     // ============================================

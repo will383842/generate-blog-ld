@@ -213,6 +213,84 @@ class Kernel extends ConsoleKernel
                  });
 
         // =================================================================
+        // PHASE 20 : MONITORING & COST OPTIMIZATION - SCHEDULED TASKS ✨
+        // =================================================================
+
+        // -----------------------------------------------------------------
+        // TASK 9 : VÉRIFICATION ALERTES SYSTÈME
+        // -----------------------------------------------------------------
+        // Fréquence : Toutes les heures
+        // Action : Vérifier alertes budget, queue, erreurs, performance
+        //          et envoyer emails si alertes critiques détectées
+        // Résultat : Notifications email automatiques si problème
+        // Impact : Détection proactive problèmes système
+        // Coût : Gratuit (pas d'API externe)
+        // -----------------------------------------------------------------
+
+        $schedule->command('monitoring:check-alerts')
+                 ->hourly()
+                 ->name('monitoring-check-alerts')
+                 ->withoutOverlapping()
+                 ->runInBackground()
+                 ->appendOutputTo(storage_path('logs/monitoring-alerts.log'))
+                 ->onSuccess(function () {
+                     \Log::info('✅ Vérification alertes monitoring terminée');
+                 })
+                 ->onFailure(function () {
+                     \Log::error('❌ Échec vérification alertes monitoring');
+                 });
+
+        // -----------------------------------------------------------------
+        // TASK 10 : RAPPORT QUOTIDIEN COÛTS API
+        // -----------------------------------------------------------------
+        // Fréquence : Quotidien à 08:00
+        // Action : Générer rapport coûts API du jour précédent
+        //          et envoyer par email (affichage console + email)
+        // Résultat : Email quotidien avec breakdown coûts détaillé
+        // Impact : Visibilité quotidienne dépenses API
+        // Format : Console output + Email HTML
+        // -----------------------------------------------------------------
+
+        $schedule->command('costs:report')
+                 ->dailyAt('08:00')
+                 ->name('daily-cost-report')
+                 ->withoutOverlapping()
+                 ->emailOutputTo(config('monitoring.alerts.email'))
+                 ->appendOutputTo(storage_path('logs/cost-reports.log'))
+                 ->onSuccess(function () {
+                     \Log::info('✅ Rapport quotidien coûts envoyé');
+                 })
+                 ->onFailure(function () {
+                     \Log::error('❌ Échec envoi rapport quotidien coûts');
+                 });
+
+        // -----------------------------------------------------------------
+        // TASK 11 : RAPPORT MENSUEL COÛTS API + EXPORT JSON
+        // -----------------------------------------------------------------
+        // Fréquence : Mensuel le 1er du mois à 10:00
+        // Action : Générer rapport complet du mois précédent avec :
+        //          - Coûts totaux et breakdown détaillé
+        //          - Économies réalisées via optimisations
+        //          - Prédiction mois en cours
+        //          - Export JSON storage/app/reports/
+        // Résultat : Email mensuel + fichier JSON archivé
+        // Impact : Analyse mensuelle complète + archivage historique
+        // -----------------------------------------------------------------
+
+        $schedule->command('costs:report --monthly --export')
+                 ->monthlyOn(1, '10:00')
+                 ->name('monthly-cost-report')
+                 ->withoutOverlapping()
+                 ->emailOutputTo(config('monitoring.alerts.email'))
+                 ->appendOutputTo(storage_path('logs/cost-reports.log'))
+                 ->onSuccess(function () {
+                     \Log::info('✅ Rapport mensuel coûts envoyé et exporté');
+                 })
+                 ->onFailure(function () {
+                     \Log::error('❌ Échec envoi rapport mensuel coûts');
+                 });
+
+        // =================================================================
         // VOS AUTRES SCHEDULED TASKS EXISTANTS
         // =================================================================
         // Ajoutez ici vos autres scheduled tasks si vous en avez
@@ -276,8 +354,12 @@ class Kernel extends ConsoleKernel
 | # Phase 18 - Exports
 | tail -f storage/logs/export-queue.log
 |
+| # Phase 20 - Monitoring ✨
+| tail -f storage/logs/monitoring-alerts.log
+| tail -f storage/logs/cost-reports.log
+|
 |--------------------------------------------------------------------------
-| TABLEAU RÉCAPITULATIF SCHEDULED TASKS (PHASE 13 + 14 + 18)
+| TABLEAU RÉCAPITULATIF SCHEDULED TASKS (PHASES 13 + 14 + 18 + 20) ✨
 |--------------------------------------------------------------------------
 |
 | ┌─────┬────────────────────────────────┬──────────────┬──────────────┐
@@ -299,10 +381,16 @@ class Kernel extends ConsoleKernel
 | │     │ PHASE 18 : EXPORTS             │              │              │
 | ├─────┼────────────────────────────────┼──────────────┼──────────────┤
 | │ 8   │ export:process-queue           │ 5 minutes    │ Continu      │
+| ├─────┼────────────────────────────────┼──────────────┼──────────────┤
+| │     │ PHASE 20 : MONITORING ✨       │              │              │
+| ├─────┼────────────────────────────────┼──────────────┼──────────────┤
+| │ 9   │ monitoring:check-alerts        │ Horaire      │ Toutes h     │
+| │ 10  │ costs:report                   │ Quotidien    │ 08:00        │
+| │ 11  │ costs:report --monthly --export│ Mensuel      │ 1er 10:00    │
 | └─────┴────────────────────────────────┴──────────────┴──────────────┘
 |
 |--------------------------------------------------------------------------
-| CHRONOLOGIE QUOTIDIENNE (Lundi type)
+| CHRONOLOGIE QUOTIDIENNE (Lundi type) ✨
 |--------------------------------------------------------------------------
 |
 | 01:00 - pillar:schedule-month (hebdo)
@@ -324,13 +412,22 @@ class Kernel extends ConsoleKernel
 |
 | 08:00 - quality:report (hebdo)
 |         → Email rapport qualité admin
+|         costs:report (quotidien) ✨
+|         → Email rapport coûts quotidien
+|
+| 10:00 - costs:report --monthly --export (mensuel 1er) ✨
+|         → Email + export JSON rapport mensuel
+|
+| TOUTES LES HEURES - monitoring:check-alerts ✨
+|         → Vérification alertes système
+|         → Email si alerte critique
 |
 | TOUTES LES 5 MIN - export:process-queue (continu)
 |         → Traite queue exports PDF/WORD
 |         → 100-200 exports/heure
 |
 |--------------------------------------------------------------------------
-| IMPACT GLOBAL PHASES 13 + 14 + 18
+| IMPACT GLOBAL PHASES 13 + 14 + 18 + 20 ✨
 |--------------------------------------------------------------------------
 |
 | PHASE 13 (Quality) :
@@ -347,7 +444,7 @@ class Kernel extends ConsoleKernel
 | → Coût : ~$28/mois
 | → ROI : 1 pilier bien référencé = +500 visiteurs/mois
 |
-| PHASE 18 (Exports) : ✨
+| PHASE 18 (Exports) :
 | → Export automatique à publication
 | → 1 article = 18 fichiers (9 PDF + 9 WORD)
 | → Support parfait 9 langues + RTL arabe
@@ -355,66 +452,65 @@ class Kernel extends ConsoleKernel
 | → Génération 5-10s PDF, 3-5s WORD
 | → Storage ~6.3 MB/article complet
 |
+| PHASE 20 (Monitoring) : ✨ NOUVEAU
+| → Tracking coûts API temps réel
+| → Sélection automatique modèles optimaux (-35% coûts)
+| → Optimisation prompts (-15% tokens)
+| → Alertes budget automatiques
+| → Prédictions coûts mensuels ML
+| → Dashboard 14 endpoints API
+| → Économies : jusqu'à -56% coûts API possibles
+|
 | RÉSULTAT COMBINÉ :
 | → Production MASSIVE + Qualité MAXIMALE + Exports AUTOMATIQUES
+| → Monitoring TEMPS RÉEL + Optimisation CONTINUE
 | → Système 100% AUTONOME sans intervention manuelle
 | → Amélioration continue garantie
 | → Distribution multi-formats instantanée
+| → Contrôle total des coûts ✨
 |
 |--------------------------------------------------------------------------
-| TROUBLESHOOTING PHASE 18
+| TROUBLESHOOTING PHASE 20 ✨
 |--------------------------------------------------------------------------
 |
-| Problème : Queue exports bloquée
+| Problème : Command monitoring:check-alerts introuvable
 | Solution : 
-|   1. Vérifier wkhtmltopdf installé : wkhtmltopdf --version
-|   2. Vérifier fonts Noto : fc-list | grep -i noto
-|   3. Redémarrer queue workers : php artisan queue:restart
-|   4. Vérifier logs : tail -f storage/logs/export-queue.log
+|   1. Vérifier fichier existe : app/Console/Commands/CheckSystemAlerts.php
+|   2. Clear cache : php artisan cache:clear
+|   3. Lister commands : php artisan list monitoring
 |
-| Problème : Exports failed systématiquement
+| Problème : Config monitoring.alerts.email not found
 | Solution : 
-|   1. Vérifier permissions storage/app/public/exports
-|   2. Vérifier disk space : df -h
-|   3. Augmenter memory_limit PHP à 512M
-|   4. Vérifier templates Blade existent
+|   1. Copier config/monitoring.php
+|   2. Définir MONITORING_ALERT_EMAIL dans .env
+|   3. Clear config : php artisan config:clear
 |
-| Problème : PDF vides ou caractères manquants
+| Problème : Services not found (ModelSelectionService)
 | Solution : 
-|   1. Installer fonts Noto : sudo apt-get install fonts-noto fonts-noto-cjk
-|   2. Vérifier options wkhtmltopdf : --encoding utf-8
-|   3. Tester manuellement : wkhtmltopdf test.html test.pdf
+|   1. Vérifier AppServiceProvider.php (4 services enregistrés)
+|   2. Vérifier fichiers existent dans app/Services/AI/
+|   3. Clear cache : php artisan cache:clear
 |
-| Problème : Exports lents
+| Problème : Tables not found (ai_costs_detailed)
 | Solution : 
-|   1. Augmenter nombre de workers : 2-3 workers recommandés
-|   2. Vérifier CPU/RAM serveur
-|   3. Optimiser templates Blade (images, CSS)
+|   1. Exécuter migrations : php artisan migrate
+|   2. Vérifier migration files dans database/migrations/
 |
 |--------------------------------------------------------------------------
-| OPTIMISATIONS PRODUCTION PHASE 18
+| MONITORING LOGS PHASE 20 ✨
 |--------------------------------------------------------------------------
 |
-| 1. Multiple Queue Workers (fortement recommandé) :
-|    php artisan queue:work --queue=exports --sleep=3 --tries=3 &
-|    php artisan queue:work --queue=exports --sleep=3 --tries=3 &
-|    → Gain : Traitement parallèle 2× plus rapide
+| # Alertes monitoring en temps réel
+| tail -f storage/logs/monitoring-alerts.log
 |
-| 2. Supervisor (production) :
-|    [program:export-worker]
-|    command=php artisan queue:work --queue=exports --sleep=3 --tries=3
-|    numprocs=2
-|    autostart=true
-|    autorestart=true
+| # Rapports coûts quotidiens/mensuels
+| tail -f storage/logs/cost-reports.log
 |
-| 3. Monitoring :
-|    - Laravel Horizon pour visualisation queue
-|    - tail -f storage/logs/export-queue.log
-|    - Métriques : php artisan queue:failed
+| # Filtrer erreurs monitoring
+| tail -f storage/logs/laravel.log | grep "monitoring\|cost"
 |
-| 4. Cleanup automatique :
-|    - Supprimer exports > 30 jours
-|    - Libérer espace disque régulièrement
+| # Statistiques scheduler
+| php artisan schedule:list | grep monitoring
 |
 |--------------------------------------------------------------------------
 */

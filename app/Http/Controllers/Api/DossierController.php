@@ -10,6 +10,8 @@ use App\Services\Press\PressDossierGenerator;
 use App\Services\Press\DossierChartService;
 use App\Services\Press\DossierExportService;
 use App\Services\Press\CsvParserService;
+use App\Http\Requests\StoreDossierRequest;
+use App\Http\Requests\UpdateDossierRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
@@ -103,23 +105,10 @@ class DossierController extends Controller
      * Créer un dossier (génération automatique)
      * POST /api/dossiers
      */
-    public function store(Request $request)
+    public function store(StoreDossierRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'platform_id' => 'required|exists:platforms,id',
-            'template_type' => 'required|in:press_kit_entreprise,rapport_annuel,etude_barometre,case_study,position_paper',
-            'title' => 'required|string|max:255',
-            'subtitle' => 'nullable|string|max:255',
-            'language_code' => 'required|in:fr,en,es,de,it,pt,ar,zh,hi',
-            'metadata' => 'nullable|array',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
-        }
-
         try {
-            $dossier = $this->generator->generate($request->all());
+            $dossier = $this->generator->generate($request->validated());
 
             return response()->json([
                 'message' => 'Dossier généré avec succès',
@@ -138,22 +127,11 @@ class DossierController extends Controller
      * Mettre à jour un dossier
      * PUT /api/dossiers/{id}
      */
-    public function update(Request $request, $id)
+    public function update(UpdateDossierRequest $request, $id)
     {
         $dossier = PressDossier::findOrFail($id);
 
-        $validator = Validator::make($request->all(), [
-            'title' => 'sometimes|string|max:255',
-            'subtitle' => 'nullable|string|max:255',
-            'status' => 'sometimes|in:draft,generating,review,published,failed',
-            'metadata' => 'sometimes|array',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
-        }
-
-        $dossier->update($request->only(['title', 'subtitle', 'status', 'metadata']));
+        $dossier->update($request->validated());
 
         return response()->json([
             'message' => 'Dossier mis à jour',

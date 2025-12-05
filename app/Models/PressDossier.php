@@ -29,6 +29,7 @@ class PressDossier extends Model
         'platform_id',
         'template_type',
         'title',
+        'slug',
         'subtitle',
         'total_pages',
         'language_code',
@@ -38,10 +39,14 @@ class PressDossier extends Model
         'generation_cost',
         'generation_time_seconds',
         'metadata',
+        'meta_title',
+        'meta_description',
+        'keywords',
     ];
 
     protected $casts = [
         'metadata' => 'array',
+        'keywords' => 'array',
         'published_at' => 'datetime',
         'generation_cost' => 'decimal:4',
         'generation_time_seconds' => 'integer',
@@ -103,6 +108,28 @@ class PressDossier extends Model
     public function exports(): HasMany
     {
         return $this->hasMany(DossierExport::class, 'dossier_id');
+    }
+
+    /**
+     * ✅ CORRECTION: Relation traductions
+     */
+    public function translations(): HasMany
+    {
+        return $this->hasMany(PressDossierTranslation::class, 'press_dossier_id');
+    }
+
+    public function getTranslation(string $languageCode)
+    {
+        return $this->translations()
+                    ->where('language_code', $languageCode)
+                    ->first();
+    }
+
+    public function hasTranslation(string $languageCode): bool
+    {
+        return $this->translations()
+                    ->where('language_code', $languageCode)
+                    ->exists();
     }
 
     // ============================================

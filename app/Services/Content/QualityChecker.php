@@ -2,6 +2,9 @@
 
 namespace App\Services\Content;
 
+use App\Models\PressRelease;
+use App\Models\PressDossier;
+use App\Models\QualityCheck;
 use Illuminate\Support\Str;
 
 /**
@@ -558,5 +561,122 @@ class QualityChecker
         $text = preg_replace('/\s+/', ' ', $text);
         $text = trim($text);
         return str_word_count($text);
+    }
+
+    /**
+     * Check quality Press Release
+     */
+    public function checkPressRelease(PressRelease $pressRelease): QualityCheck
+    {
+        $scores = [];
+        $issues = [];
+        $recommendations = [];
+
+        // Check title length
+        $titleLength = strlen($pressRelease->title);
+        if ($titleLength < 30) {
+            $issues[] = 'Titre trop court (< 30 caractères)';
+            $scores['title_length'] = 40;
+        } elseif ($titleLength > 120) {
+            $issues[] = 'Titre trop long (> 120 caractères)';
+            $scores['title_length'] = 60;
+        } else {
+            $scores['title_length'] = 100;
+        }
+
+        // Check lead length
+        $leadWords = str_word_count(strip_tags($pressRelease->lead));
+        if ($leadWords < 50) {
+            $issues[] = 'Lead trop court (< 50 mots)';
+            $scores['lead_length'] = 50;
+        } else {
+            $scores['lead_length'] = 100;
+        }
+
+        // Check citation
+        if (empty($pressRelease->quote)) {
+            $issues[] = 'Aucune citation présente';
+            $scores['quote'] = 0;
+        } else {
+            $scores['quote'] = 100;
+        }
+
+        // Check boilerplate
+        if (empty($pressRelease->boilerplate)) {
+            $issues[] = 'Boilerplate manquant';
+            $scores['boilerplate'] = 0;
+        } else {
+            $scores['boilerplate'] = 100;
+        }
+
+        // Check contact
+        if (empty($pressRelease->contact)) {
+            $issues[] = 'Contact manquant';
+            $scores['contact'] = 0;
+        } else {
+            $scores['contact'] = 100;
+        }
+
+        // Overall score
+        $overall = round(array_sum($scores) / count($scores), 2);
+
+        return QualityCheck::create([
+            'checkable_type' => PressRelease::class,
+            'checkable_id' => $pressRelease->id,
+            'score' => $overall,
+            'issues' => $issues,
+            'recommendations' => $recommendations,
+            'details' => $scores,
+            'checked_at' => now(),
+        ]);
+    }
+
+    /**
+     * Check quality Dossier
+     */
+    public function checkDossier(PressDossier $dossier): QualityCheck
+    {
+        $scores = [];
+        $issues = [];
+        $recommendations = [];
+
+        // Check title
+        $titleLength = strlen($dossier->title);
+        if ($titleLength < 30) {
+            $issues[] = 'Titre trop court';
+            $scores['title_length'] = 40;
+        } else {
+            $scores['title_length'] = 100;
+        }
+
+        // Check description
+        if (empty($dossier->description)) {
+            $issues[] = 'Description manquante';
+            $scores['description'] = 0;
+        } else {
+            $scores['description'] = 100;
+        }
+
+        // Check sections count
+        $sectionsCount = $dossier->sections()->count();
+        if ($sectionsCount < 3) {
+            $issues[] = 'Pas assez de sections (minimum 3)';
+            $scores['sections_count'] = 30;
+        } else {
+            $scores['sections_count'] = 100;
+        }
+
+        // Overall score
+        $overall = round(array_sum($scores) / count($scores), 2);
+
+        return QualityCheck::create([
+            'checkable_type' => PressDossier::class,
+            'checkable_id' => $dossier->id,
+            'score' => $overall,
+            'issues' => $issues,
+            'recommendations' => $recommendations,
+            'details' => $scores,
+            'checked_at' => now(),
+        ]);
     }
 }

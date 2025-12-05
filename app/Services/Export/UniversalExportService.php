@@ -88,18 +88,18 @@ class UniversalExportService
      * Get wkhtmltopdf path based on OS
      */
     private function getWkhtmltopdfPath(): string
-    {
-        // Windows
-        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-            $windowsPath = 'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe';
-            if (file_exists($windowsPath)) {
-                return '"' . $windowsPath . '"';
-            }
+{
+    // Chemin Windows exact
+    $windowsPath = 'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe';
+    
+    if (file_exists($windowsPath)) {
+        return '"' . $windowsPath . '"';
+    }
+    
+    // Fallback Linux/Mac
+    return 'wkhtmltopdf';
         }
         
-        // Linux/Mac - utilise la commande dans le PATH
-        return 'wkhtmltopdf';
-    }
 
     /**
      * Export content to Word
