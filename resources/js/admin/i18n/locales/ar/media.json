@@ -1,0 +1,163 @@
+{
+  "title": "الوسائط",
+  "library": {
+    "title": "المكتبة",
+    "grid": "شبكة",
+    "list": "قائمة",
+    "filters": {
+      "type": "النوع",
+      "date": "التاريخ",
+      "size": "الحجم",
+      "used": "مستخدم",
+      "unused": "غير مستخدم"
+    },
+    "types": {
+      "all": "الكل",
+      "images": "صور",
+      "videos": "فيديوهات",
+      "documents": "مستندات",
+      "other": "أخرى"
+    },
+    "details": {
+      "title": "تفاصيل الوسائط",
+      "filename": "اسم الملف",
+      "size": "الحجم",
+      "dimensions": "الأبعاد",
+      "format": "التنسيق",
+      "uploadedAt": "تاريخ الرفع",
+      "usedIn": "مستخدم في",
+      "alt": "النص البديل",
+      "caption": "التعليق",
+      "credit": "المصدر"
+    },
+    "actions": {
+      "view": "عرض",
+      "edit": "تعديل",
+      "delete": "حذف",
+      "download": "تنزيل",
+      "copy": "نسخ الرابط",
+      "replace": "استبدال"
+    },
+    "empty": "لا توجد وسائط",
+    "emptyDescription": "ابدأ برفع الملفات"
+  },
+  "upload": {
+    "title": "رفع",
+    "dragDrop": "اسحب وأفلت ملفاتك هنا",
+    "or": "أو",
+    "browse": "تصفح",
+    "progress": "التقدم",
+    "uploading": "جارٍ الرفع...",
+    "complete": "اكتمل الرفع",
+    "error": "خطأ في الرفع",
+    "maxSize": "الحجم الأقصى: {{size}}",
+    "allowedFormats": "التنسيقات المقبولة: {{formats}}",
+    "metadata": {
+      "title": "البيانات الوصفية",
+      "alt": "النص البديل",
+      "caption": "التعليق",
+      "credit": "حقوق الصورة"
+    },
+    "batch": {
+      "title": "رفع متعدد",
+      "files": "{{count}} ملف(ات) محددة",
+      "uploadAll": "رفع الكل"
+    }
+  },
+  "unsplash": {
+    "title": "Unsplash",
+    "search": "البحث في Unsplash",
+    "placeholder": "مثال: طبيعة، أعمال، تقنية...",
+    "results": "النتائج",
+    "noResults": "لا توجد نتائج لـ \"{{query}}\"",
+    "download": "تنزيل",
+    "downloading": "جارٍ التنزيل...",
+    "attribution": "صورة بواسطة {{author}} على Unsplash",
+    "collections": "مجموعات",
+    "trending": "رائج",
+    "orientation": {
+      "title": "الاتجاه",
+      "all": "الكل",
+      "landscape": "أفقي",
+      "portrait": "عمودي",
+      "square": "مربع"
+    },
+    "color": {
+      "title": "اللون",
+      "any": "أي لون"
+    }
+  },
+  "dalle": {
+    "title": "DALL-E",
+    "prompt": "وصف الصورة",
+    "promptPlaceholder": "صف الصورة التي تريد إنشاءها...",
+    "style": {
+      "title": "النمط",
+      "natural": "طبيعي",
+      "vivid": "حيوي",
+      "artistic": "فني",
+      "photorealistic": "واقعي"
+    },
+    "size": {
+      "title": "الحجم",
+      "square": "مربع (1024×1024)",
+      "landscape": "أفقي (1792×1024)",
+      "portrait": "عمودي (1024×1792)"
+    },
+    "quality": {
+      "title": "الجودة",
+      "standard": "قياسي",
+      "hd": "عالي الدقة"
+    },
+    "generate": "إنشاء",
+    "generating": "جارٍ الإنشاء...",
+    "regenerate": "إعادة الإنشاء",
+    "variations": "إنشاء تنويعات",
+    "save": "حفظ في المكتبة",
+    "history": "سجل الإنشاء",
+    "cost": "التكلفة المقدرة: {{cost}}"
+  },
+  "optimization": {
+    "title": "التحسين",
+    "resize": {
+      "title": "تغيير الحجم",
+      "width": "العرض",
+      "height": "الارتفاع",
+      "keepRatio": "الحفاظ على النسبة",
+      "preset": "حجم مسبق"
+    },
+    "compress": {
+      "title": "ضغط",
+      "quality": "الجودة",
+      "level": {
+        "low": "منخفض (ملف أصغر)",
+        "medium": "متوسط",
+        "high": "عالي (أفضل جودة)"
+      },
+      "result": "الحجم الناتج: {{size}}"
+    },
+    "format": {
+      "title": "تحويل",
+      "to": "تحويل إلى",
+      "webp": "WebP (مستحسن)",
+      "jpg": "JPEG",
+      "png": "PNG"
+    },
+    "apply": "تطبيق التحسينات",
+    "preview": "معاينة"
+  },
+  "folders": {
+    "title": "المجلدات",
+    "create": "مجلد جديد",
+    "rename": "إعادة تسمية",
+    "delete": "حذف",
+    "move": "نقل إلى"
+  },
+  "messages": {
+    "uploaded": "تم رفع الملف بنجاح",
+    "deleted": "تم حذف الملف",
+    "copied": "تم نسخ الرابط",
+    "optimized": "تم تحسين الصورة",
+    "generated": "تم إنشاء الصورة بنجاح"
+  }
+}

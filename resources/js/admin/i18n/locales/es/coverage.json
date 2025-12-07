@@ -1,0 +1,112 @@
+{
+  "title": "Cobertura",
+  "views": {
+    "global": "Vista global",
+    "byCountry": "Por país",
+    "byLanguage": "Por idioma",
+    "byTheme": "Por tema",
+    "gaps": "Brechas",
+    "objectives": "Objetivos"
+  },
+  "global": {
+    "title": "Cobertura global",
+    "description": "Resumen de cobertura por región",
+    "map": "Mapa de cobertura",
+    "legend": {
+      "high": "Cobertura alta (>80%)",
+      "medium": "Cobertura media (40-80%)",
+      "low": "Cobertura baja (<40%)",
+      "none": "Sin cobertura"
+    }
+  },
+  "stats": {
+    "covered": "Países cubiertos",
+    "missing": "Países faltantes",
+    "percentage": "% de cobertura",
+    "trend": "Tendencia",
+    "articles": "Artículos",
+    "languages": "Idiomas",
+    "themes": "Temas cubiertos",
+    "total": "Total",
+    "growth": "+{{value}}% este mes"
+  },
+  "filters": {
+    "region": "Región",
+    "continent": "Continente",
+    "status": "Estado",
+    "platform": "Plataforma",
+    "theme": "Tema",
+    "language": "Idioma",
+    "minCoverage": "Cobertura mínima",
+    "maxCoverage": "Cobertura máxima"
+  },
+  "regions": {
+    "all": "Todas las regiones",
+    "europe": "Europa",
+    "northAmerica": "América del Norte",
+    "southAmerica": "América del Sur",
+    "asia": "Asia",
+    "africa": "África",
+    "oceania": "Oceanía",
+    "middleEast": "Oriente Medio"
+  },
+  "gaps": {
+    "title": "Brechas de cobertura",
+    "description": "Países y temas que requieren contenido",
+    "priority": {
+      "high": "Prioridad alta",
+      "medium": "Prioridad media",
+      "low": "Prioridad baja"
+    },
+    "noContent": "Sin contenido",
+    "outdated": "Contenido desactualizado",
+    "incomplete": "Cobertura parcial",
+    "missingLanguages": "Idiomas faltantes",
+    "missingThemes": "Temas faltantes"
+  },
+  "objectives": {
+    "title": "Objetivos de cobertura",
+    "description": "Establezca sus objetivos por región y tema",
+    "set": "Establecer objetivo",
+    "edit": "Editar objetivo",
+    "delete": "Eliminar objetivo",
+    "target": "Meta",
+    "current": "Actual",
+    "progress": "Progreso",
+    "deadline": "Fecha límite",
+    "achieved": "Objetivo alcanzado",
+    "onTrack": "En camino",
+    "atRisk": "En riesgo",
+    "behind": "Atrasado"
+  },
+  "actions": {
+    "generateMissing": "Generar contenido faltante",
+    "setObjective": "Establecer objetivo",
+    "exportReport": "Exportar informe",
+    "viewDetails": "Ver detalles",
+    "createProgram": "Crear programa"
+  },
+  "table": {
+    "country": "País",
+    "region": "Región",
+    "articles": "Artículos",
+    "languages": "Idiomas",
+    "themes": "Temas",
+    "coverage": "Cobertura",
+    "lastUpdated": "Última actualización",
+    "actions": "Acciones"
+  },
+  "details": {
+    "title": "Detalles de cobertura: {{country}}",
+    "byLanguage": "Por idioma",
+    "byTheme": "Por tema",
+    "recentArticles": "Artículos recientes",
+    "missingContent": "Contenido faltante"
+  },
+  "messages": {
+    "objectiveSet": "Objetivo establecido exitosamente",
+    "objectiveDeleted": "Objetivo eliminado",
+    "reportExported": "Informe exportado",
+    "generationStarted": "Generación de contenido faltante iniciada"
+  }
+}

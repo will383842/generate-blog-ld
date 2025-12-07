@@ -1,0 +1,163 @@
+{
+  "title": "Медиа",
+  "library": {
+    "title": "Библиотека",
+    "grid": "Сетка",
+    "list": "Список",
+    "filters": {
+      "type": "Тип",
+      "date": "Дата",
+      "size": "Размер",
+      "used": "Используется",
+      "unused": "Не используется"
+    },
+    "types": {
+      "all": "Все",
+      "images": "Изображения",
+      "videos": "Видео",
+      "documents": "Документы",
+      "other": "Другое"
+    },
+    "details": {
+      "title": "Детали медиа",
+      "filename": "Имя файла",
+      "size": "Размер",
+      "dimensions": "Размеры",
+      "format": "Формат",
+      "uploadedAt": "Загружено",
+      "usedIn": "Используется в",
+      "alt": "Alt текст",
+      "caption": "Подпись",
+      "credit": "Авторство"
+    },
+    "actions": {
+      "view": "Просмотр",
+      "edit": "Редактировать",
+      "delete": "Удалить",
+      "download": "Скачать",
+      "copy": "Копировать URL",
+      "replace": "Заменить"
+    },
+    "empty": "Нет медиа",
+    "emptyDescription": "Начните с загрузки файлов"
+  },
+  "upload": {
+    "title": "Загрузка",
+    "dragDrop": "Перетащите файлы сюда",
+    "or": "или",
+    "browse": "Обзор",
+    "progress": "Прогресс",
+    "uploading": "Загрузка...",
+    "complete": "Загрузка завершена",
+    "error": "Ошибка загрузки",
+    "maxSize": "Максимальный размер: {{size}}",
+    "allowedFormats": "Допустимые форматы: {{formats}}",
+    "metadata": {
+      "title": "Метаданные",
+      "alt": "Alt текст",
+      "caption": "Подпись",
+      "credit": "Авторство фото"
+    },
+    "batch": {
+      "title": "Пакетная загрузка",
+      "files": "Выбрано файлов: {{count}}",
+      "uploadAll": "Загрузить все"
+    }
+  },
+  "unsplash": {
+    "title": "Unsplash",
+    "search": "Поиск на Unsplash",
+    "placeholder": "Напр.: природа, бизнес, технологии...",
+    "results": "Результаты",
+    "noResults": "Нет результатов для \"{{query}}\"",
+    "download": "Скачать",
+    "downloading": "Загрузка...",
+    "attribution": "Фото {{author}} на Unsplash",
+    "collections": "Коллекции",
+    "trending": "В тренде",
+    "orientation": {
+      "title": "Ориентация",
+      "all": "Все",
+      "landscape": "Альбомная",
+      "portrait": "Портретная",
+      "square": "Квадрат"
+    },
+    "color": {
+      "title": "Цвет",
+      "any": "Любой"
+    }
+  },
+  "dalle": {
+    "title": "DALL-E",
+    "prompt": "Описание изображения",
+    "promptPlaceholder": "Опишите изображение, которое хотите создать...",
+    "style": {
+      "title": "Стиль",
+      "natural": "Естественный",
+      "vivid": "Яркий",
+      "artistic": "Художественный",
+      "photorealistic": "Фотореалистичный"
+    },
+    "size": {
+      "title": "Размер",
+      "square": "Квадрат (1024x1024)",
+      "landscape": "Альбомная (1792x1024)",
+      "portrait": "Портретная (1024x1792)"
+    },
+    "quality": {
+      "title": "Качество",
+      "standard": "Стандартное",
+      "hd": "HD"
+    },
+    "generate": "Сгенерировать",
+    "generating": "Генерация...",
+    "regenerate": "Перегенерировать",
+    "variations": "Создать вариации",
+    "save": "Сохранить в библиотеку",
+    "history": "История генерации",
+    "cost": "Примерная стоимость: {{cost}}"
+  },
+  "optimization": {
+    "title": "Оптимизация",
+    "resize": {
+      "title": "Изменить размер",
+      "width": "Ширина",
+      "height": "Высота",
+      "keepRatio": "Сохранять пропорции",
+      "preset": "Предустановленный размер"
+    },
+    "compress": {
+      "title": "Сжать",
+      "quality": "Качество",
+      "level": {
+        "low": "Низкое (меньший файл)",
+        "medium": "Среднее",
+        "high": "Высокое (лучшее качество)"
+      },
+      "result": "Итоговый размер: {{size}}"
+    },
+    "format": {
+      "title": "Конвертировать",
+      "to": "Конвертировать в",
+      "webp": "WebP (рекомендуется)",
+      "jpg": "JPEG",
+      "png": "PNG"
+    },
+    "apply": "Применить оптимизации",
+    "preview": "Предпросмотр"
+  },
+  "folders": {
+    "title": "Папки",
+    "create": "Новая папка",
+    "rename": "Переименовать",
+    "delete": "Удалить",
+    "move": "Переместить в"
+  },
+  "messages": {
+    "uploaded": "Файл успешно загружен",
+    "deleted": "Файл удалён",
+    "copied": "URL скопирован",
+    "optimized": "Изображение оптимизировано",
+    "generated": "Изображение успешно создано"
+  }
+}

@@ -1,0 +1,178 @@
+{
+  "title": "الإدارة",
+  "description": "إدارة النظام",
+  "users": {
+    "title": "المستخدمون",
+    "description": "إدارة المستخدمين",
+    "add": "مستخدم جديد",
+    "edit": "تعديل",
+    "delete": "حذف",
+    "invite": "دعوة",
+    "fields": {
+      "name": "الاسم",
+      "email": "البريد الإلكتروني",
+      "role": "الدور",
+      "status": "الحالة",
+      "createdAt": "تاريخ الإنشاء",
+      "lastLogin": "آخر تسجيل دخول"
+    },
+    "status": {
+      "active": "نشط",
+      "inactive": "غير نشط",
+      "pending": "قيد الانتظار"
+    },
+    "actions": {
+      "activate": "تفعيل",
+      "deactivate": "إلغاء التفعيل",
+      "resetPassword": "إعادة تعيين كلمة المرور",
+      "impersonate": "تسجيل الدخول كـ"
+    },
+    "empty": "لا يوجد مستخدمون"
+  },
+  "roles": {
+    "title": "الأدوار",
+    "description": "إدارة الأدوار",
+    "add": "دور جديد",
+    "edit": "تعديل",
+    "delete": "حذف",
+    "fields": {
+      "name": "الاسم",
+      "description": "الوصف",
+      "permissions": "الصلاحيات",
+      "usersCount": "المستخدمون"
+    },
+    "default": {
+      "admin": "مدير",
+      "editor": "محرر",
+      "author": "كاتب",
+      "viewer": "مشاهد"
+    },
+    "empty": "لا توجد أدوار"
+  },
+  "permissions": {
+    "title": "الصلاحيات",
+    "description": "إدارة الصلاحيات",
+    "categories": {
+      "content": "المحتوى",
+      "programs": "البرامج",
+      "publishing": "النشر",
+      "settings": "الإعدادات",
+      "admin": "الإدارة"
+    },
+    "actions": {
+      "view": "عرض",
+      "create": "إنشاء",
+      "edit": "تعديل",
+      "delete": "حذف",
+      "manage": "إدارة"
+    }
+  },
+  "activity": {
+    "title": "النشاط",
+    "description": "سجل النشاط",
+    "user": "المستخدم",
+    "action": "الإجراء",
+    "target": "الهدف",
+    "ip": "عنوان IP",
+    "timestamp": "الوقت",
+    "details": "التفاصيل",
+    "filters": {
+      "user": "المستخدم",
+      "action": "الإجراء",
+      "dateRange": "نطاق التاريخ"
+    },
+    "empty": "لا يوجد نشاط"
+  },
+  "system": {
+    "title": "النظام",
+    "description": "معلومات النظام",
+    "version": "الإصدار",
+    "environment": "البيئة",
+    "phpVersion": "إصدار PHP",
+    "laravelVersion": "إصدار Laravel",
+    "databaseSize": "حجم قاعدة البيانات",
+    "diskUsage": "استخدام القرص",
+    "memoryUsage": "الذاكرة",
+    "uptime": "وقت التشغيل",
+    "lastUpdate": "آخر تحديث",
+    "health": "حالة الصحة",
+    "healthy": "سليم",
+    "warning": "تحذير",
+    "critical": "حرج"
+  },
+  "workers": {
+    "title": "العمال",
+    "description": "إدارة العمال",
+    "status": "الحالة",
+    "queue": "قائمة الانتظار",
+    "jobs": "المهام",
+    "failed": "فاشلة",
+    "processed": "معالجة",
+    "memory": "الذاكرة",
+    "uptime": "وقت التشغيل",
+    "start": "بدء",
+    "stop": "إيقاف",
+    "restart": "إعادة التشغيل",
+    "empty": "لا يوجد عمال"
+  },
+  "errors": {
+    "title": "الأخطاء",
+    "description": "سجل الأخطاء",
+    "message": "الرسالة",
+    "file": "الملف",
+    "line": "السطر",
+    "trace": "التتبع",
+    "occurrences": "التكرارات",
+    "lastOccurrence": "آخر حدوث",
+    "resolve": "حل",
+    "ignore": "تجاهل",
+    "empty": "لا توجد أخطاء"
+  },
+  "backups": {
+    "title": "النسخ الاحتياطية",
+    "description": "إدارة النسخ الاحتياطية",
+    "create": "إنشاء نسخة احتياطية",
+    "restore": "استعادة",
+    "download": "تنزيل",
+    "delete": "حذف",
+    "name": "الاسم",
+    "size": "الحجم",
+    "createdAt": "تاريخ الإنشاء",
+    "type": "النوع",
+    "status": "الحالة",
+    "types": {
+      "full": "كاملة",
+      "database": "قاعدة البيانات",
+      "files": "الملفات"
+    },
+    "schedule": "الجدولة",
+    "lastBackup": "آخر نسخة",
+    "nextBackup": "النسخة التالية",
+    "empty": "لا توجد نسخ احتياطية"
+  },
+  "settings": {
+    "title": "إعدادات النظام",
+    "description": "التكوين المتقدم",
+    "cache": {
+      "title": "ذاكرة التخزين المؤقت",
+      "clear": "مسح الذاكرة المؤقتة",
+      "clearAll": "مسح جميع الذاكرة المؤقتة",
+      "config": "ذاكرة الإعدادات",
+      "routes": "ذاكرة المسارات",
+      "views": "ذاكرة العروض"
+    },
+    "maintenance": {
+      "title": "الصيانة",
+      "enable": "تفعيل وضع الصيانة",
+      "disable": "إلغاء وضع الصيانة",
+      "status": "الحالة",
+      "message": "الرسالة"
+    },
+    "logs": {
+      "title": "السجلات",
+      "view": "عرض السجلات",
+      "download": "تنزيل",
+      "clear": "مسح السجلات"
+    }
+  }
+}

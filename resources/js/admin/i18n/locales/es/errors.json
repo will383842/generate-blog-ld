@@ -1,0 +1,131 @@
+{
+  "title": "Error",
+  "general": {
+    "unknown": "Se produjo un error desconocido",
+    "network": "Error de conexión de red",
+    "server": "Error del servidor",
+    "timeout": "Tiempo de espera agotado",
+    "notFound": "Recurso no encontrado",
+    "unauthorized": "No autorizado",
+    "forbidden": "Acceso prohibido",
+    "validation": "Error de validación",
+    "conflict": "Conflicto de datos",
+    "tooManyRequests": "Demasiadas solicitudes"
+  },
+  "http": {
+    "400": "Solicitud incorrecta",
+    "401": "No autenticado",
+    "403": "Acceso prohibido",
+    "404": "Página no encontrada",
+    "405": "Método no permitido",
+    "408": "Tiempo de espera agotado",
+    "409": "Conflicto",
+    "422": "Datos no procesables",
+    "429": "Demasiadas solicitudes",
+    "500": "Error interno del servidor",
+    "502": "Puerta de enlace incorrecta",
+    "503": "Servicio no disponible",
+    "504": "Tiempo de espera de la puerta de enlace"
+  },
+  "auth": {
+    "invalidCredentials": "Credenciales inválidas",
+    "accountLocked": "Cuenta bloqueada",
+    "accountDisabled": "Cuenta deshabilitada",
+    "sessionExpired": "Sesión expirada",
+    "tokenInvalid": "Token inválido",
+    "tokenExpired": "Token expirado",
+    "passwordMismatch": "Las contraseñas no coinciden",
+    "passwordTooWeak": "Contraseña demasiado débil",
+    "emailNotVerified": "Correo electrónico no verificado"
+  },
+  "validation": {
+    "required": "Este campo es obligatorio",
+    "email": "Correo electrónico inválido",
+    "url": "URL inválida",
+    "minLength": "Mínimo {{min}} caracteres",
+    "maxLength": "Máximo {{max}} caracteres",
+    "min": "Valor mínimo: {{min}}",
+    "max": "Valor máximo: {{max}}",
+    "pattern": "Formato inválido",
+    "unique": "Este valor ya existe",
+    "exists": "Este valor no existe",
+    "numeric": "Debe ser un número",
+    "integer": "Debe ser un número entero",
+    "date": "Fecha inválida",
+    "file": "Archivo inválido",
+    "image": "Imagen inválida",
+    "mimes": "Tipo de archivo no permitido",
+    "size": "Tamaño de archivo excedido"
+  },
+  "api": {
+    "connectionFailed": "Conexión API fallida",
+    "invalidResponse": "Respuesta inválida",
+    "rateLimited": "Límite de tasa alcanzado",
+    "quotaExceeded": "Cuota excedida",
+    "serviceUnavailable": "Servicio no disponible"
+  },
+  "publishing": {
+    "platformNotFound": "Plataforma no encontrada",
+    "platformDisabled": "Plataforma deshabilitada",
+    "connectionFailed": "Conexión con la plataforma fallida",
+    "authFailed": "Autenticación fallida",
+    "publishFailed": "Publicación fallida",
+    "duplicateContent": "Contenido duplicado detectado"
+  },
+  "generation": {
+    "aiServiceUnavailable": "Servicio de IA no disponible",
+    "quotaExceeded": "Cuota de IA excedida",
+    "contentTooLong": "Contenido demasiado largo",
+    "invalidPrompt": "Prompt inválido",
+    "generationFailed": "Generación fallida"
+  },
+  "file": {
+    "uploadFailed": "Carga fallida",
+    "tooLarge": "Archivo demasiado grande",
+    "invalidType": "Tipo de archivo no permitido",
+    "notFound": "Archivo no encontrado",
+    "deleteFailed": "Eliminación fallida"
+  },
+  "boundary": {
+    "title": "¡Ups! Se produjo un error",
+    "defaultMessage": "Se ha producido un error inesperado.",
+    "attempt": "Intento {{current}}/{{max}}",
+    "retry": "Reintentar",
+    "retrying": "Reintentando...",
+    "goBack": "Volver",
+    "goHome": "Inicio",
+    "report": "Reportar",
+    "technicalDetails": "Detalles técnicos",
+    "errorCopied": "Detalles del error copiados al portapapeles",
+    "checkConsole": "Revisa la consola para ver los detalles del error"
+  },
+  "pages": {
+    "notFound": {
+      "title": "Página no encontrada",
+      "description": "La página que buscas no existe o ha sido movida.",
+      "action": "Volver al inicio"
+    },
+    "forbidden": {
+      "title": "Acceso prohibido",
+      "description": "No tienes los permisos necesarios para acceder a esta página.",
+      "action": "Volver al inicio"
+    },
+    "serverError": {
+      "title": "Error del servidor",
+      "description": "Se produjo un error en el servidor. Por favor, inténtalo más tarde.",
+      "action": "Reintentar"
+    },
+    "maintenance": {
+      "title": "En mantenimiento",
+      "description": "El sitio está actualmente en mantenimiento. Por favor, vuelve más tarde.",
+      "action": "Actualizar"
+    }
+  },
+  "actions": {
+    "retry": "Reintentar",
+    "goBack": "Volver",
+    "goHome": "Inicio",
+    "contactSupport": "Contactar soporte",
+    "refresh": "Actualizar página"
+  }
+}

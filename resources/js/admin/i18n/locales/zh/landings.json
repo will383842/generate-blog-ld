@@ -1,0 +1,157 @@
+{
+  "title": "着陆页",
+  "list": "着陆页列表",
+  "create": "新建着陆页",
+  "edit": "编辑着陆页",
+  "empty": "暂无着陆页",
+  "emptyDescription": "创建您的第一个着陆页",
+  "sections": {
+    "title": "板块",
+    "hero": {
+      "name": "主横幅",
+      "description": "带标题和CTA的主横幅",
+      "fields": {
+        "title": "主标题",
+        "subtitle": "副标题",
+        "image": "背景图片",
+        "cta": "操作按钮"
+      }
+    },
+    "features": {
+      "name": "特性",
+      "description": "优势或特性列表",
+      "fields": {
+        "title": "板块标题",
+        "items": "特性",
+        "columns": "列数"
+      }
+    },
+    "testimonials": {
+      "name": "客户评价",
+      "description": "客户评价和推荐",
+      "fields": {
+        "title": "板块标题",
+        "items": "评价",
+        "layout": "布局"
+      }
+    },
+    "pricing": {
+      "name": "定价",
+      "description": "价格表和方案",
+      "fields": {
+        "title": "板块标题",
+        "plans": "方案",
+        "currency": "货币"
+      }
+    },
+    "cta": {
+      "name": "行动号召",
+      "description": "行动号召板块",
+      "fields": {
+        "title": "标题",
+        "description": "描述",
+        "buttonText": "按钮文字",
+        "buttonLink": "按钮链接"
+      }
+    },
+    "faq": {
+      "name": "常见问题",
+      "description": "常见问题解答",
+      "fields": {
+        "title": "板块标题",
+        "items": "问题/答案"
+      }
+    },
+    "form": {
+      "name": "表单",
+      "description": "联系或注册表单",
+      "fields": {
+        "title": "标题",
+        "fields": "表单字段",
+        "submitText": "按钮文字"
+      }
+    },
+    "gallery": {
+      "name": "图库",
+      "description": "图片画廊",
+      "fields": {
+        "title": "板块标题",
+        "images": "图片",
+        "columns": "列数"
+      }
+    },
+    "stats": {
+      "name": "统计数据",
+      "description": "关键数据",
+      "fields": {
+        "items": "统计数据",
+        "animated": "动画"
+      }
+    },
+    "partners": {
+      "name": "合作伙伴",
+      "description": "合作伙伴标志",
+      "fields": {
+        "title": "标题",
+        "logos": "合作伙伴标志"
+      }
+    }
+  },
+  "builder": {
+    "title": "着陆页构建器",
+    "addSection": "添加板块",
+    "editSection": "编辑板块",
+    "deleteSection": "删除板块",
+    "duplicateSection": "复制板块",
+    "reorderSections": "重新排序板块",
+    "moveUp": "上移",
+    "moveDown": "下移",
+    "preview": "预览",
+    "previewMobile": "移动端预览",
+    "previewDesktop": "桌面端预览",
+    "emptyBuilder": "添加板块来构建您的着陆页"
+  },
+  "cta": {
+    "text": "按钮文字",
+    "link": "链接",
+    "style": "样式",
+    "styles": {
+      "primary": "主要",
+      "secondary": "次要",
+      "outline": "轮廓",
+      "ghost": "透明"
+    },
+    "tracking": {
+      "title": "追踪",
+      "utmSource": "UTM来源",
+      "utmMedium": "UTM媒介",
+      "utmCampaign": "UTM活动",
+      "eventName": "事件名称"
+    }
+  },
+  "fields": {
+    "name": "着陆页名称",
+    "slug": "URL",
+    "status": "状态",
+    "template": "模板",
+    "country": "国家",
+    "language": "语言",
+    "platform": "平台"
+  },
+  "templates": {
+    "title": "着陆页模板",
+    "select": "选择模板",
+    "blank": "空白页面",
+    "service": "服务提供商页面",
+    "product": "产品页面",
+    "event": "活动页面",
+    "lead": "潜在客户获取"
+  },
+  "actions": {
+    "publish": "发布",
+    "unpublish": "取消发布",
+    "duplicate": "复制",
+    "preview": "预览",
+    "export": "导出HTML"
+  }
+}

@@ -21,21 +21,25 @@ class ProcessManualTitle implements ShouldQueue
      *
      * @var int
      */
-    public $tries = 3;
-
-    /**
-     * Le nombre de secondes d'attente avant de réessayer
-     *
-     * @var int
-     */
-    public $backoff = 60;
+    public int $tries = 3;
 
     /**
      * Le timeout du job en secondes
      *
      * @var int
      */
-    public $timeout = 600; // 10 minutes
+    public int $timeout = 600; // 10 minutes
+
+    /**
+     * Délais entre tentatives (backoff exponentiel)
+     * 30s, 2min, 5min
+     *
+     * @return array<int>
+     */
+    public function backoff(): array
+    {
+        return [30, 120, 300];
+    }
 
     /**
      * Le titre manuel à traiter

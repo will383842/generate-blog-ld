@@ -17,8 +17,16 @@ class ProcessProgram implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public int $timeout = 7200; // 2 heures max
-    public int $tries = 1; // Pas de retry automatique
-    public int $maxExceptions = 1;
+    public int $tries = 3;
+    public int $maxExceptions = 3;
+
+    /**
+     * Délais entre les tentatives (30s, 2min, 5min)
+     */
+    public function backoff(): array
+    {
+        return [30, 120, 300];
+    }
 
     public function __construct(
         public Program $program,

@@ -1,0 +1,163 @@
+{
+  "title": "Médias",
+  "library": {
+    "title": "Bibliothèque",
+    "grid": "Grille",
+    "list": "Liste",
+    "filters": {
+      "type": "Type",
+      "date": "Date",
+      "size": "Taille",
+      "used": "Utilisé",
+      "unused": "Non utilisé"
+    },
+    "types": {
+      "all": "Tous",
+      "images": "Images",
+      "videos": "Vidéos",
+      "documents": "Documents",
+      "other": "Autres"
+    },
+    "details": {
+      "title": "Détails du média",
+      "filename": "Nom du fichier",
+      "size": "Taille",
+      "dimensions": "Dimensions",
+      "format": "Format",
+      "uploadedAt": "Téléversé le",
+      "usedIn": "Utilisé dans",
+      "alt": "Texte alternatif",
+      "caption": "Légende",
+      "credit": "Crédit"
+    },
+    "actions": {
+      "view": "Voir",
+      "edit": "Modifier",
+      "delete": "Supprimer",
+      "download": "Télécharger",
+      "copy": "Copier l'URL",
+      "replace": "Remplacer"
+    },
+    "empty": "Aucun média",
+    "emptyDescription": "Commencez par téléverser des fichiers"
+  },
+  "upload": {
+    "title": "Téléverser",
+    "dragDrop": "Glissez-déposez vos fichiers ici",
+    "or": "ou",
+    "browse": "Parcourir",
+    "progress": "Progression",
+    "uploading": "Téléversement en cours...",
+    "complete": "Téléversement terminé",
+    "error": "Erreur de téléversement",
+    "maxSize": "Taille maximum: {{size}}",
+    "allowedFormats": "Formats acceptés: {{formats}}",
+    "metadata": {
+      "title": "Métadonnées",
+      "alt": "Texte alternatif",
+      "caption": "Légende",
+      "credit": "Crédit photo"
+    },
+    "batch": {
+      "title": "Téléversement multiple",
+      "files": "{{count}} fichier(s) sélectionné(s)",
+      "uploadAll": "Tout téléverser"
+    }
+  },
+  "unsplash": {
+    "title": "Unsplash",
+    "search": "Rechercher sur Unsplash",
+    "placeholder": "Ex: nature, business, technology...",
+    "results": "Résultats",
+    "noResults": "Aucun résultat pour \"{{query}}\"",
+    "download": "Télécharger",
+    "downloading": "Téléchargement...",
+    "attribution": "Photo par {{author}} sur Unsplash",
+    "collections": "Collections",
+    "trending": "Tendances",
+    "orientation": {
+      "title": "Orientation",
+      "all": "Toutes",
+      "landscape": "Paysage",
+      "portrait": "Portrait",
+      "square": "Carré"
+    },
+    "color": {
+      "title": "Couleur",
+      "any": "Toutes"
+    }
+  },
+  "dalle": {
+    "title": "DALL-E",
+    "prompt": "Description de l'image",
+    "promptPlaceholder": "Décrivez l'image que vous souhaitez générer...",
+    "style": {
+      "title": "Style",
+      "natural": "Naturel",
+      "vivid": "Vif",
+      "artistic": "Artistique",
+      "photorealistic": "Photoréaliste"
+    },
+    "size": {
+      "title": "Taille",
+      "square": "Carré (1024x1024)",
+      "landscape": "Paysage (1792x1024)",
+      "portrait": "Portrait (1024x1792)"
+    },
+    "quality": {
+      "title": "Qualité",
+      "standard": "Standard",
+      "hd": "HD"
+    },
+    "generate": "Générer",
+    "generating": "Génération en cours...",
+    "regenerate": "Regénérer",
+    "variations": "Créer des variations",
+    "save": "Sauvegarder dans la bibliothèque",
+    "history": "Historique des générations",
+    "cost": "Coût estimé: {{cost}}"
+  },
+  "optimization": {
+    "title": "Optimisation",
+    "resize": {
+      "title": "Redimensionner",
+      "width": "Largeur",
+      "height": "Hauteur",
+      "keepRatio": "Conserver les proportions",
+      "preset": "Taille prédéfinie"
+    },
+    "compress": {
+      "title": "Compresser",
+      "quality": "Qualité",
+      "level": {
+        "low": "Basse (fichier léger)",
+        "medium": "Moyenne",
+        "high": "Haute (meilleure qualité)"
+      },
+      "result": "Taille résultante: {{size}}"
+    },
+    "format": {
+      "title": "Convertir",
+      "to": "Convertir en",
+      "webp": "WebP (recommandé)",
+      "jpg": "JPEG",
+      "png": "PNG"
+    },
+    "apply": "Appliquer les optimisations",
+    "preview": "Aperçu"
+  },
+  "folders": {
+    "title": "Dossiers",
+    "create": "Nouveau dossier",
+    "rename": "Renommer",
+    "delete": "Supprimer",
+    "move": "Déplacer vers"
+  },
+  "messages": {
+    "uploaded": "Fichier téléversé avec succès",
+    "deleted": "Fichier supprimé",
+    "copied": "URL copiée",
+    "optimized": "Image optimisée",
+    "generated": "Image générée avec succès"
+  }
+}

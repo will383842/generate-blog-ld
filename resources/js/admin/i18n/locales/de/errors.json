@@ -1,0 +1,131 @@
+{
+  "title": "Fehler",
+  "general": {
+    "unknown": "Ein unbekannter Fehler ist aufgetreten",
+    "network": "Netzwerkverbindungsfehler",
+    "server": "Serverfehler",
+    "timeout": "Anfrage-Timeout",
+    "notFound": "Ressource nicht gefunden",
+    "unauthorized": "Nicht autorisiert",
+    "forbidden": "Zugriff verweigert",
+    "validation": "Validierungsfehler",
+    "conflict": "Datenkonflikt",
+    "tooManyRequests": "Zu viele Anfragen"
+  },
+  "http": {
+    "400": "Ungültige Anfrage",
+    "401": "Nicht authentifiziert",
+    "403": "Zugriff verweigert",
+    "404": "Seite nicht gefunden",
+    "405": "Methode nicht erlaubt",
+    "408": "Anfrage-Timeout",
+    "409": "Konflikt",
+    "422": "Nicht verarbeitbare Daten",
+    "429": "Zu viele Anfragen",
+    "500": "Interner Serverfehler",
+    "502": "Ungültiges Gateway",
+    "503": "Dienst nicht verfügbar",
+    "504": "Gateway-Timeout"
+  },
+  "auth": {
+    "invalidCredentials": "Ungültige Anmeldedaten",
+    "accountLocked": "Konto gesperrt",
+    "accountDisabled": "Konto deaktiviert",
+    "sessionExpired": "Sitzung abgelaufen",
+    "tokenInvalid": "Ungültiger Token",
+    "tokenExpired": "Token abgelaufen",
+    "passwordMismatch": "Passwörter stimmen nicht überein",
+    "passwordTooWeak": "Passwort zu schwach",
+    "emailNotVerified": "E-Mail nicht verifiziert"
+  },
+  "validation": {
+    "required": "Dieses Feld ist erforderlich",
+    "email": "Ungültige E-Mail",
+    "url": "Ungültige URL",
+    "minLength": "Mindestens {{min}} Zeichen",
+    "maxLength": "Maximal {{max}} Zeichen",
+    "min": "Mindestwert: {{min}}",
+    "max": "Maximalwert: {{max}}",
+    "pattern": "Ungültiges Format",
+    "unique": "Dieser Wert existiert bereits",
+    "exists": "Dieser Wert existiert nicht",
+    "numeric": "Muss eine Zahl sein",
+    "integer": "Muss eine ganze Zahl sein",
+    "date": "Ungültiges Datum",
+    "file": "Ungültige Datei",
+    "image": "Ungültiges Bild",
+    "mimes": "Dateityp nicht erlaubt",
+    "size": "Dateigröße überschritten"
+  },
+  "api": {
+    "connectionFailed": "API-Verbindung fehlgeschlagen",
+    "invalidResponse": "Ungültige Antwort",
+    "rateLimited": "Ratenlimit erreicht",
+    "quotaExceeded": "Kontingent überschritten",
+    "serviceUnavailable": "Dienst nicht verfügbar"
+  },
+  "publishing": {
+    "platformNotFound": "Plattform nicht gefunden",
+    "platformDisabled": "Plattform deaktiviert",
+    "connectionFailed": "Plattformverbindung fehlgeschlagen",
+    "authFailed": "Authentifizierung fehlgeschlagen",
+    "publishFailed": "Veröffentlichung fehlgeschlagen",
+    "duplicateContent": "Doppelter Inhalt erkannt"
+  },
+  "generation": {
+    "aiServiceUnavailable": "KI-Dienst nicht verfügbar",
+    "quotaExceeded": "KI-Kontingent überschritten",
+    "contentTooLong": "Inhalt zu lang",
+    "invalidPrompt": "Ungültiger Prompt",
+    "generationFailed": "Generierung fehlgeschlagen"
+  },
+  "file": {
+    "uploadFailed": "Upload fehlgeschlagen",
+    "tooLarge": "Datei zu groß",
+    "invalidType": "Dateityp nicht erlaubt",
+    "notFound": "Datei nicht gefunden",
+    "deleteFailed": "Löschen fehlgeschlagen"
+  },
+  "boundary": {
+    "title": "Hoppla! Ein Fehler ist aufgetreten",
+    "defaultMessage": "Ein unerwarteter Fehler ist aufgetreten.",
+    "attempt": "Versuch {{current}}/{{max}}",
+    "retry": "Erneut versuchen",
+    "retrying": "Wird wiederholt...",
+    "goBack": "Zurück",
+    "goHome": "Startseite",
+    "report": "Melden",
+    "technicalDetails": "Technische Details",
+    "errorCopied": "Fehlerdetails in die Zwischenablage kopiert",
+    "checkConsole": "Überprüfen Sie die Konsole für Fehlerdetails"
+  },
+  "pages": {
+    "notFound": {
+      "title": "Seite nicht gefunden",
+      "description": "Die gesuchte Seite existiert nicht oder wurde verschoben.",
+      "action": "Zurück zur Startseite"
+    },
+    "forbidden": {
+      "title": "Zugriff verweigert",
+      "description": "Sie haben nicht die erforderlichen Berechtigungen für diese Seite.",
+      "action": "Zurück zur Startseite"
+    },
+    "serverError": {
+      "title": "Serverfehler",
+      "description": "Auf dem Server ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut.",
+      "action": "Erneut versuchen"
+    },
+    "maintenance": {
+      "title": "Wartung",
+      "description": "Die Website wird gerade gewartet. Bitte kommen Sie später zurück.",
+      "action": "Aktualisieren"
+    }
+  },
+  "actions": {
+    "retry": "Erneut versuchen",
+    "goBack": "Zurück",
+    "goHome": "Startseite",
+    "contactSupport": "Support kontaktieren",
+    "refresh": "Seite aktualisieren"
+  }
+}

@@ -1,0 +1,131 @@
+{
+  "title": "Error",
+  "general": {
+    "unknown": "An unknown error occurred",
+    "network": "Network connection error",
+    "server": "Server error",
+    "timeout": "Request timed out",
+    "notFound": "Resource not found",
+    "unauthorized": "Unauthorized",
+    "forbidden": "Access forbidden",
+    "validation": "Validation error",
+    "conflict": "Data conflict",
+    "tooManyRequests": "Too many requests"
+  },
+  "http": {
+    "400": "Bad request",
+    "401": "Not authenticated",
+    "403": "Access forbidden",
+    "404": "Page not found",
+    "405": "Method not allowed",
+    "408": "Request timeout",
+    "409": "Conflict",
+    "422": "Unprocessable data",
+    "429": "Too many requests",
+    "500": "Internal server error",
+    "502": "Bad gateway",
+    "503": "Service unavailable",
+    "504": "Gateway timeout"
+  },
+  "auth": {
+    "invalidCredentials": "Invalid credentials",
+    "accountLocked": "Account locked",
+    "accountDisabled": "Account disabled",
+    "sessionExpired": "Session expired",
+    "tokenInvalid": "Invalid token",
+    "tokenExpired": "Token expired",
+    "passwordMismatch": "Passwords do not match",
+    "passwordTooWeak": "Password too weak",
+    "emailNotVerified": "Email not verified"
+  },
+  "validation": {
+    "required": "This field is required",
+    "email": "Invalid email",
+    "url": "Invalid URL",
+    "minLength": "Minimum {{min}} characters",
+    "maxLength": "Maximum {{max}} characters",
+    "min": "Minimum value: {{min}}",
+    "max": "Maximum value: {{max}}",
+    "pattern": "Invalid format",
+    "unique": "This value already exists",
+    "exists": "This value does not exist",
+    "numeric": "Must be a number",
+    "integer": "Must be an integer",
+    "date": "Invalid date",
+    "file": "Invalid file",
+    "image": "Invalid image",
+    "mimes": "File type not allowed",
+    "size": "File size exceeded"
+  },
+  "api": {
+    "connectionFailed": "API connection failed",
+    "invalidResponse": "Invalid response",
+    "rateLimited": "Rate limit reached",
+    "quotaExceeded": "Quota exceeded",
+    "serviceUnavailable": "Service unavailable"
+  },
+  "publishing": {
+    "platformNotFound": "Platform not found",
+    "platformDisabled": "Platform disabled",
+    "connectionFailed": "Platform connection failed",
+    "authFailed": "Authentication failed",
+    "publishFailed": "Publication failed",
+    "duplicateContent": "Duplicate content detected"
+  },
+  "generation": {
+    "aiServiceUnavailable": "AI service unavailable",
+    "quotaExceeded": "AI quota exceeded",
+    "contentTooLong": "Content too long",
+    "invalidPrompt": "Invalid prompt",
+    "generationFailed": "Generation failed"
+  },
+  "file": {
+    "uploadFailed": "Upload failed",
+    "tooLarge": "File too large",
+    "invalidType": "File type not allowed",
+    "notFound": "File not found",
+    "deleteFailed": "Deletion failed"
+  },
+  "boundary": {
+    "title": "Oops! An error occurred",
+    "defaultMessage": "An unexpected error has occurred.",
+    "attempt": "Attempt {{current}}/{{max}}",
+    "retry": "Retry",
+    "retrying": "Retrying...",
+    "goBack": "Go back",
+    "goHome": "Home",
+    "report": "Report",
+    "technicalDetails": "Technical details",
+    "errorCopied": "Error details copied to clipboard",
+    "checkConsole": "Check the console for error details"
+  },
+  "pages": {
+    "notFound": {
+      "title": "Page not found",
+      "description": "The page you are looking for does not exist or has been moved.",
+      "action": "Back to home"
+    },
+    "forbidden": {
+      "title": "Access forbidden",
+      "description": "You do not have the required permissions to access this page.",
+      "action": "Back to home"
+    },
+    "serverError": {
+      "title": "Server error",
+      "description": "An error occurred on the server. Please try again later.",
+      "action": "Retry"
+    },
+    "maintenance": {
+      "title": "Under maintenance",
+      "description": "The site is currently under maintenance. Please come back later.",
+      "action": "Refresh"
+    }
+  },
+  "actions": {
+    "retry": "Retry",
+    "goBack": "Go back",
+    "goHome": "Home",
+    "contactSupport": "Contact support",
+    "refresh": "Refresh page"
+  }
+}

@@ -1,0 +1,110 @@
+{
+  "title": "Programas",
+  "description": "Gerencie seus programas de geração",
+  "list": {
+    "title": "Lista de programas",
+    "add": "Novo programa",
+    "edit": "Editar",
+    "delete": "Excluir",
+    "duplicate": "Duplicar",
+    "run": "Executar",
+    "pause": "Pausar",
+    "resume": "Retomar",
+    "empty": "Sem programas",
+    "createFirst": "Crie seu primeiro programa"
+  },
+  "fields": {
+    "name": "Nome",
+    "description": "Descrição",
+    "type": "Tipo",
+    "platform": "Plataforma",
+    "template": "Modelo",
+    "status": "Status",
+    "priority": "Prioridade",
+    "schedule": "Agendamento",
+    "articlesPerRun": "Artigos por execução",
+    "totalArticles": "Artigos totais",
+    "generatedArticles": "Artigos gerados",
+    "remainingArticles": "Artigos restantes",
+    "progress": "Progresso",
+    "createdAt": "Criado em",
+    "updatedAt": "Atualizado em",
+    "lastRunAt": "Última execução",
+    "nextRunAt": "Próxima execução"
+  },
+  "types": {
+    "country": "Por país",
+    "service": "Por serviço",
+    "topic": "Por tema",
+    "custom": "Personalizado"
+  },
+  "status": {
+    "draft": "Rascunho",
+    "active": "Ativo",
+    "paused": "Pausado",
+    "completed": "Concluído"
+  },
+  "priority": {
+    "high": "Alta",
+    "default": "Normal",
+    "low": "Baixa"
+  },
+  "variables": {
+    "title": "Variáveis",
+    "add": "Adicionar variável",
+    "name": "Nome",
+    "values": "Valores",
+    "description": "Descrição",
+    "country": "País",
+    "city": "Cidade",
+    "service": "Serviço",
+    "keyword": "Palavra-chave",
+    "custom": "Personalizado"
+  },
+  "templates": {
+    "title": "Modelos",
+    "description": "Gerencie seus modelos de geração",
+    "add": "Novo modelo",
+    "edit": "Editar",
+    "delete": "Excluir",
+    "duplicate": "Duplicar",
+    "preview": "Visualizar",
+    "fields": {
+      "name": "Nome",
+      "description": "Descrição",
+      "prompt": "Prompt",
+      "structure": "Estrutura",
+      "variables": "Variáveis disponíveis"
+    },
+    "empty": "Sem modelos"
+  },
+  "detail": {
+    "overview": "Visão geral",
+    "articles": "Artigos",
+    "variables": "Variáveis",
+    "schedule": "Agendamento",
+    "logs": "Logs",
+    "stats": "Estatísticas"
+  },
+  "stats": {
+    "totalGenerated": "Total gerado",
+    "successRate": "Taxa de sucesso",
+    "avgQuality": "Qualidade média",
+    "avgGenerationTime": "Tempo médio"
+  },
+  "actions": {
+    "runNow": "Executar agora",
+    "generateBatch": "Gerar lote",
+    "stopGeneration": "Parar geração",
+    "viewArticles": "Ver artigos",
+    "exportArticles": "Exportar artigos"
+  },
+  "messages": {
+    "created": "Programa criado com sucesso",
+    "updated": "Programa atualizado",
+    "deleted": "Programa excluído",
+    "started": "Geração iniciada",
+    "paused": "Programa pausado",
+    "resumed": "Programa retomado"
+  }
+}

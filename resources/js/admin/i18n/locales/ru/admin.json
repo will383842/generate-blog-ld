@@ -1,0 +1,178 @@
+{
+  "title": "Администрирование",
+  "description": "Управление системой",
+  "users": {
+    "title": "Пользователи",
+    "description": "Управление пользователями",
+    "add": "Новый пользователь",
+    "edit": "Редактировать",
+    "delete": "Удалить",
+    "invite": "Пригласить",
+    "fields": {
+      "name": "Имя",
+      "email": "Email",
+      "role": "Роль",
+      "status": "Статус",
+      "createdAt": "Создан",
+      "lastLogin": "Последний вход"
+    },
+    "status": {
+      "active": "Активен",
+      "inactive": "Неактивен",
+      "pending": "Ожидает"
+    },
+    "actions": {
+      "activate": "Активировать",
+      "deactivate": "Деактивировать",
+      "resetPassword": "Сбросить пароль",
+      "impersonate": "Войти как"
+    },
+    "empty": "Нет пользователей"
+  },
+  "roles": {
+    "title": "Роли",
+    "description": "Управление ролями",
+    "add": "Новая роль",
+    "edit": "Редактировать",
+    "delete": "Удалить",
+    "fields": {
+      "name": "Название",
+      "description": "Описание",
+      "permissions": "Права",
+      "usersCount": "Пользователи"
+    },
+    "default": {
+      "admin": "Администратор",
+      "editor": "Редактор",
+      "author": "Автор",
+      "viewer": "Наблюдатель"
+    },
+    "empty": "Нет ролей"
+  },
+  "permissions": {
+    "title": "Права",
+    "description": "Управление правами",
+    "categories": {
+      "content": "Контент",
+      "programs": "Программы",
+      "publishing": "Публикация",
+      "settings": "Настройки",
+      "admin": "Администрирование"
+    },
+    "actions": {
+      "view": "Просмотр",
+      "create": "Создание",
+      "edit": "Редактирование",
+      "delete": "Удаление",
+      "manage": "Управление"
+    }
+  },
+  "activity": {
+    "title": "Активность",
+    "description": "Журнал активности",
+    "user": "Пользователь",
+    "action": "Действие",
+    "target": "Цель",
+    "ip": "IP-адрес",
+    "timestamp": "Время",
+    "details": "Подробности",
+    "filters": {
+      "user": "Пользователь",
+      "action": "Действие",
+      "dateRange": "Период"
+    },
+    "empty": "Нет активности"
+  },
+  "system": {
+    "title": "Система",
+    "description": "Информация о системе",
+    "version": "Версия",
+    "environment": "Окружение",
+    "phpVersion": "Версия PHP",
+    "laravelVersion": "Версия Laravel",
+    "databaseSize": "Размер БД",
+    "diskUsage": "Использование диска",
+    "memoryUsage": "Память",
+    "uptime": "Время работы",
+    "lastUpdate": "Последнее обновление",
+    "health": "Состояние",
+    "healthy": "Исправен",
+    "warning": "Предупреждение",
+    "critical": "Критично"
+  },
+  "workers": {
+    "title": "Воркеры",
+    "description": "Управление воркерами",
+    "status": "Статус",
+    "queue": "Очередь",
+    "jobs": "Задачи",
+    "failed": "Неудачные",
+    "processed": "Обработанные",
+    "memory": "Память",
+    "uptime": "Время работы",
+    "start": "Запустить",
+    "stop": "Остановить",
+    "restart": "Перезапустить",
+    "empty": "Нет воркеров"
+  },
+  "errors": {
+    "title": "Ошибки",
+    "description": "Журнал ошибок",
+    "message": "Сообщение",
+    "file": "Файл",
+    "line": "Строка",
+    "trace": "Трассировка",
+    "occurrences": "Повторений",
+    "lastOccurrence": "Последнее появление",
+    "resolve": "Решить",
+    "ignore": "Игнорировать",
+    "empty": "Нет ошибок"
+  },
+  "backups": {
+    "title": "Резервные копии",
+    "description": "Управление бэкапами",
+    "create": "Создать бэкап",
+    "restore": "Восстановить",
+    "download": "Скачать",
+    "delete": "Удалить",
+    "name": "Название",
+    "size": "Размер",
+    "createdAt": "Создан",
+    "type": "Тип",
+    "status": "Статус",
+    "types": {
+      "full": "Полный",
+      "database": "База данных",
+      "files": "Файлы"
+    },
+    "schedule": "Расписание",
+    "lastBackup": "Последний бэкап",
+    "nextBackup": "Следующий бэкап",
+    "empty": "Нет бэкапов"
+  },
+  "settings": {
+    "title": "Системные настройки",
+    "description": "Расширенная конфигурация",
+    "cache": {
+      "title": "Кэш",
+      "clear": "Очистить кэш",
+      "clearAll": "Очистить весь кэш",
+      "config": "Кэш конфигурации",
+      "routes": "Кэш маршрутов",
+      "views": "Кэш представлений"
+    },
+    "maintenance": {
+      "title": "Обслуживание",
+      "enable": "Включить режим обслуживания",
+      "disable": "Отключить режим обслуживания",
+      "status": "Статус",
+      "message": "Сообщение"
+    },
+    "logs": {
+      "title": "Логи",
+      "view": "Просмотреть логи",
+      "download": "Скачать",
+      "clear": "Очистить логи"
+    }
+  }
+}

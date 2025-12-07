@@ -12,10 +12,16 @@ class Platform extends Model
 {
     use HasFactory;
 
+    /**
+     * CORRIGÉ: Ajout de 'url' et 'api_endpoint' qui existent dans la migration
+     * mais étaient absents du fillable
+     */
     protected $fillable = [
         'slug',
         'name',
-        'domain',
+        'url',              // ✅ AJOUTÉ - existe dans migration originale
+        'api_endpoint',     // ✅ AJOUTÉ - existe dans migration originale
+        'domain',           // Ajouté par migration ultérieure
         'description',
         'logo_url',
         'primary_color',
@@ -88,9 +94,10 @@ class Platform extends Model
     }
 
     public function countries()
-{
-    return $this->hasMany(Country::class);
-}
+    {
+        return $this->hasMany(Country::class);
+    }
+
     // =========================================================================
     // SCOPES
     // =========================================================================
@@ -116,7 +123,41 @@ class Platform extends Model
 
     public function isUlysseAi(): bool
     {
-        return $this->slug === 'ulysse-ai';
+        return $this->slug === 'ulysse-ai' || $this->slug === 'ulysse';
+    }
+
+    /**
+     * Obtenir l'URL de base de la plateforme
+     * Utilise 'domain' si défini, sinon 'url'
+     * 
+     * @return string URL complète avec https://
+     */
+    public function getBaseUrl(): string
+    {
+        // Priorité: domain > url
+        $baseUrl = $this->domain ?? $this->url ?? '';
+        
+        // S'assurer que l'URL a le protocole
+        if (!empty($baseUrl) && !str_starts_with($baseUrl, 'http')) {
+            $baseUrl = 'https://' . $baseUrl;
+        }
+        
+        return rtrim($baseUrl, '/');
+    }
+
+    /**
+     * Obtenir le domaine nu (sans protocole)
+     * 
+     * @return string Domaine seul (ex: sos-expat.com)
+     */
+    public function getDomainName(): string
+    {
+        $url = $this->domain ?? $this->url ?? '';
+        
+        // Supprimer le protocole
+        $url = preg_replace('#^https?://#', '', $url);
+        
+        return rtrim($url, '/');
     }
 
     /**

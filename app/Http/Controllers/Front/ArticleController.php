@@ -180,8 +180,109 @@ class ArticleController extends Controller
     }
 
     /**
+     * Affiche un article via locale (nouveau format)
+     *
+     * Route: GET /{locale}/{slug}
+     * Ex: /fr-de/vivre-en-allemagne
+     */
+    public function showByLocale(
+        Request $request,
+        string $locale,
+        string $slug
+    ): View|Response {
+        // Parser la locale (fr-de -> lang=fr, country=DE)
+        if (!preg_match('/^([a-z]{2})-([a-z]{2})$/i', $locale, $matches)) {
+            abort(404, 'Invalid locale format');
+        }
+
+        $langCode = strtolower($matches[1]);
+        $countryCode = strtoupper($matches[2]);
+
+        // Trouver le pays par code
+        $country = Country::where('code', $countryCode)->first();
+        if (!$country) {
+            abort(404, 'Country not found');
+        }
+
+        // Trouver l'article par slug et pays
+        $article = Article::where('country_id', $country->id)
+            ->where('slug', $slug)
+            ->where('status', Article::STATUS_PUBLISHED)
+            ->first();
+
+        // Si pas trouvé, chercher dans les traductions
+        if (!$article) {
+            $article = Article::where('country_id', $country->id)
+                ->where('status', Article::STATUS_PUBLISHED)
+                ->whereHas('translations', function ($q) use ($slug, $langCode) {
+                    $q->where('slug', $slug)
+                      ->whereHas('language', fn($lq) => $lq->where('code', $langCode));
+                })
+                ->first();
+        }
+
+        if (!$article) {
+            abort(404, 'Article not found');
+        }
+
+        // Générer les métadonnées SEO
+        $meta = $this->metaService->generateAllMeta($article, $langCode);
+
+        return view('front.article.show', [
+            'article' => $article,
+            'country' => $country,
+            'lang' => $langCode,
+            'locale' => $locale,
+            'meta' => $meta,
+            'availableLanguages' => $article->getAvailableLanguages(),
+            'allUrls' => $article->getAllUrlsWithCountry(),
+            'translation' => $this->getTranslationData($article, $langCode),
+        ]);
+    }
+
+    /**
+     * Liste articles par locale (nouveau format)
+     *
+     * Route: GET /{locale}
+     * Ex: /fr-de (articles en français pour l'Allemagne)
+     */
+    public function indexByLocale(
+        Request $request,
+        string $locale
+    ): View|Response {
+        // Parser la locale
+        if (!preg_match('/^([a-z]{2})-([a-z]{2})$/i', $locale, $matches)) {
+            abort(404, 'Invalid locale format');
+        }
+
+        $langCode = strtolower($matches[1]);
+        $countryCode = strtoupper($matches[2]);
+
+        // Trouver le pays
+        $country = Country::where('code', $countryCode)->first();
+        if (!$country) {
+            abort(404, 'Country not found');
+        }
+
+        // Récupérer les articles
+        $articles = Article::where('country_id', $country->id)
+            ->where('status', Article::STATUS_PUBLISHED)
+            ->with(['language', 'theme', 'author', 'translations.language'])
+            ->orderBy('published_at', 'desc')
+            ->paginate(20);
+
+        return view('front.country.index', [
+            'country' => $country,
+            'articles' => $articles,
+            'lang' => $langCode,
+            'locale' => $locale,
+            'countryName' => $country->getName($langCode),
+        ]);
+    }
+
+    /**
      * Page d'accueil par langue
-     * 
+     *
      * Routes:
      * - GET / (FR par défaut)
      * - GET /{lang} (autres langues)

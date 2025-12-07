@@ -1,0 +1,106 @@
+{
+  "title": "التحليلات",
+  "description": "الإحصائيات والتحليل",
+  "performance": {
+    "title": "الأداء",
+    "description": "مقاييس الأداء",
+    "pageViews": "مشاهدات الصفحة",
+    "uniqueVisitors": "زوار فريدون",
+    "sessions": "الجلسات",
+    "bounceRate": "معدل الارتداد",
+    "avgSessionDuration": "متوسط المدة",
+    "pagesPerSession": "صفحات لكل جلسة",
+    "newUsers": "مستخدمون جدد",
+    "returningUsers": "مستخدمون عائدون",
+    "conversionRate": "معدل التحويل"
+  },
+  "content": {
+    "title": "المحتوى",
+    "description": "أداء المحتوى",
+    "topArticles": "أفضل المقالات",
+    "recentArticles": "المقالات الأخيرة",
+    "articleViews": "المشاهدات",
+    "avgTimeOnPage": "متوسط الوقت",
+    "engagement": "التفاعل",
+    "shares": "المشاركات",
+    "comments": "التعليقات",
+    "byCategory": "حسب الفئة",
+    "byAuthor": "حسب المؤلف",
+    "byTag": "حسب الوسم"
+  },
+  "reports": {
+    "title": "التقارير",
+    "description": "إنشاء التقارير",
+    "generate": "إنشاء تقرير",
+    "schedule": "جدولة",
+    "download": "تحميل",
+    "send": "إرسال عبر البريد الإلكتروني",
+    "type": "نوع التقرير",
+    "period": "الفترة",
+    "format": "التنسيق",
+    "recipients": "المستلمون",
+    "types": {
+      "overview": "نظرة عامة",
+      "performance": "الأداء",
+      "content": "المحتوى",
+      "seo": "تحسين محركات البحث",
+      "generation": "التوليد",
+      "custom": "مخصص"
+    },
+    "periods": {
+      "today": "اليوم",
+      "yesterday": "أمس",
+      "last7days": "آخر 7 أيام",
+      "last30days": "آخر 30 يومًا",
+      "thisMonth": "هذا الشهر",
+      "lastMonth": "الشهر الماضي",
+      "custom": "مخصص"
+    },
+    "formats": {
+      "pdf": "PDF",
+      "csv": "CSV",
+      "excel": "Excel"
+    },
+    "scheduled": "التقارير المجدولة",
+    "history": "السجل"
+  },
+  "dashboard": {
+    "title": "لوحة التحكم",
+    "overview": "نظرة عامة",
+    "quickStats": "إحصائيات سريعة",
+    "recentActivity": "النشاط الأخير",
+    "trends": "الاتجاهات",
+    "compare": "مقارنة"
+  },
+  "filters": {
+    "dateRange": "نطاق التاريخ",
+    "platform": "المنصة",
+    "country": "الدولة",
+    "device": "الجهاز",
+    "source": "المصدر",
+    "apply": "تطبيق",
+    "reset": "إعادة تعيين"
+  },
+  "charts": {
+    "line": "خطي",
+    "bar": "شريطي",
+    "pie": "دائري",
+    "area": "منطقة",
+    "export": "تصدير",
+    "noData": "لا توجد بيانات"
+  },
+  "compare": {
+    "title": "المقارنة",
+    "period1": "الفترة 1",
+    "period2": "الفترة 2",
+    "increase": "زيادة",
+    "decrease": "انخفاض",
+    "noChange": "لا تغيير"
+  },
+  "realtime": {
+    "title": "الوقت الفعلي",
+    "activeUsers": "المستخدمون النشطون",
+    "pageViews": "مشاهدات الصفحة",
+    "topPages": "أفضل الصفحات"
+  }
+}

@@ -1,0 +1,128 @@
+{
+  "releases": {
+    "title": "Pressemitteilungen",
+    "list": "Mitteilungsliste",
+    "create": "Neue Mitteilung",
+    "edit": "Mitteilung bearbeiten",
+    "empty": "Keine Mitteilungen",
+    "emptyDescription": "Erstellen Sie Ihre erste Pressemitteilung"
+  },
+  "dossiers": {
+    "title": "Pressemappen",
+    "list": "Mappenliste",
+    "create": "Neue Mappe",
+    "edit": "Mappe bearbeiten",
+    "empty": "Keine Mappen",
+    "emptyDescription": "Erstellen Sie Ihre erste Pressemappe",
+    "sections": {
+      "title": "Mappenabschnitte",
+      "intro": "Einführung",
+      "keyFigures": "Kennzahlen",
+      "quotes": "Zitate",
+      "timeline": "Zeitstrahl",
+      "team": "Team",
+      "contact": "Pressekontakt",
+      "media": "Medienkit"
+    },
+    "builder": {
+      "title": "Mappen-Builder",
+      "addSection": "Abschnitt hinzufügen",
+      "reorder": "Neu ordnen",
+      "preview": "Vorschau"
+    }
+  },
+  "editor": {
+    "preview": "Vorschau",
+    "previewPdf": "PDF-Vorschau",
+    "previewWord": "Word-Vorschau"
+  },
+  "templates": {
+    "title": "Vorlagen",
+    "select": "Vorlage auswählen",
+    "create": "Vorlage erstellen",
+    "edit": "Vorlage bearbeiten",
+    "delete": "Vorlage löschen",
+    "default": "Standardvorlage",
+    "categories": {
+      "general": "Allgemein",
+      "product": "Produktlaunch",
+      "event": "Veranstaltung",
+      "partnership": "Partnerschaft",
+      "financial": "Finanzergebnisse",
+      "crisis": "Krisenkommunikation"
+    }
+  },
+  "media": {
+    "title": "Mitteilungsmedien",
+    "photos": "Fotos",
+    "charts": "Diagramme",
+    "infographics": "Infografiken",
+    "logos": "Logos",
+    "gallery": "Galerie",
+    "upload": "Medien hinzufügen",
+    "fromUnsplash": "Von Unsplash",
+    "fromDalle": "Mit DALL-E generieren",
+    "fromLibrary": "Aus Bibliothek"
+  },
+  "export": {
+    "title": "Exportieren",
+    "formats": {
+      "pdf": "PDF",
+      "word": "Word (.docx)",
+      "html": "HTML",
+      "markdown": "Markdown"
+    },
+    "options": {
+      "includeMedia": "Medien einschließen",
+      "includeMetadata": "Metadaten einschließen",
+      "addHeaderFooter": "Kopf-/Fußzeile hinzufügen",
+      "watermark": "Wasserzeichen"
+    },
+    "download": "Herunterladen",
+    "send": "Per E-Mail senden"
+  },
+  "fields": {
+    "title": "Mitteilungstitel",
+    "subtitle": "Untertitel",
+    "date": "Veröffentlichungsdatum",
+    "location": "Standort",
+    "embargo": "Sperrfrist",
+    "body": "Mitteilungstext",
+    "boilerplate": "Über das Unternehmen",
+    "contact": {
+      "title": "Pressekontakt",
+      "name": "Name",
+      "role": "Rolle",
+      "email": "E-Mail",
+      "phone": "Telefon"
+    },
+    "quotes": {
+      "title": "Zitate",
+      "add": "Zitat hinzufügen",
+      "text": "Zitat",
+      "author": "Autor",
+      "role": "Rolle"
+    }
+  },
+  "status": {
+    "draft": "Entwurf",
+    "review": "In Prüfung",
+    "approved": "Genehmigt",
+    "published": "Veröffentlicht",
+    "embargoed": "Unter Sperrfrist"
+  },
+  "actions": {
+    "publish": "Veröffentlichen",
+    "embargo": "Sperrfrist setzen",
+    "approve": "Genehmigen",
+    "sendForReview": "Zur Prüfung senden",
+    "duplicate": "Duplizieren",
+    "export": "Exportieren"
+  },
+  "validation": {
+    "titleRequired": "Titel ist erforderlich",
+    "dateRequired": "Datum ist erforderlich",
+    "bodyRequired": "Inhalt ist erforderlich",
+    "contactRequired": "Mindestens ein Pressekontakt ist erforderlich"
+  }
+}

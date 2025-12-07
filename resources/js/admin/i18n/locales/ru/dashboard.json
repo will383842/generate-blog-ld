@@ -1,0 +1,109 @@
+{
+  "titles": {
+    "main": "Панель управления",
+    "platform": "Панель платформы",
+    "overview": "Обзор",
+    "activity": "Последняя активность"
+  },
+  "stats": {
+    "totalArticles": "Всего статей",
+    "totalGenerated": "Сгенерировано",
+    "totalPublished": "Опубликовано",
+    "totalDraft": "Черновики",
+    "totalScheduled": "Запланировано",
+    "totalCost": "Общая стоимость",
+    "avgQuality": "Средн. качество",
+    "coverage": "Охват",
+    "thisMonth": "Этот месяц",
+    "lastMonth": "Прошлый месяц",
+    "variation": "{{value}}% по сравнению с пред. периодом",
+    "increase": "+{{value}}%",
+    "decrease": "-{{value}}%"
+  },
+  "charts": {
+    "production": {
+      "title": "Производство",
+      "subtitle": "Статьи, сгенерированные за день",
+      "articles": "Статьи",
+      "pillars": "Основные статьи",
+      "comparatives": "Сравнения",
+      "landings": "Лендинги",
+      "press": "Пресс-релизы"
+    },
+    "costs": {
+      "title": "Затраты на ИИ",
+      "subtitle": "Расходы по модели",
+      "daily": "Ежедневно",
+      "cumulative": "Накопительно",
+      "budget": "Бюджет",
+      "actual": "Фактически"
+    },
+    "quality": {
+      "title": "Качество",
+      "subtitle": "Средняя оценка по типу",
+      "distribution": "Распределение оценок"
+    },
+    "coverage": {
+      "title": "Охват",
+      "subtitle": "Прогресс по регионам",
+      "countries": "Охваченные страны",
+      "languages": "Активные языки"
+    }
+  },
+  "activity": {
+    "title": "Последняя активность",
+    "stream": "Поток активности",
+    "events": {
+      "created": "{{user}} создал {{item}}",
+      "published": "{{item}} был опубликован",
+      "generated": "{{count}} статей сгенерировано",
+      "error": "Ошибка генерации: {{message}}",
+      "scheduled": "{{item}} запланирован на {{date}}",
+      "qualityCheck": "Проверка качества завершена"
+    },
+    "showMore": "Показать больше",
+    "noActivity": "Нет активности"
+  },
+  "periods": {
+    "last7days": "Последние 7 дней",
+    "last30days": "Последние 30 дней",
+    "last90days": "Последние 90 дней",
+    "thisMonth": "Этот месяц",
+    "lastMonth": "Прошлый месяц",
+    "thisYear": "Этот год",
+    "custom": "Произвольный"
+  },
+  "alerts": {
+    "budgetWarning": "Внимание: использовано {{percentage}}% месячного бюджета",
+    "budgetCritical": "Критично: месячный бюджет превышен на {{amount}}",
+    "errorRate": "Высокий уровень ошибок: {{rate}}%",
+    "queueBacklog": "{{count}} элементов в очереди",
+    "qualityDrop": "Обнаружено снижение качества в {{count}} статьях",
+    "coverageGap": "{{count}} стран без актуального контента"
+  },
+  "widgets": {
+    "quickActions": {
+      "title": "Быстрые действия",
+      "newProgram": "Новая программа",
+      "generateContent": "Генерировать контент",
+      "viewQueue": "Просмотреть очередь",
+      "exportReport": "Экспортировать отчет"
+    },
+    "topPerformers": {
+      "title": "Лучший контент",
+      "views": "{{count}} просмотров",
+      "engagement": "{{rate}}% вовлеченность"
+    },
+    "pendingTasks": {
+      "title": "Ожидающие задачи",
+      "review": "На проверку",
+      "publish": "На публикацию",
+      "translate": "На перевод"
+    }
+  },
+  "platforms": {
+    "select": "Выберите платформу",
+    "all": "Все платформы",
+    "compare": "Сравнить платформы"
+  }
+}

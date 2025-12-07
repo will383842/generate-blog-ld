@@ -1,0 +1,128 @@
+{
+  "releases": {
+    "title": "Communiqués de presse",
+    "list": "Liste des communiqués",
+    "create": "Nouveau communiqué",
+    "edit": "Modifier le communiqué",
+    "empty": "Aucun communiqué",
+    "emptyDescription": "Créez votre premier communiqué de presse"
+  },
+  "dossiers": {
+    "title": "Dossiers de presse",
+    "list": "Liste des dossiers",
+    "create": "Nouveau dossier",
+    "edit": "Modifier le dossier",
+    "empty": "Aucun dossier",
+    "emptyDescription": "Créez votre premier dossier de presse",
+    "sections": {
+      "title": "Sections du dossier",
+      "intro": "Introduction",
+      "keyFigures": "Chiffres clés",
+      "quotes": "Citations",
+      "timeline": "Historique",
+      "team": "Équipe",
+      "contact": "Contact presse",
+      "media": "Kit média"
+    },
+    "builder": {
+      "title": "Constructeur de dossier",
+      "addSection": "Ajouter une section",
+      "reorder": "Réorganiser",
+      "preview": "Aperçu"
+    }
+  },
+  "editor": {
+    "preview": "Aperçu",
+    "previewPdf": "Aperçu PDF",
+    "previewWord": "Aperçu Word"
+  },
+  "templates": {
+    "title": "Modèles",
+    "select": "Sélectionner un modèle",
+    "create": "Créer un modèle",
+    "edit": "Modifier le modèle",
+    "delete": "Supprimer le modèle",
+    "default": "Modèle par défaut",
+    "categories": {
+      "general": "Général",
+      "product": "Lancement produit",
+      "event": "Événement",
+      "partnership": "Partenariat",
+      "financial": "Résultats financiers",
+      "crisis": "Communication de crise"
+    }
+  },
+  "media": {
+    "title": "Médias du communiqué",
+    "photos": "Photos",
+    "charts": "Graphiques",
+    "infographics": "Infographies",
+    "logos": "Logos",
+    "gallery": "Galerie",
+    "upload": "Ajouter un média",
+    "fromUnsplash": "Depuis Unsplash",
+    "fromDalle": "Générer avec DALL-E",
+    "fromLibrary": "Depuis la bibliothèque"
+  },
+  "export": {
+    "title": "Export",
+    "formats": {
+      "pdf": "PDF",
+      "word": "Word (.docx)",
+      "html": "HTML",
+      "markdown": "Markdown"
+    },
+    "options": {
+      "includeMedia": "Inclure les médias",
+      "includeMetadata": "Inclure les métadonnées",
+      "addHeaderFooter": "Ajouter en-tête/pied de page",
+      "watermark": "Filigrane"
+    },
+    "download": "Télécharger",
+    "send": "Envoyer par email"
+  },
+  "fields": {
+    "title": "Titre du communiqué",
+    "subtitle": "Sous-titre",
+    "date": "Date du communiqué",
+    "location": "Lieu",
+    "embargo": "Date d'embargo",
+    "body": "Corps du communiqué",
+    "boilerplate": "À propos de l'entreprise",
+    "contact": {
+      "title": "Contact presse",
+      "name": "Nom",
+      "role": "Fonction",
+      "email": "Email",
+      "phone": "Téléphone"
+    },
+    "quotes": {
+      "title": "Citations",
+      "add": "Ajouter une citation",
+      "text": "Citation",
+      "author": "Auteur",
+      "role": "Fonction"
+    }
+  },
+  "status": {
+    "draft": "Brouillon",
+    "review": "En relecture",
+    "approved": "Approuvé",
+    "published": "Diffusé",
+    "embargoed": "Sous embargo"
+  },
+  "actions": {
+    "publish": "Diffuser",
+    "embargo": "Mettre sous embargo",
+    "approve": "Approuver",
+    "sendForReview": "Envoyer en relecture",
+    "duplicate": "Dupliquer",
+    "export": "Exporter"
+  },
+  "validation": {
+    "titleRequired": "Le titre est requis",
+    "dateRequired": "La date est requise",
+    "bodyRequired": "Le contenu est requis",
+    "contactRequired": "Au moins un contact presse est requis"
+  }
+}

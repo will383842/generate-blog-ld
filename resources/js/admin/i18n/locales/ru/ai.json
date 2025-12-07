@@ -1,0 +1,143 @@
+{
+  "title": "ИИ и затраты",
+  "models": {
+    "title": "Модели ИИ",
+    "gpt4": "GPT-4",
+    "gpt4Turbo": "GPT-4 Turbo",
+    "gpt35": "GPT-3.5 Turbo",
+    "claude": "Claude",
+    "claudeInstant": "Claude Instant",
+    "perplexity": "Perplexity",
+    "dalle": "DALL-E",
+    "active": "Активна",
+    "inactive": "Неактивна",
+    "default": "По умолчанию",
+    "setDefault": "Сделать по умолчанию"
+  },
+  "costs": {
+    "title": "Затраты",
+    "daily": "Дневные затраты",
+    "weekly": "Недельные затраты",
+    "monthly": "Месячные затраты",
+    "yearly": "Годовые затраты",
+    "total": "Общие затраты",
+    "byModel": "По модели",
+    "byContent": "По типу контента",
+    "byPlatform": "По платформе",
+    "prediction": "Прогноз",
+    "budget": {
+      "title": "Бюджет",
+      "set": "Установить бюджет",
+      "current": "Текущий бюджет",
+      "remaining": "Остаток",
+      "used": "Использовано",
+      "percentage": "{{value}}% использовано",
+      "alert": "Оповещение при {{value}}%",
+      "exceeded": "Бюджет превышен"
+    },
+    "breakdown": {
+      "title": "Разбивка затрат",
+      "tokens": "Токены",
+      "inputTokens": "Входные токены",
+      "outputTokens": "Выходные токены",
+      "images": "Изображения",
+      "searches": "Поиски",
+      "other": "Другое"
+    }
+  },
+  "performance": {
+    "title": "Производительность",
+    "latency": {
+      "title": "Задержка",
+      "average": "Средняя",
+      "p50": "P50",
+      "p95": "P95",
+      "p99": "P99"
+    },
+    "successRate": {
+      "title": "Успешность",
+      "value": "{{value}}%"
+    },
+    "errors": {
+      "title": "Ошибки",
+      "total": "Всего ошибок",
+      "rate": "Частота ошибок",
+      "types": {
+        "timeout": "Таймаут",
+        "rateLimit": "Лимит запросов",
+        "serverError": "Ошибка сервера",
+        "invalidResponse": "Неверный ответ",
+        "other": "Другие"
+      }
+    },
+    "queue": {
+      "title": "Очередь",
+      "pending": "Ожидают",
+      "processing": "Обрабатываются",
+      "avgWaitTime": "Среднее время ожидания"
+    },
+    "throughput": {
+      "title": "Пропускная способность",
+      "requestsPerMinute": "Запросов/мин",
+      "tokensPerMinute": "Токенов/мин"
+    }
+  },
+  "prompts": {
+    "title": "Управление промптами",
+    "list": "Список промптов",
+    "create": "Новый промпт",
+    "edit": "Редактировать промпт",
+    "delete": "Удалить промпт",
+    "optimize": "Оптимизировать",
+    "test": "Тестировать",
+    "version": {
+      "title": "Версии",
+      "current": "Текущая версия",
+      "history": "История",
+      "restore": "Восстановить",
+      "compare": "Сравнить"
+    },
+    "compare": {
+      "title": "Сравнение",
+      "sideBySide": "Бок о бок",
+      "metrics": "Метрики"
+    },
+    "categories": {
+      "generation": "Генерация",
+      "summarization": "Резюмирование",
+      "translation": "Перевод",
+      "analysis": "Анализ",
+      "factCheck": "Проверка фактов"
+    },
+    "fields": {
+      "name": "Название",
+      "category": "Категория",
+      "template": "Шаблон",
+      "variables": "Переменные",
+      "model": "Рекомендуемая модель"
+    }
+  },
+  "charts": {
+    "costEvolution": "Динамика затрат",
+    "modelUsage": "Использование по моделям",
+    "contentTypeCosts": "Затраты по типам контента",
+    "dailyCosts": "Ежедневные затраты",
+    "tokenUsage": "Использование токенов"
+  },
+  "settings": {
+    "title": "Настройки ИИ",
+    "defaultModel": "Модель по умолчанию",
+    "temperature": "Температура",
+    "maxTokens": "Макс. токенов",
+    "timeout": "Таймаут (сек.)",
+    "retries": "Количество повторов",
+    "fallbackModel": "Резервная модель"
+  },
+  "messages": {
+    "budgetUpdated": "Бюджет обновлен",
+    "promptSaved": "Промпт сохранен",
+    "promptDeleted": "Промпт удален",
+    "testStarted": "Тест запущен",
+    "optimizing": "Оптимизация..."
+  }
+}

@@ -1,0 +1,98 @@
+{
+  "title": "质量",
+  "description": "内容质量控制",
+  "scores": {
+    "title": "质量评分",
+    "description": "质量评分分析",
+    "overall": "总体评分",
+    "seo": "搜索引擎优化",
+    "readability": "可读性",
+    "originality": "原创性",
+    "structure": "结构",
+    "grammar": "语法",
+    "engagement": "参与度",
+    "distribution": "评分分布",
+    "trend": "趋势",
+    "average": "平均",
+    "minimum": "最小值",
+    "maximum": "最大值"
+  },
+  "review": {
+    "title": "审核",
+    "description": "待审核文章",
+    "pendingReview": "待审核",
+    "needsImprovement": "需要改进",
+    "approved": "已批准",
+    "rejected": "已拒绝",
+    "approve": "批准",
+    "reject": "拒绝",
+    "requestChanges": "请求更改",
+    "sendToEditor": "发送给编辑",
+    "bulkApprove": "批准所选",
+    "bulkReject": "拒绝所选",
+    "empty": "没有待审核的文章"
+  },
+  "rules": {
+    "title": "质量规则",
+    "description": "配置验证规则",
+    "add": "新规则",
+    "edit": "编辑",
+    "delete": "删除",
+    "enable": "启用",
+    "disable": "禁用",
+    "name": "名称",
+    "type": "类型",
+    "threshold": "阈值",
+    "weight": "权重",
+    "action": "操作",
+    "categories": {
+      "seo": "搜索引擎优化",
+      "readability": "可读性",
+      "grammar": "语法",
+      "structure": "结构",
+      "content": "内容"
+    },
+    "actions": {
+      "warn": "警告",
+      "block": "阻止",
+      "flag": "标记"
+    },
+    "empty": "未配置规则"
+  },
+  "analysis": {
+    "title": "分析",
+    "analyzing": "分析中...",
+    "issues": "检测到的问题",
+    "warnings": "警告",
+    "suggestions": "建议",
+    "passed": "通过",
+    "fix": "修复",
+    "ignore": "忽略",
+    "fixAll": "全部修复"
+  },
+  "levels": {
+    "excellent": "优秀",
+    "good": "良好",
+    "average": "一般",
+    "poor": "较差",
+    "critical": "严重"
+  },
+  "metrics": {
+    "wordCount": "字数",
+    "sentenceCount": "句子数",
+    "paragraphCount": "段落",
+    "avgSentenceLength": "平均句子长度",
+    "avgWordLength": "平均词长",
+    "readingTime": "阅读时间",
+    "fleschScore": "Flesch评分",
+    "keywordDensity": "关键词密度"
+  },
+  "stats": {
+    "totalAnalyzed": "总分析数",
+    "avgScore": "平均分",
+    "excellent": "优秀",
+    "good": "良好",
+    "average": "一般",
+    "poor": "较差"
+  }
+}

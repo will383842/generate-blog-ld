@@ -1,0 +1,196 @@
+{
+  "dashboard": {
+    "title": "Cobertura Inteligente",
+    "subtitle": "197 países × 9 idiomas × Todas as especialidades",
+    "refresh": "Atualizar",
+    "export": "Exportar",
+    "lastUpdate": "Última atualização"
+  },
+  "platforms": {
+    "sosExpat": "SOS-Expat",
+    "sosExpatDesc": "Assistência jurídica de emergência para expatriados",
+    "ulixai": "Ulixai",
+    "ulixaiDesc": "Marketplace de serviços para expatriados",
+    "ulysse": "Ulysse.AI",
+    "ulysseDesc": "Assistente de IA para expatriados",
+    "soon": "Em breve"
+  },
+  "scores": {
+    "global": "Pontuação Global",
+    "recruitment": "Recrutamento",
+    "awareness": "Conhecimento",
+    "founder": "Fundador",
+    "progress": "Progresso",
+    "countries": "países analisados",
+    "articlesTarget": "artigos alvo",
+    "vsObjective": "vs objetivo 100%"
+  },
+  "distribution": {
+    "title": "Distribuição por nível de cobertura",
+    "excellent": "Excelente",
+    "excellentRange": "80-100%",
+    "good": "Bom",
+    "goodRange": "60-79%",
+    "partial": "Parcial",
+    "partialRange": "40-59%",
+    "minimal": "Mínimo",
+    "minimalRange": "20-39%",
+    "missing": "Ausente",
+    "missingRange": "0-19%",
+    "ofCountries": "dos países"
+  },
+  "quickActions": {
+    "title": "Ações Rápidas",
+    "viewGrid": "Visualização em grade 197 países",
+    "viewGridDesc": "Todas as barras de progresso de uma vez",
+    "viewCountries": "Lista de países",
+    "viewCountriesDesc": "197 países com filtros avançados",
+    "priorityCountries": "Países prioritários",
+    "priorityCountriesDesc": "países que requerem atenção urgente",
+    "generateContent": "Gerar conteúdo",
+    "generateContentDesc": "Geração automática com IA",
+    "viewLanguages": "Visualização de idiomas",
+    "viewLanguagesDesc": "9 idiomas × 197 países"
+  },
+  "countries": {
+    "title": "Cobertura Global - 197 Países",
+    "subtitle": "Visualização completa com barras de progresso por plataforma",
+    "search": "Pesquisar um país...",
+    "allRegions": "Todas as regiões",
+    "sortBy": "Ordenar por",
+    "sortByPriority": "Prioridade",
+    "sortByScore": "Pontuação global",
+    "sortByRecruitment": "Recrutamento",
+    "sortByAwareness": "Conhecimento",
+    "sortByFounder": "Fundador",
+    "sortByName": "Nome A-Z",
+    "missingOnly": "Apenas ausentes",
+    "allCountries": "Todos os países",
+    "averageScore": "Pontuação média",
+    "total": "Total",
+    "clickForDetails": "Clique para detalhes"
+  },
+  "countryDetails": {
+    "title": "Detalhes do país",
+    "generateMissing": "Gerar conteúdo ausente",
+    "tabs": {
+      "recruitment": "Recrutamento",
+      "awareness": "Conhecimento",
+      "founder": "Fundador",
+      "languages": "Idiomas"
+    },
+    "missingTargets": "conteúdo ausente",
+    "publishedArticles": "artigos publicados",
+    "unpublishedArticles": "artigos não publicados"
+  },
+  "recruitment": {
+    "title": "Recrutamento de Provedores",
+    "lawyerSpecialties": "Especialidades de Advogados",
+    "lawyerSpecialtiesDesc": "22 categorias jurídicas",
+    "expatDomains": "Domínios Expat",
+    "expatDomainsDesc": "Assistência a expatriados",
+    "ulixaiServices": "Serviços Ulixai",
+    "ulixaiServicesDesc": "11 categorias, 3 níveis",
+    "perSpecialty": "por especialidade × país × idioma"
+  },
+  "awareness": {
+    "title": "Conhecimento SEO",
+    "pillarArticles": "Artigos Pilar",
+    "comparatives": "Comparativos",
+    "landingPages": "Páginas de Destino",
+    "perCountryLanguage": "por país/idioma"
+  },
+  "founder": {
+    "title": "Tema do Fundador",
+    "name": "Williams Jullin",
+    "description": "Artigos sobre o fundador - comum a todas as plataformas",
+    "sosExpatArticle": "Artigo SOS-Expat",
+    "ulixaiArticle": "Artigo Ulixai",
+    "crossPlatform": "Multiplataforma"
+  },
+  "languages": {
+    "title": "Cobertura de Idiomas",
+    "subtitle": "Visualização global de 9 idiomas",
+    "matrix": "Matriz País × Idioma",
+    "countriesCovered": "países cobertos",
+    "totalArticles": "artigos totais",
+    "publishedArticles": "publicados",
+    "averageCoverage": "cobertura média"
+  },
+  "generate": {
+    "title": "Geração de Conteúdo",
+    "subtitle": "Gerar automaticamente conteúdo ausente",
+    "configuration": "Configuração",
+    "contentTypes": "Tipos de Conteúdo",
+    "targetLanguages": "Idiomas Alvo",
+    "selectCountries": "Seleção de Países",
+    "priority": "Prioridade",
+    "selectAll": "Selecionar Tudo",
+    "clear": "Limpar",
+    "summary": "Resumo da Geração",
+    "totalTasks": "Tarefas Totais",
+    "estimatedTime": "Tempo Estimado",
+    "estimatedCost": "Custo Estimado",
+    "completed": "Concluído",
+    "prepare": "Preparar Geração",
+    "start": "Iniciar",
+    "stop": "Parar",
+    "reset": "Reiniciar"
+  },
+  "status": {
+    "excellent": "Excelente",
+    "good": "Bom",
+    "partial": "Parcial",
+    "minimal": "Mínimo",
+    "missing": "Ausente",
+    "published": "Publicado",
+    "unpublished": "Não publicado",
+    "pending": "Pendente",
+    "generating": "Gerando",
+    "completed": "Concluído",
+    "failed": "Falhou"
+  },
+  "priority": {
+    "critical": "Crítico",
+    "high": "Alto",
+    "medium": "Médio",
+    "low": "Baixo"
+  },
+  "actions": {
+    "view": "Ver",
+    "edit": "Editar",
+    "generate": "Gerar",
+    "translate": "Traduzir",
+    "export": "Exportar",
+    "refresh": "Atualizar"
+  },
+  "recommendations": {
+    "title": "Recomendações de IA",
+    "execute": "Executar",
+    "executeAll": "Executar Tudo",
+    "noRecommendations": "Sem recomendações urgentes"
+  },
+  "regions": {
+    "europe": "Europa",
+    "asia": "Ásia",
+    "africa": "África",
+    "northAmerica": "América do Norte",
+    "southAmerica": "América do Sul",
+    "oceania": "Oceania",
+    "middleEast": "Oriente Médio"
+  },
+  "metrics": {
+    "total": "Total",
+    "published": "Publicados",
+    "unpublished": "Não publicados",
+    "missing": "Ausentes",
+    "completed": "Concluídos",
+    "targets": "Alvos"
+  },
+  "legend": {
+    "title": "Legenda",
+    "recruitmentBar": "Recrutamento",
+    "awarenessBar": "Conhecimento",
+    "founderBar": "Fundador"
+  }
+}

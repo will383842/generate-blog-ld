@@ -1,0 +1,196 @@
+{
+  "dashboard": {
+    "title": "Intelligent Coverage",
+    "subtitle": "197 countries × 9 languages × All specialties",
+    "refresh": "Refresh",
+    "export": "Export",
+    "lastUpdate": "Last update"
+  },
+  "platforms": {
+    "sosExpat": "SOS-Expat",
+    "sosExpatDesc": "Emergency legal assistance for expats",
+    "ulixai": "Ulixai",
+    "ulixaiDesc": "Expat services marketplace",
+    "ulysse": "Ulysse.AI",
+    "ulysseDesc": "AI assistant for expats",
+    "soon": "Coming soon"
+  },
+  "scores": {
+    "global": "Global Score",
+    "recruitment": "Recruitment",
+    "awareness": "Awareness",
+    "founder": "Founder",
+    "progress": "Progress",
+    "countries": "countries analyzed",
+    "articlesTarget": "target articles",
+    "vsObjective": "vs 100% objective"
+  },
+  "distribution": {
+    "title": "Distribution by coverage level",
+    "excellent": "Excellent",
+    "excellentRange": "80-100%",
+    "good": "Good",
+    "goodRange": "60-79%",
+    "partial": "Partial",
+    "partialRange": "40-59%",
+    "minimal": "Minimal",
+    "minimalRange": "20-39%",
+    "missing": "Missing",
+    "missingRange": "0-19%",
+    "ofCountries": "of countries"
+  },
+  "quickActions": {
+    "title": "Quick Actions",
+    "viewGrid": "Grid View 197 countries",
+    "viewGridDesc": "All progress bars at once",
+    "viewCountries": "Countries List",
+    "viewCountriesDesc": "197 countries with advanced filters",
+    "priorityCountries": "Priority Countries",
+    "priorityCountriesDesc": "countries requiring urgent attention",
+    "generateContent": "Generate Content",
+    "generateContentDesc": "Automatic AI generation",
+    "viewLanguages": "Language View",
+    "viewLanguagesDesc": "9 languages × 197 countries"
+  },
+  "countries": {
+    "title": "Global Coverage - 197 Countries",
+    "subtitle": "Complete view with progress bars by platform",
+    "search": "Search for a country...",
+    "allRegions": "All regions",
+    "sortBy": "Sort by",
+    "sortByPriority": "Priority",
+    "sortByScore": "Global score",
+    "sortByRecruitment": "Recruitment",
+    "sortByAwareness": "Awareness",
+    "sortByFounder": "Founder",
+    "sortByName": "Name A-Z",
+    "missingOnly": "Missing only",
+    "allCountries": "All countries",
+    "averageScore": "Average score",
+    "total": "Total",
+    "clickForDetails": "Click for details"
+  },
+  "countryDetails": {
+    "title": "Country Details",
+    "generateMissing": "Generate missing content",
+    "tabs": {
+      "recruitment": "Recruitment",
+      "awareness": "Awareness",
+      "founder": "Founder",
+      "languages": "Languages"
+    },
+    "missingTargets": "missing content",
+    "publishedArticles": "published articles",
+    "unpublishedArticles": "unpublished articles"
+  },
+  "recruitment": {
+    "title": "Provider Recruitment",
+    "lawyerSpecialties": "Lawyer Specialties",
+    "lawyerSpecialtiesDesc": "22 legal categories",
+    "expatDomains": "Expat Domains",
+    "expatDomainsDesc": "Expat assistance",
+    "ulixaiServices": "Ulixai Services",
+    "ulixaiServicesDesc": "11 categories, 3 levels",
+    "perSpecialty": "per specialty × country × language"
+  },
+  "awareness": {
+    "title": "SEO Awareness",
+    "pillarArticles": "Pillar Articles",
+    "comparatives": "Comparatives",
+    "landingPages": "Landing Pages",
+    "perCountryLanguage": "per country/language"
+  },
+  "founder": {
+    "title": "Founder Theme",
+    "name": "Williams Jullin",
+    "description": "Articles about the founder - common to all platforms",
+    "sosExpatArticle": "SOS-Expat Article",
+    "ulixaiArticle": "Ulixai Article",
+    "crossPlatform": "Cross-Platform"
+  },
+  "languages": {
+    "title": "Language Coverage",
+    "subtitle": "Global view of 9 languages",
+    "matrix": "Country × Language Matrix",
+    "countriesCovered": "countries covered",
+    "totalArticles": "total articles",
+    "publishedArticles": "published",
+    "averageCoverage": "average coverage"
+  },
+  "generate": {
+    "title": "Content Generation",
+    "subtitle": "Automatically generate missing content",
+    "configuration": "Configuration",
+    "contentTypes": "Content Types",
+    "targetLanguages": "Target Languages",
+    "selectCountries": "Country Selection",
+    "priority": "Priority",
+    "selectAll": "Select All",
+    "clear": "Clear",
+    "summary": "Generation Summary",
+    "totalTasks": "Total Tasks",
+    "estimatedTime": "Estimated Time",
+    "estimatedCost": "Estimated Cost",
+    "completed": "Completed",
+    "prepare": "Prepare Generation",
+    "start": "Start",
+    "stop": "Stop",
+    "reset": "Reset"
+  },
+  "status": {
+    "excellent": "Excellent",
+    "good": "Good",
+    "partial": "Partial",
+    "minimal": "Minimal",
+    "missing": "Missing",
+    "published": "Published",
+    "unpublished": "Unpublished",
+    "pending": "Pending",
+    "generating": "Generating",
+    "completed": "Completed",
+    "failed": "Failed"
+  },
+  "priority": {
+    "critical": "Critical",
+    "high": "High",
+    "medium": "Medium",
+    "low": "Low"
+  },
+  "actions": {
+    "view": "View",
+    "edit": "Edit",
+    "generate": "Generate",
+    "translate": "Translate",
+    "export": "Export",
+    "refresh": "Refresh"
+  },
+  "recommendations": {
+    "title": "AI Recommendations",
+    "execute": "Execute",
+    "executeAll": "Execute All",
+    "noRecommendations": "No urgent recommendations"
+  },
+  "regions": {
+    "europe": "Europe",
+    "asia": "Asia",
+    "africa": "Africa",
+    "northAmerica": "North America",
+    "southAmerica": "South America",
+    "oceania": "Oceania",
+    "middleEast": "Middle East"
+  },
+  "metrics": {
+    "total": "Total",
+    "published": "Published",
+    "unpublished": "Unpublished",
+    "missing": "Missing",
+    "completed": "Completed",
+    "targets": "Targets"
+  },
+  "legend": {
+    "title": "Legend",
+    "recruitmentBar": "Recruitment",
+    "awarenessBar": "Awareness",
+    "founderBar": "Founder"
+  }
+}

@@ -1,0 +1,121 @@
+{
+  "title": "Conteúdo",
+  "description": "Gerencie seus artigos e conteúdo",
+  "articles": {
+    "title": "Artigos",
+    "description": "Gerencie seus artigos",
+    "add": "Novo artigo",
+    "edit": "Editar artigo",
+    "delete": "Excluir artigo",
+    "duplicate": "Duplicar",
+    "archive": "Arquivar",
+    "publish": "Publicar",
+    "unpublish": "Despublicar",
+    "schedule": "Agendar",
+    "preview": "Visualizar",
+    "fields": {
+      "title": "Título",
+      "slug": "Slug",
+      "content": "Conteúdo",
+      "excerpt": "Resumo",
+      "featuredImage": "Imagem destacada",
+      "category": "Categoria",
+      "tags": "Tags",
+      "author": "Autor",
+      "status": "Status",
+      "publishedAt": "Data de publicação",
+      "createdAt": "Criado em",
+      "updatedAt": "Atualizado em"
+    },
+    "status": {
+      "draft": "Rascunho",
+      "published": "Publicado",
+      "archived": "Arquivado",
+      "scheduled": "Agendado"
+    },
+    "filters": {
+      "all": "Todos",
+      "drafts": "Rascunhos",
+      "published": "Publicados",
+      "archived": "Arquivados"
+    },
+    "bulk": {
+      "publish": "Publicar selecionados",
+      "unpublish": "Despublicar selecionados",
+      "delete": "Excluir selecionados",
+      "archive": "Arquivar selecionados"
+    },
+    "empty": "Nenhum artigo encontrado",
+    "createFirst": "Crie seu primeiro artigo"
+  },
+  "categories": {
+    "title": "Categorias",
+    "description": "Gerencie suas categorias",
+    "add": "Nova categoria",
+    "edit": "Editar categoria",
+    "delete": "Excluir categoria",
+    "fields": {
+      "name": "Nome",
+      "slug": "Slug",
+      "description": "Descrição",
+      "parent": "Categoria pai",
+      "color": "Cor",
+      "icon": "Ícone"
+    },
+    "articlesCount": "Artigos",
+    "empty": "Nenhuma categoria",
+    "noParent": "Nenhuma (categoria raiz)"
+  },
+  "tags": {
+    "title": "Tags",
+    "description": "Gerencie suas tags",
+    "add": "Nova tag",
+    "edit": "Editar tag",
+    "delete": "Excluir tag",
+    "fields": {
+      "name": "Nome",
+      "slug": "Slug",
+      "description": "Descrição",
+      "color": "Cor"
+    },
+    "articlesCount": "Artigos",
+    "empty": "Nenhuma tag",
+    "merge": "Mesclar tags"
+  },
+  "editor": {
+    "title": "Editor",
+    "save": "Salvar",
+    "saveAndPublish": "Salvar e publicar",
+    "saveDraft": "Salvar como rascunho",
+    "preview": "Visualizar",
+    "settings": "Configurações",
+    "seo": "SEO",
+    "media": "Mídia",
+    "history": "Histórico",
+    "autosave": "Salvamento automático",
+    "lastSaved": "Último salvamento",
+    "wordCount": "Palavras",
+    "readingTime": "Tempo de leitura",
+    "toolbar": {
+      "bold": "Negrito",
+      "italic": "Itálico",
+      "underline": "Sublinhado",
+      "strikethrough": "Tachado",
+      "heading": "Título",
+      "link": "Link",
+      "image": "Imagem",
+      "list": "Lista",
+      "quote": "Citação",
+      "code": "Código",
+      "table": "Tabela"
+    }
+  },
+  "media": {
+    "title": "Mídia",
+    "selectImage": "Selecionar imagem",
+    "uploadImage": "Enviar imagem",
+    "removeImage": "Remover imagem",
+    "altText": "Texto alternativo",
+    "caption": "Legenda"
+  }
+}

@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { cn } from '@/lib/utils';
 
 interface LoadingSpinnerProps {
@@ -25,3 +25,5 @@ export function LoadingSpinner({ size = 'md', className }: LoadingSpinnerProps) 
     </div>
   );
 }
+
+export default LoadingSpinner;

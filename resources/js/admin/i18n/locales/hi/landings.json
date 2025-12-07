@@ -1,0 +1,157 @@
+{
+  "title": "लैंडिंग पेज",
+  "list": "लैंडिंग सूची",
+  "create": "नया लैंडिंग",
+  "edit": "लैंडिंग संपादित करें",
+  "empty": "कोई लैंडिंग नहीं",
+  "emptyDescription": "अपना पहला लैंडिंग पेज बनाएं",
+  "sections": {
+    "title": "अनुभाग",
+    "hero": {
+      "name": "हीरो",
+      "description": "शीर्षक और CTA के साथ मुख्य बैनर",
+      "fields": {
+        "title": "मुख्य शीर्षक",
+        "subtitle": "उपशीर्षक",
+        "image": "पृष्ठभूमि छवि",
+        "cta": "एक्शन बटन"
+      }
+    },
+    "features": {
+      "name": "सुविधाएं",
+      "description": "लाभों या सुविधाओं की सूची",
+      "fields": {
+        "title": "अनुभाग शीर्षक",
+        "items": "सुविधाएं",
+        "columns": "कॉलम की संख्या"
+      }
+    },
+    "testimonials": {
+      "name": "प्रशंसापत्र",
+      "description": "ग्राहक समीक्षाएं और प्रशंसापत्र",
+      "fields": {
+        "title": "अनुभाग शीर्षक",
+        "items": "प्रशंसापत्र",
+        "layout": "लेआउट"
+      }
+    },
+    "pricing": {
+      "name": "मूल्य निर्धारण",
+      "description": "मूल्य तालिका और योजनाएं",
+      "fields": {
+        "title": "अनुभाग शीर्षक",
+        "plans": "योजनाएं",
+        "currency": "मुद्रा"
+      }
+    },
+    "cta": {
+      "name": "कॉल टू एक्शन",
+      "description": "कॉल टू एक्शन अनुभाग",
+      "fields": {
+        "title": "शीर्षक",
+        "description": "विवरण",
+        "buttonText": "बटन टेक्स्ट",
+        "buttonLink": "बटन लिंक"
+      }
+    },
+    "faq": {
+      "name": "सामान्य प्रश्न",
+      "description": "अक्सर पूछे जाने वाले प्रश्न",
+      "fields": {
+        "title": "अनुभाग शीर्षक",
+        "items": "प्रश्न/उत्तर"
+      }
+    },
+    "form": {
+      "name": "फॉर्म",
+      "description": "संपर्क या साइनअप फॉर्म",
+      "fields": {
+        "title": "शीर्षक",
+        "fields": "फॉर्म फील्ड",
+        "submitText": "बटन टेक्स्ट"
+      }
+    },
+    "gallery": {
+      "name": "गैलरी",
+      "description": "छवि गैलरी",
+      "fields": {
+        "title": "अनुभाग शीर्षक",
+        "images": "छवियां",
+        "columns": "कॉलम"
+      }
+    },
+    "stats": {
+      "name": "आंकड़े",
+      "description": "प्रमुख आंकड़े",
+      "fields": {
+        "items": "आंकड़े",
+        "animated": "एनिमेशन"
+      }
+    },
+    "partners": {
+      "name": "भागीदार",
+      "description": "भागीदार लोगो",
+      "fields": {
+        "title": "शीर्षक",
+        "logos": "भागीदार लोगो"
+      }
+    }
+  },
+  "builder": {
+    "title": "लैंडिंग बिल्डर",
+    "addSection": "अनुभाग जोड़ें",
+    "editSection": "अनुभाग संपादित करें",
+    "deleteSection": "अनुभाग हटाएं",
+    "duplicateSection": "अनुभाग डुप्लिकेट करें",
+    "reorderSections": "अनुभाग पुनर्व्यवस्थित करें",
+    "moveUp": "ऊपर ले जाएं",
+    "moveDown": "नीचे ले जाएं",
+    "preview": "पूर्वावलोकन",
+    "previewMobile": "मोबाइल पूर्वावलोकन",
+    "previewDesktop": "डेस्कटॉप पूर्वावलोकन",
+    "emptyBuilder": "अपना लैंडिंग बनाने के लिए अनुभाग जोड़ें"
+  },
+  "cta": {
+    "text": "बटन टेक्स्ट",
+    "link": "लिंक",
+    "style": "शैली",
+    "styles": {
+      "primary": "प्राथमिक",
+      "secondary": "द्वितीयक",
+      "outline": "आउटलाइन",
+      "ghost": "घोस्ट"
+    },
+    "tracking": {
+      "title": "ट्रैकिंग",
+      "utmSource": "UTM स्रोत",
+      "utmMedium": "UTM माध्यम",
+      "utmCampaign": "UTM अभियान",
+      "eventName": "इवेंट नाम"
+    }
+  },
+  "fields": {
+    "name": "लैंडिंग नाम",
+    "slug": "URL",
+    "status": "स्थिति",
+    "template": "टेम्पलेट",
+    "country": "देश",
+    "language": "भाषा",
+    "platform": "प्लेटफॉर्म"
+  },
+  "templates": {
+    "title": "लैंडिंग टेम्पलेट",
+    "select": "टेम्पलेट चुनें",
+    "blank": "खाली पेज",
+    "service": "सेवा प्रदाता पेज",
+    "product": "उत्पाद पेज",
+    "event": "इवेंट पेज",
+    "lead": "लीड कैप्चर"
+  },
+  "actions": {
+    "publish": "प्रकाशित करें",
+    "unpublish": "अप्रकाशित करें",
+    "duplicate": "डुप्लिकेट",
+    "preview": "पूर्वावलोकन",
+    "export": "HTML निर्यात"
+  }
+}

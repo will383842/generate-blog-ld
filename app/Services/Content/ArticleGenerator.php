@@ -12,12 +12,15 @@ use App\Models\LawyerSpecialty;
 use App\Models\ExpatDomain;
 use App\Models\InternalLink;
 use App\Models\ExternalLink;
+use App\Models\ContentTemplate;
 use App\Services\AI\GptService;
 use App\Services\AI\PerplexityService;
 use App\Services\AI\DalleService;
 use App\Services\UnsplashService;
 use App\Services\Content\PlatformKnowledgeService;
 use App\Services\Content\BrandValidationService;
+use App\Services\Content\TemplateManager;
+use App\Services\Content\Traits\UseContentTemplates;
 use App\Services\Quality\ContentQualityEnforcer;
 use App\Services\Quality\GoldenExamplesService;
 use Illuminate\Support\Facades\Log;
@@ -42,10 +45,12 @@ use Illuminate\Support\Str;
  */
 class ArticleGenerator
 {
+    use UseContentTemplates;
+
     protected GptService $gpt;
     protected PerplexityService $perplexity;
     protected DalleService $dalle;
-    protected UnsplashService $unsplash;                    // ← AJOUTÉ
+    protected UnsplashService $unsplash;
     protected TitleService $titleService;
     protected LinkService $linkService;
     protected QualityChecker $qualityChecker;
@@ -86,19 +91,20 @@ class ArticleGenerator
         GptService $gpt,
         PerplexityService $perplexity,
         DalleService $dalle,
-        UnsplashService $unsplash,                          // ← AJOUTÉ
+        UnsplashService $unsplash,
         TitleService $titleService,
         LinkService $linkService,
         QualityChecker $qualityChecker,
         PlatformKnowledgeService $knowledgeService,
         BrandValidationService $brandValidator,
         ContentQualityEnforcer $qualityEnforcer,
-        GoldenExamplesService $goldenService
+        GoldenExamplesService $goldenService,
+        TemplateManager $templateManager
     ) {
         $this->gpt = $gpt;
         $this->perplexity = $perplexity;
         $this->dalle = $dalle;
-        $this->unsplash = $unsplash;                        // ← AJOUTÉ
+        $this->unsplash = $unsplash;
         $this->titleService = $titleService;
         $this->linkService = $linkService;
         $this->qualityChecker = $qualityChecker;
@@ -106,6 +112,7 @@ class ArticleGenerator
         $this->brandValidator = $brandValidator;
         $this->qualityEnforcer = $qualityEnforcer;
         $this->goldenService = $goldenService;
+        $this->setTemplateManager($templateManager);
     }
 
     /**
@@ -129,17 +136,54 @@ class ArticleGenerator
     public function generate(array $params): Article
     {
         $this->stats['start_time'] = microtime(true);
-        
+
         try {
             // 1. VALIDATION ET CHARGEMENT DES ENTITÉS
             $context = $this->validateAndLoadContext($params);
-            
+
             Log::info('ArticleGenerator: Démarrage génération', [
                 'platform' => $context['platform']->slug,
                 'country' => $context['country']->name,
                 'language' => $context['language']->code,
                 'theme' => $context['theme']->name,
             ]);
+
+            // 1.5 CHARGEMENT DU TEMPLATE (si disponible)
+            $templateSlug = $params['template_slug'] ?? null;
+            $this->loadTemplate('article', $context['language']->code, $templateSlug);
+
+            // Définir les variables pour le template
+            $this->setTemplateVariables([
+                'title' => '', // Sera mis à jour après génération du titre
+                'country_name' => $context['country']->name,
+                'country_in' => $context['country']->getNameIn($context['language']->code) ?? 'dans ce pays',
+                'theme_name' => $context['theme']->name,
+                'platform_name' => $context['platform']->name,
+                'year' => date('Y'),
+                'word_count_min' => $this->getTemplateWordCount()['min'] ?? $this->config['word_count_min'],
+                'word_count_max' => $this->getTemplateWordCount()['max'] ?? $this->config['word_count_max'],
+                'faq_count' => $this->getTemplateFaqCount() ?? $this->config['faqs_count'],
+            ]);
+
+            // Mettre à jour la config avec les valeurs du template
+            if ($this->hasActiveTemplate()) {
+                $wordCount = $this->getTemplateWordCount();
+                if ($wordCount) {
+                    $this->config['word_count_min'] = $wordCount['min'];
+                    $this->config['word_count_target'] = $wordCount['target'];
+                    $this->config['word_count_max'] = $wordCount['max'];
+                }
+                $faqCount = $this->getTemplateFaqCount();
+                if ($faqCount) {
+                    $this->config['faqs_count'] = $faqCount;
+                }
+
+                Log::info('ArticleGenerator: Template chargé', [
+                    'template_slug' => $this->getActiveTemplateSlug(),
+                    'word_count' => $wordCount,
+                    'faq_count' => $faqCount,
+                ]);
+            }
 
             // 2. GÉNÉRATION DU TITRE (avec anti-doublon SHA256)
             $title = $this->generateTitle($context);
@@ -480,7 +524,15 @@ PROMPT;
 
         $systemPrompt = $this->buildContentSystemPrompt($context);
 
-        $userPrompt = <<<PROMPT
+        // Construire le user prompt depuis le template ou fallback
+        if ($this->hasActiveTemplate()) {
+            // Mettre à jour le titre dans les variables
+            $this->templateVariables['title'] = $title;
+            $this->templateVariables['sources_context'] = $sourcesContext;
+            $userPrompt = $this->getUserPrompt();
+        } else {
+            // Fallback sur le prompt existant
+            $userPrompt = <<<PROMPT
 Rédige le contenu principal de cet article pour expatriés français en {$context['country']->name}.
 
 Titre : "{$title}"
@@ -512,6 +564,7 @@ Règles SEO :
 
 Réponds en {$context['language']->native_name} avec le HTML complet.
 PROMPT;
+        }
 
         // ✅ ENRICHISSEMENT AVEC GOLDEN EXAMPLES (MODIFICATION 3)
         $goldenExamples = $this->goldenService->getExamplesForContext(
@@ -525,21 +578,26 @@ PROMPT;
 
         if (count($goldenExamples) >= 2) {
             $userPrompt = $this->goldenService->enrichPromptWithExamples($userPrompt, $goldenExamples);
-            
+
             Log::info('Prompt enrichi avec golden examples (content)', [
                 'count' => count($goldenExamples),
                 'platform' => $context['platform']->slug,
             ]);
         }
 
+        // Obtenir la config GPT (depuis template ou défaut)
+        $gptConfig = $this->hasActiveTemplate()
+            ? $this->getTemplateGptConfig()
+            : ['model' => 'gpt-4o', 'max_tokens' => 4000, 'temperature' => 0.7];
+
         $response = $this->gpt->chat([
-            'model' => 'gpt-4o',
+            'model' => $gptConfig['model'] ?? 'gpt-4o',
             'messages' => [
                 ['role' => 'system', 'content' => $systemPrompt],
                 ['role' => 'user', 'content' => $userPrompt],
             ],
-            'temperature' => 0.7,
-            'max_tokens' => 4000,
+            'temperature' => $gptConfig['temperature'] ?? 0.7,
+            'max_tokens' => $gptConfig['max_tokens'] ?? 4000,
         ]);
 
         $this->stats['total_cost'] += $response['cost'];
@@ -608,40 +666,43 @@ PROMPT;
     }
 
     /**
-     * Assembler le contenu HTML complet
+     * Assembler le contenu HTML complet avec sanitization XSS
      */
     protected function assembleFullContent(array $parts): string
     {
+        // Utiliser ContentSanitizer pour nettoyer le contenu GPT
+        $sanitizer = app(ContentSanitizer::class);
+
         $html = '';
 
-        // Accroche
+        // Accroche - SANITIZED
         if (!empty($parts['hook'])) {
-            $html .= '<div class="article-hook">' . $parts['hook'] . '</div>' . "\n\n";
+            $html .= '<div class="article-hook">' . $sanitizer->sanitize($parts['hook']) . '</div>' . "\n\n";
         }
 
-        // Introduction
+        // Introduction - SANITIZED
         if (!empty($parts['introduction'])) {
             $html .= '<div class="article-introduction">' . "\n";
-            $html .= $parts['introduction'] . "\n";
+            $html .= $sanitizer->sanitize($parts['introduction']) . "\n";
             $html .= '</div>' . "\n\n";
         }
 
-        // Contenu principal
+        // Contenu principal - SANITIZED
         if (!empty($parts['content'])) {
             $html .= '<div class="article-content">' . "\n";
-            $html .= $parts['content'] . "\n";
+            $html .= $sanitizer->sanitize($parts['content']) . "\n";
             $html .= '</div>' . "\n\n";
         }
 
-        // FAQs
+        // FAQs - déjà sanitizées avec htmlspecialchars (texte pur)
         if (!empty($parts['faqs'])) {
             $html .= '<div class="article-faqs">' . "\n";
             $html .= '<h2>Questions Fréquentes</h2>' . "\n";
             foreach ($parts['faqs'] as $faq) {
                 $html .= '<div class="faq-item">' . "\n";
-                $html .= '  <h3 class="faq-question">' . htmlspecialchars($faq['question']) . '</h3>' . "\n";
+                $html .= '  <h3 class="faq-question">' . htmlspecialchars($faq['question'] ?? '', ENT_QUOTES, 'UTF-8') . '</h3>' . "\n";
                 $html .= '  <div class="faq-answer">' . "\n";
-                $html .= '    <p>' . htmlspecialchars($faq['answer']) . '</p>' . "\n";
+                $html .= '    <p>' . htmlspecialchars($faq['answer'] ?? '', ENT_QUOTES, 'UTF-8') . '</p>' . "\n";
                 $html .= '  </div>' . "\n";
                 $html .= '</div>' . "\n";
             }
@@ -734,13 +795,18 @@ PROMPT;
 
     /**
      * Créer l'article en base de données
+     *
+     * ARCHITECTURE: La validation qualité est effectuée HORS transaction
+     * pour éviter les timeouts lors d'appels API (si validateArticle en fait).
      */
     protected function createArticle(array $data): Article
     {
         $context = $data['context'];
+        $article = null;
 
+        // ========== ÉTAPE 1: Transaction pour création article + données liées ==========
         DB::beginTransaction();
-        
+
         try {
             // 1. Créer l'article
             $article = Article::create([
@@ -749,26 +815,75 @@ PROMPT;
                 'language_id' => $context['language']->id,
                 'theme_id' => $context['theme']->id,
                 'type' => 'blog',
-                
+
                 'title' => $data['title'],
                 'slug' => Str::slug($data['title']),
                 'title_hash' => hash('sha256', $data['title']),
-                
+
                 'content' => $data['content'],
                 'word_count' => $data['word_count'],
                 'reading_time' => (int) ceil($data['word_count'] / 200),
-                
+
                 'meta_title' => $data['meta']['meta_title'] ?? Str::limit($data['title'], 60),
                 'meta_description' => $data['meta']['meta_description'] ?? '',
-                
-                'quality_score' => $data['quality_score'],
-                
+
+                'quality_score' => $data['quality_score'], // Score initial
+
                 'status' => 'draft',
-                
+
                 'generation_cost' => $this->stats['total_cost'],
             ]);
 
-            // ========== ✅ MODIFICATION 2 : VALIDATION COMPLÈTE AVEC 6 CRITÈRES ==========
+            // 2. Créer les FAQs en base avec language_id
+            if (!empty($data['faqs'])) {
+                foreach ($data['faqs'] as $index => $faq) {
+                    $article->faqs()->create([
+                        'question' => $faq['question'],
+                        'answer' => $faq['answer'],
+                        'language_id' => $context['language']->id,
+                        'order' => $index + 1,
+                    ]);
+                }
+            }
+
+            // 3. Créer TitleHistory avec country_id
+            try {
+                \App\Models\TitleHistory::create([
+                    'article_id' => $article->id,
+                    'country_id' => $context['country']->id,
+                    'language_id' => $context['language']->id,
+                    'title' => $data['title'],
+                    'title_hash' => hash('sha256', $data['title']),
+                ]);
+
+                Log::info('TitleHistory créé', ['article_id' => $article->id]);
+            } catch (\Exception $e) {
+                Log::error('Erreur création TitleHistory', [
+                    'article_id' => $article->id,
+                    'error' => $e->getMessage()
+                ]);
+            }
+
+            // 4. Extraire et créer les liens internes
+            $this->extractAndSaveInternalLinks($article, $data['content']);
+
+            // 5. Extraire et créer les liens externes
+            $this->extractAndSaveExternalLinks($article, $data['content']);
+
+            DB::commit();
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('ArticleGenerator: Erreur création article', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+            throw $e;
+        }
+
+        // ========== ÉTAPE 2: Validation qualité HORS transaction ==========
+        // Ceci évite les rollbacks si validateArticle timeout (appels API potentiels)
+        try {
             $qualityCheck = $this->qualityEnforcer->validateArticle($article);
 
             // Mettre à jour article avec score et notes
@@ -800,56 +915,25 @@ PROMPT;
             if ($qualityCheck->overall_score >= 90) {
                 $this->qualityEnforcer->autoMarkAsGolden($article);
             }
-            // ========== FIN VALIDATION COMPLÈTE ==========
 
-            // 2. ✅ Créer les FAQs en base avec language_id
-            if (!empty($data['faqs'])) {
-                foreach ($data['faqs'] as $index => $faq) {
-                    $article->faqs()->create([
-                        'question' => $faq['question'],
-                        'answer' => $faq['answer'],
-                        'language_id' => $context['language']->id,
-                        'order' => $index + 1,
-                    ]);
-                }
-            }
-
-            // 3. ✅ Créer TitleHistory avec country_id
-            try {
-                \App\Models\TitleHistory::create([
-                    'article_id' => $article->id,
-                    'country_id' => $context['country']->id,
-                    'language_id' => $context['language']->id,
-                    'title' => $data['title'],
-                    'title_hash' => hash('sha256', $data['title']),
-                ]);
-                
-                Log::info('TitleHistory créé', ['article_id' => $article->id]);
-            } catch (\Exception $e) {
-                Log::error('Erreur création TitleHistory', [
-                    'article_id' => $article->id,
-                    'error' => $e->getMessage()
-                ]);
-            }
-
-            // 4. ✅ Extraire et créer les liens internes
-            $this->extractAndSaveInternalLinks($article, $data['content']);
-
-            // 5. ✅ Extraire et créer les liens externes
-            $this->extractAndSaveExternalLinks($article, $data['content']);
-
-            DB::commit();
-            
-            return $article;
-            
         } catch (\Exception $e) {
-            DB::rollBack();
-            Log::error('ArticleGenerator: Erreur création article', [
+            // La validation a échoué mais l'article existe - on peut revalider plus tard
+            Log::warning('ArticleGenerator: Validation qualité échouée (article créé)', [
+                'article_id' => $article->id,
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
             ]);
-            throw $e;
+
+            // Marquer l'article pour review manuel
+            $article->status = 'review_needed';
+            $article->validation_notes = json_encode([
+                'validation_error' => $e->getMessage(),
+                'needs_revalidation' => true,
+                'failed_at' => now()->toIso8601String(),
+            ]);
+            $article->save();
         }
+
+        return $article;
     }
 
     /**
@@ -964,22 +1048,27 @@ PROMPT;
      */
     protected function buildContentSystemPrompt(array $context): string
     {
-        // Injection PLATFORM KNOWLEDGE (270 entrées dynamiques)
+        // Utiliser le template si disponible
+        if ($this->hasActiveTemplate()) {
+            return $this->getSystemPrompt();
+        }
+
+        // Fallback : Injection PLATFORM KNOWLEDGE (270 entrées dynamiques)
         $knowledgeContext = $this->knowledgeService->getKnowledgeContext(
             $context['platform'],
             $context['language']->code,
             'articles'
         );
-        
+
         // Fallback si pas de knowledge disponible
-        $platformContext = !empty($knowledgeContext) 
-            ? $knowledgeContext 
+        $platformContext = !empty($knowledgeContext)
+            ? $knowledgeContext
             : "Tu écris pour {$context['platform']->name}, plateforme d'aide aux expatriés.";
 
         return <<<PROMPT
 {$platformContext}
 
-Tu es un expert en expatriation avec connaissance approfondie des démarches administratives, 
+Tu es un expert en expatriation avec connaissance approfondie des démarches administratives,
 juridiques et pratiques pour Français vivant à l'étranger.
 
 Principes de rédaction :
@@ -999,6 +1088,24 @@ PROMPT;
     {
         $this->stats['end_time'] = microtime(true);
         $this->stats['duration_seconds'] = round($this->stats['end_time'] - $this->stats['start_time'], 2);
+
+        // Tracker l'utilisation du template
+        $this->trackTemplateUsage();
+
+        // Stocker l'ID du template utilisé dans les metadata de l'article
+        if ($this->hasActiveTemplate()) {
+            $metadata = $article->metadata ?? [];
+            $metadata['template_id'] = $this->getActiveTemplateId();
+            $metadata['template_slug'] = $this->getActiveTemplateSlug();
+            $article->metadata = $metadata;
+            $article->save();
+
+            Log::info('ArticleGenerator: Template utilisé enregistré', [
+                'article_id' => $article->id,
+                'template_id' => $this->getActiveTemplateId(),
+                'template_slug' => $this->getActiveTemplateSlug(),
+            ]);
+        }
     }
 
     /**

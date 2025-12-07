@@ -3,7 +3,7 @@
 return [
     /*
     |--------------------------------------------------------------------------
-    | Configuration des Services IA - Content Engine V9.4
+    | Configuration des Services IA - Content Engine V9.5
     |--------------------------------------------------------------------------
     |
     | Configuration centralisée pour tous les services d'intelligence artificielle
@@ -22,15 +22,16 @@ return [
         'default_model' => env('OPENAI_DEFAULT_MODEL', 'gpt-4o'),
         'translation_model' => env('OPENAI_TRANSLATION_MODEL', 'gpt-4o-mini'),
         
-        // Limites
+        // Limites et timeouts
         'max_retries' => 3,
-        'timeout' => 180, // 🔧 CORRECTION : 180s au lieu de 120s pour génération complète
+        'timeout' => env('OPENAI_TIMEOUT', 180), // 3 min pour requêtes (configurable)
+        'connect_timeout' => env('OPENAI_CONNECT_TIMEOUT', 10), // 10s pour connexion
         
-        // Tarifs (USD par 1000 tokens) - Mise à jour Mai 2024
+        // Tarifs (USD par 1000 tokens) - Décembre 2025
         'pricing' => [
             'gpt-4-turbo-preview' => ['input' => 0.01, 'output' => 0.03],
-            'gpt-4o' => ['input' => 0.005, 'output' => 0.015],
-            'gpt-4o-mini' => ['input' => 0.00015, 'output' => 0.0006],
+            'gpt-4o' => ['input' => 0.0025, 'output' => 0.01],       // $2.50/1M input, $10/1M output
+            'gpt-4o-mini' => ['input' => 0.00015, 'output' => 0.0006], // $0.15/1M input, $0.60/1M output
             'gpt-3.5-turbo' => ['input' => 0.0005, 'output' => 0.0015],
         ],
     ],
@@ -50,7 +51,7 @@ return [
         
         // Limites
         'max_retries' => 3,
-        'timeout' => 60,
+        'timeout' => env('PERPLEXITY_TIMEOUT', 120), // 2 min pour recherches complexes
         
         // Tarifs
         'pricing' => [
@@ -81,9 +82,10 @@ return [
         'convert_to_webp' => true,
         'webp_quality' => 85,
         
-        // Limites
+        // Limites et timeouts
         'max_retries' => 3,
-        'timeout' => 180, // 🔧 CORRECTION : 180s pour génération + téléchargement
+        'timeout' => env('DALLE_TIMEOUT', 180), // 3 min pour génération (configurable)
+        'connect_timeout' => env('DALLE_CONNECT_TIMEOUT', 10), // 10s pour connexion
         
         // Tarifs (par image)
         'pricing' => [
@@ -112,8 +114,8 @@ return [
             'exceeded' => 100, // Dépassement
         ],
         
-        // Notifications
-        'alert_email' => env('AI_ALERT_EMAIL', env('MAIL_FROM_ADDRESS')),
+        // Notifications (fallback vers config mail si non défini)
+        'alert_email' => env('AI_ALERT_EMAIL'),
         'alert_slack_webhook' => env('AI_ALERT_SLACK_WEBHOOK'),
         
         // Blocage automatique
@@ -159,5 +161,13 @@ return [
         'dalle' => [
             'requests_per_minute' => 7,
         ],
+    ],
+
+    // =========================================================================
+    // HTTP/CURL Settings
+    // =========================================================================
+    'http' => [
+        // SSL verification (set to false only in development)
+        'verify_ssl' => env('CURL_VERIFY_SSL', true),
     ],
 ];

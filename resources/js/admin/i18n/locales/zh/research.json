@@ -1,0 +1,146 @@
+{
+  "title": "研究",
+  "search": {
+    "title": "网络搜索",
+    "query": "搜索查询",
+    "placeholder": "搜索信息...",
+    "results": "结果",
+    "noResults": "未找到结果",
+    "sources": "来源",
+    "sourceCount": "找到{{count}}个来源",
+    "relevance": "相关性",
+    "date": "日期",
+    "cached": "缓存结果",
+    "refresh": "刷新",
+    "saveResults": "保存结果",
+    "useInContent": "用于内容",
+    "filters": {
+      "dateRange": "日期范围",
+      "sourceType": "来源类型",
+      "language": "语言",
+      "country": "国家"
+    }
+  },
+  "factCheck": {
+    "title": "事实核查",
+    "description": "验证信息准确性",
+    "claims": "声明",
+    "addClaim": "添加声明",
+    "verify": "验证",
+    "verifyAll": "验证全部",
+    "verification": {
+      "verified": "已验证",
+      "unverified": "未验证",
+      "disputed": "有争议",
+      "false": "虚假",
+      "partiallyTrue": "部分真实"
+    },
+    "confidence": {
+      "title": "置信度",
+      "high": "高",
+      "medium": "中",
+      "low": "低"
+    },
+    "sources": {
+      "title": "验证来源",
+      "primary": "主要来源",
+      "secondary": "次要来源",
+      "addSource": "添加来源"
+    },
+    "report": {
+      "generate": "生成报告",
+      "export": "导出"
+    }
+  },
+  "mining": {
+    "title": "自动挖掘",
+    "description": "自动信息提取",
+    "config": {
+      "title": "配置",
+      "sources": "监控来源",
+      "frequency": "频率",
+      "topics": "关注话题",
+      "keywords": "关键词"
+    },
+    "frequency": {
+      "hourly": "每小时",
+      "daily": "每天",
+      "weekly": "每周"
+    },
+    "topics": {
+      "add": "添加话题",
+      "edit": "编辑",
+      "delete": "删除"
+    },
+    "auto": {
+      "enabled": "自动挖掘已启用",
+      "disabled": "自动挖掘已禁用",
+      "toggle": "启用/禁用"
+    },
+    "results": {
+      "title": "挖掘结果",
+      "new": "新信息",
+      "reviewed": "已审核",
+      "saved": "已保存",
+      "ignored": "已忽略"
+    }
+  },
+  "sources": {
+    "title": "来源管理",
+    "add": "添加来源",
+    "edit": "编辑来源",
+    "delete": "删除来源",
+    "priority": {
+      "title": "优先级",
+      "high": "高",
+      "medium": "中",
+      "low": "低"
+    },
+    "reliability": {
+      "title": "可靠性",
+      "trusted": "可信",
+      "neutral": "中立",
+      "untrusted": "不可信"
+    },
+    "types": {
+      "official": "官方",
+      "news": "新闻",
+      "academic": "学术",
+      "blog": "博客",
+      "social": "社交媒体",
+      "other": "其他"
+    },
+    "fields": {
+      "name": "名称",
+      "url": "URL",
+      "type": "类型",
+      "priority": "优先级",
+      "reliability": "可靠性",
+      "notes": "备注"
+    }
+  },
+  "cache": {
+    "title": "搜索缓存",
+    "entries": "缓存条目",
+    "size": "缓存大小",
+    "clear": "清除缓存",
+    "clearConfirm": "确定要清除缓存吗？",
+    "expiration": "过期时间",
+    "hitRate": "命中率"
+  },
+  "actions": {
+    "search": "搜索",
+    "verify": "验证",
+    "save": "保存",
+    "export": "导出",
+    "refresh": "刷新"
+  },
+  "messages": {
+    "searching": "搜索中...",
+    "verifying": "验证中...",
+    "saved": "结果已保存",
+    "cacheCleared": "缓存已清除",
+    "miningStarted": "挖掘已开始",
+    "miningStopped": "挖掘已停止"
+  }
+}

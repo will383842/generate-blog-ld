@@ -1,0 +1,106 @@
+{
+  "title": "Analysen",
+  "description": "Statistiken und Analysen",
+  "performance": {
+    "title": "Leistung",
+    "description": "Leistungskennzahlen",
+    "pageViews": "Seitenaufrufe",
+    "uniqueVisitors": "Eindeutige Besucher",
+    "sessions": "Sitzungen",
+    "bounceRate": "Absprungrate",
+    "avgSessionDuration": "Durchschnittliche Dauer",
+    "pagesPerSession": "Seiten pro Sitzung",
+    "newUsers": "Neue Benutzer",
+    "returningUsers": "Wiederkehrende Benutzer",
+    "conversionRate": "Konversionsrate"
+  },
+  "content": {
+    "title": "Inhalt",
+    "description": "Inhaltsleistung",
+    "topArticles": "Top-Artikel",
+    "recentArticles": "Neueste Artikel",
+    "articleViews": "Aufrufe",
+    "avgTimeOnPage": "Durchschnittliche Zeit",
+    "engagement": "Engagement",
+    "shares": "Shares",
+    "comments": "Kommentare",
+    "byCategory": "Nach Kategorie",
+    "byAuthor": "Nach Autor",
+    "byTag": "Nach Tag"
+  },
+  "reports": {
+    "title": "Berichte",
+    "description": "Berichte erstellen",
+    "generate": "Bericht erstellen",
+    "schedule": "Planen",
+    "download": "Herunterladen",
+    "send": "Per E-Mail senden",
+    "type": "Berichtstyp",
+    "period": "Zeitraum",
+    "format": "Format",
+    "recipients": "Empfänger",
+    "types": {
+      "overview": "Übersicht",
+      "performance": "Leistung",
+      "content": "Inhalt",
+      "seo": "SEO",
+      "generation": "Generierung",
+      "custom": "Benutzerdefiniert"
+    },
+    "periods": {
+      "today": "Heute",
+      "yesterday": "Gestern",
+      "last7days": "Letzte 7 Tage",
+      "last30days": "Letzte 30 Tage",
+      "thisMonth": "Dieser Monat",
+      "lastMonth": "Letzter Monat",
+      "custom": "Benutzerdefiniert"
+    },
+    "formats": {
+      "pdf": "PDF",
+      "csv": "CSV",
+      "excel": "Excel"
+    },
+    "scheduled": "Geplante Berichte",
+    "history": "Verlauf"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "overview": "Übersicht",
+    "quickStats": "Schnellstatistiken",
+    "recentActivity": "Letzte Aktivität",
+    "trends": "Trends",
+    "compare": "Vergleichen"
+  },
+  "filters": {
+    "dateRange": "Datumsbereich",
+    "platform": "Plattform",
+    "country": "Land",
+    "device": "Gerät",
+    "source": "Quelle",
+    "apply": "Anwenden",
+    "reset": "Zurücksetzen"
+  },
+  "charts": {
+    "line": "Linie",
+    "bar": "Balken",
+    "pie": "Kreis",
+    "area": "Fläche",
+    "export": "Exportieren",
+    "noData": "Keine Daten"
+  },
+  "compare": {
+    "title": "Vergleich",
+    "period1": "Zeitraum 1",
+    "period2": "Zeitraum 2",
+    "increase": "Zunahme",
+    "decrease": "Abnahme",
+    "noChange": "Keine Änderung"
+  },
+  "realtime": {
+    "title": "Echtzeit",
+    "activeUsers": "Aktive Benutzer",
+    "pageViews": "Seitenaufrufe",
+    "topPages": "Top-Seiten"
+  }
+}

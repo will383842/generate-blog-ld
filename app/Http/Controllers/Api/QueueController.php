@@ -4,9 +4,15 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\GenerationQueue;
+use App\Jobs\ProcessArticle;
+use App\Jobs\ProcessLanding;
+use App\Jobs\ProcessComparative;
+use App\Jobs\ProcessProgram;
+use App\Jobs\ProcessManualTitle;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 /**
  * QueueController - Gestion de la queue de génération
@@ -137,7 +143,7 @@ class QueueController extends Controller
 
     /**
      * Relancer un élément échoué
-     * 
+     *
      * POST /api/queue/{id}/retry
      */
     public function retry(int $id): JsonResponse
@@ -153,13 +159,28 @@ class QueueController extends Controller
                 ], 400);
             }
 
+            // Réinitialiser le statut
             $item->update([
                 'status' => 'pending',
                 'error_message' => null,
+                'attempts' => 0,
             ]);
 
             // Re-dispatcher le job selon le type
-            // TODO: Implémenter la logique de re-dispatch
+            $dispatched = $this->dispatchJobByType($item);
+
+            if (!$dispatched) {
+                Log::warning('Type de job non reconnu pour re-dispatch', [
+                    'queue_id' => $id,
+                    'type' => $item->type,
+                ]);
+            }
+
+            Log::info('Job re-dispatché depuis la queue', [
+                'queue_id' => $id,
+                'type' => $item->type,
+                'dispatched' => $dispatched,
+            ]);
 
             return response()->json([
                 'success' => true,
@@ -167,13 +188,154 @@ class QueueController extends Controller
                 'data' => [
                     'id' => $id,
                     'status' => 'pending',
+                    'type' => $item->type,
+                    'dispatched' => $dispatched,
+                ],
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Erreur lors du re-dispatch', [
+                'queue_id' => $id,
+                'error' => $e->getMessage(),
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Erreur lors du relancement',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Dispatcher un job selon son type
+     *
+     * @param GenerationQueue $item
+     * @return bool True si le job a été dispatché
+     */
+    protected function dispatchJobByType(GenerationQueue $item): bool
+    {
+        $queueName = $item->priority === 'high' ? 'high' : 'default';
+
+        switch ($item->type) {
+            case 'article':
+                ProcessArticle::dispatch(
+                    $item->platform_id,
+                    $item->country_id,
+                    $item->theme_type,
+                    $item->theme_id,
+                    $item->languages ?? ['fr']
+                )->onQueue($queueName);
+                return true;
+
+            case 'landing':
+                ProcessLanding::dispatch(
+                    $item->platform_id,
+                    $item->country_id,
+                    $item->theme_id,
+                    $item->languages ?? ['fr']
+                )->onQueue($queueName);
+                return true;
+
+            case 'comparative':
+                ProcessComparative::dispatch(
+                    $item->platform_id,
+                    $item->country_id,
+                    $item->theme_id ?? 0,
+                    $item->languages ?? ['fr']
+                )->onQueue($queueName);
+                return true;
+
+            case 'program':
+                ProcessProgram::dispatch(
+                    $item->platform_id,
+                    $item->country_id,
+                    $item->theme_id ?? 0,
+                    $item->languages ?? ['fr']
+                )->onQueue($queueName);
+                return true;
+
+            case 'manual_title':
+                // Pour les titres manuels, on doit retrouver le ManualTitle associé
+                if (!empty($item->batch_uuid)) {
+                    $manualTitle = \App\Models\ManualTitle::where('batch_uuid', $item->batch_uuid)->first();
+                    if ($manualTitle) {
+                        ProcessManualTitle::dispatch($manualTitle)->onQueue($queueName);
+                        return true;
+                    }
+                }
+                return false;
+
+            default:
+                // Type non reconnu - on log mais on ne bloque pas
+                Log::warning('Type de génération non géré pour re-dispatch', [
+                    'type' => $item->type,
+                    'queue_id' => $item->id,
+                ]);
+                return false;
+        }
+    }
+
+    /**
+     * Relancer tous les éléments échoués
+     *
+     * POST /api/queue/retry-all
+     */
+    public function retryAll(): JsonResponse
+    {
+        try {
+            $failedItems = GenerationQueue::where('status', 'failed')->get();
+
+            if ($failedItems->isEmpty()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Aucun élément échoué à relancer',
+                    'data' => ['retried' => 0],
+                ]);
+            }
+
+            $retried = 0;
+            $errors = [];
+
+            foreach ($failedItems as $item) {
+                try {
+                    $item->update([
+                        'status' => 'pending',
+                        'error_message' => null,
+                        'attempts' => 0,
+                    ]);
+
+                    $this->dispatchJobByType($item);
+                    $retried++;
+
+                } catch (\Exception $e) {
+                    $errors[] = [
+                        'id' => $item->id,
+                        'error' => $e->getMessage(),
+                    ];
+                }
+            }
+
+            Log::info('Retry batch terminé', [
+                'total' => $failedItems->count(),
+                'retried' => $retried,
+                'errors' => count($errors),
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => "{$retried} éléments relancés avec succès",
+                'data' => [
+                    'total' => $failedItems->count(),
+                    'retried' => $retried,
+                    'errors' => $errors,
                 ],
             ]);
 
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Erreur lors du relancement',
+                'message' => 'Erreur lors du relancement groupé',
                 'error' => $e->getMessage(),
             ], 500);
         }

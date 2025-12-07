@@ -1,0 +1,109 @@
+{
+  "titles": {
+    "main": "لوحة التحكم",
+    "platform": "لوحة تحكم المنصة",
+    "overview": "نظرة عامة",
+    "activity": "النشاط الأخير"
+  },
+  "stats": {
+    "totalArticles": "إجمالي المقالات",
+    "totalGenerated": "تم إنشاؤها",
+    "totalPublished": "منشورة",
+    "totalDraft": "مسودات",
+    "totalScheduled": "مجدولة",
+    "totalCost": "التكلفة الإجمالية",
+    "avgQuality": "متوسط الجودة",
+    "coverage": "التغطية",
+    "thisMonth": "هذا الشهر",
+    "lastMonth": "الشهر الماضي",
+    "variation": "{{value}}% مقارنة بالفترة السابقة",
+    "increase": "+{{value}}%",
+    "decrease": "-{{value}}%"
+  },
+  "charts": {
+    "production": {
+      "title": "الإنتاج",
+      "subtitle": "المقالات المنشأة يومياً",
+      "articles": "مقالات",
+      "pillars": "مقالات أساسية",
+      "comparatives": "مقارنات",
+      "landings": "صفحات هبوط",
+      "press": "بيانات صحفية"
+    },
+    "costs": {
+      "title": "تكاليف الذكاء الاصطناعي",
+      "subtitle": "النفقات حسب النموذج",
+      "daily": "يومي",
+      "cumulative": "تراكمي",
+      "budget": "الميزانية",
+      "actual": "الفعلي"
+    },
+    "quality": {
+      "title": "الجودة",
+      "subtitle": "متوسط الدرجات حسب النوع",
+      "distribution": "توزيع الدرجات"
+    },
+    "coverage": {
+      "title": "التغطية",
+      "subtitle": "التقدم حسب المنطقة",
+      "countries": "الدول المغطاة",
+      "languages": "اللغات النشطة"
+    }
+  },
+  "activity": {
+    "title": "النشاط الأخير",
+    "stream": "تدفق النشاط",
+    "events": {
+      "created": "{{user}} أنشأ {{item}}",
+      "published": "تم نشر {{item}}",
+      "generated": "تم إنشاء {{count}} مقالات",
+      "error": "خطأ في الإنشاء: {{message}}",
+      "scheduled": "{{item}} مجدول لـ {{date}}",
+      "qualityCheck": "اكتمل فحص الجودة"
+    },
+    "showMore": "عرض المزيد",
+    "noActivity": "لا يوجد نشاط حديث"
+  },
+  "periods": {
+    "last7days": "آخر 7 أيام",
+    "last30days": "آخر 30 يوماً",
+    "last90days": "آخر 90 يوماً",
+    "thisMonth": "هذا الشهر",
+    "lastMonth": "الشهر الماضي",
+    "thisYear": "هذا العام",
+    "custom": "مخصص"
+  },
+  "alerts": {
+    "budgetWarning": "تحذير: تم استخدام {{percentage}}% من الميزانية الشهرية",
+    "budgetCritical": "حرج: تم تجاوز الميزانية الشهرية بـ {{amount}}",
+    "errorRate": "معدل أخطاء مرتفع: {{rate}}%",
+    "queueBacklog": "{{count}} عناصر في انتظار المعالجة",
+    "qualityDrop": "انخفاض الجودة في {{count}} مقالات",
+    "coverageGap": "{{count}} دول بدون محتوى حديث"
+  },
+  "widgets": {
+    "quickActions": {
+      "title": "إجراءات سريعة",
+      "newProgram": "برنامج جديد",
+      "generateContent": "إنشاء محتوى",
+      "viewQueue": "عرض قائمة الانتظار",
+      "exportReport": "تصدير تقرير"
+    },
+    "topPerformers": {
+      "title": "أفضل المحتوى",
+      "views": "{{count}} مشاهدة",
+      "engagement": "{{rate}}% تفاعل"
+    },
+    "pendingTasks": {
+      "title": "المهام المعلقة",
+      "review": "للمراجعة",
+      "publish": "للنشر",
+      "translate": "للترجمة"
+    }
+  },
+  "platforms": {
+    "select": "اختر منصة",
+    "all": "جميع المنصات",
+    "compare": "مقارنة المنصات"
+  }
+}

@@ -1,0 +1,99 @@
+{
+  "title": "Quality",
+  "description": "Content quality control",
+  "scores": {
+    "title": "Quality scores",
+    "description": "Quality score analysis",
+    "overall": "Overall score",
+    "seo": "SEO",
+    "readability": "Readability",
+    "originality": "Originality",
+    "structure": "Structure",
+    "grammar": "Grammar",
+    "engagement": "Engagement",
+    "distribution": "Score distribution",
+    "trend": "Trend",
+    "average": "Average",
+    "minimum": "Minimum",
+    "maximum": "Maximum"
+  },
+  "review": {
+    "title": "Review",
+    "description": "Articles pending review",
+    "pendingReview": "Pending review",
+    "needsImprovement": "Needs improvement",
+    "approved": "Approved",
+    "rejected": "Rejected",
+    "approve": "Approve",
+    "reject": "Reject",
+    "requestChanges": "Request changes",
+    "sendToEditor": "Send to editor",
+    "bulkApprove": "Approve selected",
+    "bulkReject": "Reject selected",
+    "empty": "No articles in review"
+  },
+  "rules": {
+    "title": "Quality rules",
+    "description": "Configure validation rules",
+    "add": "New rule",
+    "edit": "Edit",
+    "delete": "Delete",
+    "enable": "Enable",
+    "disable": "Disable",
+    "name": "Name",
+    "description": "Description",
+    "type": "Type",
+    "threshold": "Threshold",
+    "weight": "Weight",
+    "action": "Action",
+    "categories": {
+      "seo": "SEO",
+      "readability": "Readability",
+      "grammar": "Grammar",
+      "structure": "Structure",
+      "content": "Content"
+    },
+    "actions": {
+      "warn": "Warn",
+      "block": "Block",
+      "flag": "Flag"
+    },
+    "empty": "No rules configured"
+  },
+  "analysis": {
+    "title": "Analysis",
+    "analyzing": "Analyzing...",
+    "issues": "Issues detected",
+    "warnings": "Warnings",
+    "suggestions": "Suggestions",
+    "passed": "Passed",
+    "fix": "Fix",
+    "ignore": "Ignore",
+    "fixAll": "Fix all"
+  },
+  "levels": {
+    "excellent": "Excellent",
+    "good": "Good",
+    "average": "Average",
+    "poor": "Poor",
+    "critical": "Critical"
+  },
+  "metrics": {
+    "wordCount": "Word count",
+    "sentenceCount": "Sentence count",
+    "paragraphCount": "Paragraphs",
+    "avgSentenceLength": "Average sentence length",
+    "avgWordLength": "Average word length",
+    "readingTime": "Reading time",
+    "fleschScore": "Flesch score",
+    "keywordDensity": "Keyword density"
+  },
+  "stats": {
+    "totalAnalyzed": "Total analyzed",
+    "avgScore": "Average score",
+    "excellent": "Excellent",
+    "good": "Good",
+    "average": "Average",
+    "poor": "Poor"
+  }
+}

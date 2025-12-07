@@ -1,0 +1,146 @@
+{
+  "title": "Recherche",
+  "search": {
+    "title": "Recherche web",
+    "query": "Requête de recherche",
+    "placeholder": "Rechercher des informations...",
+    "results": "Résultats",
+    "noResults": "Aucun résultat trouvé",
+    "sources": "Sources",
+    "sourceCount": "{{count}} source(s) trouvée(s)",
+    "relevance": "Pertinence",
+    "date": "Date",
+    "cached": "Résultats en cache",
+    "refresh": "Actualiser",
+    "saveResults": "Sauvegarder les résultats",
+    "useInContent": "Utiliser dans le contenu",
+    "filters": {
+      "dateRange": "Période",
+      "sourceType": "Type de source",
+      "language": "Langue",
+      "country": "Pays"
+    }
+  },
+  "factCheck": {
+    "title": "Vérification des faits",
+    "description": "Vérifiez l'exactitude des informations",
+    "claims": "Affirmations",
+    "addClaim": "Ajouter une affirmation",
+    "verify": "Vérifier",
+    "verifyAll": "Tout vérifier",
+    "verification": {
+      "verified": "Vérifié",
+      "unverified": "Non vérifié",
+      "disputed": "Contesté",
+      "false": "Faux",
+      "partiallyTrue": "Partiellement vrai"
+    },
+    "confidence": {
+      "title": "Niveau de confiance",
+      "high": "Élevé",
+      "medium": "Moyen",
+      "low": "Faible"
+    },
+    "sources": {
+      "title": "Sources de vérification",
+      "primary": "Sources primaires",
+      "secondary": "Sources secondaires",
+      "addSource": "Ajouter une source"
+    },
+    "report": {
+      "generate": "Générer un rapport",
+      "export": "Exporter"
+    }
+  },
+  "mining": {
+    "title": "Mining automatique",
+    "description": "Extraction automatique d'informations",
+    "config": {
+      "title": "Configuration",
+      "sources": "Sources à surveiller",
+      "frequency": "Fréquence",
+      "topics": "Sujets à suivre",
+      "keywords": "Mots-clés"
+    },
+    "frequency": {
+      "hourly": "Toutes les heures",
+      "daily": "Quotidien",
+      "weekly": "Hebdomadaire"
+    },
+    "topics": {
+      "add": "Ajouter un sujet",
+      "edit": "Modifier",
+      "delete": "Supprimer"
+    },
+    "auto": {
+      "enabled": "Mining automatique activé",
+      "disabled": "Mining automatique désactivé",
+      "toggle": "Activer/Désactiver"
+    },
+    "results": {
+      "title": "Résultats du mining",
+      "new": "Nouvelles informations",
+      "reviewed": "Examinées",
+      "saved": "Sauvegardées",
+      "ignored": "Ignorées"
+    }
+  },
+  "sources": {
+    "title": "Gestion des sources",
+    "add": "Ajouter une source",
+    "edit": "Modifier la source",
+    "delete": "Supprimer la source",
+    "priority": {
+      "title": "Priorité",
+      "high": "Haute",
+      "medium": "Moyenne",
+      "low": "Basse"
+    },
+    "reliability": {
+      "title": "Fiabilité",
+      "trusted": "Fiable",
+      "neutral": "Neutre",
+      "untrusted": "Non fiable"
+    },
+    "types": {
+      "official": "Officiel",
+      "news": "Actualités",
+      "academic": "Académique",
+      "blog": "Blog",
+      "social": "Réseaux sociaux",
+      "other": "Autre"
+    },
+    "fields": {
+      "name": "Nom",
+      "url": "URL",
+      "type": "Type",
+      "priority": "Priorité",
+      "reliability": "Fiabilité",
+      "notes": "Notes"
+    }
+  },
+  "cache": {
+    "title": "Cache de recherche",
+    "entries": "Entrées en cache",
+    "size": "Taille du cache",
+    "clear": "Vider le cache",
+    "clearConfirm": "Voulez-vous vraiment vider le cache ?",
+    "expiration": "Expiration",
+    "hitRate": "Taux de succès"
+  },
+  "actions": {
+    "search": "Rechercher",
+    "verify": "Vérifier",
+    "save": "Sauvegarder",
+    "export": "Exporter",
+    "refresh": "Actualiser"
+  },
+  "messages": {
+    "searching": "Recherche en cours...",
+    "verifying": "Vérification en cours...",
+    "saved": "Résultats sauvegardés",
+    "cacheCleared": "Cache vidé",
+    "miningStarted": "Mining démarré",
+    "miningStopped": "Mining arrêté"
+  }
+}

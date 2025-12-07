@@ -1,0 +1,178 @@
+{
+  "title": "管理",
+  "description": "系统管理",
+  "users": {
+    "title": "用户",
+    "description": "管理用户",
+    "add": "新建用户",
+    "edit": "编辑",
+    "delete": "删除",
+    "invite": "邀请",
+    "fields": {
+      "name": "姓名",
+      "email": "邮箱",
+      "role": "角色",
+      "status": "状态",
+      "createdAt": "创建时间",
+      "lastLogin": "最后登录"
+    },
+    "status": {
+      "active": "活跃",
+      "inactive": "未激活",
+      "pending": "待处理"
+    },
+    "actions": {
+      "activate": "激活",
+      "deactivate": "停用",
+      "resetPassword": "重置密码",
+      "impersonate": "以此身份登录"
+    },
+    "empty": "暂无用户"
+  },
+  "roles": {
+    "title": "角色",
+    "description": "管理角色",
+    "add": "新建角色",
+    "edit": "编辑",
+    "delete": "删除",
+    "fields": {
+      "name": "名称",
+      "description": "描述",
+      "permissions": "权限",
+      "usersCount": "用户数"
+    },
+    "default": {
+      "admin": "管理员",
+      "editor": "编辑",
+      "author": "作者",
+      "viewer": "查看者"
+    },
+    "empty": "暂无角色"
+  },
+  "permissions": {
+    "title": "权限",
+    "description": "管理权限",
+    "categories": {
+      "content": "内容",
+      "programs": "程序",
+      "publishing": "发布",
+      "settings": "设置",
+      "admin": "管理"
+    },
+    "actions": {
+      "view": "查看",
+      "create": "创建",
+      "edit": "编辑",
+      "delete": "删除",
+      "manage": "管理"
+    }
+  },
+  "activity": {
+    "title": "活动",
+    "description": "活动日志",
+    "user": "用户",
+    "action": "操作",
+    "target": "目标",
+    "ip": "IP地址",
+    "timestamp": "时间戳",
+    "details": "详情",
+    "filters": {
+      "user": "用户",
+      "action": "操作",
+      "dateRange": "日期范围"
+    },
+    "empty": "暂无活动"
+  },
+  "system": {
+    "title": "系统",
+    "description": "系统信息",
+    "version": "版本",
+    "environment": "环境",
+    "phpVersion": "PHP版本",
+    "laravelVersion": "Laravel版本",
+    "databaseSize": "数据库大小",
+    "diskUsage": "磁盘使用",
+    "memoryUsage": "内存",
+    "uptime": "运行时间",
+    "lastUpdate": "最后更新",
+    "health": "健康状态",
+    "healthy": "健康",
+    "warning": "警告",
+    "critical": "严重"
+  },
+  "workers": {
+    "title": "工作进程",
+    "description": "工作进程管理",
+    "status": "状态",
+    "queue": "队列",
+    "jobs": "任务",
+    "failed": "失败",
+    "processed": "已处理",
+    "memory": "内存",
+    "uptime": "运行时间",
+    "start": "启动",
+    "stop": "停止",
+    "restart": "重启",
+    "empty": "暂无工作进程"
+  },
+  "errors": {
+    "title": "错误",
+    "description": "错误日志",
+    "message": "消息",
+    "file": "文件",
+    "line": "行号",
+    "trace": "堆栈跟踪",
+    "occurrences": "出现次数",
+    "lastOccurrence": "最后出现",
+    "resolve": "解决",
+    "ignore": "忽略",
+    "empty": "暂无错误"
+  },
+  "backups": {
+    "title": "备份",
+    "description": "备份管理",
+    "create": "创建备份",
+    "restore": "恢复",
+    "download": "下载",
+    "delete": "删除",
+    "name": "名称",
+    "size": "大小",
+    "createdAt": "创建时间",
+    "type": "类型",
+    "status": "状态",
+    "types": {
+      "full": "完整",
+      "database": "数据库",
+      "files": "文件"
+    },
+    "schedule": "计划",
+    "lastBackup": "最后备份",
+    "nextBackup": "下次备份",
+    "empty": "暂无备份"
+  },
+  "settings": {
+    "title": "系统设置",
+    "description": "高级配置",
+    "cache": {
+      "title": "缓存",
+      "clear": "清除缓存",
+      "clearAll": "清除所有缓存",
+      "config": "配置缓存",
+      "routes": "路由缓存",
+      "views": "视图缓存"
+    },
+    "maintenance": {
+      "title": "维护",
+      "enable": "启用维护模式",
+      "disable": "禁用维护模式",
+      "status": "状态",
+      "message": "消息"
+    },
+    "logs": {
+      "title": "日志",
+      "view": "查看日志",
+      "download": "下载",
+      "clear": "清除日志"
+    }
+  }
+}

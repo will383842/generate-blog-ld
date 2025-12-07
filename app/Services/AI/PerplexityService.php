@@ -347,7 +347,7 @@ PROMPT;
             ])->timeout(config('ai.perplexity.timeout', 60));
 
             // 🔧 CORRECTION SSL : Désactiver vérification SSL en développement
-            if (config('app.env') === 'local' || env('CURL_VERIFY_SSL') === 'false') {
+            if (config('app.env') === 'local' || !config('ai.http.verify_ssl')) {
                 $httpClient = $httpClient->withOptions(['verify' => false]);
             }
 

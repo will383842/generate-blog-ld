@@ -1,0 +1,178 @@
+{
+  "title": "Administration",
+  "description": "Gestion du système",
+  "users": {
+    "title": "Utilisateurs",
+    "description": "Gérez les utilisateurs",
+    "add": "Nouvel utilisateur",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "invite": "Inviter",
+    "fields": {
+      "name": "Nom",
+      "email": "Email",
+      "role": "Rôle",
+      "status": "Statut",
+      "createdAt": "Créé le",
+      "lastLogin": "Dernière connexion"
+    },
+    "status": {
+      "active": "Actif",
+      "inactive": "Inactif",
+      "pending": "En attente"
+    },
+    "actions": {
+      "activate": "Activer",
+      "deactivate": "Désactiver",
+      "resetPassword": "Réinitialiser le mot de passe",
+      "impersonate": "Se connecter en tant que"
+    },
+    "empty": "Aucun utilisateur"
+  },
+  "roles": {
+    "title": "Rôles",
+    "description": "Gérez les rôles",
+    "add": "Nouveau rôle",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "fields": {
+      "name": "Nom",
+      "description": "Description",
+      "permissions": "Permissions",
+      "usersCount": "Utilisateurs"
+    },
+    "default": {
+      "admin": "Administrateur",
+      "editor": "Éditeur",
+      "author": "Auteur",
+      "viewer": "Lecteur"
+    },
+    "empty": "Aucun rôle"
+  },
+  "permissions": {
+    "title": "Permissions",
+    "description": "Gérez les permissions",
+    "categories": {
+      "content": "Contenu",
+      "programs": "Programmes",
+      "publishing": "Publication",
+      "settings": "Paramètres",
+      "admin": "Administration"
+    },
+    "actions": {
+      "view": "Voir",
+      "create": "Créer",
+      "edit": "Modifier",
+      "delete": "Supprimer",
+      "manage": "Gérer"
+    }
+  },
+  "activity": {
+    "title": "Activité",
+    "description": "Journal d'activité",
+    "user": "Utilisateur",
+    "action": "Action",
+    "target": "Cible",
+    "ip": "Adresse IP",
+    "timestamp": "Date/Heure",
+    "details": "Détails",
+    "filters": {
+      "user": "Utilisateur",
+      "action": "Action",
+      "dateRange": "Période"
+    },
+    "empty": "Aucune activité"
+  },
+  "system": {
+    "title": "Système",
+    "description": "Informations système",
+    "version": "Version",
+    "environment": "Environnement",
+    "phpVersion": "Version PHP",
+    "laravelVersion": "Version Laravel",
+    "databaseSize": "Taille BDD",
+    "diskUsage": "Espace disque",
+    "memoryUsage": "Mémoire",
+    "uptime": "Uptime",
+    "lastUpdate": "Dernière mise à jour",
+    "health": "État de santé",
+    "healthy": "Sain",
+    "warning": "Avertissement",
+    "critical": "Critique"
+  },
+  "workers": {
+    "title": "Workers",
+    "description": "Gestion des workers",
+    "status": "Statut",
+    "queue": "Queue",
+    "jobs": "Jobs",
+    "failed": "Échoués",
+    "processed": "Traités",
+    "memory": "Mémoire",
+    "uptime": "Uptime",
+    "start": "Démarrer",
+    "stop": "Arrêter",
+    "restart": "Redémarrer",
+    "empty": "Aucun worker"
+  },
+  "errors": {
+    "title": "Erreurs",
+    "description": "Journal des erreurs",
+    "message": "Message",
+    "file": "Fichier",
+    "line": "Ligne",
+    "trace": "Trace",
+    "occurrences": "Occurrences",
+    "lastOccurrence": "Dernière occurrence",
+    "resolve": "Résoudre",
+    "ignore": "Ignorer",
+    "empty": "Aucune erreur"
+  },
+  "backups": {
+    "title": "Sauvegardes",
+    "description": "Gestion des sauvegardes",
+    "create": "Créer une sauvegarde",
+    "restore": "Restaurer",
+    "download": "Télécharger",
+    "delete": "Supprimer",
+    "name": "Nom",
+    "size": "Taille",
+    "createdAt": "Créé le",
+    "type": "Type",
+    "status": "Statut",
+    "types": {
+      "full": "Complète",
+      "database": "Base de données",
+      "files": "Fichiers"
+    },
+    "schedule": "Planification",
+    "lastBackup": "Dernière sauvegarde",
+    "nextBackup": "Prochaine sauvegarde",
+    "empty": "Aucune sauvegarde"
+  },
+  "settings": {
+    "title": "Paramètres système",
+    "description": "Configuration avancée",
+    "cache": {
+      "title": "Cache",
+      "clear": "Vider le cache",
+      "clearAll": "Vider tout le cache",
+      "config": "Cache de configuration",
+      "routes": "Cache des routes",
+      "views": "Cache des vues"
+    },
+    "maintenance": {
+      "title": "Maintenance",
+      "enable": "Activer le mode maintenance",
+      "disable": "Désactiver le mode maintenance",
+      "status": "Statut",
+      "message": "Message"
+    },
+    "logs": {
+      "title": "Logs",
+      "view": "Voir les logs",
+      "download": "Télécharger",
+      "clear": "Vider les logs"
+    }
+  }
+}

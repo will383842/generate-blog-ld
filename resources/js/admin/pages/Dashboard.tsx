@@ -1,8 +1,8 @@
-﻿import { FileText, Globe, Languages, DollarSign } from 'lucide-react';
+import { FileText, Globe, Languages, DollarSign } from 'lucide-react';
 import { StatCard } from '@/components/StatCard';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
-import { LoadingSpinner } from '@/components/LoadingSpinner';
+import { DashboardSkeleton } from '@/components/skeletons/DashboardSkeleton';
 import { useNavigate } from 'react-router-dom';
 import { useDashboardStats } from '@/hooks/useStats';
 
@@ -11,11 +11,7 @@ export default function Dashboard() {
   const { data: statsData, isLoading } = useDashboardStats();
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center h-96">
-        <LoadingSpinner />
-      </div>
-    );
+    return <DashboardSkeleton />;
   }
 
   const stats = statsData?.data;
@@ -24,39 +20,33 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-6">
-      {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatCard
           title="Articles Total"
           value={articles.total?.toLocaleString('fr-FR') || '0'}
-          icon={<FileText className="w-6 h-6" />}
-          color="blue"
+          icon={FileText}
         />
         <StatCard
           title="Publiés"
           value={articles.published?.toLocaleString('fr-FR') || '0'}
-          icon={<Globe className="w-6 h-6" />}
-          color="green"
+          icon={Globe}
         />
         <StatCard
           title="Brouillons"
           value={articles.draft?.toLocaleString('fr-FR') || '0'}
-          icon={<Languages className="w-6 h-6" />}
-          color="purple"
+          icon={Languages}
         />
         <StatCard
           title="Coûts ce mois"
           value={`$${costs.month?.toFixed(2) || '0.00'}`}
-          icon={<DollarSign className="w-6 h-6" />}
-          color="orange"
+          icon={DollarSign}
         />
       </div>
 
-      {/* Quick Actions */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <Card
           className="cursor-pointer hover:shadow-lg transition-shadow"
-          onClick={() => navigate('/admin/coverage')}
+          onClick={() => navigate('/coverage')}
         >
           <CardHeader>
             <CardTitle>Coverage Matrix</CardTitle>
@@ -73,7 +63,7 @@ export default function Dashboard() {
 
         <Card
           className="cursor-pointer hover:shadow-lg transition-shadow"
-          onClick={() => navigate('/admin/generation')}
+          onClick={() => navigate('/generation')}
         >
           <CardHeader>
             <CardTitle>Générer du contenu</CardTitle>
@@ -90,7 +80,7 @@ export default function Dashboard() {
 
         <Card
           className="cursor-pointer hover:shadow-lg transition-shadow"
-          onClick={() => navigate('/admin/content')}
+          onClick={() => navigate('/content')}
         >
           <CardHeader>
             <CardTitle>Content Hub</CardTitle>
@@ -106,7 +96,6 @@ export default function Dashboard() {
         </Card>
       </div>
 
-      {/* Recent Activity */}
       <Card>
         <CardHeader>
           <CardTitle>Activité récente (24h)</CardTitle>

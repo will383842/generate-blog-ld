@@ -1,0 +1,143 @@
+{
+  "title": "AI और लागत",
+  "models": {
+    "title": "AI मॉडल",
+    "gpt4": "GPT-4",
+    "gpt4Turbo": "GPT-4 Turbo",
+    "gpt35": "GPT-3.5 Turbo",
+    "claude": "Claude",
+    "claudeInstant": "Claude Instant",
+    "perplexity": "Perplexity",
+    "dalle": "DALL-E",
+    "active": "सक्रिय",
+    "inactive": "निष्क्रिय",
+    "default": "डिफ़ॉल्ट",
+    "setDefault": "डिफ़ॉल्ट के रूप में सेट करें"
+  },
+  "costs": {
+    "title": "लागत",
+    "daily": "दैनिक लागत",
+    "weekly": "साप्ताहिक लागत",
+    "monthly": "मासिक लागत",
+    "yearly": "वार्षिक लागत",
+    "total": "कुल लागत",
+    "byModel": "मॉडल के अनुसार",
+    "byContent": "सामग्री प्रकार के अनुसार",
+    "byPlatform": "प्लेटफ़ॉर्म के अनुसार",
+    "prediction": "पूर्वानुमान",
+    "budget": {
+      "title": "बजट",
+      "set": "बजट सेट करें",
+      "current": "वर्तमान बजट",
+      "remaining": "शेष",
+      "used": "उपयोग किया गया",
+      "percentage": "{{value}}% उपयोग किया गया",
+      "alert": "{{value}}% पर अलर्ट",
+      "exceeded": "बजट पार हो गया"
+    },
+    "breakdown": {
+      "title": "लागत विवरण",
+      "tokens": "टोकन",
+      "inputTokens": "इनपुट टोकन",
+      "outputTokens": "आउटपुट टोकन",
+      "images": "छवियां",
+      "searches": "खोज",
+      "other": "अन्य"
+    }
+  },
+  "performance": {
+    "title": "प्रदर्शन",
+    "latency": {
+      "title": "विलंबता",
+      "average": "औसत",
+      "p50": "P50",
+      "p95": "P95",
+      "p99": "P99"
+    },
+    "successRate": {
+      "title": "सफलता दर",
+      "value": "{{value}}%"
+    },
+    "errors": {
+      "title": "त्रुटियां",
+      "total": "कुल त्रुटियां",
+      "rate": "त्रुटि दर",
+      "types": {
+        "timeout": "समय समाप्त",
+        "rateLimit": "दर सीमा",
+        "serverError": "सर्वर त्रुटि",
+        "invalidResponse": "अमान्य प्रतिक्रिया",
+        "other": "अन्य"
+      }
+    },
+    "queue": {
+      "title": "कतार",
+      "pending": "लंबित",
+      "processing": "प्रसंस्करण",
+      "avgWaitTime": "औसत प्रतीक्षा समय"
+    },
+    "throughput": {
+      "title": "थ्रूपुट",
+      "requestsPerMinute": "अनुरोध/मिनट",
+      "tokensPerMinute": "टोकन/मिनट"
+    }
+  },
+  "prompts": {
+    "title": "प्रॉम्प्ट प्रबंधन",
+    "list": "प्रॉम्प्ट सूची",
+    "create": "नया प्रॉम्प्ट",
+    "edit": "प्रॉम्प्ट संपादित करें",
+    "delete": "प्रॉम्प्ट हटाएं",
+    "optimize": "अनुकूलित करें",
+    "test": "परीक्षण करें",
+    "version": {
+      "title": "संस्करण",
+      "current": "वर्तमान संस्करण",
+      "history": "इतिहास",
+      "restore": "पुनर्स्थापित करें",
+      "compare": "तुलना करें"
+    },
+    "compare": {
+      "title": "तुलना",
+      "sideBySide": "साथ-साथ",
+      "metrics": "मेट्रिक्स"
+    },
+    "categories": {
+      "generation": "जनन",
+      "summarization": "सारांश",
+      "translation": "अनुवाद",
+      "analysis": "विश्लेषण",
+      "factCheck": "तथ्य जांच"
+    },
+    "fields": {
+      "name": "नाम",
+      "category": "श्रेणी",
+      "template": "टेम्पलेट",
+      "variables": "चर",
+      "model": "अनुशंसित मॉडल"
+    }
+  },
+  "charts": {
+    "costEvolution": "लागत विकास",
+    "modelUsage": "मॉडल के अनुसार उपयोग",
+    "contentTypeCosts": "सामग्री प्रकार के अनुसार लागत",
+    "dailyCosts": "दैनिक लागत",
+    "tokenUsage": "टोकन उपयोग"
+  },
+  "settings": {
+    "title": "AI सेटिंग्स",
+    "defaultModel": "डिफ़ॉल्ट मॉडल",
+    "temperature": "तापमान",
+    "maxTokens": "अधिकतम टोकन",
+    "timeout": "टाइमआउट (सेकंड)",
+    "retries": "पुनः प्रयास की संख्या",
+    "fallbackModel": "फ़ॉलबैक मॉडल"
+  },
+  "messages": {
+    "budgetUpdated": "बजट अपडेट किया गया",
+    "promptSaved": "प्रॉम्प्ट सहेजा गया",
+    "promptDeleted": "प्रॉम्प्ट हटाया गया",
+    "testStarted": "परीक्षण शुरू हुआ",
+    "optimizing": "अनुकूलन हो रहा है..."
+  }
+}

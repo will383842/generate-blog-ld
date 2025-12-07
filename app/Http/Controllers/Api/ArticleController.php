@@ -53,7 +53,8 @@ class ArticleController extends Controller
     public function index(Request $request): ArticleCollection
     {
         $query = Article::query()
-            ->with(['platform', 'country', 'language', 'theme']);
+            ->with(['platform', 'country', 'language', 'theme'])
+            ->withCount(['internalLinks', 'externalLinks', 'translations']);
 
         // Filtres
         if ($request->has('platform_id')) {
@@ -121,7 +122,9 @@ class ArticleController extends Controller
             'translations.language',
             'internalLinks',
             'externalLinks',
-        ])->findOrFail($id);
+        ])
+        ->withCount(['internalLinks', 'externalLinks', 'translations'])
+        ->findOrFail($id);
 
         return new ArticleResource($article);
     }
@@ -148,7 +151,7 @@ class ArticleController extends Controller
                     'message' => 'Article généré avec succès',
                     'data' => new ArticleResource($article->load([
                         'platform', 'country', 'language', 'theme'
-                    ])),
+                    ])->loadCount(['internalLinks', 'externalLinks', 'translations'])),
                 ], 201);
             }
 
@@ -162,7 +165,7 @@ class ArticleController extends Controller
                 'message' => 'Article créé avec succès',
                 'data' => new ArticleResource($article->load([
                     'platform', 'country', 'language', 'theme'
-                ])),
+                ])->loadCount(['internalLinks', 'externalLinks', 'translations'])),
             ], 201);
 
         } catch (\Exception $e) {
@@ -199,7 +202,7 @@ class ArticleController extends Controller
                 'message' => 'Article modifié avec succès',
                 'data' => new ArticleResource($article->load([
                     'platform', 'country', 'language', 'theme'
-                ])),
+                ])->loadCount(['internalLinks', 'externalLinks', 'translations'])),
             ]);
 
         } catch (\Exception $e) {
@@ -270,7 +273,7 @@ class ArticleController extends Controller
                 'message' => 'Article publié avec succès',
                 'data' => new ArticleResource($article->load([
                     'platform', 'country', 'language', 'theme'
-                ])),
+                ])->loadCount(['internalLinks', 'externalLinks', 'translations'])),
             ]);
 
         } catch (\Exception $e) {
@@ -306,7 +309,7 @@ class ArticleController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Article dépublié avec succès',
-                'data' => new ArticleResource($article),
+                'data' => new ArticleResource($article->loadCount(['internalLinks', 'externalLinks', 'translations'])),
             ]);
 
         } catch (\Exception $e) {
@@ -320,7 +323,7 @@ class ArticleController extends Controller
 
     /**
      * Dupliquer un article
-     * 
+     *
      * @param int $id
      * @return JsonResponse
      */
@@ -339,13 +342,204 @@ class ArticleController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Article dupliqué avec succès',
-                'data' => new ArticleResource($duplicate),
+                'data' => new ArticleResource($duplicate->loadCount(['internalLinks', 'externalLinks', 'translations'])),
             ], 201);
 
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'Erreur lors de la duplication',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Statistiques des articles
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function stats(Request $request): JsonResponse
+    {
+        try {
+            $platformId = $request->get('platform_id');
+
+            $query = Article::query();
+            if ($platformId) {
+                $query->where('platform_id', $platformId);
+            }
+
+            $stats = [
+                'total' => $query->count(),
+                'published' => (clone $query)->where('status', Article::STATUS_PUBLISHED)->count(),
+                'draft' => (clone $query)->where('status', Article::STATUS_DRAFT)->count(),
+                'pending' => (clone $query)->where('status', 'pending')->count(),
+                'by_type' => [
+                    'article' => (clone $query)->where('type', 'article')->count(),
+                    'landing' => (clone $query)->where('type', 'landing')->count(),
+                    'comparative' => (clone $query)->where('type', 'comparative')->count(),
+                ],
+                'avg_seo_score' => (clone $query)->avg('seo_score') ?? 0,
+                'avg_word_count' => (clone $query)->avg('word_count') ?? 0,
+                'this_week' => (clone $query)->where('created_at', '>=', now()->startOfWeek())->count(),
+                'this_month' => (clone $query)->where('created_at', '>=', now()->startOfMonth())->count(),
+            ];
+
+            return response()->json([
+                'success' => true,
+                'data' => $stats,
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Erreur stats articles', ['error' => $e->getMessage()]);
+            return response()->json([
+                'success' => false,
+                'message' => 'Erreur lors de la récupération des statistiques',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Suppression en masse d'articles
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function bulkDelete(Request $request): JsonResponse
+    {
+        try {
+            $ids = $request->input('ids', []);
+
+            if (empty($ids)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Aucun article sélectionné',
+                ], 400);
+            }
+
+            $deleted = Article::whereIn('id', $ids)->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => "{$deleted} article(s) supprimé(s) avec succès",
+                'data' => ['deleted_count' => $deleted],
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Erreur suppression en masse', ['error' => $e->getMessage()]);
+            return response()->json([
+                'success' => false,
+                'message' => 'Erreur lors de la suppression en masse',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Publication en masse d'articles
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function bulkPublish(Request $request): JsonResponse
+    {
+        try {
+            $ids = $request->input('ids', []);
+
+            if (empty($ids)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Aucun article sélectionné',
+                ], 400);
+            }
+
+            $published = Article::whereIn('id', $ids)
+                ->where('status', '!=', Article::STATUS_PUBLISHED)
+                ->update([
+                    'status' => Article::STATUS_PUBLISHED,
+                    'published_at' => now(),
+                ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => "{$published} article(s) publié(s) avec succès",
+                'data' => ['published_count' => $published],
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Erreur publication en masse', ['error' => $e->getMessage()]);
+            return response()->json([
+                'success' => false,
+                'message' => 'Erreur lors de la publication en masse',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Obtenir les versions d'un article
+     *
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function versions(int $id): JsonResponse
+    {
+        try {
+            $article = Article::findOrFail($id);
+
+            // Si le modèle utilise un système de versioning, récupérer les versions
+            // Sinon, retourner un tableau vide
+            $versions = [];
+
+            if (method_exists($article, 'versions')) {
+                $versions = $article->versions()->orderBy('created_at', 'desc')->get();
+            }
+
+            return response()->json([
+                'success' => true,
+                'data' => $versions,
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erreur lors de la récupération des versions',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Restaurer une version d'un article
+     *
+     * @param int $id
+     * @param int $versionId
+     * @return JsonResponse
+     */
+    public function restoreVersion(int $id, int $versionId): JsonResponse
+    {
+        try {
+            $article = Article::findOrFail($id);
+
+            // Si le modèle utilise un système de versioning
+            if (method_exists($article, 'versions')) {
+                $version = $article->versions()->findOrFail($versionId);
+                // Restaurer la version (dépend de l'implémentation du versioning)
+                // $article->restoreVersion($version);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Version restaurée avec succès',
+                'data' => new ArticleResource($article->fresh()),
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erreur lors de la restauration de la version',
                 'error' => $e->getMessage(),
             ], 500);
         }

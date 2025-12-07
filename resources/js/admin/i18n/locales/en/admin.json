@@ -1,0 +1,178 @@
+{
+  "title": "Administration",
+  "description": "System management",
+  "users": {
+    "title": "Users",
+    "description": "Manage users",
+    "add": "New user",
+    "edit": "Edit",
+    "delete": "Delete",
+    "invite": "Invite",
+    "fields": {
+      "name": "Name",
+      "email": "Email",
+      "role": "Role",
+      "status": "Status",
+      "createdAt": "Created at",
+      "lastLogin": "Last login"
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive",
+      "pending": "Pending"
+    },
+    "actions": {
+      "activate": "Activate",
+      "deactivate": "Deactivate",
+      "resetPassword": "Reset password",
+      "impersonate": "Login as"
+    },
+    "empty": "No users"
+  },
+  "roles": {
+    "title": "Roles",
+    "description": "Manage roles",
+    "add": "New role",
+    "edit": "Edit",
+    "delete": "Delete",
+    "fields": {
+      "name": "Name",
+      "description": "Description",
+      "permissions": "Permissions",
+      "usersCount": "Users"
+    },
+    "default": {
+      "admin": "Administrator",
+      "editor": "Editor",
+      "author": "Author",
+      "viewer": "Viewer"
+    },
+    "empty": "No roles"
+  },
+  "permissions": {
+    "title": "Permissions",
+    "description": "Manage permissions",
+    "categories": {
+      "content": "Content",
+      "programs": "Programs",
+      "publishing": "Publishing",
+      "settings": "Settings",
+      "admin": "Administration"
+    },
+    "actions": {
+      "view": "View",
+      "create": "Create",
+      "edit": "Edit",
+      "delete": "Delete",
+      "manage": "Manage"
+    }
+  },
+  "activity": {
+    "title": "Activity",
+    "description": "Activity log",
+    "user": "User",
+    "action": "Action",
+    "target": "Target",
+    "ip": "IP Address",
+    "timestamp": "Timestamp",
+    "details": "Details",
+    "filters": {
+      "user": "User",
+      "action": "Action",
+      "dateRange": "Date range"
+    },
+    "empty": "No activity"
+  },
+  "system": {
+    "title": "System",
+    "description": "System information",
+    "version": "Version",
+    "environment": "Environment",
+    "phpVersion": "PHP Version",
+    "laravelVersion": "Laravel Version",
+    "databaseSize": "Database size",
+    "diskUsage": "Disk usage",
+    "memoryUsage": "Memory",
+    "uptime": "Uptime",
+    "lastUpdate": "Last update",
+    "health": "Health status",
+    "healthy": "Healthy",
+    "warning": "Warning",
+    "critical": "Critical"
+  },
+  "workers": {
+    "title": "Workers",
+    "description": "Worker management",
+    "status": "Status",
+    "queue": "Queue",
+    "jobs": "Jobs",
+    "failed": "Failed",
+    "processed": "Processed",
+    "memory": "Memory",
+    "uptime": "Uptime",
+    "start": "Start",
+    "stop": "Stop",
+    "restart": "Restart",
+    "empty": "No workers"
+  },
+  "errors": {
+    "title": "Errors",
+    "description": "Error log",
+    "message": "Message",
+    "file": "File",
+    "line": "Line",
+    "trace": "Trace",
+    "occurrences": "Occurrences",
+    "lastOccurrence": "Last occurrence",
+    "resolve": "Resolve",
+    "ignore": "Ignore",
+    "empty": "No errors"
+  },
+  "backups": {
+    "title": "Backups",
+    "description": "Backup management",
+    "create": "Create backup",
+    "restore": "Restore",
+    "download": "Download",
+    "delete": "Delete",
+    "name": "Name",
+    "size": "Size",
+    "createdAt": "Created at",
+    "type": "Type",
+    "status": "Status",
+    "types": {
+      "full": "Full",
+      "database": "Database",
+      "files": "Files"
+    },
+    "schedule": "Schedule",
+    "lastBackup": "Last backup",
+    "nextBackup": "Next backup",
+    "empty": "No backups"
+  },
+  "settings": {
+    "title": "System settings",
+    "description": "Advanced configuration",
+    "cache": {
+      "title": "Cache",
+      "clear": "Clear cache",
+      "clearAll": "Clear all cache",
+      "config": "Config cache",
+      "routes": "Routes cache",
+      "views": "Views cache"
+    },
+    "maintenance": {
+      "title": "Maintenance",
+      "enable": "Enable maintenance mode",
+      "disable": "Disable maintenance mode",
+      "status": "Status",
+      "message": "Message"
+    },
+    "logs": {
+      "title": "Logs",
+      "view": "View logs",
+      "download": "Download",
+      "clear": "Clear logs"
+    }
+  }
+}

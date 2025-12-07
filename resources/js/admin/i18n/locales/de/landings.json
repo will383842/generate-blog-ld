@@ -1,0 +1,157 @@
+{
+  "title": "Landing Pages",
+  "list": "Landing-Liste",
+  "create": "Neue Landing",
+  "edit": "Landing bearbeiten",
+  "empty": "Keine Landings",
+  "emptyDescription": "Erstellen Sie Ihre erste Landing Page",
+  "sections": {
+    "title": "Abschnitte",
+    "hero": {
+      "name": "Hero",
+      "description": "Hauptbanner mit Titel und CTA",
+      "fields": {
+        "title": "Haupttitel",
+        "subtitle": "Untertitel",
+        "image": "Hintergrundbild",
+        "cta": "Aktionsschaltfläche"
+      }
+    },
+    "features": {
+      "name": "Funktionen",
+      "description": "Liste der Vorteile oder Funktionen",
+      "fields": {
+        "title": "Abschnittstitel",
+        "items": "Funktionen",
+        "columns": "Spaltenanzahl"
+      }
+    },
+    "testimonials": {
+      "name": "Testimonials",
+      "description": "Kundenbewertungen und Referenzen",
+      "fields": {
+        "title": "Abschnittstitel",
+        "items": "Testimonials",
+        "layout": "Layout"
+      }
+    },
+    "pricing": {
+      "name": "Preise",
+      "description": "Preistabelle und Pläne",
+      "fields": {
+        "title": "Abschnittstitel",
+        "plans": "Pläne",
+        "currency": "Währung"
+      }
+    },
+    "cta": {
+      "name": "Call to Action",
+      "description": "Call-to-Action-Bereich",
+      "fields": {
+        "title": "Titel",
+        "description": "Beschreibung",
+        "buttonText": "Schaltflächentext",
+        "buttonLink": "Schaltflächenlink"
+      }
+    },
+    "faq": {
+      "name": "FAQ",
+      "description": "Häufig gestellte Fragen",
+      "fields": {
+        "title": "Abschnittstitel",
+        "items": "Fragen/Antworten"
+      }
+    },
+    "form": {
+      "name": "Formular",
+      "description": "Kontakt- oder Anmeldeformular",
+      "fields": {
+        "title": "Titel",
+        "fields": "Formularfelder",
+        "submitText": "Schaltflächentext"
+      }
+    },
+    "gallery": {
+      "name": "Galerie",
+      "description": "Bildergalerie",
+      "fields": {
+        "title": "Abschnittstitel",
+        "images": "Bilder",
+        "columns": "Spalten"
+      }
+    },
+    "stats": {
+      "name": "Statistiken",
+      "description": "Kennzahlen",
+      "fields": {
+        "items": "Statistiken",
+        "animated": "Animation"
+      }
+    },
+    "partners": {
+      "name": "Partner",
+      "description": "Partnerlogos",
+      "fields": {
+        "title": "Titel",
+        "logos": "Partnerlogos"
+      }
+    }
+  },
+  "builder": {
+    "title": "Landing-Builder",
+    "addSection": "Abschnitt hinzufügen",
+    "editSection": "Abschnitt bearbeiten",
+    "deleteSection": "Abschnitt löschen",
+    "duplicateSection": "Abschnitt duplizieren",
+    "reorderSections": "Abschnitte neu ordnen",
+    "moveUp": "Nach oben",
+    "moveDown": "Nach unten",
+    "preview": "Vorschau",
+    "previewMobile": "Mobile Vorschau",
+    "previewDesktop": "Desktop-Vorschau",
+    "emptyBuilder": "Fügen Sie Abschnitte hinzu, um Ihre Landing zu erstellen"
+  },
+  "cta": {
+    "text": "Schaltflächentext",
+    "link": "Link",
+    "style": "Stil",
+    "styles": {
+      "primary": "Primär",
+      "secondary": "Sekundär",
+      "outline": "Umriss",
+      "ghost": "Ghost"
+    },
+    "tracking": {
+      "title": "Tracking",
+      "utmSource": "UTM-Quelle",
+      "utmMedium": "UTM-Medium",
+      "utmCampaign": "UTM-Kampagne",
+      "eventName": "Ereignisname"
+    }
+  },
+  "fields": {
+    "name": "Landing-Name",
+    "slug": "URL",
+    "status": "Status",
+    "template": "Vorlage",
+    "country": "Land",
+    "language": "Sprache",
+    "platform": "Plattform"
+  },
+  "templates": {
+    "title": "Landing-Vorlagen",
+    "select": "Vorlage auswählen",
+    "blank": "Leere Seite",
+    "service": "Dienstleisterseite",
+    "product": "Produktseite",
+    "event": "Veranstaltungsseite",
+    "lead": "Lead-Erfassung"
+  },
+  "actions": {
+    "publish": "Veröffentlichen",
+    "unpublish": "Veröffentlichung aufheben",
+    "duplicate": "Duplizieren",
+    "preview": "Vorschau",
+    "export": "HTML exportieren"
+  }
+}

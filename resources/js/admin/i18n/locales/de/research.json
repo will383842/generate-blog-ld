@@ -1,0 +1,146 @@
+{
+  "title": "Recherche",
+  "search": {
+    "title": "Websuche",
+    "query": "Suchanfrage",
+    "placeholder": "Nach Informationen suchen...",
+    "results": "Ergebnisse",
+    "noResults": "Keine Ergebnisse gefunden",
+    "sources": "Quellen",
+    "sourceCount": "{{count}} Quelle(n) gefunden",
+    "relevance": "Relevanz",
+    "date": "Datum",
+    "cached": "Zwischengespeicherte Ergebnisse",
+    "refresh": "Aktualisieren",
+    "saveResults": "Ergebnisse speichern",
+    "useInContent": "In Inhalten verwenden",
+    "filters": {
+      "dateRange": "Zeitraum",
+      "sourceType": "Quellentyp",
+      "language": "Sprache",
+      "country": "Land"
+    }
+  },
+  "factCheck": {
+    "title": "Faktenprüfung",
+    "description": "Genauigkeit der Informationen überprüfen",
+    "claims": "Behauptungen",
+    "addClaim": "Behauptung hinzufügen",
+    "verify": "Überprüfen",
+    "verifyAll": "Alle überprüfen",
+    "verification": {
+      "verified": "Überprüft",
+      "unverified": "Nicht überprüft",
+      "disputed": "Umstritten",
+      "false": "Falsch",
+      "partiallyTrue": "Teilweise wahr"
+    },
+    "confidence": {
+      "title": "Vertrauensniveau",
+      "high": "Hoch",
+      "medium": "Mittel",
+      "low": "Niedrig"
+    },
+    "sources": {
+      "title": "Überprüfungsquellen",
+      "primary": "Primärquellen",
+      "secondary": "Sekundärquellen",
+      "addSource": "Quelle hinzufügen"
+    },
+    "report": {
+      "generate": "Bericht erstellen",
+      "export": "Exportieren"
+    }
+  },
+  "mining": {
+    "title": "Automatisches Mining",
+    "description": "Automatische Informationsextraktion",
+    "config": {
+      "title": "Konfiguration",
+      "sources": "Zu überwachende Quellen",
+      "frequency": "Häufigkeit",
+      "topics": "Zu verfolgende Themen",
+      "keywords": "Schlüsselwörter"
+    },
+    "frequency": {
+      "hourly": "Stündlich",
+      "daily": "Täglich",
+      "weekly": "Wöchentlich"
+    },
+    "topics": {
+      "add": "Thema hinzufügen",
+      "edit": "Bearbeiten",
+      "delete": "Löschen"
+    },
+    "auto": {
+      "enabled": "Automatisches Mining aktiviert",
+      "disabled": "Automatisches Mining deaktiviert",
+      "toggle": "Aktivieren/Deaktivieren"
+    },
+    "results": {
+      "title": "Mining-Ergebnisse",
+      "new": "Neue Informationen",
+      "reviewed": "Überprüft",
+      "saved": "Gespeichert",
+      "ignored": "Ignoriert"
+    }
+  },
+  "sources": {
+    "title": "Quellenverwaltung",
+    "add": "Quelle hinzufügen",
+    "edit": "Quelle bearbeiten",
+    "delete": "Quelle löschen",
+    "priority": {
+      "title": "Priorität",
+      "high": "Hoch",
+      "medium": "Mittel",
+      "low": "Niedrig"
+    },
+    "reliability": {
+      "title": "Zuverlässigkeit",
+      "trusted": "Vertrauenswürdig",
+      "neutral": "Neutral",
+      "untrusted": "Nicht vertrauenswürdig"
+    },
+    "types": {
+      "official": "Offiziell",
+      "news": "Nachrichten",
+      "academic": "Akademisch",
+      "blog": "Blog",
+      "social": "Soziale Medien",
+      "other": "Andere"
+    },
+    "fields": {
+      "name": "Name",
+      "url": "URL",
+      "type": "Typ",
+      "priority": "Priorität",
+      "reliability": "Zuverlässigkeit",
+      "notes": "Notizen"
+    }
+  },
+  "cache": {
+    "title": "Such-Cache",
+    "entries": "Zwischengespeicherte Einträge",
+    "size": "Cache-Größe",
+    "clear": "Cache leeren",
+    "clearConfirm": "Sind Sie sicher, dass Sie den Cache leeren möchten?",
+    "expiration": "Ablauf",
+    "hitRate": "Trefferrate"
+  },
+  "actions": {
+    "search": "Suchen",
+    "verify": "Überprüfen",
+    "save": "Speichern",
+    "export": "Exportieren",
+    "refresh": "Aktualisieren"
+  },
+  "messages": {
+    "searching": "Suche läuft...",
+    "verifying": "Überprüfung läuft...",
+    "saved": "Ergebnisse gespeichert",
+    "cacheCleared": "Cache geleert",
+    "miningStarted": "Mining gestartet",
+    "miningStopped": "Mining gestoppt"
+  }
+}

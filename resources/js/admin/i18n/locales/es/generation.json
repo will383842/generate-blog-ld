@@ -1,0 +1,102 @@
+{
+  "title": "Generación",
+  "description": "Generación automática de contenido",
+  "queue": {
+    "title": "Cola de generación",
+    "description": "Artículos esperando generación",
+    "empty": "La cola está vacía",
+    "item": "Elemento",
+    "program": "Programa",
+    "priority": "Prioridad",
+    "status": "Estado",
+    "createdAt": "Añadido el",
+    "startedAt": "Iniciado el",
+    "estimatedTime": "Tiempo estimado",
+    "cancel": "Cancelar",
+    "retry": "Reintentar",
+    "moveToTop": "Mover arriba",
+    "bulkCancel": "Cancelar seleccionados"
+  },
+  "history": {
+    "title": "Historial",
+    "description": "Historial de generación",
+    "empty": "Sin historial",
+    "article": "Artículo",
+    "program": "Programa",
+    "status": "Estado",
+    "duration": "Duración",
+    "tokens": "Tokens utilizados",
+    "cost": "Costo",
+    "generatedAt": "Generado el",
+    "viewArticle": "Ver artículo",
+    "regenerate": "Regenerar",
+    "export": "Exportar"
+  },
+  "settings": {
+    "title": "Configuración de generación",
+    "description": "Configurar opciones de generación",
+    "model": "Modelo de IA",
+    "temperature": "Temperatura",
+    "maxTokens": "Tokens máximos",
+    "language": "Idioma",
+    "tone": "Tono",
+    "style": "Estilo",
+    "length": "Longitud",
+    "defaults": "Valores predeterminados",
+    "advanced": "Opciones avanzadas"
+  },
+  "status": {
+    "pending": "Pendiente",
+    "processing": "Procesando",
+    "completed": "Completado",
+    "failed": "Fallido",
+    "cancelled": "Cancelado",
+    "retrying": "Reintentando"
+  },
+  "priority": {
+    "high": "Alta",
+    "default": "Normal",
+    "low": "Baja"
+  },
+  "stats": {
+    "today": "Hoy",
+    "thisWeek": "Esta semana",
+    "thisMonth": "Este mes",
+    "total": "Total",
+    "pending": "Pendiente",
+    "processing": "Procesando",
+    "completed": "Completado",
+    "failed": "Fallido",
+    "successRate": "Tasa de éxito",
+    "avgDuration": "Duración promedio",
+    "tokensUsed": "Tokens utilizados",
+    "estimatedCost": "Costo estimado"
+  },
+  "actions": {
+    "generate": "Generar",
+    "generateNow": "Generar ahora",
+    "addToQueue": "Añadir a la cola",
+    "clearQueue": "Vaciar cola",
+    "pauseAll": "Pausar todo",
+    "resumeAll": "Reanudar todo",
+    "cancelAll": "Cancelar todo"
+  },
+  "messages": {
+    "generating": "Generando...",
+    "generated": "Artículo generado exitosamente",
+    "failed": "Generación fallida",
+    "cancelled": "Generación cancelada",
+    "queued": "Añadido a la cola",
+    "retrying": "Reintentando..."
+  },
+  "ai": {
+    "title": "Configuración de IA",
+    "provider": "Proveedor",
+    "model": "Modelo",
+    "apiKey": "Clave API",
+    "testConnection": "Probar conexión",
+    "usage": "Uso",
+    "quota": "Cuota",
+    "remaining": "Restante"
+  }
+}

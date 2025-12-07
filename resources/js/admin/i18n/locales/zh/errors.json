@@ -1,0 +1,131 @@
+{
+  "title": "错误",
+  "general": {
+    "unknown": "发生未知错误",
+    "network": "网络连接错误",
+    "server": "服务器错误",
+    "timeout": "请求超时",
+    "notFound": "资源未找到",
+    "unauthorized": "未授权",
+    "forbidden": "禁止访问",
+    "validation": "验证错误",
+    "conflict": "数据冲突",
+    "tooManyRequests": "请求过多"
+  },
+  "http": {
+    "400": "无效请求",
+    "401": "未认证",
+    "403": "禁止访问",
+    "404": "页面未找到",
+    "405": "方法不允许",
+    "408": "请求超时",
+    "409": "冲突",
+    "422": "无法处理的数据",
+    "429": "请求过多",
+    "500": "服务器内部错误",
+    "502": "网关错误",
+    "503": "服务不可用",
+    "504": "网关超时"
+  },
+  "auth": {
+    "invalidCredentials": "凭证无效",
+    "accountLocked": "账户已锁定",
+    "accountDisabled": "账户已禁用",
+    "sessionExpired": "会话已过期",
+    "tokenInvalid": "令牌无效",
+    "tokenExpired": "令牌已过期",
+    "passwordMismatch": "密码不匹配",
+    "passwordTooWeak": "密码强度不足",
+    "emailNotVerified": "邮箱未验证"
+  },
+  "validation": {
+    "required": "此字段为必填项",
+    "email": "邮箱格式无效",
+    "url": "URL格式无效",
+    "minLength": "最少{{min}}个字符",
+    "maxLength": "最多{{max}}个字符",
+    "min": "最小值：{{min}}",
+    "max": "最大值：{{max}}",
+    "pattern": "格式无效",
+    "unique": "此值已存在",
+    "exists": "此值不存在",
+    "numeric": "必须是数字",
+    "integer": "必须是整数",
+    "date": "日期无效",
+    "file": "文件无效",
+    "image": "图片无效",
+    "mimes": "文件类型不允许",
+    "size": "文件大小超限"
+  },
+  "api": {
+    "connectionFailed": "API连接失败",
+    "invalidResponse": "响应无效",
+    "rateLimited": "已达到速率限制",
+    "quotaExceeded": "配额已超出",
+    "serviceUnavailable": "服务不可用"
+  },
+  "publishing": {
+    "platformNotFound": "平台未找到",
+    "platformDisabled": "平台已禁用",
+    "connectionFailed": "平台连接失败",
+    "authFailed": "认证失败",
+    "publishFailed": "发布失败",
+    "duplicateContent": "检测到重复内容"
+  },
+  "generation": {
+    "aiServiceUnavailable": "AI服务不可用",
+    "quotaExceeded": "AI配额已超出",
+    "contentTooLong": "内容过长",
+    "invalidPrompt": "提示词无效",
+    "generationFailed": "生成失败"
+  },
+  "file": {
+    "uploadFailed": "上传失败",
+    "tooLarge": "文件过大",
+    "invalidType": "文件类型不允许",
+    "notFound": "文件未找到",
+    "deleteFailed": "删除失败"
+  },
+  "boundary": {
+    "title": "哎呀！发生错误",
+    "defaultMessage": "发生了意外错误。",
+    "attempt": "尝试 {{current}}/{{max}}",
+    "retry": "重试",
+    "retrying": "重试中...",
+    "goBack": "返回",
+    "goHome": "首页",
+    "report": "报告",
+    "technicalDetails": "技术详情",
+    "errorCopied": "错误详情已复制到剪贴板",
+    "checkConsole": "请查看控制台获取错误详情"
+  },
+  "pages": {
+    "notFound": {
+      "title": "页面未找到",
+      "description": "您访问的页面不存在或已被移动。",
+      "action": "返回首页"
+    },
+    "forbidden": {
+      "title": "禁止访问",
+      "description": "您没有访问此页面所需的权限。",
+      "action": "返回首页"
+    },
+    "serverError": {
+      "title": "服务器错误",
+      "description": "服务器发生错误。请稍后重试。",
+      "action": "重试"
+    },
+    "maintenance": {
+      "title": "维护中",
+      "description": "网站正在维护中。请稍后再来。",
+      "action": "刷新"
+    }
+  },
+  "actions": {
+    "retry": "重试",
+    "goBack": "返回",
+    "goHome": "首页",
+    "contactSupport": "联系支持",
+    "refresh": "刷新页面"
+  }
+}

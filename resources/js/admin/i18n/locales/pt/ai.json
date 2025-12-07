@@ -1,0 +1,143 @@
+{
+  "title": "IA e Custos",
+  "models": {
+    "title": "Modelos de IA",
+    "gpt4": "GPT-4",
+    "gpt4Turbo": "GPT-4 Turbo",
+    "gpt35": "GPT-3.5 Turbo",
+    "claude": "Claude",
+    "claudeInstant": "Claude Instant",
+    "perplexity": "Perplexity",
+    "dalle": "DALL-E",
+    "active": "Ativo",
+    "inactive": "Inativo",
+    "default": "Padrão",
+    "setDefault": "Definir como padrão"
+  },
+  "costs": {
+    "title": "Custos",
+    "daily": "Custo diário",
+    "weekly": "Custo semanal",
+    "monthly": "Custo mensal",
+    "yearly": "Custo anual",
+    "total": "Custo total",
+    "byModel": "Por modelo",
+    "byContent": "Por tipo de conteúdo",
+    "byPlatform": "Por plataforma",
+    "prediction": "Previsão",
+    "budget": {
+      "title": "Orçamento",
+      "set": "Definir orçamento",
+      "current": "Orçamento atual",
+      "remaining": "Restante",
+      "used": "Usado",
+      "percentage": "{{value}}% usado",
+      "alert": "Alerta em {{value}}%",
+      "exceeded": "Orçamento excedido"
+    },
+    "breakdown": {
+      "title": "Detalhamento de custos",
+      "tokens": "Tokens",
+      "inputTokens": "Tokens de entrada",
+      "outputTokens": "Tokens de saída",
+      "images": "Imagens",
+      "searches": "Pesquisas",
+      "other": "Outros"
+    }
+  },
+  "performance": {
+    "title": "Desempenho",
+    "latency": {
+      "title": "Latência",
+      "average": "Média",
+      "p50": "P50",
+      "p95": "P95",
+      "p99": "P99"
+    },
+    "successRate": {
+      "title": "Taxa de sucesso",
+      "value": "{{value}}%"
+    },
+    "errors": {
+      "title": "Erros",
+      "total": "Total de erros",
+      "rate": "Taxa de erros",
+      "types": {
+        "timeout": "Tempo esgotado",
+        "rateLimit": "Limite de taxa",
+        "serverError": "Erro do servidor",
+        "invalidResponse": "Resposta inválida",
+        "other": "Outros"
+      }
+    },
+    "queue": {
+      "title": "Fila",
+      "pending": "Pendente",
+      "processing": "Processando",
+      "avgWaitTime": "Tempo médio de espera"
+    },
+    "throughput": {
+      "title": "Throughput",
+      "requestsPerMinute": "Requisições/minuto",
+      "tokensPerMinute": "Tokens/minuto"
+    }
+  },
+  "prompts": {
+    "title": "Gerenciamento de prompts",
+    "list": "Lista de prompts",
+    "create": "Novo prompt",
+    "edit": "Editar prompt",
+    "delete": "Excluir prompt",
+    "optimize": "Otimizar",
+    "test": "Testar",
+    "version": {
+      "title": "Versões",
+      "current": "Versão atual",
+      "history": "Histórico",
+      "restore": "Restaurar",
+      "compare": "Comparar"
+    },
+    "compare": {
+      "title": "Comparação",
+      "sideBySide": "Lado a lado",
+      "metrics": "Métricas"
+    },
+    "categories": {
+      "generation": "Geração",
+      "summarization": "Resumo",
+      "translation": "Tradução",
+      "analysis": "Análise",
+      "factCheck": "Verificação de fatos"
+    },
+    "fields": {
+      "name": "Nome",
+      "category": "Categoria",
+      "template": "Modelo",
+      "variables": "Variáveis",
+      "model": "Modelo recomendado"
+    }
+  },
+  "charts": {
+    "costEvolution": "Evolução de custos",
+    "modelUsage": "Uso por modelo",
+    "contentTypeCosts": "Custos por tipo de conteúdo",
+    "dailyCosts": "Custos diários",
+    "tokenUsage": "Uso de tokens"
+  },
+  "settings": {
+    "title": "Configurações de IA",
+    "defaultModel": "Modelo padrão",
+    "temperature": "Temperatura",
+    "maxTokens": "Máximo de tokens",
+    "timeout": "Tempo limite (segundos)",
+    "retries": "Número de tentativas",
+    "fallbackModel": "Modelo alternativo"
+  },
+  "messages": {
+    "budgetUpdated": "Orçamento atualizado",
+    "promptSaved": "Prompt salvo",
+    "promptDeleted": "Prompt excluído",
+    "testStarted": "Teste iniciado",
+    "optimizing": "Otimizando..."
+  }
+}

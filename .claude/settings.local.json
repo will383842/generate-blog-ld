@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx tsc:*)",
+      "Bash(npm install:*)",
+      "Bash(npm run build:*)",
+      "Bash(timeout 120 npm run build)",
+      "Bash(cat:*)",
+      "Bash(grep:*)",
+      "Bash(find:*)",
+      "Bash(php -l:*)",
+      "Bash(php artisan:*)",
+      "Bash(composer require:*)",
+      "Bash(done)",
+      "Bash(dir /b \"C:\\Users\\simon\\Documents\\Projets\\generate-blog-ld\\resources\\js\\admin\\i18n\\locales\")"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

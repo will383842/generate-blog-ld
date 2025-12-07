@@ -1,0 +1,143 @@
+{
+  "title": "الذكاء الاصطناعي والتكاليف",
+  "models": {
+    "title": "نماذج الذكاء الاصطناعي",
+    "gpt4": "GPT-4",
+    "gpt4Turbo": "GPT-4 Turbo",
+    "gpt35": "GPT-3.5 Turbo",
+    "claude": "Claude",
+    "claudeInstant": "Claude Instant",
+    "perplexity": "Perplexity",
+    "dalle": "DALL-E",
+    "active": "نشط",
+    "inactive": "غير نشط",
+    "default": "افتراضي",
+    "setDefault": "تعيين كافتراضي"
+  },
+  "costs": {
+    "title": "التكاليف",
+    "daily": "التكلفة اليومية",
+    "weekly": "التكلفة الأسبوعية",
+    "monthly": "التكلفة الشهرية",
+    "yearly": "التكلفة السنوية",
+    "total": "التكلفة الإجمالية",
+    "byModel": "حسب النموذج",
+    "byContent": "حسب نوع المحتوى",
+    "byPlatform": "حسب المنصة",
+    "prediction": "التوقع",
+    "budget": {
+      "title": "الميزانية",
+      "set": "تعيين الميزانية",
+      "current": "الميزانية الحالية",
+      "remaining": "المتبقي",
+      "used": "المستخدم",
+      "percentage": "{{value}}% مستخدم",
+      "alert": "تنبيه عند {{value}}%",
+      "exceeded": "تم تجاوز الميزانية"
+    },
+    "breakdown": {
+      "title": "تفصيل التكاليف",
+      "tokens": "الرموز",
+      "inputTokens": "رموز الإدخال",
+      "outputTokens": "رموز الإخراج",
+      "images": "الصور",
+      "searches": "عمليات البحث",
+      "other": "أخرى"
+    }
+  },
+  "performance": {
+    "title": "الأداء",
+    "latency": {
+      "title": "زمن الاستجابة",
+      "average": "المتوسط",
+      "p50": "P50",
+      "p95": "P95",
+      "p99": "P99"
+    },
+    "successRate": {
+      "title": "معدل النجاح",
+      "value": "{{value}}%"
+    },
+    "errors": {
+      "title": "الأخطاء",
+      "total": "إجمالي الأخطاء",
+      "rate": "معدل الأخطاء",
+      "types": {
+        "timeout": "انتهاء المهلة",
+        "rateLimit": "حد المعدل",
+        "serverError": "خطأ في الخادم",
+        "invalidResponse": "استجابة غير صالحة",
+        "other": "أخرى"
+      }
+    },
+    "queue": {
+      "title": "قائمة الانتظار",
+      "pending": "قيد الانتظار",
+      "processing": "قيد المعالجة",
+      "avgWaitTime": "متوسط وقت الانتظار"
+    },
+    "throughput": {
+      "title": "الإنتاجية",
+      "requestsPerMinute": "طلبات/دقيقة",
+      "tokensPerMinute": "رموز/دقيقة"
+    }
+  },
+  "prompts": {
+    "title": "إدارة المطالبات",
+    "list": "قائمة المطالبات",
+    "create": "مطالبة جديدة",
+    "edit": "تعديل المطالبة",
+    "delete": "حذف المطالبة",
+    "optimize": "تحسين",
+    "test": "اختبار",
+    "version": {
+      "title": "الإصدارات",
+      "current": "الإصدار الحالي",
+      "history": "السجل",
+      "restore": "استعادة",
+      "compare": "مقارنة"
+    },
+    "compare": {
+      "title": "المقارنة",
+      "sideBySide": "جنباً إلى جنب",
+      "metrics": "المقاييس"
+    },
+    "categories": {
+      "generation": "الإنشاء",
+      "summarization": "التلخيص",
+      "translation": "الترجمة",
+      "analysis": "التحليل",
+      "factCheck": "التحقق من الحقائق"
+    },
+    "fields": {
+      "name": "الاسم",
+      "category": "الفئة",
+      "template": "القالب",
+      "variables": "المتغيرات",
+      "model": "النموذج الموصى به"
+    }
+  },
+  "charts": {
+    "costEvolution": "تطور التكاليف",
+    "modelUsage": "الاستخدام حسب النموذج",
+    "contentTypeCosts": "التكاليف حسب نوع المحتوى",
+    "dailyCosts": "التكاليف اليومية",
+    "tokenUsage": "استخدام الرموز"
+  },
+  "settings": {
+    "title": "إعدادات الذكاء الاصطناعي",
+    "defaultModel": "النموذج الافتراضي",
+    "temperature": "درجة الحرارة",
+    "maxTokens": "الحد الأقصى للرموز",
+    "timeout": "المهلة (ثواني)",
+    "retries": "عدد المحاولات",
+    "fallbackModel": "النموذج البديل"
+  },
+  "messages": {
+    "budgetUpdated": "تم تحديث الميزانية",
+    "promptSaved": "تم حفظ المطالبة",
+    "promptDeleted": "تم حذف المطالبة",
+    "testStarted": "بدأ الاختبار",
+    "optimizing": "جاري التحسين..."
+  }
+}

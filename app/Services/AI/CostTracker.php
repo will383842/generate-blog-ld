@@ -37,7 +37,7 @@ class CostTracker
             'critical' => 95,
             'exceeded' => 100,
         ]);
-        $this->alertEmail = config('ai.costs.alert_email');
+        $this->alertEmail = config('ai.costs.alert_email') ?? config('mail.from.address');
         $this->blockOnExceeded = config('ai.costs.block_on_exceeded', false);
     }
 

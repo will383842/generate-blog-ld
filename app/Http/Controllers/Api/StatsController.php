@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\Cache;
 
 /**
  * StatsController - Statistiques et analytics
+ * 
+ * VERSION PRODUCTION - Sans données placeholder
  */
 class StatsController extends Controller
 {
@@ -231,9 +233,230 @@ class StatsController extends Controller
     }
 
     /**
+     * Statistiques par plateforme
+     *
+     * GET /api/admin/stats/platform
+     */
+    public function platform(Request $request): JsonResponse
+    {
+        try {
+            $platformId = $request->get('platform_id');
+            $evolutionDays = $request->get('evolution_days', 30);
+
+            if (!$platformId) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'platform_id requis',
+                ], 400);
+            }
+
+            $cacheKey = "stats.platform.{$platformId}.{$evolutionDays}";
+
+            $data = Cache::remember($cacheKey, 300, function () use ($platformId, $evolutionDays) {
+                // Overview stats
+                $articlesQuery = Article::where('platform_id', $platformId);
+                $totalArticles = $articlesQuery->count();
+                $totalCountries = $articlesQuery->distinct('country_id')->count('country_id');
+                $totalLanguages = $articlesQuery->distinct('language_id')->count('language_id');
+
+                $publishedCount = Article::where('platform_id', $platformId)
+                    ->where('status', 'published')
+                    ->count();
+
+                $avgCoverage = $totalCountries > 0
+                    ? min(100, round(($publishedCount / max(1, $totalCountries * 5)) * 100, 1))
+                    : 0;
+
+                // Country coverage
+                $countryCoverage = Article::where('platform_id', $platformId)
+                    ->select([
+                        'country_id',
+                        DB::raw('COUNT(*) as total_articles'),
+                        DB::raw('COUNT(CASE WHEN status = "published" THEN 1 END) as published_articles'),
+                        DB::raw('MAX(published_at) as last_published'),
+                    ])
+                    ->groupBy('country_id')
+                    ->get()
+                    ->map(function ($item) use ($platformId) {
+                        $country = Country::find($item->country_id);
+                        $languages = Article::where('platform_id', $platformId)
+                            ->where('country_id', $item->country_id)
+                            ->distinct('language_id')
+                            ->pluck('language_id')
+                            ->map(fn($id) => \App\Models\Language::find($id)?->code ?? 'fr')
+                            ->toArray();
+
+                        $coverage = $item->total_articles > 0
+                            ? min(100, round(($item->published_articles / max(1, $item->total_articles)) * 100, 1))
+                            : 0;
+
+                        return [
+                            'countryCode' => $country?->iso2 ?? 'XX',
+                            'countryName' => $country?->name ?? 'Inconnu',
+                            'flag' => $country?->flag ?? '',
+                            'totalArticles' => $item->total_articles,
+                            'publishedArticles' => $item->published_articles,
+                            'coveragePercent' => $coverage,
+                            'languages' => $languages,
+                            'lastPublished' => $item->last_published,
+                        ];
+                    })
+                    ->sortByDesc('totalArticles')
+                    ->values();
+
+                // Top countries (with REAL growth calculation)
+                $topCountries = $countryCoverage->take(10)->map(function ($country) use ($platformId) {
+                    // Calculer la vraie croissance : articles ce mois vs mois précédent
+                    $countryModel = Country::where('iso2', $country['countryCode'])->first();
+                    $countryId = $countryModel?->id;
+                    
+                    $currentMonthCount = 0;
+                    $previousMonthCount = 0;
+                    $growthPercent = 0;
+                    
+                    if ($countryId) {
+                        $currentMonthCount = Article::where('platform_id', $platformId)
+                            ->where('country_id', $countryId)
+                            ->whereMonth('created_at', now()->month)
+                            ->whereYear('created_at', now()->year)
+                            ->count();
+                        
+                        $previousMonthCount = Article::where('platform_id', $platformId)
+                            ->where('country_id', $countryId)
+                            ->whereMonth('created_at', now()->subMonth()->month)
+                            ->whereYear('created_at', now()->subMonth()->year)
+                            ->count();
+                        
+                        // Calcul du pourcentage de croissance
+                        if ($previousMonthCount > 0) {
+                            $growthPercent = round((($currentMonthCount - $previousMonthCount) / $previousMonthCount) * 100, 1);
+                        } elseif ($currentMonthCount > 0) {
+                            $growthPercent = 100; // Nouvelle activité ce mois
+                        }
+                    }
+                    
+                    // Déterminer la tendance basée sur la croissance réelle
+                    $trend = 'stable';
+                    if ($growthPercent > 10) {
+                        $trend = 'up';
+                    } elseif ($growthPercent < -10) {
+                        $trend = 'down';
+                    }
+                    
+                    return [
+                        'countryCode' => $country['countryCode'],
+                        'countryName' => $country['countryName'],
+                        'flag' => $country['flag'],
+                        'articlesCount' => $country['totalArticles'],
+                        'growthPercent' => $growthPercent,
+                        'trend' => $trend,
+                        'currentMonth' => $currentMonthCount,
+                        'previousMonth' => $previousMonthCount,
+                    ];
+                })->values();
+
+                // Content gaps (simplified)
+                $gaps = collect();
+
+                // Evolution (last N days) with REAL cost data
+                $evolution = collect();
+                $dateFrom = now()->subDays($evolutionDays);
+
+                $dailyStats = Article::where('platform_id', $platformId)
+                    ->where('created_at', '>=', $dateFrom)
+                    ->select([
+                        DB::raw('DATE(created_at) as date'),
+                        DB::raw('COUNT(*) as articles'),
+                        DB::raw('COUNT(CASE WHEN status = "published" THEN 1 END) as published'),
+                    ])
+                    ->groupBy('date')
+                    ->orderBy('date', 'asc')
+                    ->get();
+
+                // Récupérer les coûts réels par jour depuis api_costs
+                $dailyCosts = ApiCost::where('date', '>=', $dateFrom->toDateString())
+                    ->select([
+                        'date',
+                        DB::raw('SUM(cost) as total_cost'),
+                        DB::raw('SUM(requests) as total_requests'),
+                    ])
+                    ->groupBy('date')
+                    ->pluck('total_cost', 'date')
+                    ->toArray();
+
+                // Récupérer le nombre de vues/traffic depuis generation_logs (comme proxy de l'activité)
+                $dailyActivity = GenerationLog::where('created_at', '>=', $dateFrom)
+                    ->select([
+                        DB::raw('DATE(created_at) as date'),
+                        DB::raw('COUNT(*) as activity_count'),
+                    ])
+                    ->groupBy('date')
+                    ->pluck('activity_count', 'date')
+                    ->toArray();
+
+                foreach ($dailyStats as $day) {
+                    $evolution->push([
+                        'date' => $day->date,
+                        'articles' => $day->articles,
+                        'published' => $day->published,
+                        'activity' => $dailyActivity[$day->date] ?? 0, // Activité réelle (générations)
+                        'cost' => round($dailyCosts[$day->date] ?? 0, 2), // Coût réel depuis API
+                    ]);
+                }
+
+                // Language distribution
+                $languageDistribution = Article::where('platform_id', $platformId)
+                    ->select([
+                        'language_id',
+                        DB::raw('COUNT(*) as count'),
+                    ])
+                    ->groupBy('language_id')
+                    ->orderBy('count', 'desc')
+                    ->get()
+                    ->map(function ($item) use ($totalArticles) {
+                        $language = \App\Models\Language::find($item->language_id);
+                        return [
+                            'language' => $language?->code ?? 'fr',
+                            'languageName' => $language?->name ?? 'Français',
+                            'flag' => $language?->flag ?? '',
+                            'articlesCount' => $item->count,
+                            'percent' => $totalArticles > 0
+                                ? round(($item->count / $totalArticles) * 100, 1)
+                                : 0,
+                        ];
+                    });
+
+                return [
+                    'overview' => [
+                        'totalArticles' => $totalArticles,
+                        'totalCountries' => $totalCountries,
+                        'totalLanguages' => $totalLanguages,
+                        'avgCoveragePercent' => $avgCoverage,
+                    ],
+                    'countryCoverage' => $countryCoverage->toArray(),
+                    'topCountries' => $topCountries->toArray(),
+                    'gaps' => $gaps->toArray(),
+                    'evolution' => $evolution->toArray(),
+                    'languageDistribution' => $languageDistribution->toArray(),
+                    'lastUpdated' => now()->toIso8601String(),
+                ];
+            });
+
+            return response()->json($data);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erreur lors de la récupération des stats plateforme',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
      * Statistiques de qualité
-     * 
-     * GET /api/stats/quality
+     *
+     * GET /api/admin/stats/quality
      */
     public function quality(Request $request): JsonResponse
     {

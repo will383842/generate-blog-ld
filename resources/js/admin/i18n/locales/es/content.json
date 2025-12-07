@@ -1,0 +1,121 @@
+{
+  "title": "Contenido",
+  "description": "Gestiona tus artículos y contenido",
+  "articles": {
+    "title": "Artículos",
+    "description": "Gestiona tus artículos",
+    "add": "Nuevo artículo",
+    "edit": "Editar artículo",
+    "delete": "Eliminar artículo",
+    "duplicate": "Duplicar",
+    "archive": "Archivar",
+    "publish": "Publicar",
+    "unpublish": "Despublicar",
+    "schedule": "Programar",
+    "preview": "Vista previa",
+    "fields": {
+      "title": "Título",
+      "slug": "Slug",
+      "content": "Contenido",
+      "excerpt": "Extracto",
+      "featuredImage": "Imagen destacada",
+      "category": "Categoría",
+      "tags": "Etiquetas",
+      "author": "Autor",
+      "status": "Estado",
+      "publishedAt": "Fecha de publicación",
+      "createdAt": "Creado el",
+      "updatedAt": "Actualizado el"
+    },
+    "status": {
+      "draft": "Borrador",
+      "published": "Publicado",
+      "archived": "Archivado",
+      "scheduled": "Programado"
+    },
+    "filters": {
+      "all": "Todos",
+      "drafts": "Borradores",
+      "published": "Publicados",
+      "archived": "Archivados"
+    },
+    "bulk": {
+      "publish": "Publicar seleccionados",
+      "unpublish": "Despublicar seleccionados",
+      "delete": "Eliminar seleccionados",
+      "archive": "Archivar seleccionados"
+    },
+    "empty": "No se encontraron artículos",
+    "createFirst": "Crea tu primer artículo"
+  },
+  "categories": {
+    "title": "Categorías",
+    "description": "Gestiona tus categorías",
+    "add": "Nueva categoría",
+    "edit": "Editar categoría",
+    "delete": "Eliminar categoría",
+    "fields": {
+      "name": "Nombre",
+      "slug": "Slug",
+      "description": "Descripción",
+      "parent": "Categoría padre",
+      "color": "Color",
+      "icon": "Icono"
+    },
+    "articlesCount": "Artículos",
+    "empty": "No hay categorías",
+    "noParent": "Ninguna (categoría raíz)"
+  },
+  "tags": {
+    "title": "Etiquetas",
+    "description": "Gestiona tus etiquetas",
+    "add": "Nueva etiqueta",
+    "edit": "Editar etiqueta",
+    "delete": "Eliminar etiqueta",
+    "fields": {
+      "name": "Nombre",
+      "slug": "Slug",
+      "description": "Descripción",
+      "color": "Color"
+    },
+    "articlesCount": "Artículos",
+    "empty": "No hay etiquetas",
+    "merge": "Fusionar etiquetas"
+  },
+  "editor": {
+    "title": "Editor",
+    "save": "Guardar",
+    "saveAndPublish": "Guardar y publicar",
+    "saveDraft": "Guardar como borrador",
+    "preview": "Vista previa",
+    "settings": "Configuración",
+    "seo": "SEO",
+    "media": "Medios",
+    "history": "Historial",
+    "autosave": "Autoguardado",
+    "lastSaved": "Último guardado",
+    "wordCount": "Palabras",
+    "readingTime": "Tiempo de lectura",
+    "toolbar": {
+      "bold": "Negrita",
+      "italic": "Cursiva",
+      "underline": "Subrayado",
+      "strikethrough": "Tachado",
+      "heading": "Encabezado",
+      "link": "Enlace",
+      "image": "Imagen",
+      "list": "Lista",
+      "quote": "Cita",
+      "code": "Código",
+      "table": "Tabla"
+    }
+  },
+  "media": {
+    "title": "Medios",
+    "selectImage": "Seleccionar imagen",
+    "uploadImage": "Subir imagen",
+    "removeImage": "Eliminar imagen",
+    "altText": "Texto alternativo",
+    "caption": "Leyenda"
+  }
+}

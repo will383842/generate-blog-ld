@@ -1,0 +1,128 @@
+{
+  "releases": {
+    "title": "البيانات الصحفية",
+    "list": "قائمة البيانات",
+    "create": "بيان جديد",
+    "edit": "تعديل البيان",
+    "empty": "لا توجد بيانات",
+    "emptyDescription": "أنشئ أول بيان صحفي"
+  },
+  "dossiers": {
+    "title": "الملفات الصحفية",
+    "list": "قائمة الملفات",
+    "create": "ملف جديد",
+    "edit": "تعديل الملف",
+    "empty": "لا توجد ملفات",
+    "emptyDescription": "أنشئ أول ملف صحفي",
+    "sections": {
+      "title": "أقسام الملف",
+      "intro": "المقدمة",
+      "keyFigures": "الأرقام الرئيسية",
+      "quotes": "الاقتباسات",
+      "timeline": "الجدول الزمني",
+      "team": "الفريق",
+      "contact": "جهة الاتصال الصحفية",
+      "media": "ملف الوسائط"
+    },
+    "builder": {
+      "title": "منشئ الملف",
+      "addSection": "إضافة قسم",
+      "reorder": "إعادة الترتيب",
+      "preview": "معاينة"
+    }
+  },
+  "editor": {
+    "preview": "معاينة",
+    "previewPdf": "معاينة PDF",
+    "previewWord": "معاينة Word"
+  },
+  "templates": {
+    "title": "القوالب",
+    "select": "اختر قالب",
+    "create": "إنشاء قالب",
+    "edit": "تعديل القالب",
+    "delete": "حذف القالب",
+    "default": "القالب الافتراضي",
+    "categories": {
+      "general": "عام",
+      "product": "إطلاق منتج",
+      "event": "حدث",
+      "partnership": "شراكة",
+      "financial": "نتائج مالية",
+      "crisis": "اتصالات الأزمات"
+    }
+  },
+  "media": {
+    "title": "وسائط البيان",
+    "photos": "صور",
+    "charts": "رسوم بيانية",
+    "infographics": "إنفوجرافيك",
+    "logos": "شعارات",
+    "gallery": "معرض",
+    "upload": "إضافة وسائط",
+    "fromUnsplash": "من Unsplash",
+    "fromDalle": "إنشاء بـ DALL-E",
+    "fromLibrary": "من المكتبة"
+  },
+  "export": {
+    "title": "تصدير",
+    "formats": {
+      "pdf": "PDF",
+      "word": "Word (.docx)",
+      "html": "HTML",
+      "markdown": "Markdown"
+    },
+    "options": {
+      "includeMedia": "تضمين الوسائط",
+      "includeMetadata": "تضمين البيانات الوصفية",
+      "addHeaderFooter": "إضافة رأس/تذييل",
+      "watermark": "علامة مائية"
+    },
+    "download": "تنزيل",
+    "send": "إرسال بالبريد الإلكتروني"
+  },
+  "fields": {
+    "title": "عنوان البيان",
+    "subtitle": "العنوان الفرعي",
+    "date": "تاريخ البيان",
+    "location": "الموقع",
+    "embargo": "تاريخ الحظر",
+    "body": "نص البيان",
+    "boilerplate": "عن الشركة",
+    "contact": {
+      "title": "جهة الاتصال الصحفية",
+      "name": "الاسم",
+      "role": "الدور",
+      "email": "البريد الإلكتروني",
+      "phone": "الهاتف"
+    },
+    "quotes": {
+      "title": "الاقتباسات",
+      "add": "إضافة اقتباس",
+      "text": "الاقتباس",
+      "author": "الكاتب",
+      "role": "الدور"
+    }
+  },
+  "status": {
+    "draft": "مسودة",
+    "review": "قيد المراجعة",
+    "approved": "معتمد",
+    "published": "منشور",
+    "embargoed": "محظور"
+  },
+  "actions": {
+    "publish": "نشر",
+    "embargo": "تعيين الحظر",
+    "approve": "اعتماد",
+    "sendForReview": "إرسال للمراجعة",
+    "duplicate": "نسخ",
+    "export": "تصدير"
+  },
+  "validation": {
+    "titleRequired": "العنوان مطلوب",
+    "dateRequired": "التاريخ مطلوب",
+    "bodyRequired": "المحتوى مطلوب",
+    "contactRequired": "مطلوب جهة اتصال صحفية واحدة على الأقل"
+  }
+}

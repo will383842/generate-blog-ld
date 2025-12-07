@@ -200,64 +200,315 @@ class DossierChartService
      * Créer une infographie simple
      *
      * @param array $data Données pour l'infographie
-     * @param string $template Template d'infographie
+     * @param string $template Template d'infographie (stats_card, timeline, comparison, progress, highlight)
      * @return string Path du fichier généré
      */
     public function createInfographic(array $data, string $template = 'stats_card'): string
     {
-        // TODO: Implémenter génération d'infographies simples
-        // Pour l'instant, créer une image avec des stats
-        
         $templates = [
-            'stats_card' => $this->createStatsCardInfographic($data),
-            'timeline' => $this->createTimelineInfographic($data),
-            'comparison' => $this->createComparisonInfographic($data),
+            'stats_card' => fn() => $this->createStatsCardInfographic($data),
+            'timeline' => fn() => $this->createTimelineInfographic($data),
+            'comparison' => fn() => $this->createComparisonInfographic($data),
+            'progress' => fn() => $this->createProgressInfographic($data),
+            'highlight' => fn() => $this->createHighlightInfographic($data),
         ];
-        
-        return $templates[$template] ?? $templates['stats_card'];
+
+        $generator = $templates[$template] ?? $templates['stats_card'];
+
+        return $generator();
     }
 
     /**
      * Créer une carte de statistiques
+     * Affiche des chiffres clés sous forme de barres horizontales
      *
-     * @param array $data
+     * @param array $data ['stats' => ['label' => value, ...], 'title' => '...']
      * @return string Path
      */
     protected function createStatsCardInfographic(array $data): string
     {
-        // Utiliser QuickChart avec un graphique personnalisé
+        $stats = $data['stats'] ?? $data;
+        $title = $data['title'] ?? 'Chiffres Clés';
+
+        // Filtrer les valeurs non numériques
+        $filteredStats = array_filter($stats, fn($v) => is_numeric($v));
+
+        if (empty($filteredStats)) {
+            $filteredStats = ['Aucune donnée' => 0];
+        }
+
         $chartData = [
-            'labels' => array_keys($data),
-            'values' => array_values($data),
-            'label' => 'Statistiques',
-            'title' => $data['title'] ?? 'Chiffres Clés',
+            'labels' => array_keys($filteredStats),
+            'values' => array_values($filteredStats),
+            'label' => 'Valeur',
+            'title' => $title,
         ];
-        
-        return $this->chartGenerator->generateBarChart($chartData, $chartData['title']);
+
+        // Utiliser un graphique en barres horizontales pour les stats
+        return $this->chartGenerator->generateChart($chartData, 'horizontalBar', [
+            'chartOptions' => [
+                'indexAxis' => 'y',
+                'plugins' => [
+                    'legend' => ['display' => false],
+                    'title' => [
+                        'display' => true,
+                        'text' => $title,
+                        'font' => ['size' => 18, 'weight' => 'bold'],
+                    ],
+                ],
+            ],
+        ]);
     }
 
     /**
-     * Créer une timeline (placeholder)
+     * Créer une timeline d'événements/dates
+     * Affiche une progression chronologique
      *
-     * @param array $data
+     * @param array $data ['events' => [['date' => '', 'label' => '', 'value' => 0], ...], 'title' => '...']
      * @return string
      */
     protected function createTimelineInfographic(array $data): string
     {
-        // TODO: Implémenter
-        return $this->createStatsCardInfographic($data);
+        $events = $data['events'] ?? [];
+        $title = $data['title'] ?? 'Timeline';
+
+        if (empty($events)) {
+            return $this->createStatsCardInfographic(['stats' => ['Aucun événement' => 0], 'title' => $title]);
+        }
+
+        // Extraire les données pour un graphique en ligne
+        $labels = array_map(fn($e) => $e['date'] ?? $e['label'] ?? '', $events);
+        $values = array_map(fn($e) => $e['value'] ?? 1, $events);
+
+        $chartData = [
+            'labels' => $labels,
+            'values' => $values,
+            'label' => 'Progression',
+            'title' => $title,
+        ];
+
+        // Graphique en ligne pour visualiser la progression temporelle
+        return $this->chartGenerator->generateChart($chartData, 'line', [
+            'chartOptions' => [
+                'elements' => [
+                    'line' => ['tension' => 0.4],
+                    'point' => ['radius' => 6, 'hoverRadius' => 8],
+                ],
+                'plugins' => [
+                    'title' => [
+                        'display' => true,
+                        'text' => $title,
+                        'font' => ['size' => 18, 'weight' => 'bold'],
+                    ],
+                ],
+            ],
+        ]);
     }
 
     /**
-     * Créer une comparaison visuelle (placeholder)
+     * Créer une comparaison visuelle entre éléments
+     * Affiche une comparaison côte à côte
      *
-     * @param array $data
+     * @param array $data ['items' => [['name' => '', 'values' => []], ...], 'categories' => [], 'title' => '...']
      * @return string
      */
     protected function createComparisonInfographic(array $data): string
     {
-        // TODO: Implémenter
-        return $this->createStatsCardInfographic($data);
+        $items = $data['items'] ?? [];
+        $categories = $data['categories'] ?? [];
+        $title = $data['title'] ?? 'Comparaison';
+
+        if (empty($items)) {
+            return $this->createStatsCardInfographic(['stats' => ['Aucune donnée' => 0], 'title' => $title]);
+        }
+
+        // Construire un graphique radar pour la comparaison
+        $datasets = [];
+        $colors = [
+            ['rgba(54, 162, 235, 0.5)', 'rgba(54, 162, 235, 1)'],
+            ['rgba(255, 99, 132, 0.5)', 'rgba(255, 99, 132, 1)'],
+            ['rgba(75, 192, 192, 0.5)', 'rgba(75, 192, 192, 1)'],
+        ];
+
+        foreach ($items as $index => $item) {
+            $colorPair = $colors[$index % count($colors)];
+            $datasets[] = [
+                'label' => $item['name'] ?? "Item " . ($index + 1),
+                'data' => $item['values'] ?? [],
+                'backgroundColor' => $colorPair[0],
+                'borderColor' => $colorPair[1],
+                'borderWidth' => 2,
+            ];
+        }
+
+        // Configuration du graphique radar
+        $config = [
+            'type' => 'radar',
+            'data' => [
+                'labels' => $categories,
+                'datasets' => $datasets,
+            ],
+            'options' => [
+                'plugins' => [
+                    'title' => [
+                        'display' => true,
+                        'text' => $title,
+                        'font' => ['size' => 18, 'weight' => 'bold'],
+                    ],
+                ],
+                'scales' => [
+                    'r' => [
+                        'beginAtZero' => true,
+                    ],
+                ],
+            ],
+        ];
+
+        // Générer via l'URL directement
+        $configJson = json_encode($config);
+        $url = "https://quickchart.io/chart?c=" . urlencode($configJson) . "&width=800&height=600&format=png";
+
+        return $this->downloadAndSaveChart($url);
+    }
+
+    /**
+     * Créer une infographie de progression/jauge
+     * Affiche un pourcentage ou une progression
+     *
+     * @param array $data ['value' => 75, 'max' => 100, 'label' => '...', 'title' => '...']
+     * @return string
+     */
+    protected function createProgressInfographic(array $data): string
+    {
+        $value = $data['value'] ?? 0;
+        $max = $data['max'] ?? 100;
+        $label = $data['label'] ?? 'Progression';
+        $title = $data['title'] ?? $label;
+
+        $percentage = min(100, max(0, ($value / $max) * 100));
+        $remaining = 100 - $percentage;
+
+        // Graphique doughnut comme jauge
+        $chartData = [
+            'labels' => [$label, ''],
+            'values' => [$percentage, $remaining],
+            'title' => $title,
+        ];
+
+        $config = [
+            'type' => 'doughnut',
+            'data' => [
+                'labels' => [$label, ''],
+                'datasets' => [[
+                    'data' => [$percentage, $remaining],
+                    'backgroundColor' => [
+                        $percentage >= 75 ? 'rgba(75, 192, 192, 0.8)' : ($percentage >= 50 ? 'rgba(255, 206, 86, 0.8)' : 'rgba(255, 99, 132, 0.8)'),
+                        'rgba(200, 200, 200, 0.3)',
+                    ],
+                    'borderWidth' => 0,
+                ]],
+            ],
+            'options' => [
+                'circumference' => 180,
+                'rotation' => -90,
+                'cutout' => '70%',
+                'plugins' => [
+                    'legend' => ['display' => false],
+                    'title' => [
+                        'display' => true,
+                        'text' => $title,
+                        'font' => ['size' => 18, 'weight' => 'bold'],
+                    ],
+                    'datalabels' => [
+                        'display' => true,
+                        'formatter' => round($percentage) . '%',
+                        'font' => ['size' => 24, 'weight' => 'bold'],
+                    ],
+                ],
+            ],
+        ];
+
+        $configJson = json_encode($config);
+        $url = "https://quickchart.io/chart?c=" . urlencode($configJson) . "&width=600&height=400&format=png";
+
+        return $this->downloadAndSaveChart($url);
+    }
+
+    /**
+     * Créer une infographie de mise en avant (highlight)
+     * Affiche un gros chiffre avec contexte
+     *
+     * @param array $data ['highlights' => [['value' => '', 'label' => ''], ...], 'title' => '...']
+     * @return string
+     */
+    protected function createHighlightInfographic(array $data): string
+    {
+        $highlights = $data['highlights'] ?? [];
+        $title = $data['title'] ?? 'Points Clés';
+
+        if (empty($highlights)) {
+            return $this->createStatsCardInfographic(['stats' => ['Aucune donnée' => 0], 'title' => $title]);
+        }
+
+        // Convertir en format graphique en barres avec gros labels
+        $labels = array_map(fn($h) => $h['label'] ?? '', $highlights);
+        $values = array_map(fn($h) => is_numeric($h['value']) ? $h['value'] : 0, $highlights);
+
+        $chartData = [
+            'labels' => $labels,
+            'values' => $values,
+            'label' => 'Valeur',
+            'title' => $title,
+        ];
+
+        return $this->chartGenerator->generateChart($chartData, 'bar', [
+            'chartOptions' => [
+                'plugins' => [
+                    'legend' => ['display' => false],
+                    'title' => [
+                        'display' => true,
+                        'text' => $title,
+                        'font' => ['size' => 20, 'weight' => 'bold'],
+                    ],
+                    'datalabels' => [
+                        'display' => true,
+                        'anchor' => 'end',
+                        'align' => 'top',
+                        'font' => ['size' => 16, 'weight' => 'bold'],
+                    ],
+                ],
+            ],
+        ]);
+    }
+
+    /**
+     * Télécharger et sauvegarder un graphique depuis une URL
+     *
+     * @param string $url
+     * @return string Path du fichier
+     */
+    protected function downloadAndSaveChart(string $url): string
+    {
+        try {
+            $response = \Illuminate\Support\Facades\Http::timeout(30)->get($url);
+
+            if (!$response->successful()) {
+                throw new \Exception("Erreur téléchargement graphique: " . $response->status());
+            }
+
+            $filename = 'infographic_' . \Illuminate\Support\Str::random(16) . '.png';
+            $path = config('press.storage.media', 'press_releases/media') . '/' . $filename;
+
+            Storage::put($path, $response->body());
+
+            return $path;
+        } catch (\Exception $e) {
+            \Log::error('DossierChartService: Erreur téléchargement infographie', [
+                'url' => $url,
+                'error' => $e->getMessage(),
+            ]);
+            throw $e;
+        }
     }
 
     /**

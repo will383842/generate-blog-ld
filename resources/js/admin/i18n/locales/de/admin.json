@@ -1,0 +1,178 @@
+{
+  "title": "Administration",
+  "description": "Systemverwaltung",
+  "users": {
+    "title": "Benutzer",
+    "description": "Benutzer verwalten",
+    "add": "Neuer Benutzer",
+    "edit": "Bearbeiten",
+    "delete": "Löschen",
+    "invite": "Einladen",
+    "fields": {
+      "name": "Name",
+      "email": "E-Mail",
+      "role": "Rolle",
+      "status": "Status",
+      "createdAt": "Erstellt am",
+      "lastLogin": "Letzter Login"
+    },
+    "status": {
+      "active": "Aktiv",
+      "inactive": "Inaktiv",
+      "pending": "Ausstehend"
+    },
+    "actions": {
+      "activate": "Aktivieren",
+      "deactivate": "Deaktivieren",
+      "resetPassword": "Passwort zurücksetzen",
+      "impersonate": "Anmelden als"
+    },
+    "empty": "Keine Benutzer"
+  },
+  "roles": {
+    "title": "Rollen",
+    "description": "Rollen verwalten",
+    "add": "Neue Rolle",
+    "edit": "Bearbeiten",
+    "delete": "Löschen",
+    "fields": {
+      "name": "Name",
+      "description": "Beschreibung",
+      "permissions": "Berechtigungen",
+      "usersCount": "Benutzer"
+    },
+    "default": {
+      "admin": "Administrator",
+      "editor": "Redakteur",
+      "author": "Autor",
+      "viewer": "Betrachter"
+    },
+    "empty": "Keine Rollen"
+  },
+  "permissions": {
+    "title": "Berechtigungen",
+    "description": "Berechtigungen verwalten",
+    "categories": {
+      "content": "Inhalt",
+      "programs": "Programme",
+      "publishing": "Veröffentlichung",
+      "settings": "Einstellungen",
+      "admin": "Administration"
+    },
+    "actions": {
+      "view": "Ansehen",
+      "create": "Erstellen",
+      "edit": "Bearbeiten",
+      "delete": "Löschen",
+      "manage": "Verwalten"
+    }
+  },
+  "activity": {
+    "title": "Aktivität",
+    "description": "Aktivitätsprotokoll",
+    "user": "Benutzer",
+    "action": "Aktion",
+    "target": "Ziel",
+    "ip": "IP-Adresse",
+    "timestamp": "Zeitstempel",
+    "details": "Details",
+    "filters": {
+      "user": "Benutzer",
+      "action": "Aktion",
+      "dateRange": "Zeitraum"
+    },
+    "empty": "Keine Aktivität"
+  },
+  "system": {
+    "title": "System",
+    "description": "Systeminformationen",
+    "version": "Version",
+    "environment": "Umgebung",
+    "phpVersion": "PHP-Version",
+    "laravelVersion": "Laravel-Version",
+    "databaseSize": "Datenbankgröße",
+    "diskUsage": "Speichernutzung",
+    "memoryUsage": "Arbeitsspeicher",
+    "uptime": "Betriebszeit",
+    "lastUpdate": "Letztes Update",
+    "health": "Gesundheitsstatus",
+    "healthy": "Gesund",
+    "warning": "Warnung",
+    "critical": "Kritisch"
+  },
+  "workers": {
+    "title": "Worker",
+    "description": "Worker-Verwaltung",
+    "status": "Status",
+    "queue": "Warteschlange",
+    "jobs": "Jobs",
+    "failed": "Fehlgeschlagen",
+    "processed": "Verarbeitet",
+    "memory": "Speicher",
+    "uptime": "Laufzeit",
+    "start": "Starten",
+    "stop": "Stoppen",
+    "restart": "Neustart",
+    "empty": "Keine Worker"
+  },
+  "errors": {
+    "title": "Fehler",
+    "description": "Fehlerprotokoll",
+    "message": "Nachricht",
+    "file": "Datei",
+    "line": "Zeile",
+    "trace": "Stacktrace",
+    "occurrences": "Auftreten",
+    "lastOccurrence": "Letztes Auftreten",
+    "resolve": "Beheben",
+    "ignore": "Ignorieren",
+    "empty": "Keine Fehler"
+  },
+  "backups": {
+    "title": "Backups",
+    "description": "Backup-Verwaltung",
+    "create": "Backup erstellen",
+    "restore": "Wiederherstellen",
+    "download": "Herunterladen",
+    "delete": "Löschen",
+    "name": "Name",
+    "size": "Größe",
+    "createdAt": "Erstellt am",
+    "type": "Typ",
+    "status": "Status",
+    "types": {
+      "full": "Vollständig",
+      "database": "Datenbank",
+      "files": "Dateien"
+    },
+    "schedule": "Zeitplan",
+    "lastBackup": "Letztes Backup",
+    "nextBackup": "Nächstes Backup",
+    "empty": "Keine Backups"
+  },
+  "settings": {
+    "title": "Systemeinstellungen",
+    "description": "Erweiterte Konfiguration",
+    "cache": {
+      "title": "Cache",
+      "clear": "Cache leeren",
+      "clearAll": "Gesamten Cache leeren",
+      "config": "Konfig-Cache",
+      "routes": "Routen-Cache",
+      "views": "Views-Cache"
+    },
+    "maintenance": {
+      "title": "Wartung",
+      "enable": "Wartungsmodus aktivieren",
+      "disable": "Wartungsmodus deaktivieren",
+      "status": "Status",
+      "message": "Nachricht"
+    },
+    "logs": {
+      "title": "Protokolle",
+      "view": "Protokolle anzeigen",
+      "download": "Herunterladen",
+      "clear": "Protokolle löschen"
+    }
+  }
+}

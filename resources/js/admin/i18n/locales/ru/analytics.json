@@ -1,0 +1,106 @@
+{
+  "title": "Аналитика",
+  "description": "Статистика и анализ",
+  "performance": {
+    "title": "Производительность",
+    "description": "Метрики производительности",
+    "pageViews": "Просмотры страниц",
+    "uniqueVisitors": "Уникальные посетители",
+    "sessions": "Сессии",
+    "bounceRate": "Показатель отказов",
+    "avgSessionDuration": "Средняя продолжительность",
+    "pagesPerSession": "Страниц за сессию",
+    "newUsers": "Новые пользователи",
+    "returningUsers": "Возвращающиеся пользователи",
+    "conversionRate": "Коэффициент конверсии"
+  },
+  "content": {
+    "title": "Контент",
+    "description": "Эффективность контента",
+    "topArticles": "Топ статьи",
+    "recentArticles": "Последние статьи",
+    "articleViews": "Просмотры",
+    "avgTimeOnPage": "Среднее время",
+    "engagement": "Вовлеченность",
+    "shares": "Поделились",
+    "comments": "Комментарии",
+    "byCategory": "По категории",
+    "byAuthor": "По автору",
+    "byTag": "По тегу"
+  },
+  "reports": {
+    "title": "Отчеты",
+    "description": "Создать отчеты",
+    "generate": "Создать отчет",
+    "schedule": "Запланировать",
+    "download": "Скачать",
+    "send": "Отправить по электронной почте",
+    "type": "Тип отчета",
+    "period": "Период",
+    "format": "Формат",
+    "recipients": "Получатели",
+    "types": {
+      "overview": "Обзор",
+      "performance": "Производительность",
+      "content": "Контент",
+      "seo": "SEO",
+      "generation": "Генерация",
+      "custom": "Пользовательский"
+    },
+    "periods": {
+      "today": "Сегодня",
+      "yesterday": "Вчера",
+      "last7days": "Последние 7 дней",
+      "last30days": "Последние 30 дней",
+      "thisMonth": "Этот месяц",
+      "lastMonth": "Прошлый месяц",
+      "custom": "Пользовательский"
+    },
+    "formats": {
+      "pdf": "PDF",
+      "csv": "CSV",
+      "excel": "Excel"
+    },
+    "scheduled": "Запланированные отчеты",
+    "history": "История"
+  },
+  "dashboard": {
+    "title": "Панель управления",
+    "overview": "Обзор",
+    "quickStats": "Быстрая статистика",
+    "recentActivity": "Последняя активность",
+    "trends": "Тенденции",
+    "compare": "Сравнить"
+  },
+  "filters": {
+    "dateRange": "Диапазон дат",
+    "platform": "Платформа",
+    "country": "Страна",
+    "device": "Устройство",
+    "source": "Источник",
+    "apply": "Применить",
+    "reset": "Сбросить"
+  },
+  "charts": {
+    "line": "Линейная",
+    "bar": "Столбчатая",
+    "pie": "Круговая",
+    "area": "Область",
+    "export": "Экспортировать",
+    "noData": "Нет данных"
+  },
+  "compare": {
+    "title": "Сравнение",
+    "period1": "Период 1",
+    "period2": "Период 2",
+    "increase": "Увеличение",
+    "decrease": "Уменьшение",
+    "noChange": "Без изменений"
+  },
+  "realtime": {
+    "title": "В реальном времени",
+    "activeUsers": "Активные пользователи",
+    "pageViews": "Просмотры страниц",
+    "topPages": "Топ страниц"
+  }
+}

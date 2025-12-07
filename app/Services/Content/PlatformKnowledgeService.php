@@ -4,11 +4,20 @@ namespace App\Services\Content;
 
 use App\Models\Platform;
 use App\Models\PlatformKnowledge;
+use App\Models\PlatformKnowledgeTranslation;
+use App\Services\Translation\TranslationService;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 
 class PlatformKnowledgeService
 {
+    protected TranslationService $translationService;
+
+    public function __construct(TranslationService $translationService)
+    {
+        $this->translationService = $translationService;
+    }
+
     /**
      * Récupère le contexte de connaissance pour injection dans un prompt
      *
@@ -272,12 +281,186 @@ class PlatformKnowledgeService
      *
      * @param PlatformKnowledge $knowledge
      * @param array $targetLanguages
-     * @return array
+     * @return array ['success' => [], 'failed' => []]
      */
     public function translateKnowledge(PlatformKnowledge $knowledge, array $targetLanguages): array
     {
-        // TODO: Implémenter avec TranslationService
-        // Pour l'instant, retourner vide
-        return [];
+        $results = [
+            'success' => [],
+            'failed' => [],
+        ];
+
+        $sourceLanguage = $knowledge->language_code;
+
+        foreach ($targetLanguages as $targetLang) {
+            // Ignorer si même langue que la source
+            if ($targetLang === $sourceLanguage) {
+                continue;
+            }
+
+            // Vérifier si traduction existe déjà
+            if ($knowledge->hasTranslation($targetLang)) {
+                Log::info("Traduction knowledge existe déjà", [
+                    'knowledge_id' => $knowledge->id,
+                    'target_lang' => $targetLang,
+                ]);
+                continue;
+            }
+
+            try {
+                // Traduire le titre
+                $translatedTitle = $this->translationService->translateText(
+                    $knowledge->title,
+                    $sourceLanguage,
+                    $targetLang,
+                    'knowledge_title'
+                );
+
+                // Traduire le contenu
+                $translatedContent = $this->translationService->translateLongText(
+                    $knowledge->content,
+                    $sourceLanguage,
+                    $targetLang
+                );
+
+                // Créer la traduction
+                $translation = PlatformKnowledgeTranslation::create([
+                    'knowledge_id' => $knowledge->id,
+                    'language_code' => $targetLang,
+                    'title' => $translatedTitle,
+                    'content' => $translatedContent,
+                ]);
+
+                $results['success'][] = [
+                    'language' => $targetLang,
+                    'translation_id' => $translation->id,
+                ];
+
+                Log::info("Knowledge traduit avec succès", [
+                    'knowledge_id' => $knowledge->id,
+                    'target_lang' => $targetLang,
+                    'translation_id' => $translation->id,
+                ]);
+
+            } catch (\Exception $e) {
+                $results['failed'][] = [
+                    'language' => $targetLang,
+                    'error' => $e->getMessage(),
+                ];
+
+                Log::error("Erreur traduction knowledge", [
+                    'knowledge_id' => $knowledge->id,
+                    'target_lang' => $targetLang,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
+
+        return $results;
+    }
+
+    /**
+     * Traduit toutes les entrées knowledge d'une plateforme
+     *
+     * @param Platform $platform
+     * @param array $targetLanguages
+     * @return array Résumé des traductions
+     */
+    public function translateAllKnowledge(Platform $platform, array $targetLanguages): array
+    {
+        $knowledge = PlatformKnowledge::where('platform_id', $platform->id)
+            ->active()
+            ->get();
+
+        $summary = [
+            'total_entries' => $knowledge->count(),
+            'total_translations' => 0,
+            'success' => 0,
+            'failed' => 0,
+            'details' => [],
+        ];
+
+        foreach ($knowledge as $entry) {
+            $result = $this->translateKnowledge($entry, $targetLanguages);
+
+            $summary['success'] += count($result['success']);
+            $summary['failed'] += count($result['failed']);
+            $summary['total_translations'] += count($result['success']) + count($result['failed']);
+
+            $summary['details'][] = [
+                'knowledge_id' => $entry->id,
+                'type' => $entry->knowledge_type,
+                'results' => $result,
+            ];
+        }
+
+        Log::info("Traduction batch knowledge terminée", [
+            'platform_id' => $platform->id,
+            'summary' => [
+                'total_entries' => $summary['total_entries'],
+                'success' => $summary['success'],
+                'failed' => $summary['failed'],
+            ],
+        ]);
+
+        return $summary;
+    }
+
+    /**
+     * Met à jour une traduction existante
+     *
+     * @param PlatformKnowledge $knowledge
+     * @param string $targetLang
+     * @param bool $force Forcer même si traduction existe
+     * @return PlatformKnowledgeTranslation|null
+     */
+    public function updateTranslation(PlatformKnowledge $knowledge, string $targetLang, bool $force = false): ?PlatformKnowledgeTranslation
+    {
+        $existingTranslation = $knowledge->getTranslation($targetLang);
+
+        if ($existingTranslation && !$force) {
+            return $existingTranslation;
+        }
+
+        try {
+            $sourceLanguage = $knowledge->language_code;
+
+            $translatedTitle = $this->translationService->translateText(
+                $knowledge->title,
+                $sourceLanguage,
+                $targetLang,
+                'knowledge_title'
+            );
+
+            $translatedContent = $this->translationService->translateLongText(
+                $knowledge->content,
+                $sourceLanguage,
+                $targetLang
+            );
+
+            if ($existingTranslation) {
+                $existingTranslation->update([
+                    'title' => $translatedTitle,
+                    'content' => $translatedContent,
+                ]);
+                return $existingTranslation;
+            }
+
+            return PlatformKnowledgeTranslation::create([
+                'knowledge_id' => $knowledge->id,
+                'language_code' => $targetLang,
+                'title' => $translatedTitle,
+                'content' => $translatedContent,
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error("Erreur mise à jour traduction knowledge", [
+                'knowledge_id' => $knowledge->id,
+                'target_lang' => $targetLang,
+                'error' => $e->getMessage(),
+            ]);
+
+            return null;
+        }
     }
 }

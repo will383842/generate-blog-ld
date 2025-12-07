@@ -1,0 +1,178 @@
+{
+  "title": "Administração",
+  "description": "Gestão do sistema",
+  "users": {
+    "title": "Usuários",
+    "description": "Gerenciar usuários",
+    "add": "Novo usuário",
+    "edit": "Editar",
+    "delete": "Excluir",
+    "invite": "Convidar",
+    "fields": {
+      "name": "Nome",
+      "email": "Email",
+      "role": "Função",
+      "status": "Status",
+      "createdAt": "Criado em",
+      "lastLogin": "Último login"
+    },
+    "status": {
+      "active": "Ativo",
+      "inactive": "Inativo",
+      "pending": "Pendente"
+    },
+    "actions": {
+      "activate": "Ativar",
+      "deactivate": "Desativar",
+      "resetPassword": "Redefinir senha",
+      "impersonate": "Entrar como"
+    },
+    "empty": "Sem usuários"
+  },
+  "roles": {
+    "title": "Funções",
+    "description": "Gerenciar funções",
+    "add": "Nova função",
+    "edit": "Editar",
+    "delete": "Excluir",
+    "fields": {
+      "name": "Nome",
+      "description": "Descrição",
+      "permissions": "Permissões",
+      "usersCount": "Usuários"
+    },
+    "default": {
+      "admin": "Administrador",
+      "editor": "Editor",
+      "author": "Autor",
+      "viewer": "Visualizador"
+    },
+    "empty": "Sem funções"
+  },
+  "permissions": {
+    "title": "Permissões",
+    "description": "Gerenciar permissões",
+    "categories": {
+      "content": "Conteúdo",
+      "programs": "Programas",
+      "publishing": "Publicação",
+      "settings": "Configurações",
+      "admin": "Administração"
+    },
+    "actions": {
+      "view": "Ver",
+      "create": "Criar",
+      "edit": "Editar",
+      "delete": "Excluir",
+      "manage": "Gerenciar"
+    }
+  },
+  "activity": {
+    "title": "Atividade",
+    "description": "Registro de atividade",
+    "user": "Usuário",
+    "action": "Ação",
+    "target": "Alvo",
+    "ip": "Endereço IP",
+    "timestamp": "Data/Hora",
+    "details": "Detalhes",
+    "filters": {
+      "user": "Usuário",
+      "action": "Ação",
+      "dateRange": "Intervalo de datas"
+    },
+    "empty": "Sem atividade"
+  },
+  "system": {
+    "title": "Sistema",
+    "description": "Informações do sistema",
+    "version": "Versão",
+    "environment": "Ambiente",
+    "phpVersion": "Versão PHP",
+    "laravelVersion": "Versão Laravel",
+    "databaseSize": "Tamanho do BD",
+    "diskUsage": "Uso de disco",
+    "memoryUsage": "Memória",
+    "uptime": "Tempo ativo",
+    "lastUpdate": "Última atualização",
+    "health": "Status de saúde",
+    "healthy": "Saudável",
+    "warning": "Aviso",
+    "critical": "Crítico"
+  },
+  "workers": {
+    "title": "Workers",
+    "description": "Gerenciamento de workers",
+    "status": "Status",
+    "queue": "Fila",
+    "jobs": "Tarefas",
+    "failed": "Falhas",
+    "processed": "Processadas",
+    "memory": "Memória",
+    "uptime": "Tempo ativo",
+    "start": "Iniciar",
+    "stop": "Parar",
+    "restart": "Reiniciar",
+    "empty": "Sem workers"
+  },
+  "errors": {
+    "title": "Erros",
+    "description": "Registro de erros",
+    "message": "Mensagem",
+    "file": "Arquivo",
+    "line": "Linha",
+    "trace": "Rastreamento",
+    "occurrences": "Ocorrências",
+    "lastOccurrence": "Última ocorrência",
+    "resolve": "Resolver",
+    "ignore": "Ignorar",
+    "empty": "Sem erros"
+  },
+  "backups": {
+    "title": "Backups",
+    "description": "Gerenciamento de backups",
+    "create": "Criar backup",
+    "restore": "Restaurar",
+    "download": "Baixar",
+    "delete": "Excluir",
+    "name": "Nome",
+    "size": "Tamanho",
+    "createdAt": "Criado em",
+    "type": "Tipo",
+    "status": "Status",
+    "types": {
+      "full": "Completo",
+      "database": "Banco de dados",
+      "files": "Arquivos"
+    },
+    "schedule": "Agendamento",
+    "lastBackup": "Último backup",
+    "nextBackup": "Próximo backup",
+    "empty": "Sem backups"
+  },
+  "settings": {
+    "title": "Configurações do sistema",
+    "description": "Configuração avançada",
+    "cache": {
+      "title": "Cache",
+      "clear": "Limpar cache",
+      "clearAll": "Limpar todo o cache",
+      "config": "Cache de configuração",
+      "routes": "Cache de rotas",
+      "views": "Cache de views"
+    },
+    "maintenance": {
+      "title": "Manutenção",
+      "enable": "Ativar modo de manutenção",
+      "disable": "Desativar modo de manutenção",
+      "status": "Status",
+      "message": "Mensagem"
+    },
+    "logs": {
+      "title": "Logs",
+      "view": "Ver logs",
+      "download": "Baixar",
+      "clear": "Limpar logs"
+    }
+  }
+}

@@ -1,0 +1,143 @@
+{
+  "title": "AI与成本",
+  "models": {
+    "title": "AI模型",
+    "gpt4": "GPT-4",
+    "gpt4Turbo": "GPT-4 Turbo",
+    "gpt35": "GPT-3.5 Turbo",
+    "claude": "Claude",
+    "claudeInstant": "Claude Instant",
+    "perplexity": "Perplexity",
+    "dalle": "DALL-E",
+    "active": "活跃",
+    "inactive": "未激活",
+    "default": "默认",
+    "setDefault": "设为默认"
+  },
+  "costs": {
+    "title": "成本",
+    "daily": "日成本",
+    "weekly": "周成本",
+    "monthly": "月成本",
+    "yearly": "年成本",
+    "total": "总成本",
+    "byModel": "按模型",
+    "byContent": "按内容类型",
+    "byPlatform": "按平台",
+    "prediction": "预测",
+    "budget": {
+      "title": "预算",
+      "set": "设置预算",
+      "current": "当前预算",
+      "remaining": "剩余",
+      "used": "已用",
+      "percentage": "已用{{value}}%",
+      "alert": "在{{value}}%时提醒",
+      "exceeded": "预算已超"
+    },
+    "breakdown": {
+      "title": "成本明细",
+      "tokens": "令牌",
+      "inputTokens": "输入令牌",
+      "outputTokens": "输出令牌",
+      "images": "图片",
+      "searches": "搜索",
+      "other": "其他"
+    }
+  },
+  "performance": {
+    "title": "性能",
+    "latency": {
+      "title": "延迟",
+      "average": "平均",
+      "p50": "P50",
+      "p95": "P95",
+      "p99": "P99"
+    },
+    "successRate": {
+      "title": "成功率",
+      "value": "{{value}}%"
+    },
+    "errors": {
+      "title": "错误",
+      "total": "错误总数",
+      "rate": "错误率",
+      "types": {
+        "timeout": "超时",
+        "rateLimit": "速率限制",
+        "serverError": "服务器错误",
+        "invalidResponse": "无效响应",
+        "other": "其他"
+      }
+    },
+    "queue": {
+      "title": "队列",
+      "pending": "待处理",
+      "processing": "处理中",
+      "avgWaitTime": "平均等待时间"
+    },
+    "throughput": {
+      "title": "吞吐量",
+      "requestsPerMinute": "请求/分钟",
+      "tokensPerMinute": "令牌/分钟"
+    }
+  },
+  "prompts": {
+    "title": "提示词管理",
+    "list": "提示词列表",
+    "create": "新建提示词",
+    "edit": "编辑提示词",
+    "delete": "删除提示词",
+    "optimize": "优化",
+    "test": "测试",
+    "version": {
+      "title": "版本",
+      "current": "当前版本",
+      "history": "历史",
+      "restore": "恢复",
+      "compare": "比较"
+    },
+    "compare": {
+      "title": "比较",
+      "sideBySide": "并排",
+      "metrics": "指标"
+    },
+    "categories": {
+      "generation": "生成",
+      "summarization": "摘要",
+      "translation": "翻译",
+      "analysis": "分析",
+      "factCheck": "事实核查"
+    },
+    "fields": {
+      "name": "名称",
+      "category": "分类",
+      "template": "模板",
+      "variables": "变量",
+      "model": "推荐模型"
+    }
+  },
+  "charts": {
+    "costEvolution": "成本趋势",
+    "modelUsage": "模型使用情况",
+    "contentTypeCosts": "内容类型成本",
+    "dailyCosts": "每日成本",
+    "tokenUsage": "令牌使用"
+  },
+  "settings": {
+    "title": "AI设置",
+    "defaultModel": "默认模型",
+    "temperature": "温度",
+    "maxTokens": "最大令牌数",
+    "timeout": "超时（秒）",
+    "retries": "重试次数",
+    "fallbackModel": "备用模型"
+  },
+  "messages": {
+    "budgetUpdated": "预算已更新",
+    "promptSaved": "提示词已保存",
+    "promptDeleted": "提示词已删除",
+    "testStarted": "测试已开始",
+    "optimizing": "优化中..."
+  }
+}

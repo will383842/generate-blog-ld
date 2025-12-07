@@ -1,0 +1,106 @@
+{
+  "title": "विश्लेषण",
+  "description": "सांख्यिकी और विश्लेषण",
+  "performance": {
+    "title": "प्रदर्शन",
+    "description": "प्रदर्शन मीट्रिक",
+    "pageViews": "पेज व्यू",
+    "uniqueVisitors": "अद्वितीय विज़िटर",
+    "sessions": "सत्र",
+    "bounceRate": "बाउंस दर",
+    "avgSessionDuration": "औसत अवधि",
+    "pagesPerSession": "प्रति सत्र पेज",
+    "newUsers": "नए उपयोगकर्ता",
+    "returningUsers": "लौटने वाले उपयोगकर्ता",
+    "conversionRate": "रूपांतरण दर"
+  },
+  "content": {
+    "title": "सामग्री",
+    "description": "सामग्री प्रदर्शन",
+    "topArticles": "शीर्ष लेख",
+    "recentArticles": "हाल के लेख",
+    "articleViews": "व्यू",
+    "avgTimeOnPage": "औसत समय",
+    "engagement": "जुड़ाव",
+    "shares": "शेयर",
+    "comments": "टिप्पणियाँ",
+    "byCategory": "श्रेणी के अनुसार",
+    "byAuthor": "लेखक के अनुसार",
+    "byTag": "टैग के अनुसार"
+  },
+  "reports": {
+    "title": "रिपोर्ट",
+    "description": "रिपोर्ट जनरेट करें",
+    "generate": "रिपोर्ट जनरेट करें",
+    "schedule": "शेड्यूल करें",
+    "download": "डाउनलोड करें",
+    "send": "ईमेल द्वारा भेजें",
+    "type": "रिपोर्ट प्रकार",
+    "period": "अवधि",
+    "format": "प्रारूप",
+    "recipients": "प्राप्तकर्ता",
+    "types": {
+      "overview": "अवलोकन",
+      "performance": "प्रदर्शन",
+      "content": "सामग्री",
+      "seo": "SEO",
+      "generation": "जनरेशन",
+      "custom": "कस्टम"
+    },
+    "periods": {
+      "today": "आज",
+      "yesterday": "कल",
+      "last7days": "पिछले 7 दिन",
+      "last30days": "पिछले 30 दिन",
+      "thisMonth": "यह महीना",
+      "lastMonth": "पिछला महीना",
+      "custom": "कस्टम"
+    },
+    "formats": {
+      "pdf": "PDF",
+      "csv": "CSV",
+      "excel": "Excel"
+    },
+    "scheduled": "शेड्यूल की गई रिपोर्ट",
+    "history": "इतिहास"
+  },
+  "dashboard": {
+    "title": "डैशबोर्ड",
+    "overview": "अवलोकन",
+    "quickStats": "त्वरित आंकड़े",
+    "recentActivity": "हाल की गतिविधि",
+    "trends": "रुझान",
+    "compare": "तुलना करें"
+  },
+  "filters": {
+    "dateRange": "तिथि सीमा",
+    "platform": "प्लेटफ़ॉर्म",
+    "country": "देश",
+    "device": "डिवाइस",
+    "source": "स्रोत",
+    "apply": "लागू करें",
+    "reset": "रीसेट करें"
+  },
+  "charts": {
+    "line": "रेखा",
+    "bar": "बार",
+    "pie": "पाई",
+    "area": "क्षेत्र",
+    "export": "निर्यात करें",
+    "noData": "कोई डेटा नहीं"
+  },
+  "compare": {
+    "title": "तुलना",
+    "period1": "अवधि 1",
+    "period2": "अवधि 2",
+    "increase": "वृद्धि",
+    "decrease": "कमी",
+    "noChange": "कोई बदलाव नहीं"
+  },
+  "realtime": {
+    "title": "रीयल-टाइम",
+    "activeUsers": "सक्रिय उपयोगकर्ता",
+    "pageViews": "पेज व्यू",
+    "topPages": "शीर्ष पेज"
+  }
+}

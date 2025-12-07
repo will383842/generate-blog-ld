@@ -1,0 +1,110 @@
+{
+  "title": "प्रोग्राम",
+  "description": "अपने जनरेशन प्रोग्राम प्रबंधित करें",
+  "list": {
+    "title": "प्रोग्राम सूची",
+    "add": "नया प्रोग्राम",
+    "edit": "संपादित करें",
+    "delete": "हटाएं",
+    "duplicate": "डुप्लिकेट",
+    "run": "चलाएं",
+    "pause": "रोकें",
+    "resume": "फिर से शुरू करें",
+    "empty": "कोई प्रोग्राम नहीं",
+    "createFirst": "अपना पहला प्रोग्राम बनाएं"
+  },
+  "fields": {
+    "name": "नाम",
+    "description": "विवरण",
+    "type": "प्रकार",
+    "platform": "प्लेटफॉर्म",
+    "template": "टेम्पलेट",
+    "status": "स्थिति",
+    "priority": "प्राथमिकता",
+    "schedule": "शेड्यूल",
+    "articlesPerRun": "प्रति रन लेख",
+    "totalArticles": "कुल लेख",
+    "generatedArticles": "जनरेट किए गए लेख",
+    "remainingArticles": "शेष लेख",
+    "progress": "प्रगति",
+    "createdAt": "बनाया गया",
+    "updatedAt": "अपडेट किया गया",
+    "lastRunAt": "अंतिम रन",
+    "nextRunAt": "अगला रन"
+  },
+  "types": {
+    "country": "देश के अनुसार",
+    "service": "सेवा के अनुसार",
+    "topic": "विषय के अनुसार",
+    "custom": "कस्टम"
+  },
+  "status": {
+    "draft": "ड्राफ्ट",
+    "active": "सक्रिय",
+    "paused": "रुका हुआ",
+    "completed": "पूर्ण"
+  },
+  "priority": {
+    "high": "उच्च",
+    "default": "सामान्य",
+    "low": "निम्न"
+  },
+  "variables": {
+    "title": "वेरिएबल",
+    "add": "वेरिएबल जोड़ें",
+    "name": "नाम",
+    "values": "मान",
+    "description": "विवरण",
+    "country": "देश",
+    "city": "शहर",
+    "service": "सेवा",
+    "keyword": "कीवर्ड",
+    "custom": "कस्टम"
+  },
+  "templates": {
+    "title": "टेम्पलेट",
+    "description": "अपने जनरेशन टेम्पलेट प्रबंधित करें",
+    "add": "नया टेम्पलेट",
+    "edit": "संपादित करें",
+    "delete": "हटाएं",
+    "duplicate": "डुप्लिकेट",
+    "preview": "पूर्वावलोकन",
+    "fields": {
+      "name": "नाम",
+      "description": "विवरण",
+      "prompt": "प्रॉम्प्ट",
+      "structure": "संरचना",
+      "variables": "उपलब्ध वेरिएबल"
+    },
+    "empty": "कोई टेम्पलेट नहीं"
+  },
+  "detail": {
+    "overview": "अवलोकन",
+    "articles": "लेख",
+    "variables": "वेरिएबल",
+    "schedule": "शेड्यूल",
+    "logs": "लॉग",
+    "stats": "आंकड़े"
+  },
+  "stats": {
+    "totalGenerated": "कुल जनरेट किए गए",
+    "successRate": "सफलता दर",
+    "avgQuality": "औसत गुणवत्ता",
+    "avgGenerationTime": "औसत समय"
+  },
+  "actions": {
+    "runNow": "अभी चलाएं",
+    "generateBatch": "बैच जनरेट करें",
+    "stopGeneration": "जनरेशन रोकें",
+    "viewArticles": "लेख देखें",
+    "exportArticles": "लेख निर्यात करें"
+  },
+  "messages": {
+    "created": "प्रोग्राम सफलतापूर्वक बनाया गया",
+    "updated": "प्रोग्राम अपडेट किया गया",
+    "deleted": "प्रोग्राम हटाया गया",
+    "started": "जनरेशन शुरू हुई",
+    "paused": "प्रोग्राम रुका",
+    "resumed": "प्रोग्राम फिर से शुरू"
+  }
+}

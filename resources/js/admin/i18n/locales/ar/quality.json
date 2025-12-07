@@ -1,0 +1,98 @@
+{
+  "title": "الجودة",
+  "description": "مراقبة جودة المحتوى",
+  "scores": {
+    "title": "درجات الجودة",
+    "description": "تحليل درجة الجودة",
+    "overall": "الدرجة الإجمالية",
+    "seo": "تحسين محركات البحث",
+    "readability": "سهولة القراءة",
+    "originality": "الأصالة",
+    "structure": "البنية",
+    "grammar": "القواعد",
+    "engagement": "التفاعل",
+    "distribution": "توزيع الدرجات",
+    "trend": "الاتجاه",
+    "average": "المتوسط",
+    "minimum": "الحد الأدنى",
+    "maximum": "الحد الأقصى"
+  },
+  "review": {
+    "title": "المراجعة",
+    "description": "المقالات قيد المراجعة",
+    "pendingReview": "قيد المراجعة",
+    "needsImprovement": "يحتاج إلى تحسين",
+    "approved": "معتمد",
+    "rejected": "مرفوض",
+    "approve": "اعتماد",
+    "reject": "رفض",
+    "requestChanges": "طلب تعديلات",
+    "sendToEditor": "إرسال إلى المحرر",
+    "bulkApprove": "اعتماد المحدد",
+    "bulkReject": "رفض المحدد",
+    "empty": "لا توجد مقالات قيد المراجعة"
+  },
+  "rules": {
+    "title": "قواعد الجودة",
+    "description": "تكوين قواعد التحقق",
+    "add": "قاعدة جديدة",
+    "edit": "تعديل",
+    "delete": "حذف",
+    "enable": "تفعيل",
+    "disable": "تعطيل",
+    "name": "الاسم",
+    "type": "النوع",
+    "threshold": "الحد الأدنى",
+    "weight": "الوزن",
+    "action": "الإجراء",
+    "categories": {
+      "seo": "تحسين محركات البحث",
+      "readability": "سهولة القراءة",
+      "grammar": "القواعد",
+      "structure": "البنية",
+      "content": "المحتوى"
+    },
+    "actions": {
+      "warn": "تحذير",
+      "block": "حظر",
+      "flag": "تمييز"
+    },
+    "empty": "لم يتم تكوين قواعد"
+  },
+  "analysis": {
+    "title": "التحليل",
+    "analyzing": "جاري التحليل...",
+    "issues": "المشاكل المكتشفة",
+    "warnings": "التحذيرات",
+    "suggestions": "الاقتراحات",
+    "passed": "نجح",
+    "fix": "إصلاح",
+    "ignore": "تجاهل",
+    "fixAll": "إصلاح الكل"
+  },
+  "levels": {
+    "excellent": "ممتاز",
+    "good": "جيد",
+    "average": "متوسط",
+    "poor": "ضعيف",
+    "critical": "حرج"
+  },
+  "metrics": {
+    "wordCount": "عدد الكلمات",
+    "sentenceCount": "عدد الجمل",
+    "paragraphCount": "الفقرات",
+    "avgSentenceLength": "متوسط طول الجملة",
+    "avgWordLength": "متوسط طول الكلمة",
+    "readingTime": "وقت القراءة",
+    "fleschScore": "درجة فليش",
+    "keywordDensity": "كثافة الكلمات المفتاحية"
+  },
+  "stats": {
+    "totalAnalyzed": "إجمالي التحليلات",
+    "avgScore": "متوسط الدرجة",
+    "excellent": "ممتاز",
+    "good": "جيد",
+    "average": "متوسط",
+    "poor": "ضعيف"
+  }
+}

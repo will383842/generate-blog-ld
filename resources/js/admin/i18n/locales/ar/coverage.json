@@ -1,0 +1,112 @@
+{
+  "title": "التغطية",
+  "views": {
+    "global": "العرض العالمي",
+    "byCountry": "حسب البلد",
+    "byLanguage": "حسب اللغة",
+    "byTheme": "حسب الموضوع",
+    "gaps": "الفجوات",
+    "objectives": "الأهداف"
+  },
+  "global": {
+    "title": "التغطية العالمية",
+    "description": "نظرة عامة على التغطية حسب المنطقة",
+    "map": "خريطة التغطية",
+    "legend": {
+      "high": "تغطية عالية (>80%)",
+      "medium": "تغطية متوسطة (40-80%)",
+      "low": "تغطية منخفضة (<40%)",
+      "none": "غير مغطى"
+    }
+  },
+  "stats": {
+    "covered": "البلدان المغطاة",
+    "missing": "البلدان المفقودة",
+    "percentage": "% التغطية",
+    "trend": "الاتجاه",
+    "articles": "المقالات",
+    "languages": "اللغات",
+    "themes": "المواضيع المغطاة",
+    "total": "الإجمالي",
+    "growth": "+{{value}}% هذا الشهر"
+  },
+  "filters": {
+    "region": "المنطقة",
+    "continent": "القارة",
+    "status": "الحالة",
+    "platform": "المنصة",
+    "theme": "الموضوع",
+    "language": "اللغة",
+    "minCoverage": "الحد الأدنى للتغطية",
+    "maxCoverage": "الحد الأقصى للتغطية"
+  },
+  "regions": {
+    "all": "جميع المناطق",
+    "europe": "أوروبا",
+    "northAmerica": "أمريكا الشمالية",
+    "southAmerica": "أمريكا الجنوبية",
+    "asia": "آسيا",
+    "africa": "أفريقيا",
+    "oceania": "أوقيانوسيا",
+    "middleEast": "الشرق الأوسط"
+  },
+  "gaps": {
+    "title": "فجوات التغطية",
+    "description": "البلدان والمواضيع التي تتطلب محتوى",
+    "priority": {
+      "high": "أولوية عالية",
+      "medium": "أولوية متوسطة",
+      "low": "أولوية منخفضة"
+    },
+    "noContent": "لا يوجد محتوى",
+    "outdated": "محتوى قديم",
+    "incomplete": "تغطية جزئية",
+    "missingLanguages": "لغات مفقودة",
+    "missingThemes": "مواضيع مفقودة"
+  },
+  "objectives": {
+    "title": "أهداف التغطية",
+    "description": "حدد أهدافك حسب المنطقة والموضوع",
+    "set": "تحديد هدف",
+    "edit": "تعديل الهدف",
+    "delete": "حذف الهدف",
+    "target": "الهدف",
+    "current": "الحالي",
+    "progress": "التقدم",
+    "deadline": "الموعد النهائي",
+    "achieved": "تم تحقيق الهدف",
+    "onTrack": "على المسار الصحيح",
+    "atRisk": "في خطر",
+    "behind": "متأخر"
+  },
+  "actions": {
+    "generateMissing": "إنشاء المحتوى المفقود",
+    "setObjective": "تحديد هدف",
+    "exportReport": "تصدير التقرير",
+    "viewDetails": "عرض التفاصيل",
+    "createProgram": "إنشاء برنامج"
+  },
+  "table": {
+    "country": "البلد",
+    "region": "المنطقة",
+    "articles": "المقالات",
+    "languages": "اللغات",
+    "themes": "المواضيع",
+    "coverage": "التغطية",
+    "lastUpdated": "آخر تحديث",
+    "actions": "الإجراءات"
+  },
+  "details": {
+    "title": "تفاصيل التغطية: {{country}}",
+    "byLanguage": "حسب اللغة",
+    "byTheme": "حسب الموضوع",
+    "recentArticles": "المقالات الأخيرة",
+    "missingContent": "المحتوى المفقود"
+  },
+  "messages": {
+    "objectiveSet": "تم تحديد الهدف بنجاح",
+    "objectiveDeleted": "تم حذف الهدف",
+    "reportExported": "تم تصدير التقرير",
+    "generationStarted": "بدأ إنشاء المحتوى المفقود"
+  }
+}

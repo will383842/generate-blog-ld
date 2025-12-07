@@ -20,6 +20,8 @@ use Illuminate\Support\Facades\DB;
  * 
  * Traduit un article depuis la langue source vers une langue cible
  * en utilisant GPT-4o-mini (99% moins cher que GPT-4).
+ * 
+ * CORRIGÉ: Méthode generateSlug() au lieu de generate()
  */
 class TranslateArticle implements ShouldQueue
 {
@@ -27,38 +29,34 @@ class TranslateArticle implements ShouldQueue
 
     /**
      * ID de l'article à traduire
-     *
-     * @var int
      */
     protected int $articleId;
 
     /**
      * Code de la langue cible
-     *
-     * @var string
      */
     protected string $targetLanguageCode;
 
     /**
      * Nombre de tentatives maximum
-     *
-     * @var int
      */
     public int $tries = 3;
 
     /**
      * Timeout en secondes
-     *
-     * @var int
      */
     public int $timeout = 180; // 3 minutes
 
     /**
+     * Délais entre tentatives (backoff exponentiel)
+     */
+    public function backoff(): array
+    {
+        return [30, 60, 120];
+    }
+
+    /**
      * Créer une nouvelle instance du job
-     *
-     * @param int $articleId ID de l'article source
-     * @param string $targetLanguageCode Code langue cible (ex: 'en', 'de', 'es')
-     * @return void
      */
     public function __construct(int $articleId, string $targetLanguageCode)
     {
@@ -71,10 +69,6 @@ class TranslateArticle implements ShouldQueue
 
     /**
      * Exécuter le job
-     *
-     * @param TranslationService $translationService
-     * @param SlugService $slugService
-     * @return void
      */
     public function handle(
         TranslationService $translationService,
@@ -146,8 +140,8 @@ class TranslateArticle implements ShouldQueue
                 )
                 : null;
 
-            // Générer le slug traduit
-            $slug = $slugService->generate(
+            // ✅ CORRIGÉ: Utiliser generateSlug() au lieu de generate()
+            $slug = $slugService->generateSlug(
                 $translatedTitle,
                 $this->targetLanguageCode
             );
@@ -160,7 +154,7 @@ class TranslateArticle implements ShouldQueue
                 'slug' => $slug,
                 'excerpt' => $translatedExcerpt,
                 'content' => $translatedContent,
-                'meta_title' => $translatedTitle, // Peut être optimisé
+                'meta_title' => $translatedTitle,
                 'meta_description' => $translatedMetaDescription,
                 'status' => 'published',
             ]);
@@ -186,15 +180,12 @@ class TranslateArticle implements ShouldQueue
                 'attempt' => $this->attempts(),
             ]);
 
-            throw $e; // Relancer pour retry
+            throw $e;
         }
     }
 
     /**
      * Gérer l'échec du job
-     *
-     * @param \Throwable $exception
-     * @return void
      */
     public function failed(\Throwable $exception): void
     {
@@ -208,8 +199,6 @@ class TranslateArticle implements ShouldQueue
 
     /**
      * Tags pour identification du job
-     *
-     * @return array
      */
     public function tags(): array
     {

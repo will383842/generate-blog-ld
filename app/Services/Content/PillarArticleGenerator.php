@@ -9,33 +9,50 @@ use App\Models\Theme;
 use App\Models\Platform;
 use App\Models\PillarResearchSource;
 use App\Models\PillarStatistic;
+use App\Models\ContentTemplate;
 use App\Services\AI\GptService;
 use App\Services\AI\PerplexityService;
 use App\Services\AI\DalleService;
 use App\Services\UnsplashService;
 use App\Services\Content\TitleService;
 use App\Services\Content\LinkService;
+use App\Services\Content\TemplateManager;
+use App\Services\Content\Traits\UseContentTemplates;
+use App\Services\Content\MultiLanguageGenerationService;
+use App\Services\Content\PlatformKnowledgeService;
 use App\Services\Seo\MetaService;
+use App\Services\Seo\SeoOptimizationService;
+use App\Services\Seo\LocaleSlugService;
+use App\Services\Linking\LinkingOrchestrator;
+use App\Jobs\TranslateAllLanguages;
+use App\Jobs\RequestIndexing;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 /**
  * PillarArticleGenerator - Générateur d'articles piliers premium 3000-5000 mots
- * 
- * ✅ VERSION 100% CORRIGÉE - Toutes les erreurs fixées
- * 
- * Pipeline en 5 étapes :
+ *
+ * Pipeline complet en 12 étapes :
  * 1. conductDeepResearch() : Recherche approfondie Perplexity + News API
  * 2. generatePillarOutline() : Génère structure 8-12 sections H2
  * 3. generateSections() : Génère chaque section séparément (qualité max)
  * 4. assembleSections() : Assemble + transitions + intro/conclusion
  * 5. saveResearchData() : Stocke sources et statistiques
- * 
+ * 6. generatePillarFaqs() : Génère 12 FAQs approfondies
+ * 7. applyFullSeo() : Meta title < 60, description < 160, images optimisées
+ * 8. generateLocaleSlugs() : Slugs pour toutes les combinaisons locale-pays
+ * 9. processLinks() : Liens internes, externes et affiliés
+ * 10. dispatchTranslations() : Traductions multi-langues si languages[] fourni
+ * 11. handleAutoPublish() : Publication auto si score qualité OK
+ * 12. generateImage() : Image via Unsplash ou DALL-E
+ *
  * @package App\Services\Content
  */
 class PillarArticleGenerator
 {
+    use UseContentTemplates;
+
     protected GptService $gpt;
     protected PerplexityService $perplexity;
     protected DalleService $dalle;
@@ -43,6 +60,7 @@ class PillarArticleGenerator
     protected TitleService $titleService;
     protected LinkService $linkService;
     protected MetaService $metaService;
+    protected PlatformKnowledgeService $knowledgeService;
 
     // Templates disponibles
     const TEMPLATES = [
@@ -64,6 +82,7 @@ class PillarArticleGenerator
         'intro_words' => 300,
         'conclusion_words' => 300,
         'rate_limit_seconds' => 2,
+        'faqs_count' => 12, // ← AJOUTÉ : Plus de FAQ pour un article pilier
     ];
 
     // Statistiques
@@ -80,7 +99,9 @@ class PillarArticleGenerator
         UnsplashService $unsplash,
         TitleService $titleService,
         LinkService $linkService,
-        MetaService $metaService
+        MetaService $metaService,
+        PlatformKnowledgeService $knowledgeService,
+        TemplateManager $templateManager
     ) {
         $this->gpt = $gpt;
         $this->perplexity = $perplexity;
@@ -89,6 +110,8 @@ class PillarArticleGenerator
         $this->titleService = $titleService;
         $this->linkService = $linkService;
         $this->metaService = $metaService;
+        $this->knowledgeService = $knowledgeService;
+        $this->setTemplateManager($templateManager);
     }
 
     /**
@@ -106,40 +129,84 @@ class PillarArticleGenerator
             // Validation paramètres
             $this->validateParams($params);
 
+            // Charger le template si disponible
+            $language = Language::find($params['language_id']);
+            $templateSlug = $params['template_slug'] ?? null;
+            $this->loadTemplate('pillar', $language->code ?? 'fr', $templateSlug);
+
+            if ($this->hasActiveTemplate()) {
+                $wordCount = $this->getTemplateWordCount();
+                if ($wordCount) {
+                    $this->config['word_count_min'] = $wordCount['min'];
+                    $this->config['word_count_target'] = $wordCount['target'];
+                    $this->config['word_count_max'] = $wordCount['max'];
+                }
+                $faqCount = $this->getTemplateFaqCount();
+                if ($faqCount) {
+                    $this->config['faqs_count'] = $faqCount;
+                }
+
+                Log::info('PillarArticleGenerator: Template chargé', [
+                    'template_slug' => $this->getActiveTemplateSlug(),
+                ]);
+            }
+
             // ÉTAPE 1 : Recherche approfondie
-            Log::info('📚 ÉTAPE 1/5 : Recherche approfondie');
+            Log::info('📚 ÉTAPE 1/6 : Recherche approfondie');
             $research = $this->conductDeepResearch($params);
 
             // ÉTAPE 2 : Génération outline structuré
-            Log::info('🗺️ ÉTAPE 2/5 : Génération outline');
+            Log::info('🗺️ ÉTAPE 2/6 : Génération outline');
             $outline = $this->generatePillarOutline($params, $research);
 
             // ÉTAPE 3 : Génération sections individuelles
-            Log::info('✍️ ÉTAPE 3/5 : Génération sections');
+            Log::info('✍️ ÉTAPE 3/6 : Génération sections');
             $sections = $this->generateSections($outline, $params, $research);
 
             // ÉTAPE 4 : Assemblage et polish
-            Log::info('🔨 ÉTAPE 4/5 : Assemblage et polish');
+            Log::info('🔨 ÉTAPE 4/6 : Assemblage et polish');
             $content = $this->assembleSections($sections, $outline, $params);
 
             // Création article
             $article = $this->createArticle($params, $content, $research);
 
             // ÉTAPE 5 : Sauvegarde research data
-            Log::info('💾 ÉTAPE 5/5 : Sauvegarde research data');
+            Log::info('💾 ÉTAPE 5/6 : Sauvegarde research data');
             $this->saveResearchData($article, $research);
+
+            // ÉTAPE 6 : Génération FAQs ← NOUVEAU
+            Log::info('❓ ÉTAPE 6/6 : Génération FAQs');
+            $faqs = $this->generatePillarFaqs($article, $params, $research);
+            $this->saveFaqs($article, $faqs, $params);
+
+            // Mettre à jour le contenu avec les FAQs
+            $this->appendFaqsToContent($article, $faqs);
 
             // Image
             $this->generateImage($article, $params);
 
-            // Traductions (à faire ultérieurement via PillarTranslationService)
-            // $this->generateTranslations($article);
+            // ========== ÉTAPE 7: SEO COMPLET ==========
+            $this->applyFullSeo($article, $params);
+
+            // ========== ÉTAPE 8: SLUGS LOCALE-PAYS ==========
+            $this->generateLocaleSlugs($article);
+
+            // ========== ÉTAPE 9: LIENS (internes, externes, affiliés) ==========
+            $this->processLinks($article, $params);
+
+            // ========== ÉTAPE 10: DISPATCH TRADUCTIONS MULTI-LANGUES ==========
+            $this->dispatchTranslations($article, $params);
+
+            // ========== ÉTAPE 11: AUTO-PUBLICATION ==========
+            $this->handleAutoPublish($article, $params);
 
             $this->stats['generation_time'] = microtime(true) - $startTime;
 
             Log::info('✅ Article pilier généré avec succès', [
                 'article_id' => $article->id,
                 'word_count' => $article->word_count,
+                'faqs_count' => count($faqs),
+                'quality_score' => $article->quality_score,
                 'duration' => round($this->stats['generation_time'], 2) . 's',
             ]);
 
@@ -176,7 +243,6 @@ class PillarArticleGenerator
             Log::info('🔍 Perplexity Query 1: Overview');
             $query1 = "{$theme->name} {$country->name} comprehensive overview 2025";
             
-            // ✅ CORRECTION : Utilisation correcte de search() avec array
             $result1 = $this->perplexity->search([
                 'query' => $query1,
             ]);
@@ -198,13 +264,11 @@ class PillarArticleGenerator
             Log::info('🔍 Perplexity Query 2: Statistics');
             $query2 = "{$theme->name} statistics {$country->name} 2024 2025";
             
-            // ✅ CORRECTION : Utilisation correcte de search() avec array
             $result2 = $this->perplexity->search([
                 'query' => $query2,
             ]);
             
             if (!empty($result2['content'])) {
-                // Extraire statistiques du contenu
                 $stats = $this->extractStatistics($result2['content']);
                 $research['statistics'] = array_merge($research['statistics'], $stats);
 
@@ -224,7 +288,6 @@ class PillarArticleGenerator
             Log::info('🔍 Perplexity Query 3: Recent news');
             $query3 = "{$theme->name} {$country->name} recent news 2025";
             
-            // ✅ CORRECTION : Utilisation correcte de search() avec array
             $result3 = $this->perplexity->search([
                 'query' => $query3,
             ]);
@@ -270,7 +333,6 @@ class PillarArticleGenerator
         $country = Country::find($params['country_id']);
         $template = $params['template_type'] ?? 'guide_ultime';
 
-        // Construire contexte recherche
         $researchContext = $this->buildResearchContext($research);
 
         $prompt = "Tu es un expert en création de contenu pour expatriés.
@@ -309,7 +371,6 @@ FORMAT DE RÉPONSE (JSON strict) :
 
 Génère l'outline maintenant :";
 
-        // ✅ CORRECTION : Utilisation correcte de chat() au lieu de generateText()
         $response = $this->gpt->chat([
             'model' => GptService::MODEL_GPT4O,
             'messages' => [
@@ -320,7 +381,6 @@ Génère l'outline maintenant :";
             'max_tokens' => 2000,
         ]);
 
-        // ✅ CORRECTION : Accès correct au contenu via $response['content']
         $outline = $this->parseJsonResponse($response['content']);
 
         return $outline;
@@ -335,6 +395,25 @@ Génère l'outline maintenant :";
     {
         $sections = [];
         $researchContext = $this->buildResearchContext($research);
+
+        // Récupérer le contexte knowledge une seule fois
+        $knowledgeSection = '';
+        if (isset($params['platform_id']) && isset($params['language_id'])) {
+            $platform = Platform::find($params['platform_id']);
+            $language = Language::find($params['language_id']);
+
+            if ($platform && $language) {
+                $knowledgeContext = $this->knowledgeService->getKnowledgeContext(
+                    $platform,
+                    $language->code,
+                    'pillars'
+                );
+
+                if (!empty($knowledgeContext)) {
+                    $knowledgeSection = "\n\n## CONTEXTE MARQUE (à respecter strictement) ##\n{$knowledgeContext}\n";
+                }
+            }
+        }
 
         foreach ($outline['sections'] as $index => $sectionOutline) {
             Log::info("✍️ Génération section " . ($index + 1) . "/" . count($outline['sections']));
@@ -364,10 +443,9 @@ INSTRUCTIONS :
 6. Optimisé SEO avec mots-clés naturels
 7. Pas d'introduction type \"Dans cette section...\"
 8. Commence directement par le contenu
-
+{$knowledgeSection}
 Rédige la section maintenant :";
 
-            // ✅ CORRECTION : Utilisation correcte de chat() au lieu de generateText()
             $response = $this->gpt->chat([
                 'model' => GptService::MODEL_GPT4O,
                 'messages' => [
@@ -378,7 +456,6 @@ Rédige la section maintenant :";
                 'max_tokens' => 1000,
             ]);
 
-            // ✅ CORRECTION : Accès correct au contenu via $response['content']
             $sections[] = [
                 'title' => $sectionOutline['title'],
                 'content' => $response['content'],
@@ -426,6 +503,9 @@ Rédige la section maintenant :";
         $content .= "<h2>Conclusion</h2>\n\n";
         $content .= "{$conclusion}\n";
         $content .= "</div>\n\n";
+
+        // Placeholder pour les FAQs (sera rempli après génération)
+        $content .= "<div class=\"pillar-faqs\" id=\"faq-section\"></div>\n\n";
 
         $content .= "</div>";
 
@@ -476,6 +556,163 @@ Rédige la section maintenant :";
         } catch (\Exception $e) {
             Log::error('❌ Erreur sauvegarde research data', ['error' => $e->getMessage()]);
         }
+    }
+
+    /**
+     * ═════════════════════════════════════════════════════════════════════════
+     * ÉTAPE 6 : Génération FAQs pour article pilier (12 questions approfondies)
+     * ═════════════════════════════════════════════════════════════════════════
+     */
+    protected function generatePillarFaqs(Article $article, array $params, array $research): array
+    {
+        $theme = Theme::find($params['theme_id']);
+        $country = Country::find($params['country_id']);
+        $language = Language::find($params['language_id']);
+        
+        $contentExcerpt = Str::limit(strip_tags($article->content), 3000);
+        
+        // Extraire les points clés de la recherche
+        $researchContext = '';
+        if (!empty($research['key_points'])) {
+            $researchContext = "\nPoints clés de la recherche :\n- " . implode("\n- ", array_slice($research['key_points'], 0, 5));
+        }
+
+        $systemPrompt = "Tu es un expert en création de FAQ exhaustives pour articles piliers SEO. Tu dois générer des questions variées et approfondies qui répondent aux vraies interrogations des expatriés.";
+
+        $userPrompt = <<<PROMPT
+Génère {$this->config['faqs_count']} questions-réponses FAQ pour cet article pilier destiné aux expatriés en {$country->name}.
+
+Titre : "{$article->title}"
+Thème : {$theme->name}
+Pays : {$country->name}
+{$researchContext}
+
+Extrait du contenu : {$contentExcerpt}
+
+Règles strictes pour article PILIER (contenu premium) :
+1. Questions VARIÉES et APPROFONDIES : mélange "Quoi", "Comment", "Pourquoi", "Combien", "Quand", "Où", "Qui"
+2. Inclure des questions SPÉCIFIQUES au pays ({$country->name})
+3. Inclure des questions sur les DÉMARCHES et PROCÉDURES
+4. Inclure des questions sur les COÛTS et DÉLAIS
+5. Inclure des questions sur les ERREURS À ÉVITER
+6. Réponses détaillées : 80-150 mots par réponse (plus longues que FAQ standard)
+7. Ton expert et rassurant
+8. Inclure chiffres/délais/coûts précis quand possible
+9. Au moins 2 questions commençant par "Quelles sont les erreurs..."
+10. Au moins 2 questions sur les différences avec la France
+
+Format de sortie (JSON strict) :
+{{
+  "faqs": [
+    {{"question": "...", "answer": "..."}},
+    {{"question": "...", "answer": "..."}}
+  ]
+}}
+
+Réponds en {$language->native_name} UNIQUEMENT avec le JSON, rien d'autre.
+PROMPT;
+
+        $response = $this->gpt->chat([
+            'model' => GptService::MODEL_GPT4O,
+            'messages' => [
+                ['role' => 'system', 'content' => $systemPrompt],
+                ['role' => 'user', 'content' => $userPrompt],
+            ],
+            'temperature' => 0.6,
+            'max_tokens' => 4000,
+        ]);
+
+        $this->stats['total_cost'] += $response['cost'] ?? 0;
+
+        try {
+            $content = $response['content'];
+            // Nettoyer les backticks markdown si présents
+            $cleaned = preg_replace('/```(?:json)?\s*|\s*```/', '', $content);
+            $parsed = json_decode($cleaned, true);
+            
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                throw new \RuntimeException('JSON parse error: ' . json_last_error_msg());
+            }
+            
+            return $parsed['faqs'] ?? [];
+        } catch (\Exception $e) {
+            Log::warning('PillarArticleGenerator: Échec parsing FAQs JSON', [
+                'error' => $e->getMessage(),
+                'response' => $response['content'],
+            ]);
+            return [];
+        }
+    }
+
+    /**
+     * Sauvegarder les FAQs en base de données
+     */
+    protected function saveFaqs(Article $article, array $faqs, array $params): void
+    {
+        if (empty($faqs)) {
+            return;
+        }
+
+        $language = Language::find($params['language_id']);
+
+        foreach ($faqs as $index => $faq) {
+            $article->faqs()->create([
+                'question' => $faq['question'],
+                'answer' => $faq['answer'],
+                'language_id' => $language->id,
+                'order' => $index + 1,
+            ]);
+        }
+
+        Log::info('✅ FAQs sauvegardées pour article pilier', [
+            'article_id' => $article->id,
+            'count' => count($faqs),
+        ]);
+    }
+
+    /**
+     * Ajouter les FAQs au contenu HTML de l'article
+     */
+    protected function appendFaqsToContent(Article $article, array $faqs): void
+    {
+        if (empty($faqs)) {
+            return;
+        }
+
+        $language = Language::find($article->language_id);
+        $faqTitle = $language->code === 'fr' ? 'Questions Fréquentes' : 'Frequently Asked Questions';
+
+        // Générer le HTML des FAQs
+        $faqHtml = '<div class="pillar-faqs">' . "\n";
+        $faqHtml .= '<h2>' . $faqTitle . '</h2>' . "\n";
+        
+        foreach ($faqs as $index => $faq) {
+            $faqHtml .= '<div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">' . "\n";
+            $faqHtml .= '  <h3 class="faq-question" itemprop="name">' . htmlspecialchars($faq['question']) . '</h3>' . "\n";
+            $faqHtml .= '  <div class="faq-answer" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">' . "\n";
+            $faqHtml .= '    <div itemprop="text"><p>' . htmlspecialchars($faq['answer']) . '</p></div>' . "\n";
+            $faqHtml .= '  </div>' . "\n";
+            $faqHtml .= '</div>' . "\n";
+        }
+        
+        $faqHtml .= '</div>';
+
+        // Remplacer le placeholder par le vrai contenu FAQ
+        $content = $article->content;
+        $content = str_replace(
+            '<div class="pillar-faqs" id="faq-section"></div>',
+            $faqHtml,
+            $content
+        );
+
+        // Recalculer le word count
+        $wordCount = str_word_count(strip_tags($content));
+
+        $article->update([
+            'content' => $content,
+            'word_count' => $wordCount,
+            'reading_time' => ceil($wordCount / 200),
+        ]);
     }
 
     /**
@@ -580,7 +817,6 @@ L'introduction doit :
 
 Rédige l'introduction :";
 
-        // ✅ CORRECTION : Utilisation correcte de chat()
         $response = $this->gpt->chat([
             'model' => GptService::MODEL_GPT4O,
             'messages' => [
@@ -589,7 +825,6 @@ Rédige l'introduction :";
             'max_tokens' => 600,
         ]);
 
-        // ✅ CORRECTION : Accès correct au contenu
         return $response['content'];
     }
 
@@ -605,7 +840,6 @@ La conclusion doit :
 
 Rédige la conclusion :";
 
-        // ✅ CORRECTION : Utilisation correcte de chat()
         $response = $this->gpt->chat([
             'model' => GptService::MODEL_GPT4O,
             'messages' => [
@@ -614,7 +848,6 @@ Rédige la conclusion :";
             'max_tokens' => 600,
         ]);
 
-        // ✅ CORRECTION : Accès correct au contenu
         return $response['content'];
     }
 
@@ -683,20 +916,20 @@ Rédige la conclusion :";
                 $country->name,
                 $language->name,
             ];
-            
+
             $unsplashImage = $this->unsplash->findContextualImage([
                 'keywords' => $keywords,
                 'theme' => $theme->name,
                 'country' => $country->name,
                 'orientation' => 'landscape',
             ]);
-            
+
             if ($unsplashImage) {
                 Log::info('✅ Unsplash image found', [
                     'theme' => $theme->name,
                     'photographer' => $unsplashImage['photographer'],
                 ]);
-                
+
                 $article->update([
                     'image_url' => $unsplashImage['url'],
                     'image_alt' => $unsplashImage['alt_description'] ?: "{$theme->name} - {$country->name}",
@@ -708,18 +941,18 @@ Rédige la conclusion :";
                     'image_color' => $unsplashImage['color'],
                     'image_source' => 'unsplash',
                 ]);
-                
+
                 return;
             }
-            
+
             // 2. Fallback DALL-E
             Log::info('⚠️ No Unsplash image, using DALL-E fallback', [
                 'theme' => $theme->name,
             ]);
-            
+
             $prompt = "Professional cover image for article about {$theme->name} in {$country->name}, {$language->name} language context, high quality, business professional style";
             $imageUrl = $this->dalle->generate($prompt);
-            
+
             $article->update([
                 'image_url' => $imageUrl,
                 'image_alt' => "{$theme->name} - {$country->name}",
@@ -729,7 +962,189 @@ Rédige la conclusion :";
         } catch (\Exception $e) {
             Log::error('❌ Image generation failed completely', [
                 'error' => $e->getMessage(),
-                'theme' => $theme->name,
+                'theme' => $theme->name ?? 'unknown',
+            ]);
+        }
+    }
+
+    // =========================================================================
+    // SEO COMPLET ET POST-GÉNÉRATION
+    // =========================================================================
+
+    /**
+     * Applique le SEO complet (meta optimisés, images)
+     */
+    protected function applyFullSeo(Article $article, array $params): void
+    {
+        if (!($params['enable_full_seo'] ?? true)) {
+            return;
+        }
+
+        try {
+            $seoService = app(SeoOptimizationService::class);
+            $language = Language::find($params['language_id']);
+            $lang = $language->code ?? 'fr';
+
+            // Contexte SEO
+            $context = [
+                'country' => $article->country?->getName($lang) ?? '',
+                'platform' => $article->platform?->name ?? 'SOS-Expat',
+                'service' => $article->theme?->getName($lang) ?? '',
+                'year' => date('Y'),
+            ];
+
+            // Optimiser meta title (< 60 caractères)
+            $metaTitle = $seoService->generateMetaTitle(
+                $article->title,
+                'pillar',
+                $lang,
+                $context
+            );
+
+            // Optimiser meta description (< 160 caractères)
+            $metaDescription = $seoService->generateMetaDescription(
+                $article->title,
+                'pillar',
+                $lang,
+                $context
+            );
+
+            // Optimiser image alt si image présente
+            $imageAlt = $article->image_alt;
+            if ($article->image_url && empty($imageAlt)) {
+                $imageAlt = $seoService->generateAltText($article->title, $lang);
+            }
+
+            // Mettre à jour l'article
+            $article->update([
+                'meta_title' => $metaTitle,
+                'meta_description' => $metaDescription,
+                'image_alt' => $imageAlt,
+            ]);
+
+            Log::debug('SEO complet appliqué (pillar)', [
+                'article_id' => $article->id,
+                'meta_title_length' => mb_strlen($metaTitle),
+                'meta_description_length' => mb_strlen($metaDescription),
+            ]);
+
+        } catch (\Exception $e) {
+            Log::warning('Erreur application SEO (pillar)', [
+                'article_id' => $article->id,
+                'error' => $e->getMessage(),
+            ]);
+        }
+    }
+
+    /**
+     * Génère les slugs locale-pays
+     */
+    protected function generateLocaleSlugs(Article $article): void
+    {
+        try {
+            $localeSlugService = app(LocaleSlugService::class);
+            $count = $localeSlugService->saveLocaleSlugs($article);
+
+            Log::debug('Slugs locale-pays générés (pillar)', [
+                'article_id' => $article->id,
+                'count' => $count,
+            ]);
+
+        } catch (\Exception $e) {
+            Log::warning('Erreur génération slugs locale (pillar)', [
+                'article_id' => $article->id,
+                'error' => $e->getMessage(),
+            ]);
+        }
+    }
+
+    /**
+     * Traite les liens (internes, externes, affiliés)
+     */
+    protected function processLinks(Article $article, array $params): void
+    {
+        $enableAffiliate = $params['enable_affiliate_links'] ?? true;
+
+        try {
+            $linkingOrchestrator = app(LinkingOrchestrator::class);
+
+            $linkingOrchestrator->processArticle($article, [
+                'internal' => true,
+                'external' => true,
+                'affiliate' => $enableAffiliate,
+                'pillar' => true,
+                'inject_content' => true,
+            ]);
+
+            Log::debug('Liens traités (pillar)', ['article_id' => $article->id]);
+
+        } catch (\Exception $e) {
+            Log::warning('Erreur traitement liens (pillar)', [
+                'article_id' => $article->id,
+                'error' => $e->getMessage(),
+            ]);
+        }
+    }
+
+    /**
+     * Dispatch les traductions multi-langues si languages[] fourni
+     */
+    protected function dispatchTranslations(Article $article, array $params): void
+    {
+        // Nouvelles langues cibles fournies dans params
+        $targetLanguages = $params['languages'] ?? [];
+
+        // Ou auto_translate pour toutes les langues
+        $autoTranslate = $params['auto_translate'] ?? config('content.auto_translate', false);
+
+        if (!empty($targetLanguages)) {
+            // Traductions spécifiques
+            $multiLangService = app(MultiLanguageGenerationService::class);
+            $multiLangService->generateTranslations($article, $targetLanguages, [
+                'delay' => 15,
+                'priority' => 'normal',
+            ]);
+
+            Log::info('Traductions multi-langues dispatchées (pillar)', [
+                'article_id' => $article->id,
+                'languages' => $targetLanguages,
+            ]);
+
+        } elseif ($autoTranslate) {
+            // Toutes les langues
+            TranslateAllLanguages::dispatch($article->id)
+                ->onQueue('translation');
+
+            Log::info('TranslateAllLanguages dispatché (pillar)', [
+                'article_id' => $article->id,
+            ]);
+        }
+    }
+
+    /**
+     * Gère l'auto-publication si configurée
+     */
+    protected function handleAutoPublish(Article $article, array $params): void
+    {
+        $autoPublish = $params['auto_publish'] ?? config('content.auto_publish', false);
+        $minScore = $params['min_quality_score'] ?? config('content.quality.min_score', 75);
+
+        if (!$autoPublish) {
+            return;
+        }
+
+        // Pour les pillar, le status est déjà 'published' par défaut
+        // On vérifie juste le score qualité
+        if ($article->quality_score && $article->quality_score >= $minScore) {
+            // Dispatcher indexation Google/Bing
+            if (class_exists(RequestIndexing::class)) {
+                RequestIndexing::dispatch($article->id)
+                    ->onQueue('indexing');
+            }
+
+            Log::info('Pillar indexation dispatchée', [
+                'article_id' => $article->id,
+                'quality_score' => $article->quality_score,
             ]);
         }
     }

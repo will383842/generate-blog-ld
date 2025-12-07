@@ -1,0 +1,109 @@
+{
+  "dashboard": {
+    "title": "التغطية الذكية",
+    "subtitle": "197 دولة × 9 لغات × جميع التخصصات",
+    "refresh": "تحديث",
+    "export": "تصدير",
+    "lastUpdate": "آخر تحديث"
+  },
+  "platforms": {
+    "sosExpat": "SOS-Expat",
+    "sosExpatDesc": "المساعدة القانونية الطارئة للمغتربين",
+    "ulixai": "Ulixai",
+    "ulixaiDesc": "سوق خدمات المغتربين",
+    "ulysse": "Ulysse.AI",
+    "ulysseDesc": "مساعد ذكي للمغتربين",
+    "soon": "قريباً"
+  },
+  "scores": {
+    "global": "النتيجة الإجمالية",
+    "recruitment": "التوظيف",
+    "awareness": "التوعية",
+    "founder": "المؤسس",
+    "progress": "التقدم",
+    "countries": "دولة تم تحليلها",
+    "articlesTarget": "المقالات المستهدفة",
+    "vsObjective": "مقابل هدف 100%"
+  },
+  "distribution": {
+    "title": "التوزيع حسب مستوى التغطية",
+    "excellent": "ممتاز",
+    "excellentRange": "80-100%",
+    "good": "جيد",
+    "goodRange": "60-79%",
+    "partial": "جزئي",
+    "partialRange": "40-59%",
+    "minimal": "الحد الأدنى",
+    "minimalRange": "20-39%",
+    "missing": "مفقود",
+    "missingRange": "0-19%",
+    "ofCountries": "من الدول"
+  },
+  "quickActions": {
+    "title": "إجراءات سريعة",
+    "viewGrid": "عرض شبكي لـ 197 دولة",
+    "viewGridDesc": "جميع أشرطة التقدم دفعة واحدة",
+    "viewCountries": "قائمة الدول",
+    "viewCountriesDesc": "197 دولة مع مرشحات متقدمة",
+    "priorityCountries": "الدول ذات الأولوية",
+    "priorityCountriesDesc": "دول تتطلب اهتماماً عاجلاً",
+    "generateContent": "إنشاء المحتوى",
+    "generateContentDesc": "إنشاء تلقائي بالذكاء الاصطناعي",
+    "viewLanguages": "عرض اللغات",
+    "viewLanguagesDesc": "9 لغات × 197 دولة"
+  },
+  "countries": {
+    "title": "التغطية العالمية - 197 دولة",
+    "subtitle": "عرض كامل مع أشرطة التقدم حسب المنصة",
+    "search": "البحث عن دولة...",
+    "allRegions": "جميع المناطق",
+    "sortBy": "ترتيب حسب",
+    "sortByPriority": "الأولوية",
+    "sortByScore": "النتيجة الإجمالية",
+    "sortByRecruitment": "التوظيف",
+    "sortByAwareness": "التوعية",
+    "sortByFounder": "المؤسس",
+    "sortByName": "الاسم أ-ي",
+    "missingOnly": "المفقود فقط",
+    "allCountries": "جميع الدول",
+    "averageScore": "متوسط النتيجة",
+    "total": "المجموع",
+    "clickForDetails": "انقر للحصول على التفاصيل"
+  },
+  "status": {
+    "excellent": "ممتاز",
+    "good": "جيد",
+    "partial": "جزئي",
+    "minimal": "الحد الأدنى",
+    "missing": "مفقود",
+    "published": "منشور",
+    "unpublished": "غير منشور",
+    "pending": "قيد الانتظار",
+    "generating": "قيد الإنشاء",
+    "completed": "مكتمل",
+    "failed": "فشل"
+  },
+  "priority": {
+    "critical": "حرج",
+    "high": "عالي",
+    "medium": "متوسط",
+    "low": "منخفض"
+  },
+  "actions": {
+    "view": "عرض",
+    "edit": "تحرير",
+    "generate": "إنشاء",
+    "translate": "ترجمة",
+    "export": "تصدير",
+    "refresh": "تحديث"
+  },
+  "regions": {
+    "europe": "أوروبا",
+    "asia": "آسيا",
+    "africa": "أفريقيا",
+    "northAmerica": "أمريكا الشمالية",
+    "southAmerica": "أمريكا الجنوبية",
+    "oceania": "أوقيانوسيا",
+    "middleEast": "الشرق الأوسط"
+  }
+}

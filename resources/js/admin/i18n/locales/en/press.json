@@ -1,0 +1,128 @@
+{
+  "releases": {
+    "title": "Press releases",
+    "list": "Releases list",
+    "create": "New release",
+    "edit": "Edit release",
+    "empty": "No releases",
+    "emptyDescription": "Create your first press release"
+  },
+  "dossiers": {
+    "title": "Press kits",
+    "list": "Kits list",
+    "create": "New kit",
+    "edit": "Edit kit",
+    "empty": "No kits",
+    "emptyDescription": "Create your first press kit",
+    "sections": {
+      "title": "Kit sections",
+      "intro": "Introduction",
+      "keyFigures": "Key figures",
+      "quotes": "Quotes",
+      "timeline": "Timeline",
+      "team": "Team",
+      "contact": "Press contact",
+      "media": "Media kit"
+    },
+    "builder": {
+      "title": "Kit builder",
+      "addSection": "Add section",
+      "reorder": "Reorder",
+      "preview": "Preview"
+    }
+  },
+  "editor": {
+    "preview": "Preview",
+    "previewPdf": "PDF Preview",
+    "previewWord": "Word Preview"
+  },
+  "templates": {
+    "title": "Templates",
+    "select": "Select a template",
+    "create": "Create template",
+    "edit": "Edit template",
+    "delete": "Delete template",
+    "default": "Default template",
+    "categories": {
+      "general": "General",
+      "product": "Product launch",
+      "event": "Event",
+      "partnership": "Partnership",
+      "financial": "Financial results",
+      "crisis": "Crisis communication"
+    }
+  },
+  "media": {
+    "title": "Release media",
+    "photos": "Photos",
+    "charts": "Charts",
+    "infographics": "Infographics",
+    "logos": "Logos",
+    "gallery": "Gallery",
+    "upload": "Add media",
+    "fromUnsplash": "From Unsplash",
+    "fromDalle": "Generate with DALL-E",
+    "fromLibrary": "From library"
+  },
+  "export": {
+    "title": "Export",
+    "formats": {
+      "pdf": "PDF",
+      "word": "Word (.docx)",
+      "html": "HTML",
+      "markdown": "Markdown"
+    },
+    "options": {
+      "includeMedia": "Include media",
+      "includeMetadata": "Include metadata",
+      "addHeaderFooter": "Add header/footer",
+      "watermark": "Watermark"
+    },
+    "download": "Download",
+    "send": "Send by email"
+  },
+  "fields": {
+    "title": "Release title",
+    "subtitle": "Subtitle",
+    "date": "Release date",
+    "location": "Location",
+    "embargo": "Embargo date",
+    "body": "Release body",
+    "boilerplate": "About the company",
+    "contact": {
+      "title": "Press contact",
+      "name": "Name",
+      "role": "Role",
+      "email": "Email",
+      "phone": "Phone"
+    },
+    "quotes": {
+      "title": "Quotes",
+      "add": "Add quote",
+      "text": "Quote",
+      "author": "Author",
+      "role": "Role"
+    }
+  },
+  "status": {
+    "draft": "Draft",
+    "review": "Under review",
+    "approved": "Approved",
+    "published": "Published",
+    "embargoed": "Embargoed"
+  },
+  "actions": {
+    "publish": "Publish",
+    "embargo": "Set embargo",
+    "approve": "Approve",
+    "sendForReview": "Send for review",
+    "duplicate": "Duplicate",
+    "export": "Export"
+  },
+  "validation": {
+    "titleRequired": "Title is required",
+    "dateRequired": "Date is required",
+    "bodyRequired": "Content is required",
+    "contactRequired": "At least one press contact is required"
+  }
+}

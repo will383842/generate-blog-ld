@@ -1,11 +1,13 @@
-﻿import { useState } from 'react';
+import { useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Select } from '@/components/ui/Select';
 import { Badge } from '@/components/ui/Badge';
-import { CONTENT_TYPES, ContentType } from '@/types';
+import { CONTENT_TYPES, type ContentTypeId } from '@/utils/constants';
 import { Plus, Search, Filter, Download } from 'lucide-react';
 import { cn } from '@/lib/utils';
+
+type ContentType = ContentTypeId;
 
 export default function ContentHub() {
   const [activeTab, setActiveTab] = useState<ContentType>('article');
@@ -50,21 +52,24 @@ export default function ContentHub() {
       <div className="rounded-lg border border-gray-200 bg-white shadow-sm">
         <div className="border-b border-gray-200 overflow-x-auto">
           <div className="flex">
-            {CONTENT_TYPES.map((type) => (
-              <button
-                key={type.id}
-                onClick={() => setActiveTab(type.id)}
-                className={cn(
-                  'px-6 py-4 font-medium border-b-2 transition-all whitespace-nowrap',
-                  activeTab === type.id
-                    ? colorClasses[type.color as keyof typeof colorClasses]
-                    : 'border-transparent text-gray-600 hover:text-gray-900 hover:bg-gray-50'
-                )}
-              >
-                <span className="mr-2">{type.icon}</span>
-                {type.name}
-              </button>
-            ))}
+            {CONTENT_TYPES.map((type) => {
+              const Icon = type.icon;
+              return (
+                <button
+                  key={type.id}
+                  onClick={() => setActiveTab(type.id)}
+                  className={cn(
+                    'px-6 py-4 font-medium border-b-2 transition-all whitespace-nowrap flex items-center',
+                    activeTab === type.id
+                      ? 'border-primary-500 bg-primary-50 text-primary-700'
+                      : 'border-transparent text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                  )}
+                >
+                  <Icon className="w-4 h-4 mr-2" />
+                  {type.name}
+                </button>
+              );
+            })}
           </div>
         </div>
       </div>
@@ -139,7 +144,10 @@ export default function ContentHub() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center">
-            <span className="mr-2">{activeType.icon}</span>
+            {(() => {
+              const Icon = activeType.icon;
+              return <Icon className="w-5 h-5 mr-2" />;
+            })()}
             Liste des {activeType.name}s
           </CardTitle>
         </CardHeader>

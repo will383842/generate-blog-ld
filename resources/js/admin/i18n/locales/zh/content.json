@@ -1,0 +1,121 @@
+{
+  "title": "内容",
+  "description": "管理您的文章和内容",
+  "articles": {
+    "title": "文章",
+    "description": "管理您的文章",
+    "add": "新文章",
+    "edit": "编辑文章",
+    "delete": "删除文章",
+    "duplicate": "复制",
+    "archive": "归档",
+    "publish": "发布",
+    "unpublish": "取消发布",
+    "schedule": "定时发布",
+    "preview": "预览",
+    "fields": {
+      "title": "标题",
+      "slug": "别名",
+      "content": "内容",
+      "excerpt": "摘要",
+      "featuredImage": "特色图片",
+      "category": "分类",
+      "tags": "标签",
+      "author": "作者",
+      "status": "状态",
+      "publishedAt": "发布日期",
+      "createdAt": "创建时间",
+      "updatedAt": "更新时间"
+    },
+    "status": {
+      "draft": "草稿",
+      "published": "已发布",
+      "archived": "已归档",
+      "scheduled": "已定时"
+    },
+    "filters": {
+      "all": "全部",
+      "drafts": "草稿",
+      "published": "已发布",
+      "archived": "已归档"
+    },
+    "bulk": {
+      "publish": "发布选中项",
+      "unpublish": "取消发布选中项",
+      "delete": "删除选中项",
+      "archive": "归档选中项"
+    },
+    "empty": "未找到文章",
+    "createFirst": "创建您的第一篇文章"
+  },
+  "categories": {
+    "title": "分类",
+    "description": "管理您的分类",
+    "add": "新分类",
+    "edit": "编辑分类",
+    "delete": "删除分类",
+    "fields": {
+      "name": "名称",
+      "slug": "别名",
+      "description": "描述",
+      "parent": "父级分类",
+      "color": "颜色",
+      "icon": "图标"
+    },
+    "articlesCount": "文章",
+    "empty": "没有分类",
+    "noParent": "无（根分类）"
+  },
+  "tags": {
+    "title": "标签",
+    "description": "管理您的标签",
+    "add": "新标签",
+    "edit": "编辑标签",
+    "delete": "删除标签",
+    "fields": {
+      "name": "名称",
+      "slug": "别名",
+      "description": "描述",
+      "color": "颜色"
+    },
+    "articlesCount": "文章",
+    "empty": "没有标签",
+    "merge": "合并标签"
+  },
+  "editor": {
+    "title": "编辑器",
+    "save": "保存",
+    "saveAndPublish": "保存并发布",
+    "saveDraft": "保存为草稿",
+    "preview": "预览",
+    "settings": "设置",
+    "seo": "SEO",
+    "media": "媒体",
+    "history": "历史",
+    "autosave": "自动保存",
+    "lastSaved": "上次保存",
+    "wordCount": "字数",
+    "readingTime": "阅读时间",
+    "toolbar": {
+      "bold": "粗体",
+      "italic": "斜体",
+      "underline": "下划线",
+      "strikethrough": "删除线",
+      "heading": "标题",
+      "link": "链接",
+      "image": "图片",
+      "list": "列表",
+      "quote": "引用",
+      "code": "代码",
+      "table": "表格"
+    }
+  },
+  "media": {
+    "title": "媒体",
+    "selectImage": "选择图片",
+    "uploadImage": "上传图片",
+    "removeImage": "移除图片",
+    "altText": "替代文本",
+    "caption": "图片说明"
+  }
+}

@@ -1,0 +1,157 @@
+{
+  "title": "Landing Pages",
+  "list": "Landings list",
+  "create": "New landing",
+  "edit": "Edit landing",
+  "empty": "No landings",
+  "emptyDescription": "Create your first landing page",
+  "sections": {
+    "title": "Sections",
+    "hero": {
+      "name": "Hero",
+      "description": "Main banner with title and CTA",
+      "fields": {
+        "title": "Main title",
+        "subtitle": "Subtitle",
+        "image": "Background image",
+        "cta": "Action button"
+      }
+    },
+    "features": {
+      "name": "Features",
+      "description": "List of benefits or features",
+      "fields": {
+        "title": "Section title",
+        "items": "Features",
+        "columns": "Number of columns"
+      }
+    },
+    "testimonials": {
+      "name": "Testimonials",
+      "description": "Customer reviews and testimonials",
+      "fields": {
+        "title": "Section title",
+        "items": "Testimonials",
+        "layout": "Layout"
+      }
+    },
+    "pricing": {
+      "name": "Pricing",
+      "description": "Pricing table and plans",
+      "fields": {
+        "title": "Section title",
+        "plans": "Plans",
+        "currency": "Currency"
+      }
+    },
+    "cta": {
+      "name": "Call to Action",
+      "description": "Call to action section",
+      "fields": {
+        "title": "Title",
+        "description": "Description",
+        "buttonText": "Button text",
+        "buttonLink": "Button link"
+      }
+    },
+    "faq": {
+      "name": "FAQ",
+      "description": "Frequently asked questions",
+      "fields": {
+        "title": "Section title",
+        "items": "Questions/Answers"
+      }
+    },
+    "form": {
+      "name": "Form",
+      "description": "Contact or signup form",
+      "fields": {
+        "title": "Title",
+        "fields": "Form fields",
+        "submitText": "Button text"
+      }
+    },
+    "gallery": {
+      "name": "Gallery",
+      "description": "Image gallery",
+      "fields": {
+        "title": "Section title",
+        "images": "Images",
+        "columns": "Columns"
+      }
+    },
+    "stats": {
+      "name": "Statistics",
+      "description": "Key figures",
+      "fields": {
+        "items": "Statistics",
+        "animated": "Animation"
+      }
+    },
+    "partners": {
+      "name": "Partners",
+      "description": "Partner logos",
+      "fields": {
+        "title": "Title",
+        "logos": "Partner logos"
+      }
+    }
+  },
+  "builder": {
+    "title": "Landing builder",
+    "addSection": "Add section",
+    "editSection": "Edit section",
+    "deleteSection": "Delete section",
+    "duplicateSection": "Duplicate section",
+    "reorderSections": "Reorder sections",
+    "moveUp": "Move up",
+    "moveDown": "Move down",
+    "preview": "Preview",
+    "previewMobile": "Mobile preview",
+    "previewDesktop": "Desktop preview",
+    "emptyBuilder": "Add sections to build your landing"
+  },
+  "cta": {
+    "text": "Button text",
+    "link": "Link",
+    "style": "Style",
+    "styles": {
+      "primary": "Primary",
+      "secondary": "Secondary",
+      "outline": "Outline",
+      "ghost": "Ghost"
+    },
+    "tracking": {
+      "title": "Tracking",
+      "utmSource": "UTM Source",
+      "utmMedium": "UTM Medium",
+      "utmCampaign": "UTM Campaign",
+      "eventName": "Event name"
+    }
+  },
+  "fields": {
+    "name": "Landing name",
+    "slug": "URL",
+    "status": "Status",
+    "template": "Template",
+    "country": "Country",
+    "language": "Language",
+    "platform": "Platform"
+  },
+  "templates": {
+    "title": "Landing templates",
+    "select": "Select a template",
+    "blank": "Blank page",
+    "service": "Service provider page",
+    "product": "Product page",
+    "event": "Event page",
+    "lead": "Lead capture"
+  },
+  "actions": {
+    "publish": "Publish",
+    "unpublish": "Unpublish",
+    "duplicate": "Duplicate",
+    "preview": "Preview",
+    "export": "Export HTML"
+  }
+}

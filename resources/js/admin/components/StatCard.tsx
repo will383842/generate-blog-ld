@@ -1,51 +1,72 @@
-﻿import React from 'react';
-import { ArrowUp, ArrowDown } from 'lucide-react';
-import { Card } from './ui/Card';
+import { Card } from '@/components/ui/Card';
+import { cn } from '@/lib/utils';
+import { LucideIcon } from 'lucide-react';
 
-interface StatCardProps {
+export interface StatCardProps {
   title: string;
   value: string | number;
-  icon: React.ReactNode;
+  subtitle?: string;
+  icon?: LucideIcon;
   trend?: {
     value: number;
     isPositive: boolean;
   };
-  color?: 'blue' | 'green' | 'purple' | 'orange';
+  className?: string;
+  loading?: boolean;
 }
 
-export function StatCard({ title, value, icon, trend, color = 'blue' }: StatCardProps) {
-  const colors = {
-    blue: 'bg-blue-50 text-blue-600',
-    green: 'bg-green-50 text-green-600',
-    purple: 'bg-purple-50 text-purple-600',
-    orange: 'bg-orange-50 text-orange-600',
-  };
+export function StatCard({
+  title,
+  value,
+  subtitle,
+  icon: Icon,
+  trend,
+  className,
+  loading = false,
+}: StatCardProps) {
+  if (loading) {
+    return (
+      <Card className={cn('p-6', className)}>
+        <div className="animate-pulse">
+          <div className="h-4 w-24 bg-muted rounded mb-2" />
+          <div className="h-8 w-32 bg-muted rounded mb-1" />
+          <div className="h-3 w-20 bg-muted rounded" />
+        </div>
+      </Card>
+    );
+  }
 
   return (
-    <Card>
-      <div className="flex items-center justify-between">
+    <Card className={cn('p-6', className)}>
+      <div className="flex items-start justify-between">
         <div className="flex-1">
-          <p className="text-sm font-medium text-gray-600">{title}</p>
-          <p className="text-2xl font-bold text-gray-900 mt-1">{value}</p>
+          <p className="text-sm font-medium text-muted-foreground">{title}</p>
+          <p className="text-2xl font-bold text-foreground mt-1">{value}</p>
+          {subtitle && (
+            <p className="text-xs text-muted-foreground mt-1">{subtitle}</p>
+          )}
           {trend && (
-            <div className="flex items-center mt-2">
-              {trend.isPositive ? (
-                <ArrowUp className="w-4 h-4 text-green-600" />
-              ) : (
-                <ArrowDown className="w-4 h-4 text-red-600" />
-              )}
-              <span className={`text-sm font-medium ml-1 ${
-                trend.isPositive ? 'text-green-600' : 'text-red-600'
-              }`}>
-                {Math.abs(trend.value)}%
+            <div className="flex items-center gap-1 mt-2">
+              <span
+                className={cn(
+                  'text-xs font-medium',
+                  trend.isPositive ? 'text-green-600' : 'text-red-600'
+                )}
+              >
+                {trend.isPositive ? '↑' : '↓'} {Math.abs(trend.value)}%
               </span>
+              <span className="text-xs text-muted-foreground">vs last period</span>
             </div>
           )}
         </div>
-        <div className={`p-3 rounded-lg ${colors[color]}`}>
-          {icon}
-        </div>
+        {Icon && (
+          <div className="p-2 rounded-lg bg-primary/10">
+            <Icon className="h-5 w-5 text-primary" />
+          </div>
+        )}
       </div>
     </Card>
   );
 }
+
+export default StatCard;

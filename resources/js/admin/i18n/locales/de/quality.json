@@ -1,0 +1,98 @@
+{
+  "title": "Qualität",
+  "description": "Qualitätskontrolle für Inhalte",
+  "scores": {
+    "title": "Qualitätsbewertungen",
+    "description": "Qualitätsbewertungsanalyse",
+    "overall": "Gesamtbewertung",
+    "seo": "SEO",
+    "readability": "Lesbarkeit",
+    "originality": "Originalität",
+    "structure": "Struktur",
+    "grammar": "Grammatik",
+    "engagement": "Engagement",
+    "distribution": "Bewertungsverteilung",
+    "trend": "Trend",
+    "average": "Durchschnitt",
+    "minimum": "Minimum",
+    "maximum": "Maximum"
+  },
+  "review": {
+    "title": "Überprüfung",
+    "description": "Artikel zur Überprüfung ausstehend",
+    "pendingReview": "Überprüfung ausstehend",
+    "needsImprovement": "Verbesserung erforderlich",
+    "approved": "Genehmigt",
+    "rejected": "Abgelehnt",
+    "approve": "Genehmigen",
+    "reject": "Ablehnen",
+    "requestChanges": "Änderungen anfordern",
+    "sendToEditor": "An Redakteur senden",
+    "bulkApprove": "Ausgewählte genehmigen",
+    "bulkReject": "Ausgewählte ablehnen",
+    "empty": "Keine Artikel zur Überprüfung"
+  },
+  "rules": {
+    "title": "Qualitätsregeln",
+    "description": "Validierungsregeln konfigurieren",
+    "add": "Neue Regel",
+    "edit": "Bearbeiten",
+    "delete": "Löschen",
+    "enable": "Aktivieren",
+    "disable": "Deaktivieren",
+    "name": "Name",
+    "type": "Typ",
+    "threshold": "Schwellenwert",
+    "weight": "Gewichtung",
+    "action": "Aktion",
+    "categories": {
+      "seo": "SEO",
+      "readability": "Lesbarkeit",
+      "grammar": "Grammatik",
+      "structure": "Struktur",
+      "content": "Inhalt"
+    },
+    "actions": {
+      "warn": "Warnen",
+      "block": "Blockieren",
+      "flag": "Markieren"
+    },
+    "empty": "Keine Regeln konfiguriert"
+  },
+  "analysis": {
+    "title": "Analyse",
+    "analyzing": "Analysiere...",
+    "issues": "Erkannte Probleme",
+    "warnings": "Warnungen",
+    "suggestions": "Vorschläge",
+    "passed": "Bestanden",
+    "fix": "Beheben",
+    "ignore": "Ignorieren",
+    "fixAll": "Alle beheben"
+  },
+  "levels": {
+    "excellent": "Ausgezeichnet",
+    "good": "Gut",
+    "average": "Durchschnittlich",
+    "poor": "Schlecht",
+    "critical": "Kritisch"
+  },
+  "metrics": {
+    "wordCount": "Wortanzahl",
+    "sentenceCount": "Satzanzahl",
+    "paragraphCount": "Absätze",
+    "avgSentenceLength": "Durchschnittliche Satzlänge",
+    "avgWordLength": "Durchschnittliche Wortlänge",
+    "readingTime": "Lesezeit",
+    "fleschScore": "Flesch-Wert",
+    "keywordDensity": "Keyword-Dichte"
+  },
+  "stats": {
+    "totalAnalyzed": "Gesamt analysiert",
+    "avgScore": "Durchschnittsbewertung",
+    "excellent": "Ausgezeichnet",
+    "good": "Gut",
+    "average": "Durchschnittlich",
+    "poor": "Schlecht"
+  }
+}

@@ -1,0 +1,163 @@
+{
+  "title": "मीडिया",
+  "library": {
+    "title": "लाइब्रेरी",
+    "grid": "ग्रिड",
+    "list": "सूची",
+    "filters": {
+      "type": "प्रकार",
+      "date": "तारीख",
+      "size": "आकार",
+      "used": "उपयोग किया गया",
+      "unused": "अप्रयुक्त"
+    },
+    "types": {
+      "all": "सभी",
+      "images": "छवियां",
+      "videos": "वीडियो",
+      "documents": "दस्तावेज़",
+      "other": "अन्य"
+    },
+    "details": {
+      "title": "मीडिया विवरण",
+      "filename": "फ़ाइल नाम",
+      "size": "आकार",
+      "dimensions": "आयाम",
+      "format": "फॉर्मेट",
+      "uploadedAt": "अपलोड किया गया",
+      "usedIn": "में उपयोग किया गया",
+      "alt": "वैकल्पिक टेक्स्ट",
+      "caption": "कैप्शन",
+      "credit": "क्रेडिट"
+    },
+    "actions": {
+      "view": "देखें",
+      "edit": "संपादित करें",
+      "delete": "हटाएं",
+      "download": "डाउनलोड करें",
+      "copy": "URL कॉपी करें",
+      "replace": "बदलें"
+    },
+    "empty": "कोई मीडिया नहीं",
+    "emptyDescription": "फ़ाइलें अपलोड करके शुरू करें"
+  },
+  "upload": {
+    "title": "अपलोड",
+    "dragDrop": "अपनी फ़ाइलें यहां खींचें और छोड़ें",
+    "or": "या",
+    "browse": "ब्राउज़ करें",
+    "progress": "प्रगति",
+    "uploading": "अपलोड हो रहा है...",
+    "complete": "अपलोड पूर्ण",
+    "error": "अपलोड त्रुटि",
+    "maxSize": "अधिकतम आकार: {{size}}",
+    "allowedFormats": "स्वीकृत फॉर्मेट: {{formats}}",
+    "metadata": {
+      "title": "मेटाडेटा",
+      "alt": "वैकल्पिक टेक्स्ट",
+      "caption": "कैप्शन",
+      "credit": "फोटो क्रेडिट"
+    },
+    "batch": {
+      "title": "बैच अपलोड",
+      "files": "{{count}} फ़ाइल(ें) चयनित",
+      "uploadAll": "सभी अपलोड करें"
+    }
+  },
+  "unsplash": {
+    "title": "Unsplash",
+    "search": "Unsplash पर खोजें",
+    "placeholder": "जैसे: प्रकृति, व्यापार, प्रौद्योगिकी...",
+    "results": "परिणाम",
+    "noResults": "\"{{query}}\" के लिए कोई परिणाम नहीं",
+    "download": "डाउनलोड करें",
+    "downloading": "डाउनलोड हो रहा है...",
+    "attribution": "{{author}} द्वारा Unsplash पर फोटो",
+    "collections": "संग्रह",
+    "trending": "ट्रेंडिंग",
+    "orientation": {
+      "title": "ओरिएंटेशन",
+      "all": "सभी",
+      "landscape": "लैंडस्केप",
+      "portrait": "पोर्ट्रेट",
+      "square": "वर्गाकार"
+    },
+    "color": {
+      "title": "रंग",
+      "any": "कोई भी"
+    }
+  },
+  "dalle": {
+    "title": "DALL-E",
+    "prompt": "छवि विवरण",
+    "promptPlaceholder": "जो छवि आप बनाना चाहते हैं उसका वर्णन करें...",
+    "style": {
+      "title": "शैली",
+      "natural": "प्राकृतिक",
+      "vivid": "जीवंत",
+      "artistic": "कलात्मक",
+      "photorealistic": "फोटोरियलिस्टिक"
+    },
+    "size": {
+      "title": "आकार",
+      "square": "वर्गाकार (1024x1024)",
+      "landscape": "लैंडस्केप (1792x1024)",
+      "portrait": "पोर्ट्रेट (1024x1792)"
+    },
+    "quality": {
+      "title": "गुणवत्ता",
+      "standard": "मानक",
+      "hd": "HD"
+    },
+    "generate": "जनरेट करें",
+    "generating": "जनरेट हो रहा है...",
+    "regenerate": "पुनः जनरेट करें",
+    "variations": "वेरिएशन बनाएं",
+    "save": "लाइब्रेरी में सहेजें",
+    "history": "जनरेशन इतिहास",
+    "cost": "अनुमानित लागत: {{cost}}"
+  },
+  "optimization": {
+    "title": "अनुकूलन",
+    "resize": {
+      "title": "आकार बदलें",
+      "width": "चौड़ाई",
+      "height": "ऊंचाई",
+      "keepRatio": "अनुपात बनाए रखें",
+      "preset": "प्रीसेट आकार"
+    },
+    "compress": {
+      "title": "संपीड़ित करें",
+      "quality": "गुणवत्ता",
+      "level": {
+        "low": "कम (छोटी फ़ाइल)",
+        "medium": "मध्यम",
+        "high": "उच्च (सर्वोत्तम गुणवत्ता)"
+      },
+      "result": "परिणामी आकार: {{size}}"
+    },
+    "format": {
+      "title": "कन्वर्ट करें",
+      "to": "में कन्वर्ट करें",
+      "webp": "WebP (अनुशंसित)",
+      "jpg": "JPEG",
+      "png": "PNG"
+    },
+    "apply": "अनुकूलन लागू करें",
+    "preview": "पूर्वावलोकन"
+  },
+  "folders": {
+    "title": "फ़ोल्डर",
+    "create": "नया फ़ोल्डर",
+    "rename": "नाम बदलें",
+    "delete": "हटाएं",
+    "move": "में ले जाएं"
+  },
+  "messages": {
+    "uploaded": "फ़ाइल सफलतापूर्वक अपलोड हुई",
+    "deleted": "फ़ाइल हटाई गई",
+    "copied": "URL कॉपी हुआ",
+    "optimized": "छवि अनुकूलित",
+    "generated": "छवि सफलतापूर्वक जनरेट हुई"
+  }
+}

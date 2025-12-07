@@ -7,11 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 
 class Article extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected static array $supportedLanguages = ['fr', 'en', 'de', 'es', 'pt', 'ru', 'zh', 'ar', 'hi'];
 
@@ -50,6 +51,9 @@ class Article extends Model
         'scheduled_at',
         'indexed_at',
         'generation_cost',
+
+        // ✅ AJOUT
+        'locale_slugs',
     ];
 
     protected $casts = [
@@ -63,12 +67,17 @@ class Article extends Model
         'published_at' => 'datetime',
         'scheduled_at' => 'datetime',
         'indexed_at' => 'datetime',
+
+        // ✅ AJOUT
+        'locale_slugs' => 'array',
     ];
+
+    protected $appends = ['locale'];
 
     protected static function boot()
     {
         parent::boot();
-        
+
         static::creating(function ($article) {
             if (empty($article->uuid)) {
                 $article->uuid = (string) Str::uuid();
@@ -99,17 +108,17 @@ class Article extends Model
         $baseSlug = Str::slug($title);
         $slug = $baseSlug;
         $counter = 1;
-        
+
         while (self::slugExists($slug, $platformId, $languageId, $excludeId)) {
             $slug = $baseSlug . '-' . $counter;
             $counter++;
-            
+
             if ($counter > 1000) {
                 $slug = $baseSlug . '-' . Str::random(6);
                 break;
             }
         }
-        
+
         return $slug;
     }
 
@@ -122,11 +131,11 @@ class Article extends Model
         $query = self::where('platform_id', $platformId)
             ->where('language_id', $languageId)
             ->where('slug', $slug);
-        
+
         if ($excludeId) {
             $query->where('id', '!=', $excludeId);
         }
-        
+
         return $query->exists();
     }
 
@@ -139,6 +148,32 @@ class Article extends Model
             $this->id
         );
     }
+
+    public function getLocaleAttribute(): string
+    {
+        $langCode = $this->language?->code ?? 'fr';
+        $countryCode = $this->country?->code ?? 'FR';
+
+        return strtolower($langCode) . '-' . strtoupper($countryCode);
+    }
+
+    public function generateLocalizedSlug(?string $title = null): string
+    {
+        $title = $title ?? $this->title;
+        $slug = Str::slug($title);
+
+        return strtolower($this->locale) . '/' . $slug;
+    }
+
+    public function getLocalizedUrl(): string
+    {
+        $baseUrl = $this->platform?->url ?? config('app.url');
+        return rtrim($baseUrl, '/') . '/' . $this->generateLocalizedSlug();
+    }
+
+    // =========================================================================
+    // RELATIONS
+    // =========================================================================
 
     public function platform(): BelongsTo
     {
@@ -275,11 +310,11 @@ class Article extends Model
         if ($this->language && $this->language->code === $lang) {
             return $this->title;
         }
-        
+
         $translation = $this->translations()
             ->whereHas('language', fn($q) => $q->where('code', $lang))
             ->first();
-        
+
         return $translation?->title ?? $this->title;
     }
 
@@ -288,11 +323,11 @@ class Article extends Model
         if ($this->language && $this->language->code === $lang) {
             return $this->slug;
         }
-        
+
         $translation = $this->translations()
             ->whereHas('language', fn($q) => $q->where('code', $lang))
             ->first();
-        
+
         return $translation?->slug ?? $this->slug;
     }
 
@@ -301,13 +336,13 @@ class Article extends Model
         $baseUrl = $this->platform?->url ?? config('app.url');
         $countrySlug = $this->country?->getSlug($lang) ?? '';
         $articleSlug = $this->getTranslatedSlug($lang);
-        
+
         $defaultLang = config('languages.default', 'fr');
-        
+
         if ($lang === $defaultLang) {
             return rtrim($baseUrl, '/') . "/{$countrySlug}/{$articleSlug}";
         }
-        
+
         return rtrim($baseUrl, '/') . "/{$lang}/{$countrySlug}/{$articleSlug}";
     }
 
@@ -316,7 +351,7 @@ class Article extends Model
         if ($this->language && $this->language->code === $lang) {
             return true;
         }
-        
+
         return $this->translations()
             ->whereHas('language', fn($q) => $q->where('code', $lang))
             ->where('status', 'completed')
@@ -326,11 +361,11 @@ class Article extends Model
     public function getAvailableLanguages(): array
     {
         $available = [];
-        
+
         if ($this->language) {
             $available[] = $this->language->code;
         }
-        
+
         $translationLangs = $this->translations()
             ->where('status', 'completed')
             ->with('language')
@@ -338,18 +373,18 @@ class Article extends Model
             ->pluck('language.code')
             ->filter()
             ->toArray();
-        
+
         return array_unique(array_merge($available, $translationLangs));
     }
 
     public function getAllUrlsWithCountry(): array
     {
         $urls = [];
-        
+
         foreach ($this->getAvailableLanguages() as $lang) {
             $urls[$lang] = $this->getFullUrlWithCountry($lang);
         }
-        
+
         return $urls;
     }
 
@@ -362,18 +397,18 @@ class Article extends Model
         if (!$country) {
             return null;
         }
-        
+
         $article = self::where('country_id', $country->id)
-            ->whereHas('translations', function($q) use ($lang, $articleSlug) {
+            ->whereHas('translations', function ($q) use ($lang, $articleSlug) {
                 $q->where('slug', $articleSlug)
-                  ->whereHas('language', fn($lq) => $lq->where('code', $lang));
+                    ->whereHas('language', fn($lq) => $lq->where('code', $lang));
             })
             ->first();
-        
+
         if ($article) {
             return $article;
         }
-        
+
         return self::where('country_id', $country->id)
             ->where('slug', $articleSlug)
             ->whereHas('language', fn($q) => $q->where('code', $lang))
@@ -389,11 +424,11 @@ class Article extends Model
                 'excerpt' => $this->excerpt,
             ];
         }
-        
+
         $translation = $this->translations()
             ->whereHas('language', fn($q) => $q->where('code', $lang))
             ->first();
-        
+
         if ($translation) {
             return [
                 'title' => $translation->meta_title ?? $translation->title,
@@ -401,7 +436,7 @@ class Article extends Model
                 'excerpt' => $translation->excerpt,
             ];
         }
-        
+
         return [
             'title' => $this->meta_title ?? $this->title,
             'description' => $this->meta_description ?? $this->excerpt,

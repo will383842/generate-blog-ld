@@ -1,0 +1,163 @@
+{
+  "title": "媒体",
+  "library": {
+    "title": "媒体库",
+    "grid": "网格",
+    "list": "列表",
+    "filters": {
+      "type": "类型",
+      "date": "日期",
+      "size": "大小",
+      "used": "已使用",
+      "unused": "未使用"
+    },
+    "types": {
+      "all": "全部",
+      "images": "图片",
+      "videos": "视频",
+      "documents": "文档",
+      "other": "其他"
+    },
+    "details": {
+      "title": "媒体详情",
+      "filename": "文件名",
+      "size": "大小",
+      "dimensions": "尺寸",
+      "format": "格式",
+      "uploadedAt": "上传时间",
+      "usedIn": "使用位置",
+      "alt": "替代文本",
+      "caption": "说明",
+      "credit": "来源"
+    },
+    "actions": {
+      "view": "查看",
+      "edit": "编辑",
+      "delete": "删除",
+      "download": "下载",
+      "copy": "复制链接",
+      "replace": "替换"
+    },
+    "empty": "暂无媒体",
+    "emptyDescription": "开始上传文件"
+  },
+  "upload": {
+    "title": "上传",
+    "dragDrop": "将文件拖放到此处",
+    "or": "或",
+    "browse": "浏览",
+    "progress": "进度",
+    "uploading": "上传中...",
+    "complete": "上传完成",
+    "error": "上传错误",
+    "maxSize": "最大大小: {{size}}",
+    "allowedFormats": "支持的格式: {{formats}}",
+    "metadata": {
+      "title": "元数据",
+      "alt": "替代文本",
+      "caption": "说明",
+      "credit": "图片来源"
+    },
+    "batch": {
+      "title": "批量上传",
+      "files": "已选择 {{count}} 个文件",
+      "uploadAll": "全部上传"
+    }
+  },
+  "unsplash": {
+    "title": "Unsplash",
+    "search": "在Unsplash搜索",
+    "placeholder": "例如：自然、商业、科技...",
+    "results": "结果",
+    "noResults": "\"{{query}}\" 无结果",
+    "download": "下载",
+    "downloading": "下载中...",
+    "attribution": "图片来自 {{author}}，发布于 Unsplash",
+    "collections": "合集",
+    "trending": "热门",
+    "orientation": {
+      "title": "方向",
+      "all": "全部",
+      "landscape": "横向",
+      "portrait": "纵向",
+      "square": "方形"
+    },
+    "color": {
+      "title": "颜色",
+      "any": "任意"
+    }
+  },
+  "dalle": {
+    "title": "DALL-E",
+    "prompt": "图片描述",
+    "promptPlaceholder": "描述您想要生成的图片...",
+    "style": {
+      "title": "风格",
+      "natural": "自然",
+      "vivid": "鲜艳",
+      "artistic": "艺术",
+      "photorealistic": "照片级真实"
+    },
+    "size": {
+      "title": "尺寸",
+      "square": "方形 (1024x1024)",
+      "landscape": "横向 (1792x1024)",
+      "portrait": "纵向 (1024x1792)"
+    },
+    "quality": {
+      "title": "质量",
+      "standard": "标准",
+      "hd": "高清"
+    },
+    "generate": "生成",
+    "generating": "生成中...",
+    "regenerate": "重新生成",
+    "variations": "创建变体",
+    "save": "保存到媒体库",
+    "history": "生成历史",
+    "cost": "预估成本: {{cost}}"
+  },
+  "optimization": {
+    "title": "优化",
+    "resize": {
+      "title": "调整大小",
+      "width": "宽度",
+      "height": "高度",
+      "keepRatio": "保持比例",
+      "preset": "预设大小"
+    },
+    "compress": {
+      "title": "压缩",
+      "quality": "质量",
+      "level": {
+        "low": "低（文件更小）",
+        "medium": "中",
+        "high": "高（最佳质量）"
+      },
+      "result": "结果大小: {{size}}"
+    },
+    "format": {
+      "title": "转换",
+      "to": "转换为",
+      "webp": "WebP（推荐）",
+      "jpg": "JPEG",
+      "png": "PNG"
+    },
+    "apply": "应用优化",
+    "preview": "预览"
+  },
+  "folders": {
+    "title": "文件夹",
+    "create": "新建文件夹",
+    "rename": "重命名",
+    "delete": "删除",
+    "move": "移动到"
+  },
+  "messages": {
+    "uploaded": "文件上传成功",
+    "deleted": "文件已删除",
+    "copied": "链接已复制",
+    "optimized": "图片已优化",
+    "generated": "图片生成成功"
+  }
+}

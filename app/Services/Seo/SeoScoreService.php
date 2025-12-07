@@ -94,7 +94,7 @@ class SeoScoreService
     {
         $title = $article->meta_title ?? $article->title;
         $length = mb_strlen($title);
-        
+
         $score = 0;
         $issues = [];
 
@@ -115,15 +115,116 @@ class SeoScoreService
             $issues[] = "Titre trop long ({$length} caractères). Sera tronqué par Google.";
         }
 
-        // Présence mot-clé principal au début
-        $firstWords = Str::words($title, 3, '');
-        // TODO: Vérifier si mot-clé principal présent
+        // Vérification du mot-clé principal dans le titre
+        $mainKeyword = $this->extractMainKeyword($article);
+        $keywordCheck = $this->checkKeywordInTitle($title, $mainKeyword);
+
+        if (!$keywordCheck['present']) {
+            $score = max(0, $score - 20);
+            $issues[] = "Mot-clé principal '{$mainKeyword}' absent du titre.";
+        } elseif (!$keywordCheck['at_start']) {
+            $score = max(0, $score - 10);
+            $issues[] = "Mot-clé principal '{$mainKeyword}' présent mais pas au début du titre.";
+        }
 
         return [
             'score' => $score,
             'value' => $title,
             'length' => $length,
+            'main_keyword' => $mainKeyword,
+            'keyword_in_title' => $keywordCheck['present'],
+            'keyword_at_start' => $keywordCheck['at_start'],
             'issues' => $issues,
+        ];
+    }
+
+    /**
+     * Extraire le mot-clé principal d'un article
+     * Utilise le meta title, theme ou les 3 premiers mots significatifs du titre
+     *
+     * @param Article $article
+     * @return string
+     */
+    protected function extractMainKeyword(Article $article): string
+    {
+        // Priorité 1: Mot-clé SEO explicite (si défini dans metadata)
+        $metadata = $article->metadata ?? [];
+        if (!empty($metadata['seo_keyword'])) {
+            return strtolower(trim($metadata['seo_keyword']));
+        }
+
+        // Priorité 2: Utiliser le nom du thème si disponible
+        if ($article->theme && $article->theme->name) {
+            return strtolower(trim($article->theme->name));
+        }
+
+        // Priorité 3: Extraire les mots significatifs du titre
+        $title = $article->title;
+
+        // Mots à ignorer (stop words français et anglais)
+        $stopWords = [
+            'le', 'la', 'les', 'un', 'une', 'des', 'du', 'de', 'à', 'au', 'aux',
+            'et', 'ou', 'en', 'sur', 'pour', 'par', 'avec', 'sans', 'dans', 'ce',
+            'cette', 'ces', 'mon', 'ma', 'mes', 'ton', 'ta', 'tes', 'son', 'sa', 'ses',
+            'the', 'a', 'an', 'and', 'or', 'in', 'on', 'for', 'with', 'without', 'to',
+            'of', 'at', 'by', 'from', 'as', 'is', 'are', 'was', 'were', 'be', 'been',
+            'comment', 'how', 'why', 'what', 'when', 'where', 'which', 'who', 'whom',
+            'quoi', 'qui', 'que', 'dont', 'où', 'quel', 'quelle', 'quels', 'quelles',
+        ];
+
+        // Extraire les mots et filtrer
+        $words = preg_split('/[\s\-_:,;.!?]+/', strtolower($title), -1, PREG_SPLIT_NO_EMPTY);
+        $significantWords = array_filter($words, function ($word) use ($stopWords) {
+            return mb_strlen($word) > 2 && !in_array($word, $stopWords);
+        });
+
+        // Prendre les 2-3 premiers mots significatifs
+        $keywordWords = array_slice(array_values($significantWords), 0, 3);
+
+        return implode(' ', $keywordWords);
+    }
+
+    /**
+     * Vérifier la présence du mot-clé dans le titre
+     *
+     * @param string $title
+     * @param string $keyword
+     * @return array ['present' => bool, 'at_start' => bool, 'position' => int|null]
+     */
+    protected function checkKeywordInTitle(string $title, string $keyword): array
+    {
+        $titleLower = strtolower($title);
+        $keywordLower = strtolower($keyword);
+
+        // Vérifier si le mot-clé est présent
+        $position = mb_strpos($titleLower, $keywordLower);
+        $present = $position !== false;
+
+        // Vérifier si le mot-clé est au début (dans les 30 premiers caractères)
+        $atStart = $present && $position <= 30;
+
+        // Alternative: vérifier si les mots du keyword sont présents
+        if (!$present) {
+            $keywordWords = explode(' ', $keywordLower);
+            $matchedWords = 0;
+
+            foreach ($keywordWords as $word) {
+                if (mb_strlen($word) > 2 && mb_strpos($titleLower, $word) !== false) {
+                    $matchedWords++;
+                }
+            }
+
+            // Si au moins 60% des mots sont présents, considérer comme partiellement présent
+            if (count($keywordWords) > 0 && ($matchedWords / count($keywordWords)) >= 0.6) {
+                $present = true;
+                $atStart = false; // Pas exactement au début si c'est une correspondance partielle
+            }
+        }
+
+        return [
+            'present' => $present,
+            'at_start' => $atStart,
+            'position' => $position,
         ];
     }
 

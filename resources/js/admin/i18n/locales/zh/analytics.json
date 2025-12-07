@@ -1,0 +1,106 @@
+{
+  "title": "分析",
+  "description": "统计与分析",
+  "performance": {
+    "title": "性能",
+    "description": "性能指标",
+    "pageViews": "页面浏览量",
+    "uniqueVisitors": "独立访客",
+    "sessions": "会话",
+    "bounceRate": "跳出率",
+    "avgSessionDuration": "平均时长",
+    "pagesPerSession": "每次会话页数",
+    "newUsers": "新用户",
+    "returningUsers": "回访用户",
+    "conversionRate": "转化率"
+  },
+  "content": {
+    "title": "内容",
+    "description": "内容表现",
+    "topArticles": "热门文章",
+    "recentArticles": "最新文章",
+    "articleViews": "浏览量",
+    "avgTimeOnPage": "平均时间",
+    "engagement": "参与度",
+    "shares": "分享",
+    "comments": "评论",
+    "byCategory": "按分类",
+    "byAuthor": "按作者",
+    "byTag": "按标签"
+  },
+  "reports": {
+    "title": "报告",
+    "description": "生成报告",
+    "generate": "生成报告",
+    "schedule": "安排",
+    "download": "下载",
+    "send": "通过电子邮件发送",
+    "type": "报告类型",
+    "period": "期间",
+    "format": "格式",
+    "recipients": "收件人",
+    "types": {
+      "overview": "概览",
+      "performance": "性能",
+      "content": "内容",
+      "seo": "SEO",
+      "generation": "生成",
+      "custom": "自定义"
+    },
+    "periods": {
+      "today": "今天",
+      "yesterday": "昨天",
+      "last7days": "过去7天",
+      "last30days": "过去30天",
+      "thisMonth": "本月",
+      "lastMonth": "上月",
+      "custom": "自定义"
+    },
+    "formats": {
+      "pdf": "PDF",
+      "csv": "CSV",
+      "excel": "Excel"
+    },
+    "scheduled": "计划报告",
+    "history": "历史"
+  },
+  "dashboard": {
+    "title": "仪表板",
+    "overview": "概览",
+    "quickStats": "快速统计",
+    "recentActivity": "最近活动",
+    "trends": "趋势",
+    "compare": "比较"
+  },
+  "filters": {
+    "dateRange": "日期范围",
+    "platform": "平台",
+    "country": "国家",
+    "device": "设备",
+    "source": "来源",
+    "apply": "应用",
+    "reset": "重置"
+  },
+  "charts": {
+    "line": "折线",
+    "bar": "柱状",
+    "pie": "饼状",
+    "area": "面积",
+    "export": "导出",
+    "noData": "无数据"
+  },
+  "compare": {
+    "title": "比较",
+    "period1": "期间1",
+    "period2": "期间2",
+    "increase": "增加",
+    "decrease": "减少",
+    "noChange": "无变化"
+  },
+  "realtime": {
+    "title": "实时",
+    "activeUsers": "活跃用户",
+    "pageViews": "页面浏览量",
+    "topPages": "热门页面"
+  }
+}

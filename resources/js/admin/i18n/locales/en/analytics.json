@@ -1,0 +1,106 @@
+{
+  "title": "Analytics",
+  "description": "Statistics and analysis",
+  "performance": {
+    "title": "Performance",
+    "description": "Performance metrics",
+    "pageViews": "Page views",
+    "uniqueVisitors": "Unique visitors",
+    "sessions": "Sessions",
+    "bounceRate": "Bounce rate",
+    "avgSessionDuration": "Average duration",
+    "pagesPerSession": "Pages per session",
+    "newUsers": "New users",
+    "returningUsers": "Returning users",
+    "conversionRate": "Conversion rate"
+  },
+  "content": {
+    "title": "Content",
+    "description": "Content performance",
+    "topArticles": "Top articles",
+    "recentArticles": "Recent articles",
+    "articleViews": "Views",
+    "avgTimeOnPage": "Average time",
+    "engagement": "Engagement",
+    "shares": "Shares",
+    "comments": "Comments",
+    "byCategory": "By category",
+    "byAuthor": "By author",
+    "byTag": "By tag"
+  },
+  "reports": {
+    "title": "Reports",
+    "description": "Generate reports",
+    "generate": "Generate report",
+    "schedule": "Schedule",
+    "download": "Download",
+    "send": "Send by email",
+    "type": "Report type",
+    "period": "Period",
+    "format": "Format",
+    "recipients": "Recipients",
+    "types": {
+      "overview": "Overview",
+      "performance": "Performance",
+      "content": "Content",
+      "seo": "SEO",
+      "generation": "Generation",
+      "custom": "Custom"
+    },
+    "periods": {
+      "today": "Today",
+      "yesterday": "Yesterday",
+      "last7days": "Last 7 days",
+      "last30days": "Last 30 days",
+      "thisMonth": "This month",
+      "lastMonth": "Last month",
+      "custom": "Custom"
+    },
+    "formats": {
+      "pdf": "PDF",
+      "csv": "CSV",
+      "excel": "Excel"
+    },
+    "scheduled": "Scheduled reports",
+    "history": "History"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "overview": "Overview",
+    "quickStats": "Quick stats",
+    "recentActivity": "Recent activity",
+    "trends": "Trends",
+    "compare": "Compare"
+  },
+  "filters": {
+    "dateRange": "Date range",
+    "platform": "Platform",
+    "country": "Country",
+    "device": "Device",
+    "source": "Source",
+    "apply": "Apply",
+    "reset": "Reset"
+  },
+  "charts": {
+    "line": "Line",
+    "bar": "Bar",
+    "pie": "Pie",
+    "area": "Area",
+    "export": "Export",
+    "noData": "No data"
+  },
+  "compare": {
+    "title": "Comparison",
+    "period1": "Period 1",
+    "period2": "Period 2",
+    "increase": "Increase",
+    "decrease": "Decrease",
+    "noChange": "No change"
+  },
+  "realtime": {
+    "title": "Real-time",
+    "activeUsers": "Active users",
+    "pageViews": "Page views",
+    "topPages": "Top pages"
+  }
+}

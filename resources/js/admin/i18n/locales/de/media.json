@@ -1,0 +1,163 @@
+{
+  "title": "Medien",
+  "library": {
+    "title": "Bibliothek",
+    "grid": "Raster",
+    "list": "Liste",
+    "filters": {
+      "type": "Typ",
+      "date": "Datum",
+      "size": "Größe",
+      "used": "Verwendet",
+      "unused": "Unbenutzt"
+    },
+    "types": {
+      "all": "Alle",
+      "images": "Bilder",
+      "videos": "Videos",
+      "documents": "Dokumente",
+      "other": "Andere"
+    },
+    "details": {
+      "title": "Mediendetails",
+      "filename": "Dateiname",
+      "size": "Größe",
+      "dimensions": "Abmessungen",
+      "format": "Format",
+      "uploadedAt": "Hochgeladen am",
+      "usedIn": "Verwendet in",
+      "alt": "Alt-Text",
+      "caption": "Beschriftung",
+      "credit": "Bildnachweis"
+    },
+    "actions": {
+      "view": "Ansehen",
+      "edit": "Bearbeiten",
+      "delete": "Löschen",
+      "download": "Herunterladen",
+      "copy": "URL kopieren",
+      "replace": "Ersetzen"
+    },
+    "empty": "Keine Medien",
+    "emptyDescription": "Beginnen Sie mit dem Hochladen von Dateien"
+  },
+  "upload": {
+    "title": "Hochladen",
+    "dragDrop": "Dateien hierher ziehen und ablegen",
+    "or": "oder",
+    "browse": "Durchsuchen",
+    "progress": "Fortschritt",
+    "uploading": "Wird hochgeladen...",
+    "complete": "Upload abgeschlossen",
+    "error": "Upload-Fehler",
+    "maxSize": "Maximale Größe: {{size}}",
+    "allowedFormats": "Akzeptierte Formate: {{formats}}",
+    "metadata": {
+      "title": "Metadaten",
+      "alt": "Alt-Text",
+      "caption": "Beschriftung",
+      "credit": "Bildnachweis"
+    },
+    "batch": {
+      "title": "Stapel-Upload",
+      "files": "{{count}} Datei(en) ausgewählt",
+      "uploadAll": "Alle hochladen"
+    }
+  },
+  "unsplash": {
+    "title": "Unsplash",
+    "search": "Auf Unsplash suchen",
+    "placeholder": "Z.B.: Natur, Business, Technologie...",
+    "results": "Ergebnisse",
+    "noResults": "Keine Ergebnisse für \"{{query}}\"",
+    "download": "Herunterladen",
+    "downloading": "Wird heruntergeladen...",
+    "attribution": "Foto von {{author}} auf Unsplash",
+    "collections": "Sammlungen",
+    "trending": "Trending",
+    "orientation": {
+      "title": "Ausrichtung",
+      "all": "Alle",
+      "landscape": "Querformat",
+      "portrait": "Hochformat",
+      "square": "Quadrat"
+    },
+    "color": {
+      "title": "Farbe",
+      "any": "Beliebig"
+    }
+  },
+  "dalle": {
+    "title": "DALL-E",
+    "prompt": "Bildbeschreibung",
+    "promptPlaceholder": "Beschreiben Sie das Bild, das Sie generieren möchten...",
+    "style": {
+      "title": "Stil",
+      "natural": "Natürlich",
+      "vivid": "Lebendig",
+      "artistic": "Künstlerisch",
+      "photorealistic": "Fotorealistisch"
+    },
+    "size": {
+      "title": "Größe",
+      "square": "Quadrat (1024x1024)",
+      "landscape": "Querformat (1792x1024)",
+      "portrait": "Hochformat (1024x1792)"
+    },
+    "quality": {
+      "title": "Qualität",
+      "standard": "Standard",
+      "hd": "HD"
+    },
+    "generate": "Generieren",
+    "generating": "Wird generiert...",
+    "regenerate": "Neu generieren",
+    "variations": "Variationen erstellen",
+    "save": "In Bibliothek speichern",
+    "history": "Generierungsverlauf",
+    "cost": "Geschätzte Kosten: {{cost}}"
+  },
+  "optimization": {
+    "title": "Optimierung",
+    "resize": {
+      "title": "Größe ändern",
+      "width": "Breite",
+      "height": "Höhe",
+      "keepRatio": "Seitenverhältnis beibehalten",
+      "preset": "Voreingestellte Größe"
+    },
+    "compress": {
+      "title": "Komprimieren",
+      "quality": "Qualität",
+      "level": {
+        "low": "Niedrig (kleinere Datei)",
+        "medium": "Mittel",
+        "high": "Hoch (beste Qualität)"
+      },
+      "result": "Resultierende Größe: {{size}}"
+    },
+    "format": {
+      "title": "Konvertieren",
+      "to": "Konvertieren zu",
+      "webp": "WebP (empfohlen)",
+      "jpg": "JPEG",
+      "png": "PNG"
+    },
+    "apply": "Optimierungen anwenden",
+    "preview": "Vorschau"
+  },
+  "folders": {
+    "title": "Ordner",
+    "create": "Neuer Ordner",
+    "rename": "Umbenennen",
+    "delete": "Löschen",
+    "move": "Verschieben nach"
+  },
+  "messages": {
+    "uploaded": "Datei erfolgreich hochgeladen",
+    "deleted": "Datei gelöscht",
+    "copied": "URL kopiert",
+    "optimized": "Bild optimiert",
+    "generated": "Bild erfolgreich generiert"
+  }
+}

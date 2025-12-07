@@ -16,9 +16,9 @@ class ProgramRun extends Model
         'started_at',
         'completed_at',
         'status',
-        'articles_planned',
-        'articles_generated',
-        'articles_failed',
+        'items_planned',
+        'items_generated',
+        'items_failed',
         'cost',
         'summary',
         'error_message',
@@ -40,9 +40,13 @@ class ProgramRun extends Model
         return $this->belongsTo(Program::class);
     }
 
-    public function articles(): HasMany
+    /**
+     * Relation vers les items du programme (articles, press releases, etc.)
+     * CORRIGÉ: ProgramArticle::class -> ProgramItem::class
+     */
+    public function items(): HasMany
     {
-        return $this->hasMany(ProgramArticle::class);
+        return $this->hasMany(ProgramItem::class);
     }
 
     // -------------------------------------------------------------------------
@@ -104,20 +108,20 @@ class ProgramRun extends Model
 
     public function getSuccessRateAttribute(): float
     {
-        if ($this->articles_generated + $this->articles_failed === 0) {
+        if ($this->items_generated + $this->items_failed === 0) {
             return 0;
         }
 
-        return round(($this->articles_generated / ($this->articles_generated + $this->articles_failed)) * 100, 2);
+        return round(($this->items_generated / ($this->items_generated + $this->items_failed)) * 100, 2);
     }
 
     public function getProgressAttribute(): float
     {
-        if ($this->articles_planned === 0) {
+        if ($this->items_planned === 0) {
             return 0;
         }
 
-        return round((($this->articles_generated + $this->articles_failed) / $this->articles_planned) * 100, 2);
+        return round((($this->items_generated + $this->items_failed) / $this->items_planned) * 100, 2);
     }
 
     // -------------------------------------------------------------------------
@@ -154,18 +158,18 @@ class ProgramRun extends Model
 
     public function incrementGenerated(float $cost = 0): void
     {
-        $this->increment('articles_generated');
+        $this->increment('items_generated');
         $this->increment('cost', $cost);
     }
 
     public function incrementFailed(): void
     {
-        $this->increment('articles_failed');
+        $this->increment('items_failed');
     }
 
     protected function generateSummary(): array
     {
-        $byContentType = $this->articles()
+        $byContentType = $this->items()
             ->selectRaw('generation_type, status, COUNT(*) as count')
             ->groupBy('generation_type', 'status')
             ->get()
@@ -173,14 +177,14 @@ class ProgramRun extends Model
             ->map(fn($items) => $items->pluck('count', 'status')->toArray())
             ->toArray();
 
-        $byCountry = $this->articles()
+        $byCountry = $this->items()
             ->selectRaw('country_id, COUNT(*) as count')
             ->where('status', 'completed')
             ->groupBy('country_id')
             ->pluck('count', 'country_id')
             ->toArray();
 
-        $byLanguage = $this->articles()
+        $byLanguage = $this->items()
             ->selectRaw('language_id, COUNT(*) as count')
             ->where('status', 'completed')
             ->groupBy('language_id')

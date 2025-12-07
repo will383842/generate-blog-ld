@@ -35,7 +35,7 @@ class TranslateAllLanguages implements ShouldQueue
      *
      * @var int
      */
-    public int $tries = 1; // Pas de retry pour l'orchestrateur
+    public int $tries = 3;
 
     /**
      * Timeout en secondes
@@ -43,6 +43,14 @@ class TranslateAllLanguages implements ShouldQueue
      * @var int
      */
     public int $timeout = 60;
+
+    /**
+     * Délais entre les tentatives (30s, 2min, 5min)
+     */
+    public function backoff(): array
+    {
+        return [30, 120, 300];
+    }
 
     /**
      * Créer une nouvelle instance du job

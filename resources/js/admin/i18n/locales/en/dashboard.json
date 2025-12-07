@@ -1,0 +1,109 @@
+{
+  "titles": {
+    "main": "Dashboard",
+    "platform": "Platform dashboard",
+    "overview": "Overview",
+    "activity": "Recent activity"
+  },
+  "stats": {
+    "totalArticles": "Total articles",
+    "totalGenerated": "Generated",
+    "totalPublished": "Published",
+    "totalDraft": "Drafts",
+    "totalScheduled": "Scheduled",
+    "totalCost": "Total cost",
+    "avgQuality": "Average quality",
+    "coverage": "Coverage",
+    "thisMonth": "This month",
+    "lastMonth": "Last month",
+    "variation": "{{value}}% vs previous period",
+    "increase": "+{{value}}%",
+    "decrease": "-{{value}}%"
+  },
+  "charts": {
+    "production": {
+      "title": "Production",
+      "subtitle": "Articles generated per day",
+      "articles": "Articles",
+      "pillars": "Pillars",
+      "comparatives": "Comparatives",
+      "landings": "Landings",
+      "press": "Press releases"
+    },
+    "costs": {
+      "title": "AI Costs",
+      "subtitle": "Expenses by model",
+      "daily": "Daily",
+      "cumulative": "Cumulative",
+      "budget": "Budget",
+      "actual": "Actual"
+    },
+    "quality": {
+      "title": "Quality",
+      "subtitle": "Average score by type",
+      "distribution": "Score distribution"
+    },
+    "coverage": {
+      "title": "Coverage",
+      "subtitle": "Progress by region",
+      "countries": "Countries covered",
+      "languages": "Active languages"
+    }
+  },
+  "activity": {
+    "title": "Recent activity",
+    "stream": "Activity stream",
+    "events": {
+      "created": "{{user}} created {{item}}",
+      "published": "{{item}} was published",
+      "generated": "{{count}} articles generated",
+      "error": "Generation error: {{message}}",
+      "scheduled": "{{item}} scheduled for {{date}}",
+      "qualityCheck": "Quality check completed"
+    },
+    "showMore": "Show more",
+    "noActivity": "No recent activity"
+  },
+  "periods": {
+    "last7days": "Last 7 days",
+    "last30days": "Last 30 days",
+    "last90days": "Last 90 days",
+    "thisMonth": "This month",
+    "lastMonth": "Last month",
+    "thisYear": "This year",
+    "custom": "Custom"
+  },
+  "alerts": {
+    "budgetWarning": "Warning: {{percentage}}% of monthly budget used",
+    "budgetCritical": "Critical: Monthly budget exceeded by {{amount}}",
+    "errorRate": "High error rate: {{rate}}%",
+    "queueBacklog": "{{count}} items waiting in queue",
+    "qualityDrop": "Quality drop detected on {{count}} articles",
+    "coverageGap": "{{count}} countries without recent content"
+  },
+  "widgets": {
+    "quickActions": {
+      "title": "Quick actions",
+      "newProgram": "New program",
+      "generateContent": "Generate content",
+      "viewQueue": "View queue",
+      "exportReport": "Export report"
+    },
+    "topPerformers": {
+      "title": "Top content",
+      "views": "{{count}} views",
+      "engagement": "{{rate}}% engagement"
+    },
+    "pendingTasks": {
+      "title": "Pending tasks",
+      "review": "To review",
+      "publish": "To publish",
+      "translate": "To translate"
+    }
+  },
+  "platforms": {
+    "select": "Select a platform",
+    "all": "All platforms",
+    "compare": "Compare platforms"
+  }
+}

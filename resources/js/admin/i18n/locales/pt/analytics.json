@@ -1,0 +1,106 @@
+{
+  "title": "Análises",
+  "description": "Estatísticas e análises",
+  "performance": {
+    "title": "Desempenho",
+    "description": "Métricas de desempenho",
+    "pageViews": "Visualizações de página",
+    "uniqueVisitors": "Visitantes únicos",
+    "sessions": "Sessões",
+    "bounceRate": "Taxa de rejeição",
+    "avgSessionDuration": "Duração média",
+    "pagesPerSession": "Páginas por sessão",
+    "newUsers": "Novos usuários",
+    "returningUsers": "Usuários recorrentes",
+    "conversionRate": "Taxa de conversão"
+  },
+  "content": {
+    "title": "Conteúdo",
+    "description": "Desempenho do conteúdo",
+    "topArticles": "Artigos principais",
+    "recentArticles": "Artigos recentes",
+    "articleViews": "Visualizações",
+    "avgTimeOnPage": "Tempo médio",
+    "engagement": "Engajamento",
+    "shares": "Compartilhamentos",
+    "comments": "Comentários",
+    "byCategory": "Por categoria",
+    "byAuthor": "Por autor",
+    "byTag": "Por tag"
+  },
+  "reports": {
+    "title": "Relatórios",
+    "description": "Gerar relatórios",
+    "generate": "Gerar relatório",
+    "schedule": "Agendar",
+    "download": "Baixar",
+    "send": "Enviar por e-mail",
+    "type": "Tipo de relatório",
+    "period": "Período",
+    "format": "Formato",
+    "recipients": "Destinatários",
+    "types": {
+      "overview": "Visão geral",
+      "performance": "Desempenho",
+      "content": "Conteúdo",
+      "seo": "SEO",
+      "generation": "Geração",
+      "custom": "Personalizado"
+    },
+    "periods": {
+      "today": "Hoje",
+      "yesterday": "Ontem",
+      "last7days": "Últimos 7 dias",
+      "last30days": "Últimos 30 dias",
+      "thisMonth": "Este mês",
+      "lastMonth": "Mês passado",
+      "custom": "Personalizado"
+    },
+    "formats": {
+      "pdf": "PDF",
+      "csv": "CSV",
+      "excel": "Excel"
+    },
+    "scheduled": "Relatórios agendados",
+    "history": "Histórico"
+  },
+  "dashboard": {
+    "title": "Painel",
+    "overview": "Visão geral",
+    "quickStats": "Estatísticas rápidas",
+    "recentActivity": "Atividade recente",
+    "trends": "Tendências",
+    "compare": "Comparar"
+  },
+  "filters": {
+    "dateRange": "Intervalo de datas",
+    "platform": "Plataforma",
+    "country": "País",
+    "device": "Dispositivo",
+    "source": "Fonte",
+    "apply": "Aplicar",
+    "reset": "Redefinir"
+  },
+  "charts": {
+    "line": "Linha",
+    "bar": "Barra",
+    "pie": "Pizza",
+    "area": "Área",
+    "export": "Exportar",
+    "noData": "Sem dados"
+  },
+  "compare": {
+    "title": "Comparação",
+    "period1": "Período 1",
+    "period2": "Período 2",
+    "increase": "Aumento",
+    "decrease": "Diminuição",
+    "noChange": "Sem alteração"
+  },
+  "realtime": {
+    "title": "Tempo real",
+    "activeUsers": "Usuários ativos",
+    "pageViews": "Visualizações de página",
+    "topPages": "Páginas principais"
+  }
+}

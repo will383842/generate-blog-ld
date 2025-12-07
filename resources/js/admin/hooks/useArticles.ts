@@ -1,118 +1,406 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { useApi } from './useApi';
-import toast from 'react-hot-toast';
+/**
+ * Articles Hooks
+ * Comprehensive article management with optimistic updates
+ */
 
-interface ArticleFilters {
-  platform_id?: number;
-  country_id?: number;
-  theme_id?: number;
-  language_code?: string;
-  status?: 'draft' | 'published' | 'archived';
-  page?: number;
-  per_page?: number;
-}
+import { useApiQuery, useApiMutation } from './useApi';
+import api from '@/utils/api';
+import { useToast } from '@/hooks/useToast';
+import { useQueryClient } from '@tanstack/react-query';
+import type {
+  Article,
+  ArticleWithRelations,
+  ArticleFilters,
+  ArticleVersion,
+  ArticleStats,
+  CreateArticleInput,
+  UpdateArticleInput,
+  TranslateArticleInput,
+  PublishArticleInput,
+  ArticleListResponse,
+} from '@/types/article';
+import type { ApiResponse } from '@/types/common';
 
+// ============================================================================
+// QUERY KEYS
+// ============================================================================
 
+export const articleKeys = {
+  all: ['articles'] as const,
+  list: () => [...articleKeys.all, 'list'] as const,
+  listFiltered: (filters: ArticleFilters) => [...articleKeys.list(), filters] as const,
+  detail: (id: string) => [...articleKeys.all, 'detail', id] as const,
+  versions: (id: string) => [...articleKeys.all, 'versions', id] as const,
+  stats: () => [...articleKeys.all, 'stats'] as const,
+};
 
+// ============================================================================
+// QUERIES
+// ============================================================================
+
+/**
+ * Get paginated list of articles
+ */
 export function useArticles(filters: ArticleFilters = {}) {
-  const api = useApi();
-
-  return useQuery({
-    queryKey: ['articles', filters],
-    queryFn: async () => {
-      const { data } = await api.get('/articles', { params: filters });
-      return data;
-    },
-    staleTime: 5 * 60 * 1000, // 5 minutes
-  });
+  return useApiQuery<ArticleListResponse>(
+    articleKeys.listFiltered(filters),
+    '/admin/articles',
+    { params: filters },
+    { staleTime: 30000 }
+  );
 }
 
-export function useArticle(id: number) {
-  const api = useApi();
-
-  return useQuery({
-    queryKey: ['article', id],
-    queryFn: async () => {
-      const { data } = await api.get(`/articles/${id}`);
-      return data;
-    },
-    enabled: !!id,
-  });
+/**
+ * Get single article with all relations
+ */
+export function useArticle(id: string) {
+  return useApiQuery<ApiResponse<ArticleWithRelations>>(
+    articleKeys.detail(id),
+    `/admin/articles/${id}`,
+    undefined,
+    {
+      enabled: !!id,
+      staleTime: 30000,
+    }
+  );
 }
 
+/**
+ * Get article version history
+ */
+export function useArticleVersions(id: string) {
+  return useApiQuery<ApiResponse<ArticleVersion[]>>(
+    articleKeys.versions(id),
+    `/admin/articles/${id}/versions`,
+    undefined,
+    {
+      enabled: !!id,
+      staleTime: 60000,
+    }
+  );
+}
+
+/**
+ * Get global article stats
+ */
+export function useArticleStats() {
+  return useApiQuery<ApiResponse<ArticleStats>>(
+    articleKeys.stats(),
+    '/admin/articles/stats',
+    undefined,
+    { staleTime: 60000 }
+  );
+}
+
+// ============================================================================
+// MUTATIONS
+// ============================================================================
+
+/**
+ * Create a new article
+ */
 export function useCreateArticle() {
-  const api = useApi();
+  const toast = useToast();
   const queryClient = useQueryClient();
 
-  return useMutation({
-    mutationFn: async (params: any) => {
-      const { data } = await api.post('/articles', params);
+  return useApiMutation<ApiResponse<Article>, CreateArticleInput>(
+    async (input) => {
+      const { data } = await api.post<ApiResponse<Article>>('/admin/articles', input);
       return data;
     },
-    onSuccess: () => {
-      toast.success('Article créé avec succès !');
-      queryClient.invalidateQueries({ queryKey: ['articles'] });
-    },
-    onError: (error: any) => {
-      toast.error(error.response?.data?.message || 'Erreur lors de la création');
-    },
-  });
+    {
+      onSuccess: () => {
+        toast.success('Article créé');
+        queryClient.invalidateQueries({ queryKey: articleKeys.all });
+      },
+      onError: (error) => {
+        toast.error(`Erreur: ${error.message}`);
+      },
+    }
+  );
 }
 
+/**
+ * Update an article with optimistic update
+ */
 export function useUpdateArticle() {
-  const api = useApi();
+  const toast = useToast();
   const queryClient = useQueryClient();
 
-  return useMutation({
-    mutationFn: async ({ id, ...params }: any) => {
-      const { data } = await api.put(`/articles/${id}`, params);
+  return useApiMutation<
+    ApiResponse<Article>,
+    { id: string; data: UpdateArticleInput }
+  >(
+    async ({ id, data: updateData }) => {
+      const { data } = await api.put<ApiResponse<Article>>(`/admin/articles/${id}`, updateData);
       return data;
     },
-    onSuccess: (_, variables) => {
-      toast.success('Article mis à jour avec succès !');
-      queryClient.invalidateQueries({ queryKey: ['articles'] });
-      queryClient.invalidateQueries({ queryKey: ['article', variables.id] });
-    },
-    onError: (error: any) => {
-      toast.error(error.response?.data?.message || 'Erreur lors de la mise à jour');
-    },
-  });
+    {
+      // Optimistic update
+      onMutate: async ({ id, data }) => {
+        await queryClient.cancelQueries({ queryKey: articleKeys.detail(id) });
+        const previous = queryClient.getQueryData<ApiResponse<ArticleWithRelations>>(articleKeys.detail(id));
+
+        queryClient.setQueryData(articleKeys.detail(id), (old: ApiResponse<ArticleWithRelations> | undefined) => ({
+          ...old,
+          data: { ...old?.data, ...data },
+        }));
+
+        return { previous };
+      },
+      onError: (error, variables, context) => {
+        const ctx = context as { previous?: ApiResponse<ArticleWithRelations> } | undefined;
+        if (ctx?.previous) {
+          queryClient.setQueryData(
+            articleKeys.detail(variables.id),
+            ctx.previous
+          );
+        }
+        toast.error(`Erreur: ${error.message}`);
+      },
+      onSuccess: () => {
+        toast.success('Article mis à jour');
+      },
+      onSettled: (_, __, { id }) => {
+        queryClient.invalidateQueries({ queryKey: articleKeys.detail(id) });
+        queryClient.invalidateQueries({ queryKey: articleKeys.list() });
+      },
+    }
+  );
 }
 
+/**
+ * Delete an article
+ */
 export function useDeleteArticle() {
-  const api = useApi();
+  const toast = useToast();
   const queryClient = useQueryClient();
 
-  return useMutation({
-    mutationFn: async (id: number) => {
-      await api.delete(`/articles/${id}`);
+  return useApiMutation<ApiResponse<void>, string>(
+    async (id) => {
+      const { data } = await api.delete<ApiResponse<void>>(`/admin/articles/${id}`);
+      return data;
     },
-    onSuccess: () => {
-      toast.success('Article supprimé avec succès !');
-      queryClient.invalidateQueries({ queryKey: ['articles'] });
+    {
+      onSuccess: () => {
+        toast.success('Article supprimé');
+        queryClient.invalidateQueries({ queryKey: articleKeys.all });
+      },
+      onError: (error) => {
+        toast.error(`Erreur: ${error.message}`);
+      },
+    }
+  );
+}
+
+/**
+ * Publish an article
+ */
+export function usePublishArticle() {
+  const toast = useToast();
+  const queryClient = useQueryClient();
+
+  return useApiMutation<ApiResponse<Article>, PublishArticleInput>(
+    async ({ articleId, publishAt }) => {
+      const { data } = await api.post<ApiResponse<Article>>(`/admin/articles/${articleId}/publish`, { publishAt });
+      return data;
     },
-    onError: (error: any) => {
-      toast.error(error.response?.data?.message || 'Erreur lors de la suppression');
+    {
+      onSuccess: (_, { publishAt }) => {
+        toast.success(publishAt ? 'Article programmé' : 'Article publié');
+        queryClient.invalidateQueries({ queryKey: articleKeys.all });
+      },
+      onError: (error) => {
+        toast.error(`Erreur: ${error.message}`);
+      },
+    }
+  );
+}
+
+/**
+ * Unpublish an article
+ */
+export function useUnpublishArticle() {
+  const toast = useToast();
+  const queryClient = useQueryClient();
+
+  return useApiMutation<ApiResponse<Article>, string>(
+    async (id) => {
+      const { data } = await api.post<ApiResponse<Article>>(`/admin/articles/${id}/unpublish`);
+      return data;
     },
+    {
+      onSuccess: () => {
+        toast.success('Article dépublié');
+        queryClient.invalidateQueries({ queryKey: articleKeys.all });
+      },
+      onError: (error) => {
+        toast.error(`Erreur: ${error.message}`);
+      },
+    }
+  );
+}
+
+/**
+ * Duplicate an article
+ */
+export function useDuplicateArticle() {
+  const toast = useToast();
+  const queryClient = useQueryClient();
+
+  return useApiMutation<ApiResponse<Article>, string>(
+    async (id) => {
+      const { data } = await api.post<ApiResponse<Article>>(`/admin/articles/${id}/duplicate`);
+      return data;
+    },
+    {
+      onSuccess: () => {
+        toast.success('Article dupliqué');
+        queryClient.invalidateQueries({ queryKey: articleKeys.all });
+      },
+      onError: (error) => {
+        toast.error(`Erreur: ${error.message}`);
+      },
+    }
+  );
+}
+
+/**
+ * Translate an article
+ */
+export function useTranslateArticle() {
+  const toast = useToast();
+  const queryClient = useQueryClient();
+
+  return useApiMutation<ApiResponse<Article>, TranslateArticleInput>(
+    async ({ articleId, targetLanguageId, useAI, copyFromLanguageId }) => {
+      const { data } = await api.post<ApiResponse<Article>>(`/admin/articles/${articleId}/translate`, { targetLanguageId, useAI, copyFromLanguageId });
+      return data;
+    },
+    {
+      onSuccess: () => {
+        toast.success('Traduction lancée');
+        queryClient.invalidateQueries({ queryKey: articleKeys.all });
+      },
+      onError: (error) => {
+        toast.error(`Erreur: ${error.message}`);
+      },
+    }
+  );
+}
+
+/**
+ * Restore a version
+ */
+export function useRestoreVersion() {
+  const toast = useToast();
+  const queryClient = useQueryClient();
+
+  return useApiMutation<
+    ApiResponse<Article>,
+    { articleId: string; versionId: string }
+  >(
+    async ({ articleId, versionId }) => {
+      const { data } = await api.post<ApiResponse<Article>>(`/admin/articles/${articleId}/versions/${versionId}/restore`);
+      return data;
+    },
+    {
+      onSuccess: () => {
+        toast.success('Version restaurée');
+        queryClient.invalidateQueries({ queryKey: articleKeys.all });
+      },
+      onError: (error) => {
+        toast.error(`Erreur: ${error.message}`);
+      },
+    }
+  );
+}
+
+/**
+ * Bulk delete articles
+ */
+export function useBulkDeleteArticles() {
+  const toast = useToast();
+  const queryClient = useQueryClient();
+
+  return useApiMutation<ApiResponse<{ count: number }>, string[]>(
+    async (ids) => {
+      const { data } = await api.delete<ApiResponse<{ count: number }>>('/articles/bulk-delete', { data: { ids } });
+      return data;
+    },
+    {
+      onSuccess: (data) => {
+        toast.success(`${data.data?.count || 0} articles supprimés`);
+        queryClient.invalidateQueries({ queryKey: articleKeys.all });
+      },
+      onError: (error) => {
+        toast.error(`Erreur: ${error.message}`);
+      },
+    }
+  );
+}
+
+/**
+ * Bulk publish articles
+ */
+export function useBulkPublishArticles() {
+  const toast = useToast();
+  const queryClient = useQueryClient();
+
+  return useApiMutation<ApiResponse<{ count: number }>, string[]>(
+    async (ids) => {
+      const { data } = await api.post<ApiResponse<{ count: number }>>('/articles/bulk-publish', { ids });
+      return data;
+    },
+    {
+      onSuccess: (data) => {
+        toast.success(`${data.data?.count || 0} articles publiés`);
+        queryClient.invalidateQueries({ queryKey: articleKeys.all });
+      },
+      onError: (error) => {
+        toast.error(`Erreur: ${error.message}`);
+      },
+    }
+  );
+}
+
+// ============================================================================
+// UTILITIES
+// ============================================================================
+
+/**
+ * Get recent articles
+ */
+export function useRecentArticles(limit = 10) {
+  return useArticles({
+    perPage: limit,
+    sortBy: 'createdAt',
+    sortOrder: 'desc',
   });
 }
 
-export function usePublishArticle() {
-  const api = useApi();
-  const queryClient = useQueryClient();
+/**
+ * Get articles by status
+ */
+export function useArticlesByStatus(status: Article['status']) {
+  return useArticles({ status: [status] });
+}
 
-  return useMutation({
-    mutationFn: async (id: number) => {
-      const { data } = await api.post(`/articles/${id}/publish`);
-      return data;
-    },
-    onSuccess: (_, id) => {
-      toast.success('Article publié avec succès !');
-      queryClient.invalidateQueries({ queryKey: ['articles'] });
-      queryClient.invalidateQueries({ queryKey: ['article', id] });
-    },
-    onError: (error: any) => {
-      toast.error(error.response?.data?.message || 'Erreur lors de la publication');
-    },
-  });
+/**
+ * Calculate reading time from word count
+ */
+export function calculateReadingTime(wordCount: number): number {
+  return Math.ceil(wordCount / 200); // 200 words per minute
+}
+
+/**
+ * Generate slug from title
+ */
+export function generateSlug(title: string): string {
+  return title
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '');
 }

@@ -3,7 +3,7 @@
 namespace App\Observers;
 
 use App\Models\Article;
-use Illuminate\Support\Facades\Cache;
+use App\Services\Cache\CacheKeyManager;
 
 class ArticleObserver
 {
@@ -22,12 +22,18 @@ class ArticleObserver
         $this->clearCaches();
     }
 
+    public function restored(Article $article): void
+    {
+        $this->clearCaches();
+    }
+
+    public function forceDeleted(Article $article): void
+    {
+        $this->clearCaches();
+    }
+
     private function clearCaches(): void
     {
-        Cache::forget('stats.dashboard');
-        Cache::forget('stats.production');
-        Cache::forget('coverage.by_platform');
-        Cache::forget('coverage.by_country');
-        // Ajouter autres keys selon besoin
+        CacheKeyManager::invalidateGroup('article');
     }
 }

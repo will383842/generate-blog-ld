@@ -1,0 +1,196 @@
+{
+  "dashboard": {
+    "title": "बुद्धिमान कवरेज",
+    "subtitle": "197 देश × 9 भाषाएं × सभी विशेषज्ञताएं",
+    "refresh": "रीफ्रेश करें",
+    "export": "निर्यात करें",
+    "lastUpdate": "अंतिम अपडेट"
+  },
+  "platforms": {
+    "sosExpat": "SOS-Expat",
+    "sosExpatDesc": "प्रवासियों के लिए आपातकालीन कानूनी सहायता",
+    "ulixai": "Ulixai",
+    "ulixaiDesc": "प्रवासी सेवा मार्केटप्लेस",
+    "ulysse": "Ulysse.AI",
+    "ulysseDesc": "प्रवासियों के लिए AI सहायक",
+    "soon": "जल्द आ रहा है"
+  },
+  "scores": {
+    "global": "वैश्विक स्कोर",
+    "recruitment": "भर्ती",
+    "awareness": "जागरूकता",
+    "founder": "संस्थापक",
+    "progress": "प्रगति",
+    "countries": "विश्लेषित देश",
+    "articlesTarget": "लक्ष्य लेख",
+    "vsObjective": "बनाम 100% लक्ष्य"
+  },
+  "distribution": {
+    "title": "कवरेज स्तर द्वारा वितरण",
+    "excellent": "उत्कृष्ट",
+    "excellentRange": "80-100%",
+    "good": "अच्छा",
+    "goodRange": "60-79%",
+    "partial": "आंशिक",
+    "partialRange": "40-59%",
+    "minimal": "न्यूनतम",
+    "minimalRange": "20-39%",
+    "missing": "गायब",
+    "missingRange": "0-19%",
+    "ofCountries": "देशों का"
+  },
+  "quickActions": {
+    "title": "त्वरित क्रियाएं",
+    "viewGrid": "ग्रिड व्यू 197 देश",
+    "viewGridDesc": "सभी प्रगति बार एक साथ",
+    "viewCountries": "देश सूची",
+    "viewCountriesDesc": "उन्नत फ़िल्टर के साथ 197 देश",
+    "priorityCountries": "प्राथमिकता देश",
+    "priorityCountriesDesc": "तत्काल ध्यान देने वाले देश",
+    "generateContent": "सामग्री उत्पन्न करें",
+    "generateContentDesc": "स्वचालित AI जनरेशन",
+    "viewLanguages": "भाषा दृश्य",
+    "viewLanguagesDesc": "9 भाषाएं × 197 देश"
+  },
+  "countries": {
+    "title": "वैश्विक कवरेज - 197 देश",
+    "subtitle": "प्लेटफ़ॉर्म द्वारा प्रगति बार के साथ पूर्ण दृश्य",
+    "search": "देश खोजें...",
+    "allRegions": "सभी क्षेत्र",
+    "sortBy": "इसके अनुसार क्रमबद्ध करें",
+    "sortByPriority": "प्राथमिकता",
+    "sortByScore": "वैश्विक स्कोर",
+    "sortByRecruitment": "भर्ती",
+    "sortByAwareness": "जागरूकता",
+    "sortByFounder": "संस्थापक",
+    "sortByName": "नाम A-Z",
+    "missingOnly": "केवल गायब",
+    "allCountries": "सभी देश",
+    "averageScore": "औसत स्कोर",
+    "total": "कुल",
+    "clickForDetails": "विवरण के लिए क्लिक करें"
+  },
+  "countryDetails": {
+    "title": "देश विवरण",
+    "generateMissing": "गायब सामग्री उत्पन्न करें",
+    "tabs": {
+      "recruitment": "भर्ती",
+      "awareness": "जागरूकता",
+      "founder": "संस्थापक",
+      "languages": "भाषाएं"
+    },
+    "missingTargets": "गायब सामग्री",
+    "publishedArticles": "प्रकाशित लेख",
+    "unpublishedArticles": "अप्रकाशित लेख"
+  },
+  "recruitment": {
+    "title": "प्रदाता भर्ती",
+    "lawyerSpecialties": "वकील विशेषज्ञताएं",
+    "lawyerSpecialtiesDesc": "22 कानूनी श्रेणियां",
+    "expatDomains": "प्रवासी डोमेन",
+    "expatDomainsDesc": "प्रवासी सहायता",
+    "ulixaiServices": "Ulixai सेवाएं",
+    "ulixaiServicesDesc": "11 श्रेणियां, 3 स्तर",
+    "perSpecialty": "प्रति विशेषज्ञता × देश × भाषा"
+  },
+  "awareness": {
+    "title": "SEO जागरूकता",
+    "pillarArticles": "स्तंभ लेख",
+    "comparatives": "तुलनात्मक",
+    "landingPages": "लैंडिंग पेज",
+    "perCountryLanguage": "प्रति देश/भाषा"
+  },
+  "founder": {
+    "title": "संस्थापक थीम",
+    "name": "Williams Jullin",
+    "description": "संस्थापक के बारे में लेख - सभी प्लेटफ़ॉर्म के लिए सामान्य",
+    "sosExpatArticle": "SOS-Expat लेख",
+    "ulixaiArticle": "Ulixai लेख",
+    "crossPlatform": "क्रॉस-प्लेटफ़ॉर्म"
+  },
+  "languages": {
+    "title": "भाषा कवरेज",
+    "subtitle": "9 भाषाओं का वैश्विक दृश्य",
+    "matrix": "देश × भाषा मैट्रिक्स",
+    "countriesCovered": "कवर किए गए देश",
+    "totalArticles": "कुल लेख",
+    "publishedArticles": "प्रकाशित",
+    "averageCoverage": "औसत कवरेज"
+  },
+  "generate": {
+    "title": "सामग्री जनरेशन",
+    "subtitle": "गायब सामग्री स्वचालित रूप से उत्पन्न करें",
+    "configuration": "कॉन्फ़िगरेशन",
+    "contentTypes": "सामग्री प्रकार",
+    "targetLanguages": "लक्ष्य भाषाएं",
+    "selectCountries": "देश चयन",
+    "priority": "प्राथमिकता",
+    "selectAll": "सभी चुनें",
+    "clear": "साफ़ करें",
+    "summary": "जनरेशन सारांश",
+    "totalTasks": "कुल कार्य",
+    "estimatedTime": "अनुमानित समय",
+    "estimatedCost": "अनुमानित लागत",
+    "completed": "पूर्ण",
+    "prepare": "जनरेशन तैयार करें",
+    "start": "शुरू करें",
+    "stop": "रोकें",
+    "reset": "रीसेट करें"
+  },
+  "status": {
+    "excellent": "उत्कृष्ट",
+    "good": "अच्छा",
+    "partial": "आंशिक",
+    "minimal": "न्यूनतम",
+    "missing": "गायब",
+    "published": "प्रकाशित",
+    "unpublished": "अप्रकाशित",
+    "pending": "लंबित",
+    "generating": "उत्पन्न हो रहा है",
+    "completed": "पूर्ण",
+    "failed": "विफल"
+  },
+  "priority": {
+    "critical": "महत्वपूर्ण",
+    "high": "उच्च",
+    "medium": "मध्यम",
+    "low": "निम्न"
+  },
+  "actions": {
+    "view": "देखें",
+    "edit": "संपादित करें",
+    "generate": "उत्पन्न करें",
+    "translate": "अनुवाद करें",
+    "export": "निर्यात करें",
+    "refresh": "रीफ्रेश करें"
+  },
+  "recommendations": {
+    "title": "AI सिफारिशें",
+    "execute": "निष्पादित करें",
+    "executeAll": "सभी निष्पादित करें",
+    "noRecommendations": "कोई तत्काल सिफारिशें नहीं"
+  },
+  "regions": {
+    "europe": "यूरोप",
+    "asia": "एशिया",
+    "africa": "अफ्रीका",
+    "northAmerica": "उत्तरी अमेरिका",
+    "southAmerica": "दक्षिण अमेरिका",
+    "oceania": "ओशिनिया",
+    "middleEast": "मध्य पूर्व"
+  },
+  "metrics": {
+    "total": "कुल",
+    "published": "प्रकाशित",
+    "unpublished": "अप्रकाशित",
+    "missing": "गायब",
+    "completed": "पूर्ण",
+    "targets": "लक्ष्य"
+  },
+  "legend": {
+    "title": "लेजेंड",
+    "recruitmentBar": "भर्ती",
+    "awarenessBar": "जागरूकता",
+    "founderBar": "संस्थापक"
+  }
+}

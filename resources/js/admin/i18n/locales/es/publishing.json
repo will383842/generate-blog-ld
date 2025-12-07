@@ -1,0 +1,113 @@
+{
+  "title": "Publicación",
+  "description": "Gestiona la publicación de tu contenido",
+  "platforms": {
+    "title": "Plataformas",
+    "description": "Conecta tus plataformas de publicación",
+    "add": "Añadir plataforma",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "test": "Probar conexión",
+    "testSuccess": "Conexión exitosa",
+    "testFailed": "Conexión fallida",
+    "name": "Nombre",
+    "type": "Tipo",
+    "url": "URL",
+    "status": "Estado",
+    "active": "Activo",
+    "inactive": "Inactivo",
+    "lastSync": "Última sincronización",
+    "articlesCount": "Artículos publicados",
+    "successRate": "Tasa de éxito",
+    "types": {
+      "wordpress": "WordPress",
+      "custom_api": "API personalizada",
+      "webhook": "Webhook",
+      "ftp": "FTP",
+      "other": "Otro"
+    }
+  },
+  "endpoints": {
+    "title": "Endpoints",
+    "description": "Configurar endpoints de API",
+    "add": "Añadir endpoint",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "test": "Probar",
+    "name": "Nombre",
+    "method": "Método",
+    "path": "Ruta",
+    "default": "Predeterminado",
+    "setDefault": "Establecer como predeterminado",
+    "headers": "Cabeceras",
+    "body": "Cuerpo",
+    "response": "Respuesta"
+  },
+  "auth": {
+    "title": "Autenticación",
+    "type": "Tipo",
+    "none": "Ninguno",
+    "apiKey": "Clave API",
+    "bearer": "Token Bearer",
+    "basic": "Autenticación básica",
+    "oauth2": "OAuth 2.0",
+    "apiKeyHeader": "Cabecera",
+    "apiKeyLocation": "Ubicación",
+    "username": "Usuario",
+    "password": "Contraseña",
+    "clientId": "ID de cliente",
+    "clientSecret": "Secreto de cliente",
+    "accessToken": "Token de acceso",
+    "refreshToken": "Token de actualización"
+  },
+  "queue": {
+    "title": "Cola de publicación",
+    "description": "Gestionar publicaciones pendientes",
+    "empty": "La cola está vacía",
+    "content": "Contenido",
+    "platform": "Plataforma",
+    "status": "Estado",
+    "scheduledAt": "Programado para",
+    "priority": "Prioridad",
+    "actions": "Acciones",
+    "cancel": "Cancelar",
+    "retry": "Reintentar",
+    "publishNow": "Publicar ahora",
+    "viewLogs": "Ver registros",
+    "bulkCancel": "Cancelar seleccionados",
+    "bulkPublish": "Publicar seleccionados",
+    "selectAll": "Seleccionar todo"
+  },
+  "status": {
+    "pending": "Pendiente",
+    "scheduled": "Programado",
+    "publishing": "Publicando",
+    "published": "Publicado",
+    "failed": "Fallido",
+    "cancelled": "Cancelado"
+  },
+  "priority": {
+    "high": "Alta",
+    "default": "Normal",
+    "low": "Baja"
+  },
+  "errors": {
+    "connectionFailed": "Falló la conexión con la plataforma",
+    "authFailed": "Autenticación fallida",
+    "timeout": "Tiempo de espera agotado",
+    "invalidResponse": "Respuesta inválida",
+    "rateLimited": "Límite de velocidad alcanzado",
+    "serverError": "Error del servidor",
+    "unknown": "Error desconocido"
+  },
+  "actions": {
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "confirm": "Confirmar",
+    "close": "Cerrar",
+    "refresh": "Actualizar",
+    "export": "Exportar",
+    "import": "Importar"
+  }
+}

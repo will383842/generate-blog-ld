@@ -45,7 +45,9 @@ class AuthController extends Controller
                 'email' => $user->email,
                 'role' => $user->role,
             ],
-            'token' => $token,
+            'access_token' => $token,
+            'token' => $token, // backward compatibility
+            'expires_in' => 60 * 60 * 24 * 7, // 7 jours
         ]);
     }
 
@@ -61,11 +63,13 @@ class AuthController extends Controller
         $user = $request->user();
 
         return response()->json([
-            'id' => $user->id,
-            'name' => $user->name,
-            'email' => $user->email,
-            'role' => $user->role,
-            'last_login_at' => $user->last_login_at,
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'role' => $user->role,
+                'last_login_at' => $user->last_login_at,
+            ]
         ]);
     }
 }

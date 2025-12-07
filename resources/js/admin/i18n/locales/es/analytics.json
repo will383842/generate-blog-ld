@@ -1,0 +1,106 @@
+{
+  "title": "Análisis",
+  "description": "Estadísticas y análisis",
+  "performance": {
+    "title": "Rendimiento",
+    "description": "Métricas de rendimiento",
+    "pageViews": "Vistas de página",
+    "uniqueVisitors": "Visitantes únicos",
+    "sessions": "Sesiones",
+    "bounceRate": "Tasa de rebote",
+    "avgSessionDuration": "Duración promedio",
+    "pagesPerSession": "Páginas por sesión",
+    "newUsers": "Nuevos usuarios",
+    "returningUsers": "Usuarios recurrentes",
+    "conversionRate": "Tasa de conversión"
+  },
+  "content": {
+    "title": "Contenido",
+    "description": "Rendimiento del contenido",
+    "topArticles": "Artículos principales",
+    "recentArticles": "Artículos recientes",
+    "articleViews": "Vistas",
+    "avgTimeOnPage": "Tiempo promedio",
+    "engagement": "Engagement",
+    "shares": "Compartidos",
+    "comments": "Comentarios",
+    "byCategory": "Por categoría",
+    "byAuthor": "Por autor",
+    "byTag": "Por etiqueta"
+  },
+  "reports": {
+    "title": "Informes",
+    "description": "Generar informes",
+    "generate": "Generar informe",
+    "schedule": "Programar",
+    "download": "Descargar",
+    "send": "Enviar por correo",
+    "type": "Tipo de informe",
+    "period": "Período",
+    "format": "Formato",
+    "recipients": "Destinatarios",
+    "types": {
+      "overview": "Resumen",
+      "performance": "Rendimiento",
+      "content": "Contenido",
+      "seo": "SEO",
+      "generation": "Generación",
+      "custom": "Personalizado"
+    },
+    "periods": {
+      "today": "Hoy",
+      "yesterday": "Ayer",
+      "last7days": "Últimos 7 días",
+      "last30days": "Últimos 30 días",
+      "thisMonth": "Este mes",
+      "lastMonth": "Mes pasado",
+      "custom": "Personalizado"
+    },
+    "formats": {
+      "pdf": "PDF",
+      "csv": "CSV",
+      "excel": "Excel"
+    },
+    "scheduled": "Informes programados",
+    "history": "Historial"
+  },
+  "dashboard": {
+    "title": "Panel de control",
+    "overview": "Resumen",
+    "quickStats": "Estadísticas rápidas",
+    "recentActivity": "Actividad reciente",
+    "trends": "Tendencias",
+    "compare": "Comparar"
+  },
+  "filters": {
+    "dateRange": "Rango de fechas",
+    "platform": "Plataforma",
+    "country": "País",
+    "device": "Dispositivo",
+    "source": "Fuente",
+    "apply": "Aplicar",
+    "reset": "Restablecer"
+  },
+  "charts": {
+    "line": "Línea",
+    "bar": "Barra",
+    "pie": "Circular",
+    "area": "Área",
+    "export": "Exportar",
+    "noData": "Sin datos"
+  },
+  "compare": {
+    "title": "Comparación",
+    "period1": "Período 1",
+    "period2": "Período 2",
+    "increase": "Aumento",
+    "decrease": "Disminución",
+    "noChange": "Sin cambios"
+  },
+  "realtime": {
+    "title": "Tiempo real",
+    "activeUsers": "Usuarios activos",
+    "pageViews": "Vistas de página",
+    "topPages": "Páginas principales"
+  }
+}

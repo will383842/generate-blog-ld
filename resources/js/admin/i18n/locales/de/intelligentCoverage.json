@@ -1,0 +1,196 @@
+{
+  "dashboard": {
+    "title": "Intelligente Abdeckung",
+    "subtitle": "197 Länder × 9 Sprachen × Alle Fachgebiete",
+    "refresh": "Aktualisieren",
+    "export": "Exportieren",
+    "lastUpdate": "Letzte Aktualisierung"
+  },
+  "platforms": {
+    "sosExpat": "SOS-Expat",
+    "sosExpatDesc": "Rechtliche Notfallhilfe für Expats",
+    "ulixai": "Ulixai",
+    "ulixaiDesc": "Expat-Dienstleistungsmarktplatz",
+    "ulysse": "Ulysse.AI",
+    "ulysseDesc": "KI-Assistent für Expats",
+    "soon": "Demnächst"
+  },
+  "scores": {
+    "global": "Gesamtbewertung",
+    "recruitment": "Rekrutierung",
+    "awareness": "Bekanntheit",
+    "founder": "Gründer",
+    "progress": "Fortschritt",
+    "countries": "analysierte Länder",
+    "articlesTarget": "Ziel-Artikel",
+    "vsObjective": "vs 100% Ziel"
+  },
+  "distribution": {
+    "title": "Verteilung nach Abdeckungsgrad",
+    "excellent": "Ausgezeichnet",
+    "excellentRange": "80-100%",
+    "good": "Gut",
+    "goodRange": "60-79%",
+    "partial": "Teilweise",
+    "partialRange": "40-59%",
+    "minimal": "Minimal",
+    "minimalRange": "20-39%",
+    "missing": "Fehlend",
+    "missingRange": "0-19%",
+    "ofCountries": "der Länder"
+  },
+  "quickActions": {
+    "title": "Schnellaktionen",
+    "viewGrid": "Rasteransicht 197 Länder",
+    "viewGridDesc": "Alle Fortschrittsbalken auf einmal",
+    "viewCountries": "Länderliste",
+    "viewCountriesDesc": "197 Länder mit erweiterten Filtern",
+    "priorityCountries": "Prioritätsländer",
+    "priorityCountriesDesc": "Länder, die dringende Aufmerksamkeit erfordern",
+    "generateContent": "Inhalt generieren",
+    "generateContentDesc": "Automatische KI-Generierung",
+    "viewLanguages": "Sprachansicht",
+    "viewLanguagesDesc": "9 Sprachen × 197 Länder"
+  },
+  "countries": {
+    "title": "Globale Abdeckung - 197 Länder",
+    "subtitle": "Vollständige Ansicht mit Fortschrittsbalken nach Plattform",
+    "search": "Land suchen...",
+    "allRegions": "Alle Regionen",
+    "sortBy": "Sortieren nach",
+    "sortByPriority": "Priorität",
+    "sortByScore": "Gesamtbewertung",
+    "sortByRecruitment": "Rekrutierung",
+    "sortByAwareness": "Bekanntheit",
+    "sortByFounder": "Gründer",
+    "sortByName": "Name A-Z",
+    "missingOnly": "Nur fehlende",
+    "allCountries": "Alle Länder",
+    "averageScore": "Durchschnittsbewertung",
+    "total": "Gesamt",
+    "clickForDetails": "Klicken für Details"
+  },
+  "countryDetails": {
+    "title": "Länderdetails",
+    "generateMissing": "Fehlende Inhalte generieren",
+    "tabs": {
+      "recruitment": "Rekrutierung",
+      "awareness": "Bekanntheit",
+      "founder": "Gründer",
+      "languages": "Sprachen"
+    },
+    "missingTargets": "fehlende Inhalte",
+    "publishedArticles": "veröffentlichte Artikel",
+    "unpublishedArticles": "unveröffentlichte Artikel"
+  },
+  "recruitment": {
+    "title": "Anbieter-Rekrutierung",
+    "lawyerSpecialties": "Anwalt-Fachgebiete",
+    "lawyerSpecialtiesDesc": "22 Rechtskategorien",
+    "expatDomains": "Expat-Bereiche",
+    "expatDomainsDesc": "Expat-Unterstützung",
+    "ulixaiServices": "Ulixai-Dienste",
+    "ulixaiServicesDesc": "11 Kategorien, 3 Stufen",
+    "perSpecialty": "pro Fachgebiet × Land × Sprache"
+  },
+  "awareness": {
+    "title": "SEO-Bekanntheit",
+    "pillarArticles": "Säulenartikel",
+    "comparatives": "Vergleiche",
+    "landingPages": "Landing Pages",
+    "perCountryLanguage": "pro Land/Sprache"
+  },
+  "founder": {
+    "title": "Gründer-Thema",
+    "name": "Williams Jullin",
+    "description": "Artikel über den Gründer - gemeinsam für alle Plattformen",
+    "sosExpatArticle": "SOS-Expat Artikel",
+    "ulixaiArticle": "Ulixai Artikel",
+    "crossPlatform": "Plattformübergreifend"
+  },
+  "languages": {
+    "title": "Sprachabdeckung",
+    "subtitle": "Gesamtübersicht 9 Sprachen",
+    "matrix": "Land × Sprache Matrix",
+    "countriesCovered": "abgedeckte Länder",
+    "totalArticles": "Artikel gesamt",
+    "publishedArticles": "veröffentlicht",
+    "averageCoverage": "durchschnittliche Abdeckung"
+  },
+  "generate": {
+    "title": "Inhaltsgenerierung",
+    "subtitle": "Fehlende Inhalte automatisch generieren",
+    "configuration": "Konfiguration",
+    "contentTypes": "Inhaltstypen",
+    "targetLanguages": "Zielsprachen",
+    "selectCountries": "Länderauswahl",
+    "priority": "Priorität",
+    "selectAll": "Alle auswählen",
+    "clear": "Leeren",
+    "summary": "Generierungsübersicht",
+    "totalTasks": "Aufgaben gesamt",
+    "estimatedTime": "Geschätzte Zeit",
+    "estimatedCost": "Geschätzte Kosten",
+    "completed": "Abgeschlossen",
+    "prepare": "Generierung vorbereiten",
+    "start": "Starten",
+    "stop": "Stoppen",
+    "reset": "Zurücksetzen"
+  },
+  "status": {
+    "excellent": "Ausgezeichnet",
+    "good": "Gut",
+    "partial": "Teilweise",
+    "minimal": "Minimal",
+    "missing": "Fehlend",
+    "published": "Veröffentlicht",
+    "unpublished": "Unveröffentlicht",
+    "pending": "Ausstehend",
+    "generating": "Wird generiert",
+    "completed": "Abgeschlossen",
+    "failed": "Fehlgeschlagen"
+  },
+  "priority": {
+    "critical": "Kritisch",
+    "high": "Hoch",
+    "medium": "Mittel",
+    "low": "Niedrig"
+  },
+  "actions": {
+    "view": "Ansehen",
+    "edit": "Bearbeiten",
+    "generate": "Generieren",
+    "translate": "Übersetzen",
+    "export": "Exportieren",
+    "refresh": "Aktualisieren"
+  },
+  "recommendations": {
+    "title": "KI-Empfehlungen",
+    "execute": "Ausführen",
+    "executeAll": "Alle ausführen",
+    "noRecommendations": "Keine dringenden Empfehlungen"
+  },
+  "regions": {
+    "europe": "Europa",
+    "asia": "Asien",
+    "africa": "Afrika",
+    "northAmerica": "Nordamerika",
+    "southAmerica": "Südamerika",
+    "oceania": "Ozeanien",
+    "middleEast": "Naher Osten"
+  },
+  "metrics": {
+    "total": "Gesamt",
+    "published": "Veröffentlicht",
+    "unpublished": "Unveröffentlicht",
+    "missing": "Fehlend",
+    "completed": "Abgeschlossen",
+    "targets": "Ziele"
+  },
+  "legend": {
+    "title": "Legende",
+    "recruitmentBar": "Rekrutierung",
+    "awarenessBar": "Bekanntheit",
+    "founderBar": "Gründer"
+  }
+}

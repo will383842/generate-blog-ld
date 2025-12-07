@@ -1,0 +1,157 @@
+{
+  "title": "صفحات الهبوط",
+  "list": "قائمة الصفحات",
+  "create": "صفحة جديدة",
+  "edit": "تعديل الصفحة",
+  "empty": "لا توجد صفحات",
+  "emptyDescription": "أنشئ صفحة الهبوط الأولى",
+  "sections": {
+    "title": "الأقسام",
+    "hero": {
+      "name": "البطل",
+      "description": "بانر رئيسي مع عنوان وزر إجراء",
+      "fields": {
+        "title": "العنوان الرئيسي",
+        "subtitle": "العنوان الفرعي",
+        "image": "صورة الخلفية",
+        "cta": "زر الإجراء"
+      }
+    },
+    "features": {
+      "name": "الميزات",
+      "description": "قائمة الفوائد أو الميزات",
+      "fields": {
+        "title": "عنوان القسم",
+        "items": "الميزات",
+        "columns": "عدد الأعمدة"
+      }
+    },
+    "testimonials": {
+      "name": "الشهادات",
+      "description": "آراء العملاء وشهاداتهم",
+      "fields": {
+        "title": "عنوان القسم",
+        "items": "الشهادات",
+        "layout": "التخطيط"
+      }
+    },
+    "pricing": {
+      "name": "الأسعار",
+      "description": "جدول الأسعار والخطط",
+      "fields": {
+        "title": "عنوان القسم",
+        "plans": "الخطط",
+        "currency": "العملة"
+      }
+    },
+    "cta": {
+      "name": "دعوة للإجراء",
+      "description": "قسم الدعوة للإجراء",
+      "fields": {
+        "title": "العنوان",
+        "description": "الوصف",
+        "buttonText": "نص الزر",
+        "buttonLink": "رابط الزر"
+      }
+    },
+    "faq": {
+      "name": "الأسئلة الشائعة",
+      "description": "الأسئلة المتكررة",
+      "fields": {
+        "title": "عنوان القسم",
+        "items": "الأسئلة/الأجوبة"
+      }
+    },
+    "form": {
+      "name": "نموذج",
+      "description": "نموذج اتصال أو تسجيل",
+      "fields": {
+        "title": "العنوان",
+        "fields": "حقول النموذج",
+        "submitText": "نص الزر"
+      }
+    },
+    "gallery": {
+      "name": "معرض",
+      "description": "معرض صور",
+      "fields": {
+        "title": "عنوان القسم",
+        "images": "الصور",
+        "columns": "الأعمدة"
+      }
+    },
+    "stats": {
+      "name": "إحصائيات",
+      "description": "الأرقام الرئيسية",
+      "fields": {
+        "items": "الإحصائيات",
+        "animated": "الحركة"
+      }
+    },
+    "partners": {
+      "name": "الشركاء",
+      "description": "شعارات الشركاء",
+      "fields": {
+        "title": "العنوان",
+        "logos": "شعارات الشركاء"
+      }
+    }
+  },
+  "builder": {
+    "title": "منشئ الصفحات",
+    "addSection": "إضافة قسم",
+    "editSection": "تعديل القسم",
+    "deleteSection": "حذف القسم",
+    "duplicateSection": "نسخ القسم",
+    "reorderSections": "إعادة ترتيب الأقسام",
+    "moveUp": "نقل للأعلى",
+    "moveDown": "نقل للأسفل",
+    "preview": "معاينة",
+    "previewMobile": "معاينة الجوال",
+    "previewDesktop": "معاينة سطح المكتب",
+    "emptyBuilder": "أضف أقسام لبناء صفحتك"
+  },
+  "cta": {
+    "text": "نص الزر",
+    "link": "الرابط",
+    "style": "النمط",
+    "styles": {
+      "primary": "أساسي",
+      "secondary": "ثانوي",
+      "outline": "محدد",
+      "ghost": "شفاف"
+    },
+    "tracking": {
+      "title": "التتبع",
+      "utmSource": "مصدر UTM",
+      "utmMedium": "وسيط UTM",
+      "utmCampaign": "حملة UTM",
+      "eventName": "اسم الحدث"
+    }
+  },
+  "fields": {
+    "name": "اسم الصفحة",
+    "slug": "الرابط",
+    "status": "الحالة",
+    "template": "القالب",
+    "country": "البلد",
+    "language": "اللغة",
+    "platform": "المنصة"
+  },
+  "templates": {
+    "title": "قوالب الصفحات",
+    "select": "اختر قالب",
+    "blank": "صفحة فارغة",
+    "service": "صفحة مزود خدمة",
+    "product": "صفحة منتج",
+    "event": "صفحة حدث",
+    "lead": "صفحة جذب العملاء"
+  },
+  "actions": {
+    "publish": "نشر",
+    "unpublish": "إلغاء النشر",
+    "duplicate": "نسخ",
+    "preview": "معاينة",
+    "export": "تصدير HTML"
+  }
+}

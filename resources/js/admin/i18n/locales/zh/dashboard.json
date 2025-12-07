@@ -1,0 +1,109 @@
+{
+  "titles": {
+    "main": "仪表板",
+    "platform": "平台仪表板",
+    "overview": "概览",
+    "activity": "最近活动"
+  },
+  "stats": {
+    "totalArticles": "文章总数",
+    "totalGenerated": "已生成",
+    "totalPublished": "已发布",
+    "totalDraft": "草稿",
+    "totalScheduled": "已计划",
+    "totalCost": "总成本",
+    "avgQuality": "平均质量",
+    "coverage": "覆盖率",
+    "thisMonth": "本月",
+    "lastMonth": "上月",
+    "variation": "{{value}}% 较上期",
+    "increase": "+{{value}}%",
+    "decrease": "-{{value}}%"
+  },
+  "charts": {
+    "production": {
+      "title": "生产",
+      "subtitle": "每日生成的文章",
+      "articles": "文章",
+      "pillars": "支柱文章",
+      "comparatives": "对比文章",
+      "landings": "落地页",
+      "press": "新闻稿"
+    },
+    "costs": {
+      "title": "AI成本",
+      "subtitle": "按模型划分的支出",
+      "daily": "每日",
+      "cumulative": "累计",
+      "budget": "预算",
+      "actual": "实际"
+    },
+    "quality": {
+      "title": "质量",
+      "subtitle": "按类型的平均分数",
+      "distribution": "分数分布"
+    },
+    "coverage": {
+      "title": "覆盖",
+      "subtitle": "按区域的进度",
+      "countries": "覆盖国家",
+      "languages": "活跃语言"
+    }
+  },
+  "activity": {
+    "title": "最近活动",
+    "stream": "活动流",
+    "events": {
+      "created": "{{user}} 创建了 {{item}}",
+      "published": "{{item}} 已发布",
+      "generated": "已生成 {{count}} 篇文章",
+      "error": "生成错误: {{message}}",
+      "scheduled": "{{item}} 计划于 {{date}}",
+      "qualityCheck": "质量检查已完成"
+    },
+    "showMore": "显示更多",
+    "noActivity": "暂无活动"
+  },
+  "periods": {
+    "last7days": "最近7天",
+    "last30days": "最近30天",
+    "last90days": "最近90天",
+    "thisMonth": "本月",
+    "lastMonth": "上月",
+    "thisYear": "今年",
+    "custom": "自定义"
+  },
+  "alerts": {
+    "budgetWarning": "警告: 已使用 {{percentage}}% 的月度预算",
+    "budgetCritical": "严重: 月度预算已超出 {{amount}}",
+    "errorRate": "高错误率: {{rate}}%",
+    "queueBacklog": "{{count}} 个项目在队列中等待",
+    "qualityDrop": "检测到 {{count}} 篇文章质量下降",
+    "coverageGap": "{{count}} 个国家缺少近期内容"
+  },
+  "widgets": {
+    "quickActions": {
+      "title": "快速操作",
+      "newProgram": "新建程序",
+      "generateContent": "生成内容",
+      "viewQueue": "查看队列",
+      "exportReport": "导出报告"
+    },
+    "topPerformers": {
+      "title": "热门内容",
+      "views": "{{count}} 次浏览",
+      "engagement": "{{rate}}% 互动率"
+    },
+    "pendingTasks": {
+      "title": "待处理任务",
+      "review": "待审核",
+      "publish": "待发布",
+      "translate": "待翻译"
+    }
+  },
+  "platforms": {
+    "select": "选择平台",
+    "all": "所有平台",
+    "compare": "比较平台"
+  }
+}

@@ -1,0 +1,113 @@
+{
+  "title": "प्रकाशन",
+  "description": "अपनी सामग्री प्रकाशन प्रबंधित करें",
+  "platforms": {
+    "title": "प्लेटफ़ॉर्म",
+    "description": "अपने प्रकाशन प्लेटफ़ॉर्म कनेक्ट करें",
+    "add": "प्लेटफ़ॉर्म जोड़ें",
+    "edit": "संपादित करें",
+    "delete": "हटाएं",
+    "test": "कनेक्शन परीक्षण करें",
+    "testSuccess": "कनेक्शन सफल",
+    "testFailed": "कनेक्शन विफल",
+    "name": "नाम",
+    "type": "प्रकार",
+    "url": "URL",
+    "status": "स्थिति",
+    "active": "सक्रिय",
+    "inactive": "निष्क्रिय",
+    "lastSync": "अंतिम समन्वयन",
+    "articlesCount": "प्रकाशित लेख",
+    "successRate": "सफलता दर",
+    "types": {
+      "wordpress": "वर्डप्रेस",
+      "custom_api": "कस्टम API",
+      "webhook": "वेबहुक",
+      "ftp": "FTP",
+      "other": "अन्य"
+    }
+  },
+  "endpoints": {
+    "title": "एंडपॉइंट",
+    "description": "API एंडपॉइंट कॉन्फ़िगर करें",
+    "add": "एंडपॉइंट जोड़ें",
+    "edit": "संपादित करें",
+    "delete": "हटाएं",
+    "test": "परीक्षण करें",
+    "name": "नाम",
+    "method": "विधि",
+    "path": "पथ",
+    "default": "डिफ़ॉल्ट",
+    "setDefault": "डिफ़ॉल्ट के रूप में सेट करें",
+    "headers": "हेडर",
+    "body": "बॉडी",
+    "response": "प्रतिक्रिया"
+  },
+  "auth": {
+    "title": "प्रमाणीकरण",
+    "type": "प्रकार",
+    "none": "कोई नहीं",
+    "apiKey": "API कुंजी",
+    "bearer": "बियरर टोकन",
+    "basic": "बेसिक प्रमाणीकरण",
+    "oauth2": "OAuth 2.0",
+    "apiKeyHeader": "हेडर",
+    "apiKeyLocation": "स्थान",
+    "username": "उपयोगकर्ता नाम",
+    "password": "पासवर्ड",
+    "clientId": "क्लाइंट ID",
+    "clientSecret": "क्लाइंट सीक्रेट",
+    "accessToken": "एक्सेस टोकन",
+    "refreshToken": "रिफ्रेश टोकन"
+  },
+  "queue": {
+    "title": "प्रकाशन कतार",
+    "description": "लंबित प्रकाशन प्रबंधित करें",
+    "empty": "कतार खाली है",
+    "content": "सामग्री",
+    "platform": "प्लेटफ़ॉर्म",
+    "status": "स्थिति",
+    "scheduledAt": "निर्धारित समय",
+    "priority": "प्राथमिकता",
+    "actions": "क्रियाएं",
+    "cancel": "रद्द करें",
+    "retry": "पुनः प्रयास करें",
+    "publishNow": "अभी प्रकाशित करें",
+    "viewLogs": "लॉग देखें",
+    "bulkCancel": "चयनित रद्द करें",
+    "bulkPublish": "चयनित प्रकाशित करें",
+    "selectAll": "सभी चुनें"
+  },
+  "status": {
+    "pending": "लंबित",
+    "scheduled": "निर्धारित",
+    "publishing": "प्रकाशित हो रहा है",
+    "published": "प्रकाशित",
+    "failed": "विफल",
+    "cancelled": "रद्द"
+  },
+  "priority": {
+    "high": "उच्च",
+    "default": "सामान्य",
+    "low": "निम्न"
+  },
+  "errors": {
+    "connectionFailed": "प्लेटफ़ॉर्म कनेक्शन विफल",
+    "authFailed": "प्रमाणीकरण विफल",
+    "timeout": "अनुरोध समय समाप्त",
+    "invalidResponse": "अमान्य प्रतिक्रिया",
+    "rateLimited": "दर सीमा पहुंच गई",
+    "serverError": "सर्वर त्रुटि",
+    "unknown": "अज्ञात त्रुटि"
+  },
+  "actions": {
+    "save": "सहेजें",
+    "cancel": "रद्द करें",
+    "delete": "हटाएं",
+    "confirm": "पुष्टि करें",
+    "close": "बंद करें",
+    "refresh": "रीफ्रेश करें",
+    "export": "निर्यात करें",
+    "import": "आयात करें"
+  }
+}

@@ -1,0 +1,112 @@
+{
+  "title": "Couverture",
+  "views": {
+    "global": "Vue globale",
+    "byCountry": "Par pays",
+    "byLanguage": "Par langue",
+    "byTheme": "Par thème",
+    "gaps": "Lacunes",
+    "objectives": "Objectifs"
+  },
+  "global": {
+    "title": "Couverture globale",
+    "description": "Vue d'ensemble de la couverture par région",
+    "map": "Carte de couverture",
+    "legend": {
+      "high": "Couverture élevée (>80%)",
+      "medium": "Couverture moyenne (40-80%)",
+      "low": "Couverture faible (<40%)",
+      "none": "Non couvert"
+    }
+  },
+  "stats": {
+    "covered": "Pays couverts",
+    "missing": "Pays manquants",
+    "percentage": "% de couverture",
+    "trend": "Tendance",
+    "articles": "Articles",
+    "languages": "Langues",
+    "themes": "Thèmes couverts",
+    "total": "Total",
+    "growth": "+{{value}}% ce mois"
+  },
+  "filters": {
+    "region": "Région",
+    "continent": "Continent",
+    "status": "Statut",
+    "platform": "Plateforme",
+    "theme": "Thème",
+    "language": "Langue",
+    "minCoverage": "Couverture minimum",
+    "maxCoverage": "Couverture maximum"
+  },
+  "regions": {
+    "all": "Toutes les régions",
+    "europe": "Europe",
+    "northAmerica": "Amérique du Nord",
+    "southAmerica": "Amérique du Sud",
+    "asia": "Asie",
+    "africa": "Afrique",
+    "oceania": "Océanie",
+    "middleEast": "Moyen-Orient"
+  },
+  "gaps": {
+    "title": "Lacunes de couverture",
+    "description": "Pays et thèmes nécessitant du contenu",
+    "priority": {
+      "high": "Priorité haute",
+      "medium": "Priorité moyenne",
+      "low": "Priorité basse"
+    },
+    "noContent": "Aucun contenu",
+    "outdated": "Contenu obsolète",
+    "incomplete": "Couverture partielle",
+    "missingLanguages": "Langues manquantes",
+    "missingThemes": "Thèmes manquants"
+  },
+  "objectives": {
+    "title": "Objectifs de couverture",
+    "description": "Définissez vos objectifs par région et thème",
+    "set": "Définir un objectif",
+    "edit": "Modifier l'objectif",
+    "delete": "Supprimer l'objectif",
+    "target": "Objectif",
+    "current": "Actuel",
+    "progress": "Progression",
+    "deadline": "Date limite",
+    "achieved": "Objectif atteint",
+    "onTrack": "En bonne voie",
+    "atRisk": "En danger",
+    "behind": "En retard"
+  },
+  "actions": {
+    "generateMissing": "Générer le contenu manquant",
+    "setObjective": "Définir un objectif",
+    "exportReport": "Exporter le rapport",
+    "viewDetails": "Voir les détails",
+    "createProgram": "Créer un programme"
+  },
+  "table": {
+    "country": "Pays",
+    "region": "Région",
+    "articles": "Articles",
+    "languages": "Langues",
+    "themes": "Thèmes",
+    "coverage": "Couverture",
+    "lastUpdated": "Dernière mise à jour",
+    "actions": "Actions"
+  },
+  "details": {
+    "title": "Détail couverture: {{country}}",
+    "byLanguage": "Par langue",
+    "byTheme": "Par thème",
+    "recentArticles": "Articles récents",
+    "missingContent": "Contenu manquant"
+  },
+  "messages": {
+    "objectiveSet": "Objectif défini avec succès",
+    "objectiveDeleted": "Objectif supprimé",
+    "reportExported": "Rapport exporté",
+    "generationStarted": "Génération du contenu manquant démarrée"
+  }
+}

@@ -1,0 +1,109 @@
+{
+  "titles": {
+    "main": "Panel de control",
+    "platform": "Panel de la plataforma",
+    "overview": "Vista general",
+    "activity": "Actividad reciente"
+  },
+  "stats": {
+    "totalArticles": "Total de artículos",
+    "totalGenerated": "Generados",
+    "totalPublished": "Publicados",
+    "totalDraft": "Borradores",
+    "totalScheduled": "Programados",
+    "totalCost": "Costo total",
+    "avgQuality": "Calidad promedio",
+    "coverage": "Cobertura",
+    "thisMonth": "Este mes",
+    "lastMonth": "Mes pasado",
+    "variation": "{{value}}% vs período anterior",
+    "increase": "+{{value}}%",
+    "decrease": "-{{value}}%"
+  },
+  "charts": {
+    "production": {
+      "title": "Producción",
+      "subtitle": "Artículos generados por día",
+      "articles": "Artículos",
+      "pillars": "Artículos pilar",
+      "comparatives": "Comparativas",
+      "landings": "Páginas de destino",
+      "press": "Comunicados de prensa"
+    },
+    "costs": {
+      "title": "Costos de IA",
+      "subtitle": "Gastos por modelo",
+      "daily": "Diario",
+      "cumulative": "Acumulado",
+      "budget": "Presupuesto",
+      "actual": "Real"
+    },
+    "quality": {
+      "title": "Calidad",
+      "subtitle": "Puntuación promedio por tipo",
+      "distribution": "Distribución de puntuaciones"
+    },
+    "coverage": {
+      "title": "Cobertura",
+      "subtitle": "Progreso por región",
+      "countries": "Países cubiertos",
+      "languages": "Idiomas activos"
+    }
+  },
+  "activity": {
+    "title": "Actividad reciente",
+    "stream": "Flujo de actividad",
+    "events": {
+      "created": "{{user}} creó {{item}}",
+      "published": "{{item}} fue publicado",
+      "generated": "{{count}} artículos generados",
+      "error": "Error de generación: {{message}}",
+      "scheduled": "{{item}} programado para {{date}}",
+      "qualityCheck": "Verificación de calidad completada"
+    },
+    "showMore": "Ver más",
+    "noActivity": "Sin actividad reciente"
+  },
+  "periods": {
+    "last7days": "Últimos 7 días",
+    "last30days": "Últimos 30 días",
+    "last90days": "Últimos 90 días",
+    "thisMonth": "Este mes",
+    "lastMonth": "Mes pasado",
+    "thisYear": "Este año",
+    "custom": "Personalizado"
+  },
+  "alerts": {
+    "budgetWarning": "Advertencia: {{percentage}}% del presupuesto mensual utilizado",
+    "budgetCritical": "Crítico: Presupuesto mensual excedido por {{amount}}",
+    "errorRate": "Alta tasa de errores: {{rate}}%",
+    "queueBacklog": "{{count}} elementos en espera",
+    "qualityDrop": "Caída de calidad detectada en {{count}} artículos",
+    "coverageGap": "{{count}} países sin contenido reciente"
+  },
+  "widgets": {
+    "quickActions": {
+      "title": "Acciones rápidas",
+      "newProgram": "Nuevo programa",
+      "generateContent": "Generar contenido",
+      "viewQueue": "Ver cola",
+      "exportReport": "Exportar informe"
+    },
+    "topPerformers": {
+      "title": "Contenido destacado",
+      "views": "{{count}} vistas",
+      "engagement": "{{rate}}% engagement"
+    },
+    "pendingTasks": {
+      "title": "Tareas pendientes",
+      "review": "Por revisar",
+      "publish": "Por publicar",
+      "translate": "Por traducir"
+    }
+  },
+  "platforms": {
+    "select": "Seleccionar plataforma",
+    "all": "Todas las plataformas",
+    "compare": "Comparar plataformas"
+  }
+}

@@ -1,0 +1,98 @@
+{
+  "title": "Calidad",
+  "description": "Control de calidad de contenido",
+  "scores": {
+    "title": "Puntuaciones de calidad",
+    "description": "Análisis de puntuación de calidad",
+    "overall": "Puntuación general",
+    "seo": "SEO",
+    "readability": "Legibilidad",
+    "originality": "Originalidad",
+    "structure": "Estructura",
+    "grammar": "Gramática",
+    "engagement": "Engagement",
+    "distribution": "Distribución de puntuaciones",
+    "trend": "Tendencia",
+    "average": "Promedio",
+    "minimum": "Mínimo",
+    "maximum": "Máximo"
+  },
+  "review": {
+    "title": "Revisión",
+    "description": "Artículos pendientes de revisión",
+    "pendingReview": "Pendiente de revisión",
+    "needsImprovement": "Necesita mejora",
+    "approved": "Aprobado",
+    "rejected": "Rechazado",
+    "approve": "Aprobar",
+    "reject": "Rechazar",
+    "requestChanges": "Solicitar cambios",
+    "sendToEditor": "Enviar al editor",
+    "bulkApprove": "Aprobar seleccionados",
+    "bulkReject": "Rechazar seleccionados",
+    "empty": "No hay artículos en revisión"
+  },
+  "rules": {
+    "title": "Reglas de calidad",
+    "description": "Configurar reglas de validación",
+    "add": "Nueva regla",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "enable": "Activar",
+    "disable": "Desactivar",
+    "name": "Nombre",
+    "type": "Tipo",
+    "threshold": "Umbral",
+    "weight": "Peso",
+    "action": "Acción",
+    "categories": {
+      "seo": "SEO",
+      "readability": "Legibilidad",
+      "grammar": "Gramática",
+      "structure": "Estructura",
+      "content": "Contenido"
+    },
+    "actions": {
+      "warn": "Advertir",
+      "block": "Bloquear",
+      "flag": "Marcar"
+    },
+    "empty": "No hay reglas configuradas"
+  },
+  "analysis": {
+    "title": "Análisis",
+    "analyzing": "Analizando...",
+    "issues": "Problemas detectados",
+    "warnings": "Advertencias",
+    "suggestions": "Sugerencias",
+    "passed": "Aprobado",
+    "fix": "Corregir",
+    "ignore": "Ignorar",
+    "fixAll": "Corregir todo"
+  },
+  "levels": {
+    "excellent": "Excelente",
+    "good": "Bueno",
+    "average": "Promedio",
+    "poor": "Pobre",
+    "critical": "Crítico"
+  },
+  "metrics": {
+    "wordCount": "Recuento de palabras",
+    "sentenceCount": "Recuento de oraciones",
+    "paragraphCount": "Párrafos",
+    "avgSentenceLength": "Longitud promedio de oración",
+    "avgWordLength": "Longitud promedio de palabra",
+    "readingTime": "Tiempo de lectura",
+    "fleschScore": "Puntuación Flesch",
+    "keywordDensity": "Densidad de palabras clave"
+  },
+  "stats": {
+    "totalAnalyzed": "Total analizado",
+    "avgScore": "Puntuación promedio",
+    "excellent": "Excelente",
+    "good": "Bueno",
+    "average": "Promedio",
+    "poor": "Pobre"
+  }
+}

@@ -196,8 +196,9 @@ class TranslationService
             // Validation et nettoyage
             $translatedText = $this->encodingValidator->sanitizeContent($translatedText);
 
-            // Cache 30 jours
-            Cache::put($cacheKey, $translatedText, 60 * 60 * 24 * 30);
+            // Cache avec TTL configurable (default: 30 jours)
+            $ttl = config('content.cache.translations_ttl', 60 * 60 * 24 * 30);
+            Cache::put($cacheKey, $translatedText, $ttl);
 
             // Tracking coût
             if (isset($response['usage'])) {

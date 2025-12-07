@@ -248,19 +248,30 @@ class ManualTitleController extends Controller
 
         $manualTitle = ManualTitle::findOrFail($id);
 
+        // Vérifier si déjà en cours de traitement
+        if ($manualTitle->status === ManualTitle::STATUS_PROCESSING) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Ce titre est déjà en cours de génération',
+            ], 409);
+        }
+
         try {
-            // TODO: Implémenter système de scheduling avec Laravel Scheduler
-            // Pour l'instant, on met juste en queue différée
-            
-            $scheduledAt = $request->scheduled_at;
+            $scheduledAt = \Carbon\Carbon::parse($request->scheduled_at);
             $delay = now()->diffInSeconds($scheduledAt);
 
-            $manualTitle->markAsQueued();
-            ProcessManualTitle::dispatch($manualTitle)->delay(now()->addSeconds($delay));
+            // Marquer comme programmé avec la date
+            $manualTitle->markAsScheduled($scheduledAt);
+
+            // Dispatcher le job avec le délai calculé
+            ProcessManualTitle::dispatch($manualTitle)
+                ->delay($scheduledAt)
+                ->onQueue('scheduled');
 
             Log::info("Titre manuel programmé", [
                 'manual_title_id' => $manualTitle->id,
-                'scheduled_at' => $scheduledAt,
+                'scheduled_at' => $scheduledAt->toIso8601String(),
+                'delay_seconds' => $delay,
             ]);
 
             return response()->json([
@@ -268,7 +279,9 @@ class ManualTitleController extends Controller
                 'message' => 'Génération programmée avec succès',
                 'data' => [
                     'manual_title' => $manualTitle->fresh(),
-                    'scheduled_at' => $scheduledAt,
+                    'scheduled_at' => $scheduledAt->toIso8601String(),
+                    'delay_seconds' => $delay,
+                    'human_delay' => $this->humanReadableDelay($delay),
                 ],
             ]);
 
@@ -284,6 +297,171 @@ class ManualTitleController extends Controller
                 'error' => $e->getMessage(),
             ], 500);
         }
+    }
+
+    /**
+     * Annuler une programmation
+     *
+     * DELETE /api/manual-titles/{id}/schedule
+     */
+    public function cancelSchedule(int $id): JsonResponse
+    {
+        $manualTitle = ManualTitle::findOrFail($id);
+
+        if ($manualTitle->status !== ManualTitle::STATUS_SCHEDULED) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Ce titre n\'est pas programmé',
+                'current_status' => $manualTitle->status,
+            ], 400);
+        }
+
+        try {
+            // Réinitialiser le statut
+            $manualTitle->update([
+                'status' => ManualTitle::STATUS_PENDING,
+                'scheduled_at' => null,
+            ]);
+
+            Log::info("Programmation annulée", [
+                'manual_title_id' => $manualTitle->id,
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Programmation annulée avec succès',
+                'data' => $manualTitle->fresh(),
+            ]);
+
+        } catch (Exception $e) {
+            Log::error("Erreur annulation programmation", [
+                'manual_title_id' => $id,
+                'error' => $e->getMessage(),
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Erreur lors de l\'annulation',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Reprogrammer un titre
+     *
+     * PUT /api/manual-titles/{id}/schedule
+     */
+    public function reschedule(Request $request, int $id): JsonResponse
+    {
+        $validator = Validator::make($request->all(), [
+            'scheduled_at' => 'required|date|after:now',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        $manualTitle = ManualTitle::findOrFail($id);
+
+        // Vérifier si en cours de traitement
+        if ($manualTitle->status === ManualTitle::STATUS_PROCESSING) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Ce titre est en cours de génération',
+            ], 409);
+        }
+
+        try {
+            $scheduledAt = \Carbon\Carbon::parse($request->scheduled_at);
+
+            // Mettre à jour la programmation
+            $manualTitle->markAsScheduled($scheduledAt);
+
+            // Re-dispatcher le job avec la nouvelle date
+            ProcessManualTitle::dispatch($manualTitle)
+                ->delay($scheduledAt)
+                ->onQueue('scheduled');
+
+            Log::info("Titre manuel reprogrammé", [
+                'manual_title_id' => $manualTitle->id,
+                'new_scheduled_at' => $scheduledAt->toIso8601String(),
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Génération reprogrammée avec succès',
+                'data' => [
+                    'manual_title' => $manualTitle->fresh(),
+                    'scheduled_at' => $scheduledAt->toIso8601String(),
+                ],
+            ]);
+
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erreur lors de la reprogrammation',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Lister les titres programmés
+     *
+     * GET /api/manual-titles/scheduled
+     */
+    public function scheduled(Request $request): JsonResponse
+    {
+        $query = ManualTitle::where('status', ManualTitle::STATUS_SCHEDULED)
+            ->whereNotNull('scheduled_at')
+            ->with(['platform', 'country'])
+            ->orderBy('scheduled_at', 'asc');
+
+        if ($request->has('platform_id')) {
+            $query->where('platform_id', $request->platform_id);
+        }
+
+        $perPage = $request->get('per_page', 20);
+        $titles = $query->paginate($perPage);
+
+        return response()->json([
+            'success' => true,
+            'data' => $titles,
+        ]);
+    }
+
+    /**
+     * Convertir un délai en format lisible
+     *
+     * @param int $seconds
+     * @return string
+     */
+    protected function humanReadableDelay(int $seconds): string
+    {
+        if ($seconds < 60) {
+            return "{$seconds} secondes";
+        }
+
+        $minutes = floor($seconds / 60);
+        if ($minutes < 60) {
+            return "{$minutes} minutes";
+        }
+
+        $hours = floor($minutes / 60);
+        $remainingMinutes = $minutes % 60;
+
+        if ($hours < 24) {
+            return "{$hours}h {$remainingMinutes}min";
+        }
+
+        $days = floor($hours / 24);
+        $remainingHours = $hours % 24;
+
+        return "{$days}j {$remainingHours}h";
     }
 
     /**

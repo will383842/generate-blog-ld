@@ -1,0 +1,109 @@
+{
+  "titles": {
+    "main": "डैशबोर्ड",
+    "platform": "प्लेटफ़ॉर्म डैशबोर्ड",
+    "overview": "अवलोकन",
+    "activity": "हाल की गतिविधि"
+  },
+  "stats": {
+    "totalArticles": "कुल लेख",
+    "totalGenerated": "जनित",
+    "totalPublished": "प्रकाशित",
+    "totalDraft": "ड्राफ्ट",
+    "totalScheduled": "निर्धारित",
+    "totalCost": "कुल लागत",
+    "avgQuality": "औसत गुणवत्ता",
+    "coverage": "कवरेज",
+    "thisMonth": "इस महीने",
+    "lastMonth": "पिछले महीने",
+    "variation": "{{value}}% पिछली अवधि की तुलना में",
+    "increase": "+{{value}}%",
+    "decrease": "-{{value}}%"
+  },
+  "charts": {
+    "production": {
+      "title": "उत्पादन",
+      "subtitle": "प्रतिदिन जनित लेख",
+      "articles": "लेख",
+      "pillars": "स्तंभ लेख",
+      "comparatives": "तुलनात्मक",
+      "landings": "लैंडिंग पेज",
+      "press": "प्रेस विज्ञप्ति"
+    },
+    "costs": {
+      "title": "AI लागत",
+      "subtitle": "मॉडल के अनुसार खर्च",
+      "daily": "दैनिक",
+      "cumulative": "संचयी",
+      "budget": "बजट",
+      "actual": "वास्तविक"
+    },
+    "quality": {
+      "title": "गुणवत्ता",
+      "subtitle": "प्रकार के अनुसार औसत स्कोर",
+      "distribution": "स्कोर वितरण"
+    },
+    "coverage": {
+      "title": "कवरेज",
+      "subtitle": "क्षेत्र के अनुसार प्रगति",
+      "countries": "कवर किए गए देश",
+      "languages": "सक्रिय भाषाएं"
+    }
+  },
+  "activity": {
+    "title": "हाल की गतिविधि",
+    "stream": "गतिविधि स्ट्रीम",
+    "events": {
+      "created": "{{user}} ने {{item}} बनाया",
+      "published": "{{item}} प्रकाशित हुआ",
+      "generated": "{{count}} लेख जनित",
+      "error": "जनन त्रुटि: {{message}}",
+      "scheduled": "{{item}} {{date}} के लिए निर्धारित",
+      "qualityCheck": "गुणवत्ता जांच पूर्ण"
+    },
+    "showMore": "और देखें",
+    "noActivity": "कोई हालिया गतिविधि नहीं"
+  },
+  "periods": {
+    "last7days": "पिछले 7 दिन",
+    "last30days": "पिछले 30 दिन",
+    "last90days": "पिछले 90 दिन",
+    "thisMonth": "इस महीने",
+    "lastMonth": "पिछले महीने",
+    "thisYear": "इस साल",
+    "custom": "कस्टम"
+  },
+  "alerts": {
+    "budgetWarning": "चेतावनी: मासिक बजट का {{percentage}}% उपयोग किया गया",
+    "budgetCritical": "गंभीर: मासिक बजट {{amount}} से अधिक",
+    "errorRate": "उच्च त्रुटि दर: {{rate}}%",
+    "queueBacklog": "{{count}} आइटम कतार में प्रतीक्षारत",
+    "qualityDrop": "{{count}} लेखों में गुणवत्ता गिरावट का पता चला",
+    "coverageGap": "{{count}} देशों में हाल का कंटेंट नहीं"
+  },
+  "widgets": {
+    "quickActions": {
+      "title": "त्वरित कार्य",
+      "newProgram": "नया प्रोग्राम",
+      "generateContent": "कंटेंट जनित करें",
+      "viewQueue": "कतार देखें",
+      "exportReport": "रिपोर्ट निर्यात करें"
+    },
+    "topPerformers": {
+      "title": "शीर्ष कंटेंट",
+      "views": "{{count}} व्यूज",
+      "engagement": "{{rate}}% एंगेजमेंट"
+    },
+    "pendingTasks": {
+      "title": "लंबित कार्य",
+      "review": "समीक्षा के लिए",
+      "publish": "प्रकाशन के लिए",
+      "translate": "अनुवाद के लिए"
+    }
+  },
+  "platforms": {
+    "select": "प्लेटफ़ॉर्म चुनें",
+    "all": "सभी प्लेटफ़ॉर्म",
+    "compare": "प्लेटफ़ॉर्म की तुलना करें"
+  }
+}

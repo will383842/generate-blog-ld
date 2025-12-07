@@ -1,0 +1,121 @@
+{
+  "title": "सामग्री",
+  "description": "अपने लेख और सामग्री प्रबंधित करें",
+  "articles": {
+    "title": "लेख",
+    "description": "अपने लेख प्रबंधित करें",
+    "add": "नया लेख",
+    "edit": "लेख संपादित करें",
+    "delete": "लेख हटाएं",
+    "duplicate": "डुप्लिकेट",
+    "archive": "संग्रहित करें",
+    "publish": "प्रकाशित करें",
+    "unpublish": "अप्रकाशित करें",
+    "schedule": "शेड्यूल करें",
+    "preview": "पूर्वावलोकन",
+    "fields": {
+      "title": "शीर्षक",
+      "slug": "स्लग",
+      "content": "सामग्री",
+      "excerpt": "अंश",
+      "featuredImage": "विशेष छवि",
+      "category": "श्रेणी",
+      "tags": "टैग",
+      "author": "लेखक",
+      "status": "स्थिति",
+      "publishedAt": "प्रकाशन तिथि",
+      "createdAt": "निर्मित",
+      "updatedAt": "अद्यतन"
+    },
+    "status": {
+      "draft": "मसौदा",
+      "published": "प्रकाशित",
+      "archived": "संग्रहित",
+      "scheduled": "शेड्यूल किया गया"
+    },
+    "filters": {
+      "all": "सभी",
+      "drafts": "मसौदे",
+      "published": "प्रकाशित",
+      "archived": "संग्रहित"
+    },
+    "bulk": {
+      "publish": "चयनित प्रकाशित करें",
+      "unpublish": "चयनित अप्रकाशित करें",
+      "delete": "चयनित हटाएं",
+      "archive": "चयनित संग्रहित करें"
+    },
+    "empty": "कोई लेख नहीं मिला",
+    "createFirst": "अपना पहला लेख बनाएं"
+  },
+  "categories": {
+    "title": "श्रेणियां",
+    "description": "अपनी श्रेणियां प्रबंधित करें",
+    "add": "नई श्रेणी",
+    "edit": "श्रेणी संपादित करें",
+    "delete": "श्रेणी हटाएं",
+    "fields": {
+      "name": "नाम",
+      "slug": "स्लग",
+      "description": "विवरण",
+      "parent": "मूल श्रेणी",
+      "color": "रंग",
+      "icon": "आइकन"
+    },
+    "articlesCount": "लेख",
+    "empty": "कोई श्रेणी नहीं",
+    "noParent": "कोई नहीं (रूट श्रेणी)"
+  },
+  "tags": {
+    "title": "टैग",
+    "description": "अपने टैग प्रबंधित करें",
+    "add": "नया टैग",
+    "edit": "टैग संपादित करें",
+    "delete": "टैग हटाएं",
+    "fields": {
+      "name": "नाम",
+      "slug": "स्लग",
+      "description": "विवरण",
+      "color": "रंग"
+    },
+    "articlesCount": "लेख",
+    "empty": "कोई टैग नहीं",
+    "merge": "टैग मर्ज करें"
+  },
+  "editor": {
+    "title": "संपादक",
+    "save": "सहेजें",
+    "saveAndPublish": "सहेजें और प्रकाशित करें",
+    "saveDraft": "मसौदे के रूप में सहेजें",
+    "preview": "पूर्वावलोकन",
+    "settings": "सेटिंग",
+    "seo": "SEO",
+    "media": "मीडिया",
+    "history": "इतिहास",
+    "autosave": "स्वतः सहेजें",
+    "lastSaved": "अंतिम बार सहेजा गया",
+    "wordCount": "शब्द",
+    "readingTime": "पढ़ने का समय",
+    "toolbar": {
+      "bold": "बोल्ड",
+      "italic": "इटैलिक",
+      "underline": "रेखांकित",
+      "strikethrough": "स्ट्राइकथ्रू",
+      "heading": "शीर्षक",
+      "link": "लिंक",
+      "image": "छवि",
+      "list": "सूची",
+      "quote": "उद्धरण",
+      "code": "कोड",
+      "table": "तालिका"
+    }
+  },
+  "media": {
+    "title": "मीडिया",
+    "selectImage": "छवि चुनें",
+    "uploadImage": "छवि अपलोड करें",
+    "removeImage": "छवि हटाएं",
+    "altText": "वैकल्पिक पाठ",
+    "caption": "कैप्शन"
+  }
+}

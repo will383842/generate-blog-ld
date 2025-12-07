@@ -1,4 +1,4 @@
-﻿import { useState } from 'react';
+import { useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Select } from '@/components/ui/Select';
@@ -6,7 +6,8 @@ import { useGenerateArticle, useGenerationQueue } from '@/hooks/useGeneration';
 import { useCountries } from '@/hooks/useCountries';
 import { useThemes } from '@/hooks/useThemes';
 import { LoadingSpinner } from '@/components/LoadingSpinner';
-import toast from 'react-hot-toast';
+import { toast } from '@/hooks/useToast';
+import type { Country, Theme } from '@/types/common';
 
 export default function Generation() {
   const [formData, setFormData] = useState({
@@ -95,7 +96,7 @@ export default function Generation() {
                       required
                     >
                       <option value="">Sélectionnez un pays</option>
-                      {countries.map((country: any) => (
+                      {countries.map((country: Country) => (
                         <option key={country.id} value={country.id}>
                           {country.flag_emoji || ''} {country.name}
                         </option>
@@ -118,7 +119,7 @@ export default function Generation() {
                       required
                     >
                       <option value="">Sélectionnez un thème</option>
-                      {themes.map((theme: any) => (
+                      {themes.map((theme: Theme) => (
                         <option key={theme.id} value={theme.id}>
                           {theme.icon || ''} {theme.name}
                         </option>

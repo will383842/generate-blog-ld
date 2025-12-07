@@ -1,0 +1,196 @@
+{
+  "dashboard": {
+    "title": "智能覆盖",
+    "subtitle": "197个国家 × 9种语言 × 所有专业",
+    "refresh": "刷新",
+    "export": "导出",
+    "lastUpdate": "最后更新"
+  },
+  "platforms": {
+    "sosExpat": "SOS-Expat",
+    "sosExpatDesc": "外籍人士紧急法律援助",
+    "ulixai": "Ulixai",
+    "ulixaiDesc": "外籍人士服务市场",
+    "ulysse": "Ulysse.AI",
+    "ulysseDesc": "外籍人士AI助手",
+    "soon": "即将推出"
+  },
+  "scores": {
+    "global": "全球评分",
+    "recruitment": "招募",
+    "awareness": "知名度",
+    "founder": "创始人",
+    "progress": "进度",
+    "countries": "已分析国家",
+    "articlesTarget": "目标文章",
+    "vsObjective": "对比100%目标"
+  },
+  "distribution": {
+    "title": "按覆盖级别分布",
+    "excellent": "优秀",
+    "excellentRange": "80-100%",
+    "good": "良好",
+    "goodRange": "60-79%",
+    "partial": "部分",
+    "partialRange": "40-59%",
+    "minimal": "最小",
+    "minimalRange": "20-39%",
+    "missing": "缺失",
+    "missingRange": "0-19%",
+    "ofCountries": "国家占比"
+  },
+  "quickActions": {
+    "title": "快速操作",
+    "viewGrid": "网格视图 197个国家",
+    "viewGridDesc": "一次查看所有进度条",
+    "viewCountries": "国家列表",
+    "viewCountriesDesc": "197个国家含高级筛选",
+    "priorityCountries": "优先国家",
+    "priorityCountriesDesc": "需要紧急关注的国家",
+    "generateContent": "生成内容",
+    "generateContentDesc": "自动AI生成",
+    "viewLanguages": "语言视图",
+    "viewLanguagesDesc": "9种语言 × 197个国家"
+  },
+  "countries": {
+    "title": "全球覆盖 - 197个国家",
+    "subtitle": "按平台完整查看进度条",
+    "search": "搜索国家...",
+    "allRegions": "所有地区",
+    "sortBy": "排序方式",
+    "sortByPriority": "优先级",
+    "sortByScore": "全球评分",
+    "sortByRecruitment": "招募",
+    "sortByAwareness": "知名度",
+    "sortByFounder": "创始人",
+    "sortByName": "名称 A-Z",
+    "missingOnly": "仅缺失项",
+    "allCountries": "所有国家",
+    "averageScore": "平均评分",
+    "total": "总计",
+    "clickForDetails": "点击查看详情"
+  },
+  "countryDetails": {
+    "title": "国家详情",
+    "generateMissing": "生成缺失内容",
+    "tabs": {
+      "recruitment": "招募",
+      "awareness": "知名度",
+      "founder": "创始人",
+      "languages": "语言"
+    },
+    "missingTargets": "缺失内容",
+    "publishedArticles": "已发布文章",
+    "unpublishedArticles": "未发布文章"
+  },
+  "recruitment": {
+    "title": "服务商招募",
+    "lawyerSpecialties": "律师专业",
+    "lawyerSpecialtiesDesc": "22个法律类别",
+    "expatDomains": "外籍人士领域",
+    "expatDomainsDesc": "外籍人士援助",
+    "ulixaiServices": "Ulixai服务",
+    "ulixaiServicesDesc": "11个类别，3个级别",
+    "perSpecialty": "每专业 × 国家 × 语言"
+  },
+  "awareness": {
+    "title": "SEO知名度",
+    "pillarArticles": "支柱文章",
+    "comparatives": "对比文章",
+    "landingPages": "着陆页",
+    "perCountryLanguage": "每国家/语言"
+  },
+  "founder": {
+    "title": "创始人主题",
+    "name": "Williams Jullin",
+    "description": "关于创始人的文章 - 所有平台通用",
+    "sosExpatArticle": "SOS-Expat文章",
+    "ulixaiArticle": "Ulixai文章",
+    "crossPlatform": "跨平台"
+  },
+  "languages": {
+    "title": "语言覆盖",
+    "subtitle": "9种语言全球视图",
+    "matrix": "国家 × 语言矩阵",
+    "countriesCovered": "已覆盖国家",
+    "totalArticles": "文章总数",
+    "publishedArticles": "已发布",
+    "averageCoverage": "平均覆盖率"
+  },
+  "generate": {
+    "title": "内容生成",
+    "subtitle": "自动生成缺失内容",
+    "configuration": "配置",
+    "contentTypes": "内容类型",
+    "targetLanguages": "目标语言",
+    "selectCountries": "国家选择",
+    "priority": "优先级",
+    "selectAll": "全选",
+    "clear": "清除",
+    "summary": "生成摘要",
+    "totalTasks": "任务总数",
+    "estimatedTime": "预计时间",
+    "estimatedCost": "预计成本",
+    "completed": "已完成",
+    "prepare": "准备生成",
+    "start": "开始",
+    "stop": "停止",
+    "reset": "重置"
+  },
+  "status": {
+    "excellent": "优秀",
+    "good": "良好",
+    "partial": "部分",
+    "minimal": "最小",
+    "missing": "缺失",
+    "published": "已发布",
+    "unpublished": "未发布",
+    "pending": "待处理",
+    "generating": "生成中",
+    "completed": "已完成",
+    "failed": "失败"
+  },
+  "priority": {
+    "critical": "紧急",
+    "high": "高",
+    "medium": "中",
+    "low": "低"
+  },
+  "actions": {
+    "view": "查看",
+    "edit": "编辑",
+    "generate": "生成",
+    "translate": "翻译",
+    "export": "导出",
+    "refresh": "刷新"
+  },
+  "recommendations": {
+    "title": "AI建议",
+    "execute": "执行",
+    "executeAll": "执行全部",
+    "noRecommendations": "无紧急建议"
+  },
+  "regions": {
+    "europe": "欧洲",
+    "asia": "亚洲",
+    "africa": "非洲",
+    "northAmerica": "北美",
+    "southAmerica": "南美",
+    "oceania": "大洋洲",
+    "middleEast": "中东"
+  },
+  "metrics": {
+    "total": "总计",
+    "published": "已发布",
+    "unpublished": "未发布",
+    "missing": "缺失",
+    "completed": "已完成",
+    "targets": "目标"
+  },
+  "legend": {
+    "title": "图例",
+    "recruitmentBar": "招募",
+    "awarenessBar": "知名度",
+    "founderBar": "创始人"
+  }
+}

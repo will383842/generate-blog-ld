@@ -1,0 +1,157 @@
+{
+  "title": "Лендинги",
+  "list": "Список лендингов",
+  "create": "Новый лендинг",
+  "edit": "Редактировать лендинг",
+  "empty": "Нет лендингов",
+  "emptyDescription": "Создайте свой первый лендинг",
+  "sections": {
+    "title": "Секции",
+    "hero": {
+      "name": "Hero",
+      "description": "Главный баннер с заголовком и CTA",
+      "fields": {
+        "title": "Главный заголовок",
+        "subtitle": "Подзаголовок",
+        "image": "Фоновое изображение",
+        "cta": "Кнопка действия"
+      }
+    },
+    "features": {
+      "name": "Преимущества",
+      "description": "Список преимуществ или функций",
+      "fields": {
+        "title": "Заголовок секции",
+        "items": "Преимущества",
+        "columns": "Количество колонок"
+      }
+    },
+    "testimonials": {
+      "name": "Отзывы",
+      "description": "Отзывы и рекомендации клиентов",
+      "fields": {
+        "title": "Заголовок секции",
+        "items": "Отзывы",
+        "layout": "Макет"
+      }
+    },
+    "pricing": {
+      "name": "Цены",
+      "description": "Таблица цен и тарифы",
+      "fields": {
+        "title": "Заголовок секции",
+        "plans": "Тарифы",
+        "currency": "Валюта"
+      }
+    },
+    "cta": {
+      "name": "Призыв к действию",
+      "description": "Секция призыва к действию",
+      "fields": {
+        "title": "Заголовок",
+        "description": "Описание",
+        "buttonText": "Текст кнопки",
+        "buttonLink": "Ссылка кнопки"
+      }
+    },
+    "faq": {
+      "name": "FAQ",
+      "description": "Часто задаваемые вопросы",
+      "fields": {
+        "title": "Заголовок секции",
+        "items": "Вопросы/Ответы"
+      }
+    },
+    "form": {
+      "name": "Форма",
+      "description": "Форма контакта или регистрации",
+      "fields": {
+        "title": "Заголовок",
+        "fields": "Поля формы",
+        "submitText": "Текст кнопки"
+      }
+    },
+    "gallery": {
+      "name": "Галерея",
+      "description": "Галерея изображений",
+      "fields": {
+        "title": "Заголовок секции",
+        "images": "Изображения",
+        "columns": "Колонки"
+      }
+    },
+    "stats": {
+      "name": "Статистика",
+      "description": "Ключевые показатели",
+      "fields": {
+        "items": "Статистика",
+        "animated": "Анимация"
+      }
+    },
+    "partners": {
+      "name": "Партнёры",
+      "description": "Логотипы партнёров",
+      "fields": {
+        "title": "Заголовок",
+        "logos": "Логотипы партнёров"
+      }
+    }
+  },
+  "builder": {
+    "title": "Конструктор лендингов",
+    "addSection": "Добавить секцию",
+    "editSection": "Редактировать секцию",
+    "deleteSection": "Удалить секцию",
+    "duplicateSection": "Дублировать секцию",
+    "reorderSections": "Изменить порядок секций",
+    "moveUp": "Переместить вверх",
+    "moveDown": "Переместить вниз",
+    "preview": "Предпросмотр",
+    "previewMobile": "Мобильный просмотр",
+    "previewDesktop": "Десктоп просмотр",
+    "emptyBuilder": "Добавьте секции для создания лендинга"
+  },
+  "cta": {
+    "text": "Текст кнопки",
+    "link": "Ссылка",
+    "style": "Стиль",
+    "styles": {
+      "primary": "Основной",
+      "secondary": "Дополнительный",
+      "outline": "Контурный",
+      "ghost": "Ghost"
+    },
+    "tracking": {
+      "title": "Отслеживание",
+      "utmSource": "UTM Source",
+      "utmMedium": "UTM Medium",
+      "utmCampaign": "UTM Campaign",
+      "eventName": "Название события"
+    }
+  },
+  "fields": {
+    "name": "Название лендинга",
+    "slug": "URL",
+    "status": "Статус",
+    "template": "Шаблон",
+    "country": "Страна",
+    "language": "Язык",
+    "platform": "Платформа"
+  },
+  "templates": {
+    "title": "Шаблоны лендингов",
+    "select": "Выбрать шаблон",
+    "blank": "Пустая страница",
+    "service": "Страница услуг",
+    "product": "Страница продукта",
+    "event": "Страница мероприятия",
+    "lead": "Сбор лидов"
+  },
+  "actions": {
+    "publish": "Опубликовать",
+    "unpublish": "Снять с публикации",
+    "duplicate": "Дублировать",
+    "preview": "Предпросмотр",
+    "export": "Экспорт HTML"
+  }
+}

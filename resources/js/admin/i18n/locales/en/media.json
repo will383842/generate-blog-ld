@@ -1,0 +1,163 @@
+{
+  "title": "Media",
+  "library": {
+    "title": "Library",
+    "grid": "Grid",
+    "list": "List",
+    "filters": {
+      "type": "Type",
+      "date": "Date",
+      "size": "Size",
+      "used": "Used",
+      "unused": "Unused"
+    },
+    "types": {
+      "all": "All",
+      "images": "Images",
+      "videos": "Videos",
+      "documents": "Documents",
+      "other": "Other"
+    },
+    "details": {
+      "title": "Media details",
+      "filename": "Filename",
+      "size": "Size",
+      "dimensions": "Dimensions",
+      "format": "Format",
+      "uploadedAt": "Uploaded at",
+      "usedIn": "Used in",
+      "alt": "Alt text",
+      "caption": "Caption",
+      "credit": "Credit"
+    },
+    "actions": {
+      "view": "View",
+      "edit": "Edit",
+      "delete": "Delete",
+      "download": "Download",
+      "copy": "Copy URL",
+      "replace": "Replace"
+    },
+    "empty": "No media",
+    "emptyDescription": "Start by uploading files"
+  },
+  "upload": {
+    "title": "Upload",
+    "dragDrop": "Drag and drop your files here",
+    "or": "or",
+    "browse": "Browse",
+    "progress": "Progress",
+    "uploading": "Uploading...",
+    "complete": "Upload complete",
+    "error": "Upload error",
+    "maxSize": "Maximum size: {{size}}",
+    "allowedFormats": "Accepted formats: {{formats}}",
+    "metadata": {
+      "title": "Metadata",
+      "alt": "Alt text",
+      "caption": "Caption",
+      "credit": "Photo credit"
+    },
+    "batch": {
+      "title": "Batch upload",
+      "files": "{{count}} file(s) selected",
+      "uploadAll": "Upload all"
+    }
+  },
+  "unsplash": {
+    "title": "Unsplash",
+    "search": "Search on Unsplash",
+    "placeholder": "E.g.: nature, business, technology...",
+    "results": "Results",
+    "noResults": "No results for \"{{query}}\"",
+    "download": "Download",
+    "downloading": "Downloading...",
+    "attribution": "Photo by {{author}} on Unsplash",
+    "collections": "Collections",
+    "trending": "Trending",
+    "orientation": {
+      "title": "Orientation",
+      "all": "All",
+      "landscape": "Landscape",
+      "portrait": "Portrait",
+      "square": "Square"
+    },
+    "color": {
+      "title": "Color",
+      "any": "Any"
+    }
+  },
+  "dalle": {
+    "title": "DALL-E",
+    "prompt": "Image description",
+    "promptPlaceholder": "Describe the image you want to generate...",
+    "style": {
+      "title": "Style",
+      "natural": "Natural",
+      "vivid": "Vivid",
+      "artistic": "Artistic",
+      "photorealistic": "Photorealistic"
+    },
+    "size": {
+      "title": "Size",
+      "square": "Square (1024x1024)",
+      "landscape": "Landscape (1792x1024)",
+      "portrait": "Portrait (1024x1792)"
+    },
+    "quality": {
+      "title": "Quality",
+      "standard": "Standard",
+      "hd": "HD"
+    },
+    "generate": "Generate",
+    "generating": "Generating...",
+    "regenerate": "Regenerate",
+    "variations": "Create variations",
+    "save": "Save to library",
+    "history": "Generation history",
+    "cost": "Estimated cost: {{cost}}"
+  },
+  "optimization": {
+    "title": "Optimization",
+    "resize": {
+      "title": "Resize",
+      "width": "Width",
+      "height": "Height",
+      "keepRatio": "Keep aspect ratio",
+      "preset": "Preset size"
+    },
+    "compress": {
+      "title": "Compress",
+      "quality": "Quality",
+      "level": {
+        "low": "Low (smaller file)",
+        "medium": "Medium",
+        "high": "High (best quality)"
+      },
+      "result": "Resulting size: {{size}}"
+    },
+    "format": {
+      "title": "Convert",
+      "to": "Convert to",
+      "webp": "WebP (recommended)",
+      "jpg": "JPEG",
+      "png": "PNG"
+    },
+    "apply": "Apply optimizations",
+    "preview": "Preview"
+  },
+  "folders": {
+    "title": "Folders",
+    "create": "New folder",
+    "rename": "Rename",
+    "delete": "Delete",
+    "move": "Move to"
+  },
+  "messages": {
+    "uploaded": "File uploaded successfully",
+    "deleted": "File deleted",
+    "copied": "URL copied",
+    "optimized": "Image optimized",
+    "generated": "Image generated successfully"
+  }
+}

@@ -1,0 +1,121 @@
+{
+  "title": "Content",
+  "description": "Manage your articles and content",
+  "articles": {
+    "title": "Articles",
+    "description": "Manage your articles",
+    "add": "New article",
+    "edit": "Edit article",
+    "delete": "Delete article",
+    "duplicate": "Duplicate",
+    "archive": "Archive",
+    "publish": "Publish",
+    "unpublish": "Unpublish",
+    "schedule": "Schedule",
+    "preview": "Preview",
+    "fields": {
+      "title": "Title",
+      "slug": "Slug",
+      "content": "Content",
+      "excerpt": "Excerpt",
+      "featuredImage": "Featured image",
+      "category": "Category",
+      "tags": "Tags",
+      "author": "Author",
+      "status": "Status",
+      "publishedAt": "Publication date",
+      "createdAt": "Created at",
+      "updatedAt": "Updated at"
+    },
+    "status": {
+      "draft": "Draft",
+      "published": "Published",
+      "archived": "Archived",
+      "scheduled": "Scheduled"
+    },
+    "filters": {
+      "all": "All",
+      "drafts": "Drafts",
+      "published": "Published",
+      "archived": "Archived"
+    },
+    "bulk": {
+      "publish": "Publish selected",
+      "unpublish": "Unpublish selected",
+      "delete": "Delete selected",
+      "archive": "Archive selected"
+    },
+    "empty": "No articles found",
+    "createFirst": "Create your first article"
+  },
+  "categories": {
+    "title": "Categories",
+    "description": "Manage your categories",
+    "add": "New category",
+    "edit": "Edit category",
+    "delete": "Delete category",
+    "fields": {
+      "name": "Name",
+      "slug": "Slug",
+      "description": "Description",
+      "parent": "Parent category",
+      "color": "Color",
+      "icon": "Icon"
+    },
+    "articlesCount": "Articles",
+    "empty": "No categories",
+    "noParent": "None (root category)"
+  },
+  "tags": {
+    "title": "Tags",
+    "description": "Manage your tags",
+    "add": "New tag",
+    "edit": "Edit tag",
+    "delete": "Delete tag",
+    "fields": {
+      "name": "Name",
+      "slug": "Slug",
+      "description": "Description",
+      "color": "Color"
+    },
+    "articlesCount": "Articles",
+    "empty": "No tags",
+    "merge": "Merge tags"
+  },
+  "editor": {
+    "title": "Editor",
+    "save": "Save",
+    "saveAndPublish": "Save and publish",
+    "saveDraft": "Save as draft",
+    "preview": "Preview",
+    "settings": "Settings",
+    "seo": "SEO",
+    "media": "Media",
+    "history": "History",
+    "autosave": "Autosave",
+    "lastSaved": "Last saved",
+    "wordCount": "Words",
+    "readingTime": "Reading time",
+    "toolbar": {
+      "bold": "Bold",
+      "italic": "Italic",
+      "underline": "Underline",
+      "strikethrough": "Strikethrough",
+      "heading": "Heading",
+      "link": "Link",
+      "image": "Image",
+      "list": "List",
+      "quote": "Quote",
+      "code": "Code",
+      "table": "Table"
+    }
+  },
+  "media": {
+    "title": "Media",
+    "selectImage": "Select image",
+    "uploadImage": "Upload image",
+    "removeImage": "Remove image",
+    "altText": "Alt text",
+    "caption": "Caption"
+  }
+}

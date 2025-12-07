@@ -1,79 +1,101 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import toast from 'react-hot-toast';
+/**
+ * Auth Hook - Simplified version using Zustand store
+ * No duplicate queries, direct store access
+ */
+import { useCallback, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
+import { useAuthStore } from '@/stores/authStore';
 
-interface LoginParams {
+interface LoginCredentials {
   email: string;
   password: string;
 }
 
-interface User {
-  id: number;
-  name: string;
-  email: string;
-}
+// ═══════════════════════════════════════════════════════════════
+// MAIN HOOK
+// ═══════════════════════════════════════════════════════════════
 
 export function useAuth() {
   const navigate = useNavigate();
+  const location = useLocation();
   const queryClient = useQueryClient();
 
-  // Login mutation
-  const login = useMutation({
-    mutationFn: async (params: LoginParams) => {
-      const { data } = await axios.post('/api/admin/login', params);
-      return data;
-    },
-    onSuccess: (data) => {
-      localStorage.setItem('admin_token', data.token);
-      toast.success('Connexion réussie !');
-      navigate('/admin');
-      queryClient.invalidateQueries({ queryKey: ['auth-user'] });
-    },
-    onError: (error: any) => {
-      toast.error(error.response?.data?.message || 'Erreur de connexion');
-    },
-  });
+  const {
+    user,
+    isAuthenticated,
+    isLoading,
+    error,
+    login: storeLogin,
+    logout: storeLogout,
+    checkAuth,
+    clearError,
+  } = useAuthStore();
 
-  // Logout mutation
-  const logout = useMutation({
-    mutationFn: async () => {
-      const token = localStorage.getItem('admin_token');
-      if (token) {
-        await axios.post('/api/admin/logout', {}, {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-      }
-    },
-    onSuccess: () => {
-      localStorage.removeItem('admin_token');
-      toast.success('Déconnexion réussie');
-      navigate('/admin/login');
-      queryClient.clear();
-    },
-  });
+  const login = useCallback(async (credentials: LoginCredentials) => {
+    try {
+      await storeLogin(credentials.email, credentials.password);
+      // Only navigate after successful login
+      const from = (location.state as { from?: string })?.from || '/';
+      navigate(from, { replace: true });
+    } catch (error) {
+      // Re-throw so the caller knows login failed
+      throw error;
+    }
+  }, [storeLogin, navigate, location.state]);
 
-  // Get current user
-  const { data: user, isLoading } = useQuery<User>({
-    queryKey: ['auth-user'],
-    queryFn: async () => {
-      const token = localStorage.getItem('admin_token');
-      if (!token) throw new Error('No token');
-      
-      const { data } = await axios.get('/api/admin/me', {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      return data;
-    },
-    enabled: !!localStorage.getItem('admin_token'),
-    retry: false,
-  });
+  const logout = useCallback(async () => {
+    await storeLogout();
+    queryClient.clear();
+    navigate('/login', { replace: true });
+  }, [storeLogout, queryClient, navigate]);
 
   return {
+    user,
+    isAuthenticated,
+    isLoading,
+    error,
     login,
     logout,
-    user,
-    isLoading,
-    isAuthenticated: !!user,
+    checkAuth,
+    clearError,
   };
+}
+
+// ═══════════════════════════════════════════════════════════════
+// REQUIRE AUTH HOOK (redirect si non authentifié)
+// ═══════════════════════════════════════════════════════════════
+
+export function useRequireAuth(redirectTo: string = '/login') {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { isAuthenticated, isLoading, isInitialized } = useAuthStore();
+
+  useEffect(() => {
+    if (isInitialized && !isLoading && !isAuthenticated) {
+      navigate(redirectTo, {
+        replace: true,
+        state: { from: location.pathname },
+      });
+    }
+  }, [isAuthenticated, isLoading, isInitialized, navigate, redirectTo, location.pathname]);
+
+  return { isAuthenticated, isLoading };
+}
+
+// ═══════════════════════════════════════════════════════════════
+// GUEST ONLY HOOK (redirect si déjà connecté)
+// ═══════════════════════════════════════════════════════════════
+
+export function useGuestOnly(redirectTo: string = '/') {
+  const navigate = useNavigate();
+  const { isAuthenticated, isLoading, isInitialized } = useAuthStore();
+
+  useEffect(() => {
+    if (isInitialized && !isLoading && isAuthenticated) {
+      navigate(redirectTo, { replace: true });
+    }
+  }, [isAuthenticated, isLoading, isInitialized, navigate, redirectTo]);
+
+  return { isAuthenticated, isLoading };
 }

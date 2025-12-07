@@ -3,7 +3,7 @@
 namespace App\Observers;
 
 use App\Models\PressRelease;
-use Illuminate\Support\Facades\Cache;
+use App\Services\Cache\CacheKeyManager;
 
 class PressReleaseObserver
 {
@@ -24,11 +24,6 @@ class PressReleaseObserver
 
     private function clearCaches(): void
     {
-        Cache::forget('stats.dashboard');
-        Cache::forget('stats.production');
-        Cache::forget('stats.costs');
-        Cache::forget('stats.quality');
-        Cache::forget('coverage.by_platform');
-        Cache::forget('coverage.by_country');
+        CacheKeyManager::invalidateGroup('press_release');
     }
 }

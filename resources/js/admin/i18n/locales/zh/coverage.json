@@ -1,0 +1,112 @@
+{
+  "title": "覆盖范围",
+  "views": {
+    "global": "全球视图",
+    "byCountry": "按国家",
+    "byLanguage": "按语言",
+    "byTheme": "按主题",
+    "gaps": "差距",
+    "objectives": "目标"
+  },
+  "global": {
+    "title": "全球覆盖范围",
+    "description": "按地区的覆盖范围概览",
+    "map": "覆盖范围地图",
+    "legend": {
+      "high": "高覆盖率 (>80%)",
+      "medium": "中等覆盖率 (40-80%)",
+      "low": "低覆盖率 (<40%)",
+      "none": "未覆盖"
+    }
+  },
+  "stats": {
+    "covered": "已覆盖国家",
+    "missing": "缺失国家",
+    "percentage": "覆盖率 %",
+    "trend": "趋势",
+    "articles": "文章",
+    "languages": "语言",
+    "themes": "已覆盖主题",
+    "total": "总计",
+    "growth": "本月 +{{value}}%"
+  },
+  "filters": {
+    "region": "地区",
+    "continent": "大陆",
+    "status": "状态",
+    "platform": "平台",
+    "theme": "主题",
+    "language": "语言",
+    "minCoverage": "最低覆盖率",
+    "maxCoverage": "最高覆盖率"
+  },
+  "regions": {
+    "all": "所有地区",
+    "europe": "欧洲",
+    "northAmerica": "北美洲",
+    "southAmerica": "南美洲",
+    "asia": "亚洲",
+    "africa": "非洲",
+    "oceania": "大洋洲",
+    "middleEast": "中东"
+  },
+  "gaps": {
+    "title": "覆盖差距",
+    "description": "需要内容的国家和主题",
+    "priority": {
+      "high": "高优先级",
+      "medium": "中优先级",
+      "low": "低优先级"
+    },
+    "noContent": "无内容",
+    "outdated": "过时内容",
+    "incomplete": "部分覆盖",
+    "missingLanguages": "缺失语言",
+    "missingThemes": "缺失主题"
+  },
+  "objectives": {
+    "title": "覆盖目标",
+    "description": "按地区和主题设置您的目标",
+    "set": "设定目标",
+    "edit": "编辑目标",
+    "delete": "删除目标",
+    "target": "目标",
+    "current": "当前",
+    "progress": "进度",
+    "deadline": "截止日期",
+    "achieved": "目标已达成",
+    "onTrack": "进展顺利",
+    "atRisk": "存在风险",
+    "behind": "落后"
+  },
+  "actions": {
+    "generateMissing": "生成缺失内容",
+    "setObjective": "设定目标",
+    "exportReport": "导出报告",
+    "viewDetails": "查看详情",
+    "createProgram": "创建程序"
+  },
+  "table": {
+    "country": "国家",
+    "region": "地区",
+    "articles": "文章",
+    "languages": "语言",
+    "themes": "主题",
+    "coverage": "覆盖率",
+    "lastUpdated": "最后更新",
+    "actions": "操作"
+  },
+  "details": {
+    "title": "覆盖详情：{{country}}",
+    "byLanguage": "按语言",
+    "byTheme": "按主题",
+    "recentArticles": "最新文章",
+    "missingContent": "缺失内容"
+  },
+  "messages": {
+    "objectiveSet": "目标设定成功",
+    "objectiveDeleted": "目标已删除",
+    "reportExported": "报告已导出",
+    "generationStarted": "缺失内容生成已开始"
+  }
+}

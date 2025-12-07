@@ -1,0 +1,157 @@
+{
+  "title": "Pages Landing",
+  "list": "Liste des landings",
+  "create": "Nouvelle landing",
+  "edit": "Modifier la landing",
+  "empty": "Aucune landing",
+  "emptyDescription": "Créez votre première page landing",
+  "sections": {
+    "title": "Sections",
+    "hero": {
+      "name": "Hero",
+      "description": "Bannière principale avec titre et CTA",
+      "fields": {
+        "title": "Titre principal",
+        "subtitle": "Sous-titre",
+        "image": "Image de fond",
+        "cta": "Bouton d'action"
+      }
+    },
+    "features": {
+      "name": "Fonctionnalités",
+      "description": "Liste des avantages ou fonctionnalités",
+      "fields": {
+        "title": "Titre de section",
+        "items": "Fonctionnalités",
+        "columns": "Nombre de colonnes"
+      }
+    },
+    "testimonials": {
+      "name": "Témoignages",
+      "description": "Avis et témoignages clients",
+      "fields": {
+        "title": "Titre de section",
+        "items": "Témoignages",
+        "layout": "Mise en page"
+      }
+    },
+    "pricing": {
+      "name": "Tarifs",
+      "description": "Tableau des prix et formules",
+      "fields": {
+        "title": "Titre de section",
+        "plans": "Formules",
+        "currency": "Devise"
+      }
+    },
+    "cta": {
+      "name": "Call to Action",
+      "description": "Section d'appel à l'action",
+      "fields": {
+        "title": "Titre",
+        "description": "Description",
+        "buttonText": "Texte du bouton",
+        "buttonLink": "Lien du bouton"
+      }
+    },
+    "faq": {
+      "name": "FAQ",
+      "description": "Questions fréquemment posées",
+      "fields": {
+        "title": "Titre de section",
+        "items": "Questions/Réponses"
+      }
+    },
+    "form": {
+      "name": "Formulaire",
+      "description": "Formulaire de contact ou inscription",
+      "fields": {
+        "title": "Titre",
+        "fields": "Champs du formulaire",
+        "submitText": "Texte du bouton"
+      }
+    },
+    "gallery": {
+      "name": "Galerie",
+      "description": "Galerie d'images",
+      "fields": {
+        "title": "Titre de section",
+        "images": "Images",
+        "columns": "Colonnes"
+      }
+    },
+    "stats": {
+      "name": "Statistiques",
+      "description": "Chiffres clés",
+      "fields": {
+        "items": "Statistiques",
+        "animated": "Animation"
+      }
+    },
+    "partners": {
+      "name": "Partenaires",
+      "description": "Logos des partenaires",
+      "fields": {
+        "title": "Titre",
+        "logos": "Logos partenaires"
+      }
+    }
+  },
+  "builder": {
+    "title": "Constructeur de landing",
+    "addSection": "Ajouter une section",
+    "editSection": "Modifier la section",
+    "deleteSection": "Supprimer la section",
+    "duplicateSection": "Dupliquer la section",
+    "reorderSections": "Réorganiser les sections",
+    "moveUp": "Monter",
+    "moveDown": "Descendre",
+    "preview": "Aperçu",
+    "previewMobile": "Aperçu mobile",
+    "previewDesktop": "Aperçu desktop",
+    "emptyBuilder": "Ajoutez des sections pour construire votre landing"
+  },
+  "cta": {
+    "text": "Texte du bouton",
+    "link": "Lien",
+    "style": "Style",
+    "styles": {
+      "primary": "Principal",
+      "secondary": "Secondaire",
+      "outline": "Contour",
+      "ghost": "Transparent"
+    },
+    "tracking": {
+      "title": "Tracking",
+      "utmSource": "UTM Source",
+      "utmMedium": "UTM Medium",
+      "utmCampaign": "UTM Campaign",
+      "eventName": "Nom de l'événement"
+    }
+  },
+  "fields": {
+    "name": "Nom de la landing",
+    "slug": "URL",
+    "status": "Statut",
+    "template": "Modèle",
+    "country": "Pays",
+    "language": "Langue",
+    "platform": "Plateforme"
+  },
+  "templates": {
+    "title": "Modèles de landing",
+    "select": "Sélectionner un modèle",
+    "blank": "Page vierge",
+    "service": "Page de prestataire",
+    "product": "Page produit",
+    "event": "Page événement",
+    "lead": "Capture de leads"
+  },
+  "actions": {
+    "publish": "Publier",
+    "unpublish": "Dépublier",
+    "duplicate": "Dupliquer",
+    "preview": "Aperçu",
+    "export": "Exporter HTML"
+  }
+}

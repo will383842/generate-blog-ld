@@ -1,0 +1,102 @@
+{
+  "title": "生成",
+  "description": "自动内容生成",
+  "queue": {
+    "title": "生成队列",
+    "description": "等待生成的文章",
+    "empty": "队列为空",
+    "item": "项目",
+    "program": "程序",
+    "priority": "优先级",
+    "status": "状态",
+    "createdAt": "添加于",
+    "startedAt": "开始于",
+    "estimatedTime": "预计时间",
+    "cancel": "取消",
+    "retry": "重试",
+    "moveToTop": "移至顶部",
+    "bulkCancel": "取消所选"
+  },
+  "history": {
+    "title": "历史记录",
+    "description": "生成历史",
+    "empty": "无历史记录",
+    "article": "文章",
+    "program": "程序",
+    "status": "状态",
+    "duration": "持续时间",
+    "tokens": "使用的令牌",
+    "cost": "费用",
+    "generatedAt": "生成于",
+    "viewArticle": "查看文章",
+    "regenerate": "重新生成",
+    "export": "导出"
+  },
+  "settings": {
+    "title": "生成设置",
+    "description": "配置生成选项",
+    "model": "AI 模型",
+    "temperature": "温度",
+    "maxTokens": "最大令牌数",
+    "language": "语言",
+    "tone": "语气",
+    "style": "风格",
+    "length": "长度",
+    "defaults": "默认值",
+    "advanced": "高级选项"
+  },
+  "status": {
+    "pending": "待处理",
+    "processing": "处理中",
+    "completed": "已完成",
+    "failed": "失败",
+    "cancelled": "已取消",
+    "retrying": "重试中"
+  },
+  "priority": {
+    "high": "高",
+    "default": "普通",
+    "low": "低"
+  },
+  "stats": {
+    "today": "今天",
+    "thisWeek": "本周",
+    "thisMonth": "本月",
+    "total": "总计",
+    "pending": "待处理",
+    "processing": "处理中",
+    "completed": "已完成",
+    "failed": "失败",
+    "successRate": "成功率",
+    "avgDuration": "平均持续时间",
+    "tokensUsed": "使用的令牌",
+    "estimatedCost": "预计费用"
+  },
+  "actions": {
+    "generate": "生成",
+    "generateNow": "立即生成",
+    "addToQueue": "添加到队列",
+    "clearQueue": "清空队列",
+    "pauseAll": "暂停全部",
+    "resumeAll": "恢复全部",
+    "cancelAll": "取消全部"
+  },
+  "messages": {
+    "generating": "生成中...",
+    "generated": "文章生成成功",
+    "failed": "生成失败",
+    "cancelled": "生成已取消",
+    "queued": "已添加到队列",
+    "retrying": "重试中..."
+  },
+  "ai": {
+    "title": "AI 配置",
+    "provider": "提供商",
+    "model": "模型",
+    "apiKey": "API 密钥",
+    "testConnection": "测试连接",
+    "usage": "使用情况",
+    "quota": "配额",
+    "remaining": "剩余"
+  }
+}

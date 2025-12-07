@@ -142,14 +142,16 @@ class DalleService implements AIServiceInterface
                 $payload['style'] = $style;
             }
 
-            // Construire le client HTTP
+            // Construire le client HTTP avec timeouts
             $httpClient = Http::withHeaders([
                 'Authorization' => "Bearer {$this->apiKey}",
                 'Content-Type' => 'application/json',
-            ])->timeout(config('ai.dalle.timeout', 180)); // 🔧 CORRECTION : Timeout depuis config
+            ])
+            ->timeout(config('ai.dalle.timeout', 180))
+            ->connectTimeout(config('ai.dalle.connect_timeout', 10));
 
             // 🔧 CORRECTION SSL : Désactiver vérification SSL en développement
-            if (config('app.env') === 'local' || env('CURL_VERIFY_SSL') === 'false') {
+            if (config('app.env') === 'local' || !config('ai.http.verify_ssl')) {
                 $httpClient = $httpClient->withOptions(['verify' => false]);
             }
 
@@ -194,15 +196,19 @@ class DalleService implements AIServiceInterface
     }
 
     /**
-     * Générer et stocker une image
+     * Générer et stocker une image (optimisation asynchrone)
+     *
+     * L'image est stockée immédiatement en PNG, puis un job asynchrone
+     * la convertit en WebP pour ne pas bloquer le thread principal.
      */
     public function generateAndStore(array $params): ImageLibrary
     {
         // Générer l'image
         $result = $this->generateImage($params);
 
-        // Télécharger et stocker
-        $storedPath = $this->downloadAndStore($result['url'], $params);
+        // Télécharger et stocker (sans optimisation synchrone)
+        $asyncOptimize = $params['async_optimize'] ?? true;
+        $storedPath = $this->downloadAndStoreRaw($result['url'], $params);
 
         // Créer l'entrée en base
         $imageLibrary = ImageLibrary::create([
@@ -210,7 +216,7 @@ class DalleService implements AIServiceInterface
             'original_filename' => basename($storedPath),
             'path' => $storedPath,
             'disk' => $this->storageDisk,
-            'mime_type' => 'image/webp',
+            'mime_type' => 'image/png', // Sera converti en webp par le job
             'size' => Storage::disk($this->storageDisk)->size($storedPath),
             'width' => $this->extractWidth($params['size'] ?? self::SIZE_LANDSCAPE),
             'height' => $this->extractHeight($params['size'] ?? self::SIZE_LANDSCAPE),
@@ -226,17 +232,56 @@ class DalleService implements AIServiceInterface
             ],
         ]);
 
+        // Dispatcher l'optimisation en arrière-plan
+        if ($asyncOptimize && config('ai.dalle.convert_to_webp', true)) {
+            \App\Jobs\OptimizeImageJob::dispatch(
+                $imageLibrary->id,
+                config('ai.dalle.webp_quality', 85)
+            )->onQueue('images');
+
+            Log::info('DalleService: Optimisation WebP dispatchée', [
+                'image_id' => $imageLibrary->id,
+            ]);
+        }
+
         return $imageLibrary;
     }
 
     /**
-     * Télécharger et stocker une image depuis une URL
+     * Télécharger et stocker une image depuis une URL (sans optimisation)
+     */
+    public function downloadAndStoreRaw(string $url, array $options = []): string
+    {
+        // Télécharger l'image
+        $response = Http::timeout(60)->get($url);
+
+        if (!$response->successful()) {
+            throw new \RuntimeException("Failed to download image from URL");
+        }
+
+        $imageContent = $response->body();
+
+        // Générer un nom de fichier unique (toujours PNG pour le stockage initial)
+        $filename = $options['filename'] ?? Str::uuid();
+        $fullFilename = "{$filename}.png";
+        $path = "{$this->storagePath}/{$fullFilename}";
+
+        // Stocker sans optimisation
+        Storage::disk($this->storageDisk)->put($path, $imageContent);
+
+        return $path;
+    }
+
+    /**
+     * Télécharger et stocker une image depuis une URL (avec optimisation synchrone)
+     *
+     * @deprecated Utilisez generateAndStore() avec async_optimize=true à la place
      */
     public function downloadAndStore(string $url, array $options = []): string
     {
         // Télécharger l'image
         $response = Http::timeout(60)->get($url);
-        
+
         if (!$response->successful()) {
             throw new \RuntimeException("Failed to download image from URL");
         }
@@ -245,14 +290,14 @@ class DalleService implements AIServiceInterface
 
         // Générer un nom de fichier unique
         $filename = $options['filename'] ?? Str::uuid();
-        $extension = $options['convert_to_webp'] ?? config('ai.dalle.convert_to_webp', true) 
-            ? 'webp' 
+        $extension = $options['convert_to_webp'] ?? config('ai.dalle.convert_to_webp', true)
+            ? 'webp'
             : 'png';
-        
+
         $fullFilename = "{$filename}.{$extension}";
         $path = "{$this->storagePath}/{$fullFilename}";
 
-        // Optimiser l'image si demandé
+        // Optimiser l'image si demandé (synchrone - à éviter en production)
         if ($extension === 'webp') {
             $imageContent = $this->optimizeImage($imageContent, $options);
         }
@@ -324,13 +369,15 @@ class DalleService implements AIServiceInterface
 
         return $this->executeWithRetry(function () use ($imageContent, $count) {
             
-            // Construire le client HTTP
+            // Construire le client HTTP avec timeouts
             $httpClient = Http::withHeaders([
                 'Authorization' => "Bearer {$this->apiKey}",
-            ])->timeout(config('ai.dalle.timeout', 180));
+            ])
+            ->timeout(config('ai.dalle.timeout', 180))
+            ->connectTimeout(config('ai.dalle.connect_timeout', 10));
 
             // 🔧 CORRECTION SSL : Désactiver vérification SSL en développement
-            if (config('app.env') === 'local' || env('CURL_VERIFY_SSL') === 'false') {
+            if (config('app.env') === 'local' || !config('ai.http.verify_ssl')) {
                 $httpClient = $httpClient->withOptions(['verify' => false]);
             }
 
@@ -375,8 +422,10 @@ class DalleService implements AIServiceInterface
 
         switch ($status) {
             case 429:
+                $retryAfter = $response->header('Retry-After') ?? $error['retry_after'] ?? 60;
                 throw new RateLimitException(
-                    'DALL-E rate limit exceeded. ' . $message
+                    'DALL-E rate limit exceeded. ' . $message,
+                    (int) $retryAfter
                 );
 
             case 402:

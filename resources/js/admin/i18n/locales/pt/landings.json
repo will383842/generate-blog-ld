@@ -1,0 +1,157 @@
+{
+  "title": "Páginas de destino",
+  "list": "Lista de landings",
+  "create": "Nova landing",
+  "edit": "Editar landing",
+  "empty": "Sem landings",
+  "emptyDescription": "Crie sua primeira página de destino",
+  "sections": {
+    "title": "Seções",
+    "hero": {
+      "name": "Hero",
+      "description": "Banner principal com título e CTA",
+      "fields": {
+        "title": "Título principal",
+        "subtitle": "Subtítulo",
+        "image": "Imagem de fundo",
+        "cta": "Botão de ação"
+      }
+    },
+    "features": {
+      "name": "Recursos",
+      "description": "Lista de benefícios ou recursos",
+      "fields": {
+        "title": "Título da seção",
+        "items": "Recursos",
+        "columns": "Número de colunas"
+      }
+    },
+    "testimonials": {
+      "name": "Depoimentos",
+      "description": "Avaliações e depoimentos de clientes",
+      "fields": {
+        "title": "Título da seção",
+        "items": "Depoimentos",
+        "layout": "Layout"
+      }
+    },
+    "pricing": {
+      "name": "Preços",
+      "description": "Tabela de preços e planos",
+      "fields": {
+        "title": "Título da seção",
+        "plans": "Planos",
+        "currency": "Moeda"
+      }
+    },
+    "cta": {
+      "name": "Chamada para ação",
+      "description": "Seção de chamada para ação",
+      "fields": {
+        "title": "Título",
+        "description": "Descrição",
+        "buttonText": "Texto do botão",
+        "buttonLink": "Link do botão"
+      }
+    },
+    "faq": {
+      "name": "Perguntas frequentes",
+      "description": "Perguntas frequentes",
+      "fields": {
+        "title": "Título da seção",
+        "items": "Perguntas/Respostas"
+      }
+    },
+    "form": {
+      "name": "Formulário",
+      "description": "Formulário de contato ou cadastro",
+      "fields": {
+        "title": "Título",
+        "fields": "Campos do formulário",
+        "submitText": "Texto do botão"
+      }
+    },
+    "gallery": {
+      "name": "Galeria",
+      "description": "Galeria de imagens",
+      "fields": {
+        "title": "Título da seção",
+        "images": "Imagens",
+        "columns": "Colunas"
+      }
+    },
+    "stats": {
+      "name": "Estatísticas",
+      "description": "Números-chave",
+      "fields": {
+        "items": "Estatísticas",
+        "animated": "Animação"
+      }
+    },
+    "partners": {
+      "name": "Parceiros",
+      "description": "Logos de parceiros",
+      "fields": {
+        "title": "Título",
+        "logos": "Logos de parceiros"
+      }
+    }
+  },
+  "builder": {
+    "title": "Construtor de landing",
+    "addSection": "Adicionar seção",
+    "editSection": "Editar seção",
+    "deleteSection": "Excluir seção",
+    "duplicateSection": "Duplicar seção",
+    "reorderSections": "Reordenar seções",
+    "moveUp": "Mover para cima",
+    "moveDown": "Mover para baixo",
+    "preview": "Visualizar",
+    "previewMobile": "Visualização mobile",
+    "previewDesktop": "Visualização desktop",
+    "emptyBuilder": "Adicione seções para construir sua landing"
+  },
+  "cta": {
+    "text": "Texto do botão",
+    "link": "Link",
+    "style": "Estilo",
+    "styles": {
+      "primary": "Primário",
+      "secondary": "Secundário",
+      "outline": "Contorno",
+      "ghost": "Ghost"
+    },
+    "tracking": {
+      "title": "Rastreamento",
+      "utmSource": "UTM Source",
+      "utmMedium": "UTM Medium",
+      "utmCampaign": "UTM Campaign",
+      "eventName": "Nome do evento"
+    }
+  },
+  "fields": {
+    "name": "Nome da landing",
+    "slug": "URL",
+    "status": "Status",
+    "template": "Modelo",
+    "country": "País",
+    "language": "Idioma",
+    "platform": "Plataforma"
+  },
+  "templates": {
+    "title": "Modelos de landing",
+    "select": "Selecionar modelo",
+    "blank": "Página em branco",
+    "service": "Página de prestador",
+    "product": "Página de produto",
+    "event": "Página de evento",
+    "lead": "Captura de leads"
+  },
+  "actions": {
+    "publish": "Publicar",
+    "unpublish": "Despublicar",
+    "duplicate": "Duplicar",
+    "preview": "Visualizar",
+    "export": "Exportar HTML"
+  }
+}

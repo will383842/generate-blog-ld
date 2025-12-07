@@ -1,0 +1,128 @@
+{
+  "releases": {
+    "title": "Пресс-релизы",
+    "list": "Список релизов",
+    "create": "Новый релиз",
+    "edit": "Редактировать релиз",
+    "empty": "Нет релизов",
+    "emptyDescription": "Создайте свой первый пресс-релиз"
+  },
+  "dossiers": {
+    "title": "Пресс-киты",
+    "list": "Список китов",
+    "create": "Новый кит",
+    "edit": "Редактировать кит",
+    "empty": "Нет китов",
+    "emptyDescription": "Создайте свой первый пресс-кит",
+    "sections": {
+      "title": "Разделы кита",
+      "intro": "Введение",
+      "keyFigures": "Ключевые показатели",
+      "quotes": "Цитаты",
+      "timeline": "Хронология",
+      "team": "Команда",
+      "contact": "Пресс-контакт",
+      "media": "Медиа-кит"
+    },
+    "builder": {
+      "title": "Конструктор кита",
+      "addSection": "Добавить раздел",
+      "reorder": "Изменить порядок",
+      "preview": "Предпросмотр"
+    }
+  },
+  "editor": {
+    "preview": "Предпросмотр",
+    "previewPdf": "Предпросмотр PDF",
+    "previewWord": "Предпросмотр Word"
+  },
+  "templates": {
+    "title": "Шаблоны",
+    "select": "Выбрать шаблон",
+    "create": "Создать шаблон",
+    "edit": "Редактировать шаблон",
+    "delete": "Удалить шаблон",
+    "default": "Шаблон по умолчанию",
+    "categories": {
+      "general": "Общий",
+      "product": "Запуск продукта",
+      "event": "Мероприятие",
+      "partnership": "Партнёрство",
+      "financial": "Финансовые результаты",
+      "crisis": "Кризисные коммуникации"
+    }
+  },
+  "media": {
+    "title": "Медиа релиза",
+    "photos": "Фотографии",
+    "charts": "Диаграммы",
+    "infographics": "Инфографика",
+    "logos": "Логотипы",
+    "gallery": "Галерея",
+    "upload": "Добавить медиа",
+    "fromUnsplash": "Из Unsplash",
+    "fromDalle": "Создать в DALL-E",
+    "fromLibrary": "Из библиотеки"
+  },
+  "export": {
+    "title": "Экспорт",
+    "formats": {
+      "pdf": "PDF",
+      "word": "Word (.docx)",
+      "html": "HTML",
+      "markdown": "Markdown"
+    },
+    "options": {
+      "includeMedia": "Включить медиа",
+      "includeMetadata": "Включить метаданные",
+      "addHeaderFooter": "Добавить колонтитулы",
+      "watermark": "Водяной знак"
+    },
+    "download": "Скачать",
+    "send": "Отправить по email"
+  },
+  "fields": {
+    "title": "Заголовок релиза",
+    "subtitle": "Подзаголовок",
+    "date": "Дата публикации",
+    "location": "Местоположение",
+    "embargo": "Дата эмбарго",
+    "body": "Текст релиза",
+    "boilerplate": "О компании",
+    "contact": {
+      "title": "Пресс-контакт",
+      "name": "Имя",
+      "role": "Должность",
+      "email": "Email",
+      "phone": "Телефон"
+    },
+    "quotes": {
+      "title": "Цитаты",
+      "add": "Добавить цитату",
+      "text": "Цитата",
+      "author": "Автор",
+      "role": "Должность"
+    }
+  },
+  "status": {
+    "draft": "Черновик",
+    "review": "На проверке",
+    "approved": "Одобрено",
+    "published": "Опубликовано",
+    "embargoed": "Под эмбарго"
+  },
+  "actions": {
+    "publish": "Опубликовать",
+    "embargo": "Установить эмбарго",
+    "approve": "Одобрить",
+    "sendForReview": "Отправить на проверку",
+    "duplicate": "Дублировать",
+    "export": "Экспорт"
+  },
+  "validation": {
+    "titleRequired": "Заголовок обязателен",
+    "dateRequired": "Дата обязательна",
+    "bodyRequired": "Содержание обязательно",
+    "contactRequired": "Требуется хотя бы один пресс-контакт"
+  }
+}

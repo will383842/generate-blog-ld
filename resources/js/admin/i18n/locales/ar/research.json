@@ -1,0 +1,146 @@
+{
+  "title": "البحث",
+  "search": {
+    "title": "البحث على الويب",
+    "query": "استعلام البحث",
+    "placeholder": "البحث عن معلومات...",
+    "results": "النتائج",
+    "noResults": "لم يتم العثور على نتائج",
+    "sources": "المصادر",
+    "sourceCount": "تم العثور على {{count}} مصدر (مصادر)",
+    "relevance": "الصلة",
+    "date": "التاريخ",
+    "cached": "النتائج المخزنة مؤقتاً",
+    "refresh": "تحديث",
+    "saveResults": "حفظ النتائج",
+    "useInContent": "استخدام في المحتوى",
+    "filters": {
+      "dateRange": "النطاق الزمني",
+      "sourceType": "نوع المصدر",
+      "language": "اللغة",
+      "country": "البلد"
+    }
+  },
+  "factCheck": {
+    "title": "التحقق من الحقائق",
+    "description": "التحقق من دقة المعلومات",
+    "claims": "الادعاءات",
+    "addClaim": "إضافة ادعاء",
+    "verify": "التحقق",
+    "verifyAll": "التحقق من الكل",
+    "verification": {
+      "verified": "تم التحقق",
+      "unverified": "لم يتم التحقق",
+      "disputed": "محل نزاع",
+      "false": "خاطئ",
+      "partiallyTrue": "صحيح جزئياً"
+    },
+    "confidence": {
+      "title": "مستوى الثقة",
+      "high": "عالي",
+      "medium": "متوسط",
+      "low": "منخفض"
+    },
+    "sources": {
+      "title": "مصادر التحقق",
+      "primary": "المصادر الأولية",
+      "secondary": "المصادر الثانوية",
+      "addSource": "إضافة مصدر"
+    },
+    "report": {
+      "generate": "إنشاء تقرير",
+      "export": "تصدير"
+    }
+  },
+  "mining": {
+    "title": "التعدين التلقائي",
+    "description": "استخراج المعلومات تلقائياً",
+    "config": {
+      "title": "التكوين",
+      "sources": "المصادر المراد مراقبتها",
+      "frequency": "التكرار",
+      "topics": "المواضيع المراد متابعتها",
+      "keywords": "الكلمات المفتاحية"
+    },
+    "frequency": {
+      "hourly": "كل ساعة",
+      "daily": "يومياً",
+      "weekly": "أسبوعياً"
+    },
+    "topics": {
+      "add": "إضافة موضوع",
+      "edit": "تعديل",
+      "delete": "حذف"
+    },
+    "auto": {
+      "enabled": "التعدين التلقائي مفعّل",
+      "disabled": "التعدين التلقائي معطّل",
+      "toggle": "تفعيل/تعطيل"
+    },
+    "results": {
+      "title": "نتائج التعدين",
+      "new": "معلومات جديدة",
+      "reviewed": "تمت المراجعة",
+      "saved": "محفوظ",
+      "ignored": "متجاهل"
+    }
+  },
+  "sources": {
+    "title": "إدارة المصادر",
+    "add": "إضافة مصدر",
+    "edit": "تعديل المصدر",
+    "delete": "حذف المصدر",
+    "priority": {
+      "title": "الأولوية",
+      "high": "عالية",
+      "medium": "متوسطة",
+      "low": "منخفضة"
+    },
+    "reliability": {
+      "title": "الموثوقية",
+      "trusted": "موثوق",
+      "neutral": "محايد",
+      "untrusted": "غير موثوق"
+    },
+    "types": {
+      "official": "رسمي",
+      "news": "أخبار",
+      "academic": "أكاديمي",
+      "blog": "مدونة",
+      "social": "وسائل التواصل الاجتماعي",
+      "other": "أخرى"
+    },
+    "fields": {
+      "name": "الاسم",
+      "url": "الرابط",
+      "type": "النوع",
+      "priority": "الأولوية",
+      "reliability": "الموثوقية",
+      "notes": "ملاحظات"
+    }
+  },
+  "cache": {
+    "title": "ذاكرة التخزين المؤقت للبحث",
+    "entries": "الإدخالات المخزنة مؤقتاً",
+    "size": "حجم الذاكرة المؤقتة",
+    "clear": "مسح الذاكرة المؤقتة",
+    "clearConfirm": "هل أنت متأكد من رغبتك في مسح الذاكرة المؤقتة؟",
+    "expiration": "انتهاء الصلاحية",
+    "hitRate": "معدل الإصابة"
+  },
+  "actions": {
+    "search": "بحث",
+    "verify": "التحقق",
+    "save": "حفظ",
+    "export": "تصدير",
+    "refresh": "تحديث"
+  },
+  "messages": {
+    "searching": "جارٍ البحث...",
+    "verifying": "جارٍ التحقق...",
+    "saved": "تم حفظ النتائج",
+    "cacheCleared": "تم مسح الذاكرة المؤقتة",
+    "miningStarted": "بدأ التعدين",
+    "miningStopped": "توقف التعدين"
+  }
+}

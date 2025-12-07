@@ -31,11 +31,11 @@ class GptService implements AIServiceInterface
     const MODEL_GPT4O_MINI = 'gpt-4o-mini';
     const MODEL_GPT35 = 'gpt-3.5-turbo';
 
-    // Tarifs par 1000 tokens (USD) - Mai 2024
+    // Tarifs par 1000 tokens (USD) - Décembre 2025
     protected array $pricing = [
         'gpt-4-turbo-preview' => ['input' => 0.01, 'output' => 0.03],
-        'gpt-4o' => ['input' => 0.005, 'output' => 0.015],
-        'gpt-4o-mini' => ['input' => 0.00015, 'output' => 0.0006], // 99% moins cher!
+        'gpt-4o' => ['input' => 0.0025, 'output' => 0.01],       // $2.50/1M input, $10/1M output
+        'gpt-4o-mini' => ['input' => 0.00015, 'output' => 0.0006], // $0.15/1M input, $0.60/1M output
         'gpt-3.5-turbo' => ['input' => 0.0005, 'output' => 0.0015],
     ];
 
@@ -45,7 +45,7 @@ class GptService implements AIServiceInterface
 
     public function __construct()
     {
-        $this->apiKey = config('ai.openai.api_key') ?? env('OPENAI_API_KEY');
+        $this->apiKey = config('ai.openai.api_key');
         
         // 🔧 CORRECTION : Validation stricte de la clé API
         if (empty($this->apiKey)) {
@@ -359,14 +359,16 @@ PROMPT;
         }
 
         return $this->executeWithRetry(function () use ($params) {
-            // Construire le client HTTP
+            // Construire le client HTTP avec timeouts
             $httpClient = Http::withHeaders([
                 'Authorization' => "Bearer {$this->apiKey}",
                 'Content-Type' => 'application/json',
-            ])->timeout(config('ai.openai.timeout', 180)); // 🔧 CORRECTION : Timeout depuis config
+            ])
+            ->timeout(config('ai.openai.timeout', 180))
+            ->connectTimeout(config('ai.openai.connect_timeout', 10));
 
             // 🔧 CORRECTION SSL : Désactiver vérification SSL en développement
-            if (config('app.env') === 'local' || env('CURL_VERIFY_SSL') === 'false') {
+            if (config('app.env') === 'local' || !config('ai.http.verify_ssl')) {
                 $httpClient = $httpClient->withOptions([
                     'verify' => false
                 ]);
@@ -417,6 +419,79 @@ PROMPT;
         }, 'chat');
     }
 
+    /**
+     * Appel API avec cache pour requêtes déterministes
+     *
+     * Utilisez cette méthode pour les appels à faible température (< 0.5)
+     * où les résultats sont reproductibles (meta, traductions, etc.)
+     *
+     * @param array $params Paramètres de la requête
+     * @param int $ttl Durée de vie du cache en secondes (défaut: 24h)
+     * @return array Réponse (depuis cache ou API)
+     */
+    public function chatWithCache(array $params, int $ttl = 86400): array
+    {
+        // Vérifier que la température est suffisamment basse pour être cacheable
+        $temperature = $params['temperature'] ?? 0.7;
+        if ($temperature > 0.5) {
+            Log::channel('ai')->warning('chatWithCache appelé avec température élevée', [
+                'temperature' => $temperature,
+                'recommendation' => 'Utilisez chat() pour les appels créatifs (temperature > 0.5)',
+            ]);
+        }
+
+        // Générer une clé de cache unique basée sur les paramètres
+        $cacheKey = 'gpt:' . md5(json_encode([
+            'model' => $params['model'] ?? self::MODEL_GPT4O,
+            'messages' => $params['messages'],
+            'temperature' => $temperature,
+            'max_tokens' => $params['max_tokens'] ?? 2000,
+        ]));
+
+        // Vérifier le cache
+        $cached = Cache::get($cacheKey);
+        if ($cached !== null) {
+            Log::channel('ai')->info('GPT Cache HIT', [
+                'cache_key' => substr($cacheKey, 0, 50) . '...',
+            ]);
+
+            // Retourner avec indicateur de cache
+            return array_merge($cached, ['from_cache' => true, 'cost' => 0]);
+        }
+
+        // Pas de cache, appeler l'API
+        $response = $this->chat($params);
+
+        // Stocker en cache (sans le flag 'from_cache')
+        Cache::put($cacheKey, $response, $ttl);
+
+        Log::channel('ai')->info('GPT Cache MISS - Stored', [
+            'cache_key' => substr($cacheKey, 0, 50) . '...',
+            'ttl_hours' => round($ttl / 3600, 1),
+        ]);
+
+        return array_merge($response, ['from_cache' => false]);
+    }
+
+    /**
+     * Invalider le cache pour un pattern de clé
+     */
+    public function invalidateCache(string $pattern = 'gpt:*'): int
+    {
+        // Note: Cette méthode nécessite Redis pour le pattern matching
+        // Pour les autres drivers, on ne peut pas facilement invalider par pattern
+        if (config('cache.default') === 'redis') {
+            $redis = Cache::getRedis();
+            $keys = $redis->keys($pattern);
+            if (!empty($keys)) {
+                $redis->del($keys);
+                return count($keys);
+            }
+        }
+
+        return 0;
+    }
+
     // =========================================================================
     // GESTION DES ERREURS
     // =========================================================================
@@ -432,9 +507,10 @@ PROMPT;
 
         switch ($status) {
             case 429:
+                $retryAfter = $response->header('Retry-After') ?? $error['retry_after'] ?? 60;
                 throw new RateLimitException(
-                    'OpenAI rate limit exceeded. ' . $message .
-                    ' Retry after ' . ($error['retry_after'] ?? '60') . ' seconds'
+                    'OpenAI rate limit exceeded. ' . $message,
+                    (int) $retryAfter
                 );
 
             case 402:

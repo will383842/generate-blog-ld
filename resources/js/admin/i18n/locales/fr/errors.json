@@ -1,0 +1,131 @@
+{
+  "title": "Erreur",
+  "general": {
+    "unknown": "Une erreur inconnue est survenue",
+    "network": "Erreur de connexion réseau",
+    "server": "Erreur serveur",
+    "timeout": "La requête a expiré",
+    "notFound": "Ressource non trouvée",
+    "unauthorized": "Non autorisé",
+    "forbidden": "Accès interdit",
+    "validation": "Erreur de validation",
+    "conflict": "Conflit de données",
+    "tooManyRequests": "Trop de requêtes"
+  },
+  "http": {
+    "400": "Requête invalide",
+    "401": "Non authentifié",
+    "403": "Accès interdit",
+    "404": "Page non trouvée",
+    "405": "Méthode non autorisée",
+    "408": "Délai d'attente dépassé",
+    "409": "Conflit",
+    "422": "Données non traitables",
+    "429": "Trop de requêtes",
+    "500": "Erreur interne du serveur",
+    "502": "Mauvaise passerelle",
+    "503": "Service indisponible",
+    "504": "Délai de passerelle dépassé"
+  },
+  "auth": {
+    "invalidCredentials": "Identifiants invalides",
+    "accountLocked": "Compte verrouillé",
+    "accountDisabled": "Compte désactivé",
+    "sessionExpired": "Session expirée",
+    "tokenInvalid": "Token invalide",
+    "tokenExpired": "Token expiré",
+    "passwordMismatch": "Les mots de passe ne correspondent pas",
+    "passwordTooWeak": "Mot de passe trop faible",
+    "emailNotVerified": "Email non vérifié"
+  },
+  "validation": {
+    "required": "Ce champ est requis",
+    "email": "Email invalide",
+    "url": "URL invalide",
+    "minLength": "Minimum {{min}} caractères",
+    "maxLength": "Maximum {{max}} caractères",
+    "min": "Valeur minimum: {{min}}",
+    "max": "Valeur maximum: {{max}}",
+    "pattern": "Format invalide",
+    "unique": "Cette valeur existe déjà",
+    "exists": "Cette valeur n'existe pas",
+    "numeric": "Doit être un nombre",
+    "integer": "Doit être un entier",
+    "date": "Date invalide",
+    "file": "Fichier invalide",
+    "image": "Image invalide",
+    "mimes": "Type de fichier non autorisé",
+    "size": "Taille de fichier dépassée"
+  },
+  "api": {
+    "connectionFailed": "Échec de connexion à l'API",
+    "invalidResponse": "Réponse invalide",
+    "rateLimited": "Limite de requêtes atteinte",
+    "quotaExceeded": "Quota dépassé",
+    "serviceUnavailable": "Service indisponible"
+  },
+  "publishing": {
+    "platformNotFound": "Plateforme non trouvée",
+    "platformDisabled": "Plateforme désactivée",
+    "connectionFailed": "Échec de connexion à la plateforme",
+    "authFailed": "Authentification échouée",
+    "publishFailed": "Échec de la publication",
+    "duplicateContent": "Contenu dupliqué détecté"
+  },
+  "generation": {
+    "aiServiceUnavailable": "Service IA indisponible",
+    "quotaExceeded": "Quota IA dépassé",
+    "contentTooLong": "Contenu trop long",
+    "invalidPrompt": "Prompt invalide",
+    "generationFailed": "Échec de la génération"
+  },
+  "file": {
+    "uploadFailed": "Échec de l'upload",
+    "tooLarge": "Fichier trop volumineux",
+    "invalidType": "Type de fichier non autorisé",
+    "notFound": "Fichier non trouvé",
+    "deleteFailed": "Échec de la suppression"
+  },
+  "boundary": {
+    "title": "Oups ! Une erreur est survenue",
+    "defaultMessage": "Une erreur inattendue s'est produite.",
+    "attempt": "Tentative {{current}}/{{max}}",
+    "retry": "Réessayer",
+    "retrying": "Nouvelle tentative...",
+    "goBack": "Retour",
+    "goHome": "Accueil",
+    "report": "Signaler",
+    "technicalDetails": "Détails techniques",
+    "errorCopied": "Détails de l'erreur copiés dans le presse-papier",
+    "checkConsole": "Consultez la console pour les détails de l'erreur"
+  },
+  "pages": {
+    "notFound": {
+      "title": "Page non trouvée",
+      "description": "La page que vous recherchez n'existe pas ou a été déplacée.",
+      "action": "Retour à l'accueil"
+    },
+    "forbidden": {
+      "title": "Accès interdit",
+      "description": "Vous n'avez pas les permissions nécessaires pour accéder à cette page.",
+      "action": "Retour à l'accueil"
+    },
+    "serverError": {
+      "title": "Erreur serveur",
+      "description": "Une erreur est survenue sur le serveur. Veuillez réessayer plus tard.",
+      "action": "Réessayer"
+    },
+    "maintenance": {
+      "title": "Maintenance en cours",
+      "description": "Le site est actuellement en maintenance. Veuillez revenir plus tard.",
+      "action": "Actualiser"
+    }
+  },
+  "actions": {
+    "retry": "Réessayer",
+    "goBack": "Retour",
+    "goHome": "Accueil",
+    "contactSupport": "Contacter le support",
+    "refresh": "Actualiser la page"
+  }
+}

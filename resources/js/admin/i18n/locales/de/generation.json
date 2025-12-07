@@ -1,0 +1,102 @@
+{
+  "title": "Generierung",
+  "description": "Automatische Inhaltserstellung",
+  "queue": {
+    "title": "Generierungswarteschlange",
+    "description": "Artikel warten auf Generierung",
+    "empty": "Warteschlange ist leer",
+    "item": "Element",
+    "program": "Programm",
+    "priority": "Priorität",
+    "status": "Status",
+    "createdAt": "Hinzugefügt am",
+    "startedAt": "Gestartet am",
+    "estimatedTime": "Geschätzte Zeit",
+    "cancel": "Abbrechen",
+    "retry": "Wiederholen",
+    "moveToTop": "Nach oben verschieben",
+    "bulkCancel": "Ausgewählte abbrechen"
+  },
+  "history": {
+    "title": "Verlauf",
+    "description": "Generierungsverlauf",
+    "empty": "Kein Verlauf",
+    "article": "Artikel",
+    "program": "Programm",
+    "status": "Status",
+    "duration": "Dauer",
+    "tokens": "Verwendete Tokens",
+    "cost": "Kosten",
+    "generatedAt": "Generiert am",
+    "viewArticle": "Artikel anzeigen",
+    "regenerate": "Neu generieren",
+    "export": "Exportieren"
+  },
+  "settings": {
+    "title": "Generierungseinstellungen",
+    "description": "Generierungsoptionen konfigurieren",
+    "model": "KI-Modell",
+    "temperature": "Temperatur",
+    "maxTokens": "Max. Tokens",
+    "language": "Sprache",
+    "tone": "Tonfall",
+    "style": "Stil",
+    "length": "Länge",
+    "defaults": "Standardwerte",
+    "advanced": "Erweiterte Optionen"
+  },
+  "status": {
+    "pending": "Ausstehend",
+    "processing": "In Bearbeitung",
+    "completed": "Abgeschlossen",
+    "failed": "Fehlgeschlagen",
+    "cancelled": "Abgebrochen",
+    "retrying": "Wird wiederholt"
+  },
+  "priority": {
+    "high": "Hoch",
+    "default": "Normal",
+    "low": "Niedrig"
+  },
+  "stats": {
+    "today": "Heute",
+    "thisWeek": "Diese Woche",
+    "thisMonth": "Diesen Monat",
+    "total": "Gesamt",
+    "pending": "Ausstehend",
+    "processing": "In Bearbeitung",
+    "completed": "Abgeschlossen",
+    "failed": "Fehlgeschlagen",
+    "successRate": "Erfolgsquote",
+    "avgDuration": "Durchschnittliche Dauer",
+    "tokensUsed": "Verwendete Tokens",
+    "estimatedCost": "Geschätzte Kosten"
+  },
+  "actions": {
+    "generate": "Generieren",
+    "generateNow": "Jetzt generieren",
+    "addToQueue": "Zur Warteschlange hinzufügen",
+    "clearQueue": "Warteschlange leeren",
+    "pauseAll": "Alle pausieren",
+    "resumeAll": "Alle fortsetzen",
+    "cancelAll": "Alle abbrechen"
+  },
+  "messages": {
+    "generating": "Wird generiert...",
+    "generated": "Artikel erfolgreich generiert",
+    "failed": "Generierung fehlgeschlagen",
+    "cancelled": "Generierung abgebrochen",
+    "queued": "Zur Warteschlange hinzugefügt",
+    "retrying": "Wird wiederholt..."
+  },
+  "ai": {
+    "title": "KI-Konfiguration",
+    "provider": "Anbieter",
+    "model": "Modell",
+    "apiKey": "API-Schlüssel",
+    "testConnection": "Verbindung testen",
+    "usage": "Nutzung",
+    "quota": "Kontingent",
+    "remaining": "Verbleibend"
+  }
+}

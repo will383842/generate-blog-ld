@@ -1,0 +1,143 @@
+{
+  "title": "KI & Kosten",
+  "models": {
+    "title": "KI-Modelle",
+    "gpt4": "GPT-4",
+    "gpt4Turbo": "GPT-4 Turbo",
+    "gpt35": "GPT-3.5 Turbo",
+    "claude": "Claude",
+    "claudeInstant": "Claude Instant",
+    "perplexity": "Perplexity",
+    "dalle": "DALL-E",
+    "active": "Aktiv",
+    "inactive": "Inaktiv",
+    "default": "Standard",
+    "setDefault": "Als Standard festlegen"
+  },
+  "costs": {
+    "title": "Kosten",
+    "daily": "Tageskosten",
+    "weekly": "Wochenkosten",
+    "monthly": "Monatskosten",
+    "yearly": "Jahreskosten",
+    "total": "Gesamtkosten",
+    "byModel": "Nach Modell",
+    "byContent": "Nach Inhaltstyp",
+    "byPlatform": "Nach Plattform",
+    "prediction": "Prognose",
+    "budget": {
+      "title": "Budget",
+      "set": "Budget festlegen",
+      "current": "Aktuelles Budget",
+      "remaining": "Verbleibend",
+      "used": "Verwendet",
+      "percentage": "{{value}}% verwendet",
+      "alert": "Alarm bei {{value}}%",
+      "exceeded": "Budget überschritten"
+    },
+    "breakdown": {
+      "title": "Kostenaufschlüsselung",
+      "tokens": "Token",
+      "inputTokens": "Eingabe-Token",
+      "outputTokens": "Ausgabe-Token",
+      "images": "Bilder",
+      "searches": "Suchanfragen",
+      "other": "Sonstiges"
+    }
+  },
+  "performance": {
+    "title": "Leistung",
+    "latency": {
+      "title": "Latenz",
+      "average": "Durchschnitt",
+      "p50": "P50",
+      "p95": "P95",
+      "p99": "P99"
+    },
+    "successRate": {
+      "title": "Erfolgsrate",
+      "value": "{{value}}%"
+    },
+    "errors": {
+      "title": "Fehler",
+      "total": "Fehler gesamt",
+      "rate": "Fehlerrate",
+      "types": {
+        "timeout": "Zeitüberschreitung",
+        "rateLimit": "Ratenlimit",
+        "serverError": "Serverfehler",
+        "invalidResponse": "Ungültige Antwort",
+        "other": "Sonstige"
+      }
+    },
+    "queue": {
+      "title": "Warteschlange",
+      "pending": "Ausstehend",
+      "processing": "In Bearbeitung",
+      "avgWaitTime": "Durchschn. Wartezeit"
+    },
+    "throughput": {
+      "title": "Durchsatz",
+      "requestsPerMinute": "Anfragen/Minute",
+      "tokensPerMinute": "Token/Minute"
+    }
+  },
+  "prompts": {
+    "title": "Prompt-Verwaltung",
+    "list": "Prompt-Liste",
+    "create": "Neuer Prompt",
+    "edit": "Prompt bearbeiten",
+    "delete": "Prompt löschen",
+    "optimize": "Optimieren",
+    "test": "Testen",
+    "version": {
+      "title": "Versionen",
+      "current": "Aktuelle Version",
+      "history": "Verlauf",
+      "restore": "Wiederherstellen",
+      "compare": "Vergleichen"
+    },
+    "compare": {
+      "title": "Vergleich",
+      "sideBySide": "Nebeneinander",
+      "metrics": "Metriken"
+    },
+    "categories": {
+      "generation": "Generierung",
+      "summarization": "Zusammenfassung",
+      "translation": "Übersetzung",
+      "analysis": "Analyse",
+      "factCheck": "Faktenprüfung"
+    },
+    "fields": {
+      "name": "Name",
+      "category": "Kategorie",
+      "template": "Vorlage",
+      "variables": "Variablen",
+      "model": "Empfohlenes Modell"
+    }
+  },
+  "charts": {
+    "costEvolution": "Kostenentwicklung",
+    "modelUsage": "Nutzung nach Modell",
+    "contentTypeCosts": "Kosten nach Inhaltstyp",
+    "dailyCosts": "Tägliche Kosten",
+    "tokenUsage": "Token-Nutzung"
+  },
+  "settings": {
+    "title": "KI-Einstellungen",
+    "defaultModel": "Standardmodell",
+    "temperature": "Temperatur",
+    "maxTokens": "Max. Token",
+    "timeout": "Zeitlimit (Sekunden)",
+    "retries": "Anzahl Wiederholungen",
+    "fallbackModel": "Fallback-Modell"
+  },
+  "messages": {
+    "budgetUpdated": "Budget aktualisiert",
+    "promptSaved": "Prompt gespeichert",
+    "promptDeleted": "Prompt gelöscht",
+    "testStarted": "Test gestartet",
+    "optimizing": "Wird optimiert..."
+  }
+}

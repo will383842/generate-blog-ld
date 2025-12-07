@@ -1,0 +1,98 @@
+{
+  "title": "गुणवत्ता",
+  "description": "सामग्री गुणवत्ता नियंत्रण",
+  "scores": {
+    "title": "गुणवत्ता स्कोर",
+    "description": "गुणवत्ता स्कोर विश्लेषण",
+    "overall": "समग्र स्कोर",
+    "seo": "एसईओ",
+    "readability": "पठनीयता",
+    "originality": "मौलिकता",
+    "structure": "संरचना",
+    "grammar": "व्याकरण",
+    "engagement": "जुड़ाव",
+    "distribution": "स्कोर वितरण",
+    "trend": "रुझान",
+    "average": "औसत",
+    "minimum": "न्यूनतम",
+    "maximum": "अधिकतम"
+  },
+  "review": {
+    "title": "समीक्षा",
+    "description": "समीक्षा लंबित लेख",
+    "pendingReview": "समीक्षा लंबित",
+    "needsImprovement": "सुधार की आवश्यकता",
+    "approved": "स्वीकृत",
+    "rejected": "अस्वीकृत",
+    "approve": "स्वीकृत करें",
+    "reject": "अस्वीकार करें",
+    "requestChanges": "परिवर्तन अनुरोध करें",
+    "sendToEditor": "संपादक को भेजें",
+    "bulkApprove": "चयनित स्वीकृत करें",
+    "bulkReject": "चयनित अस्वीकार करें",
+    "empty": "समीक्षा में कोई लेख नहीं"
+  },
+  "rules": {
+    "title": "गुणवत्ता नियम",
+    "description": "सत्यापन नियम कॉन्फ़िगर करें",
+    "add": "नया नियम",
+    "edit": "संपादित करें",
+    "delete": "हटाएं",
+    "enable": "सक्षम करें",
+    "disable": "अक्षम करें",
+    "name": "नाम",
+    "type": "प्रकार",
+    "threshold": "सीमा",
+    "weight": "भार",
+    "action": "कार्रवाई",
+    "categories": {
+      "seo": "एसईओ",
+      "readability": "पठनीयता",
+      "grammar": "व्याकरण",
+      "structure": "संरचना",
+      "content": "सामग्री"
+    },
+    "actions": {
+      "warn": "चेतावनी दें",
+      "block": "ब्लॉक करें",
+      "flag": "फ्लैग करें"
+    },
+    "empty": "कोई नियम कॉन्फ़िगर नहीं किया गया"
+  },
+  "analysis": {
+    "title": "विश्लेषण",
+    "analyzing": "विश्लेषण कर रहे हैं...",
+    "issues": "पाई गई समस्याएं",
+    "warnings": "चेतावनियां",
+    "suggestions": "सुझाव",
+    "passed": "पास",
+    "fix": "ठीक करें",
+    "ignore": "अनदेखा करें",
+    "fixAll": "सभी ठीक करें"
+  },
+  "levels": {
+    "excellent": "उत्कृष्ट",
+    "good": "अच्छा",
+    "average": "औसत",
+    "poor": "खराब",
+    "critical": "गंभीर"
+  },
+  "metrics": {
+    "wordCount": "शब्द गणना",
+    "sentenceCount": "वाक्य गणना",
+    "paragraphCount": "पैराग्राफ",
+    "avgSentenceLength": "औसत वाक्य लंबाई",
+    "avgWordLength": "औसत शब्द लंबाई",
+    "readingTime": "पढ़ने का समय",
+    "fleschScore": "फ्लेश स्कोर",
+    "keywordDensity": "कीवर्ड घनत्व"
+  },
+  "stats": {
+    "totalAnalyzed": "कुल विश्लेषित",
+    "avgScore": "औसत स्कोर",
+    "excellent": "उत्कृष्ट",
+    "good": "अच्छा",
+    "average": "औसत",
+    "poor": "खराब"
+  }
+}

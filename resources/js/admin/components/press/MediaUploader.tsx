@@ -1,0 +1,413 @@
+/**
+ * Media Uploader Component
+ * Multi-source media upload: local files, Unsplash, DALL-E
+ */
+
+import { useState, useCallback } from 'react';
+import { useDropzone } from 'react-dropzone';
+import {
+  Upload,
+  Image,
+  Sparkles,
+  Search,
+  X,
+  Check,
+  Loader2,
+  AlertCircle,
+} from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/Button';
+import { Input } from '@/components/ui/Input';
+import { Textarea } from '@/components/ui/Textarea';
+import { Progress } from '@/components/ui/Progress';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/Tabs';
+import { useUnsplash } from '@/hooks/useUnsplash';
+import { useDalle } from '@/hooks/useDalle';
+import type { PressMediaType } from '@/types/press';
+
+interface MediaUploaderProps {
+  onUpload: (files: UploadedMedia[]) => Promise<void>;
+  acceptedTypes?: PressMediaType[];
+  maxFiles?: number;
+  maxSize?: number; // in bytes
+}
+
+interface UploadedMedia {
+  file?: File;
+  url: string;
+  thumbnailUrl?: string;
+  type: PressMediaType;
+  title?: string;
+  attribution?: string;
+  attributionUrl?: string;
+  photographer?: string;
+}
+
+interface UploadProgress {
+  file: File;
+  progress: number;
+  status: 'uploading' | 'success' | 'error';
+  error?: string;
+}
+
+export function MediaUploader({
+  onUpload,
+  acceptedTypes = ['photo', 'chart', 'infographic'],
+  maxFiles = 10,
+  maxSize = 10 * 1024 * 1024, // 10MB default
+}: MediaUploaderProps) {
+  const [activeTab, setActiveTab] = useState('upload');
+  const [uploads, setUploads] = useState<UploadProgress[]>([]);
+  const [selectedUnsplash, setSelectedUnsplash] = useState<string[]>([]);
+  const [dallePrompt, setDallePrompt] = useState('');
+  const [dalleStyle, setDalleStyle] = useState<'vivid' | 'natural'>('vivid');
+
+  // Hooks
+  const { 
+    photos: unsplashPhotos, 
+    isLoading: unsplashLoading, 
+    search: searchUnsplash,
+    download: downloadUnsplash 
+  } = useUnsplash();
+  
+  const { 
+    images: dalleImages, 
+    isLoading: dalleLoading, 
+    generate: generateDalle 
+  } = useDalle();
+
+  // Local file upload
+  const onDrop = useCallback(async (acceptedFiles: File[]) => {
+    const newUploads: UploadProgress[] = acceptedFiles.map((file) => ({
+      file,
+      progress: 0,
+      status: 'uploading' as const,
+    }));
+    
+    setUploads((prev) => [...prev, ...newUploads]);
+
+    // Simulate upload progress
+    for (let i = 0; i < acceptedFiles.length; i++) {
+      const file = acceptedFiles[i];
+      
+      // Simulate progress
+      for (let progress = 0; progress <= 100; progress += 20) {
+        await new Promise((resolve) => setTimeout(resolve, 100));
+        setUploads((prev) =>
+          prev.map((u) =>
+            u.file === file ? { ...u, progress } : u
+          )
+        );
+      }
+
+      try {
+        // Create object URL for preview
+        const url = URL.createObjectURL(file);
+        
+        await onUpload([{
+          file,
+          url,
+          type: 'photo',
+          title: file.name,
+        }]);
+
+        setUploads((prev) =>
+          prev.map((u) =>
+            u.file === file ? { ...u, status: 'success' } : u
+          )
+        );
+      } catch (error) {
+        setUploads((prev) =>
+          prev.map((u) =>
+            u.file === file 
+              ? { ...u, status: 'error', error: 'Échec de l\'upload' } 
+              : u
+          )
+        );
+      }
+    }
+  }, [onUpload]);
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    accept: {
+      'image/*': ['.png', '.jpg', '.jpeg', '.gif', '.webp'],
+    },
+    maxFiles,
+    maxSize,
+  });
+
+  // Unsplash selection
+  const toggleUnsplashSelect = (photoId: string) => {
+    setSelectedUnsplash((prev) =>
+      prev.includes(photoId)
+        ? prev.filter((id) => id !== photoId)
+        : [...prev, photoId]
+    );
+  };
+
+  const handleUnsplashUpload = async () => {
+    const selectedPhotos = unsplashPhotos.filter((p) => selectedUnsplash.includes(p.id));
+    
+    const media: UploadedMedia[] = await Promise.all(
+      selectedPhotos.map(async (photo) => {
+        const downloadUrl = await downloadUnsplash(photo.id);
+        return {
+          url: downloadUrl || photo.urls.regular,
+          thumbnailUrl: photo.urls.thumb,
+          type: 'photo' as PressMediaType,
+          title: photo.description || photo.alt_description || undefined,
+          attribution: `Photo by ${photo.user.name} on Unsplash`,
+          attributionUrl: photo.user.links.html,
+          photographer: photo.user.name,
+        };
+      })
+    );
+
+    await onUpload(media);
+    setSelectedUnsplash([]);
+  };
+
+  // DALL-E generation
+  const handleDalleGenerate = async () => {
+    if (!dallePrompt.trim()) return;
+    await generateDalle(dallePrompt, dalleStyle);
+  };
+
+  const handleDalleSelect = async (imageUrl: string) => {
+    await onUpload([{
+      url: imageUrl,
+      type: 'photo',
+      title: dallePrompt,
+      attribution: 'Generated by DALL-E',
+    }]);
+  };
+
+  // Remove upload
+  const removeUpload = (file: File) => {
+    setUploads((prev) => prev.filter((u) => u.file !== file));
+  };
+
+  return (
+    <div className="space-y-4">
+      <Tabs value={activeTab} onValueChange={setActiveTab}>
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="upload" className="flex items-center gap-2">
+            <Upload className="w-4 h-4" />
+            Upload
+          </TabsTrigger>
+          <TabsTrigger value="unsplash" className="flex items-center gap-2">
+            <Image className="w-4 h-4" />
+            Unsplash
+          </TabsTrigger>
+          <TabsTrigger value="dalle" className="flex items-center gap-2">
+            <Sparkles className="w-4 h-4" />
+            DALL-E
+          </TabsTrigger>
+        </TabsList>
+
+        {/* Local Upload */}
+        <TabsContent value="upload" className="space-y-4">
+          <div
+            {...getRootProps()}
+            className={cn(
+              'border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors',
+              isDragActive
+                ? 'border-primary bg-primary/5'
+                : 'border-gray-200 hover:border-gray-300'
+            )}
+          >
+            <input {...getInputProps()} />
+            <Upload className="w-10 h-10 mx-auto text-gray-400 mb-4" />
+            {isDragActive ? (
+              <p className="text-primary">Déposez les fichiers ici...</p>
+            ) : (
+              <>
+                <p className="text-sm text-muted-foreground mb-2">
+                  Glissez-déposez vos fichiers ici, ou cliquez pour sélectionner
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  PNG, JPG, GIF jusqu'à {Math.round(maxSize / 1024 / 1024)}MB
+                </p>
+              </>
+            )}
+          </div>
+
+          {/* Upload Progress */}
+          {uploads.length > 0 && (
+            <div className="space-y-2">
+              {uploads.map((upload, index) => (
+                <div
+                  key={index}
+                  className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg"
+                >
+                  <div className="w-10 h-10 rounded bg-gray-200 overflow-hidden">
+                    <img
+                      src={URL.createObjectURL(upload.file)}
+                      alt=""
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm truncate">{upload.file.name}</p>
+                    {upload.status === 'uploading' && (
+                      <Progress value={upload.progress} className="h-1 mt-1" />
+                    )}
+                    {upload.status === 'error' && (
+                      <p className="text-xs text-red-600">{upload.error}</p>
+                    )}
+                  </div>
+                  {upload.status === 'success' && (
+                    <Check className="w-5 h-5 text-green-600" />
+                  )}
+                  {upload.status === 'error' && (
+                    <AlertCircle className="w-5 h-5 text-red-600" />
+                  )}
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => removeUpload(upload.file)}
+                  >
+                    <X className="w-4 h-4" />
+                  </Button>
+                </div>
+              ))}
+            </div>
+          )}
+        </TabsContent>
+
+        {/* Unsplash */}
+        <TabsContent value="unsplash" className="space-y-4">
+          <div className="flex gap-2">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Input
+                placeholder="Rechercher des photos..."
+                className="pl-9"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    searchUnsplash((e.target as HTMLInputElement).value);
+                  }
+                }}
+              />
+            </div>
+            <Button
+              onClick={() => {
+                const input = document.querySelector('input[placeholder="Rechercher des photos..."]') as HTMLInputElement;
+                if (input) searchUnsplash(input.value);
+              }}
+              disabled={unsplashLoading}
+            >
+              {unsplashLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Rechercher'}
+            </Button>
+          </div>
+
+          {/* Results grid */}
+          <div className="grid grid-cols-3 gap-2 max-h-80 overflow-auto">
+            {unsplashPhotos.map((photo) => (
+              <div
+                key={photo.id}
+                className={cn(
+                  'relative aspect-square cursor-pointer rounded overflow-hidden',
+                  selectedUnsplash.includes(photo.id) && 'ring-2 ring-primary'
+                )}
+                onClick={() => toggleUnsplashSelect(photo.id)}
+              >
+                <img
+                  src={photo.urls.small}
+                  alt={photo.alt_description || ''}
+                  className="w-full h-full object-cover"
+                />
+                {selectedUnsplash.includes(photo.id) && (
+                  <div className="absolute inset-0 bg-primary/20 flex items-center justify-center">
+                    <Check className="w-8 h-8 text-white" />
+                  </div>
+                )}
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-2">
+                  <p className="text-white text-xs truncate">{photo.user.name}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {selectedUnsplash.length > 0 && (
+            <Button onClick={handleUnsplashUpload} className="w-full">
+              Ajouter {selectedUnsplash.length} photo{selectedUnsplash.length > 1 ? 's' : ''}
+            </Button>
+          )}
+        </TabsContent>
+
+        {/* DALL-E */}
+        <TabsContent value="dalle" className="space-y-4">
+          <Textarea
+            placeholder="Décrivez l'image que vous souhaitez générer..."
+            value={dallePrompt}
+            onChange={(e) => setDallePrompt(e.target.value)}
+            rows={3}
+          />
+
+          <div className="flex gap-2">
+            <Button
+              variant={dalleStyle === 'vivid' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setDalleStyle('vivid')}
+            >
+              Vivid
+            </Button>
+            <Button
+              variant={dalleStyle === 'natural' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setDalleStyle('natural')}
+            >
+              Natural
+            </Button>
+          </div>
+
+          <Button
+            onClick={handleDalleGenerate}
+            disabled={!dallePrompt.trim() || dalleLoading}
+            className="w-full"
+          >
+            {dalleLoading ? (
+              <>
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                Génération en cours...
+              </>
+            ) : (
+              <>
+                <Sparkles className="w-4 h-4 mr-2" />
+                Générer avec DALL-E
+              </>
+            )}
+          </Button>
+
+          {/* Generated images */}
+          {dalleImages.length > 0 && (
+            <div className="grid grid-cols-2 gap-2">
+              {dalleImages.map((image, index) => (
+                <div
+                  key={index}
+                  className="relative aspect-square rounded overflow-hidden cursor-pointer hover:opacity-90 transition-opacity"
+                  onClick={() => handleDalleSelect(image.url)}
+                >
+                  <img
+                    src={image.url}
+                    alt={dallePrompt}
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-black/0 hover:bg-black/20 flex items-center justify-center transition-colors">
+                    <span className="opacity-0 hover:opacity-100 text-white text-sm font-medium">
+                      Sélectionner
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </TabsContent>
+      </Tabs>
+    </div>
+  );
+}
+
+export default MediaUploader;

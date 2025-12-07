@@ -127,6 +127,81 @@ return [
             'path' => storage_path('logs/laravel.log'),
         ],
 
+        // =====================================================================
+        // Channels pour les tâches schedulées (avec rotation automatique)
+        // =====================================================================
+
+        'scheduler' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/scheduler.log'),
+            'level' => 'info',
+            'days' => env('LOG_SCHEDULER_DAYS', 7),
+        ],
+
+        'publish' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/publish-scheduled.log'),
+            'level' => 'info',
+            'days' => env('LOG_SCHEDULER_DAYS', 7),
+        ],
+
+        'export' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/export-queue.log'),
+            'level' => 'info',
+            'days' => env('LOG_SCHEDULER_DAYS', 7),
+        ],
+
+        'titles' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/titles-queue.log'),
+            'level' => 'info',
+            'days' => env('LOG_SCHEDULER_DAYS', 7),
+        ],
+
+        'monitoring' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/monitoring-alerts.log'),
+            'level' => 'info',
+            'days' => env('LOG_SCHEDULER_DAYS', 7),
+        ],
+
+        'programs' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/programs-scheduled.log'),
+            'level' => 'info',
+            'days' => env('LOG_SCHEDULER_DAYS', 7),
+        ],
+
+        'pillar' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/pillar-generation.log'),
+            'level' => 'info',
+            'days' => env('LOG_SCHEDULER_DAYS', 7),
+        ],
+
+        'costs' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/cost-reports.log'),
+            'level' => 'info',
+            'days' => env('LOG_SCHEDULER_DAYS', 7),
+        ],
+
+        'archive' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/archive-articles.log'),
+            'level' => 'info',
+            'days' => env('LOG_SCHEDULER_DAYS', 7),
+        ],
+
+        // Channel AI dédié
+        'ai' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/ai.log'),
+            'level' => 'info',
+            'days' => env('LOG_AI_DAYS', 30),
+        ],
+
     ],
 
 ];

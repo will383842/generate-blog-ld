@@ -62,6 +62,14 @@ class PublishArticle implements ShouldQueue
     public int $timeout = 60;
 
     /**
+     * Délais entre les tentatives (30s, 2min, 5min)
+     */
+    public function backoff(): array
+    {
+        return [30, 120, 300];
+    }
+
+    /**
      * Créer une nouvelle instance du job
      *
      * @param int $articleId ID de l'article

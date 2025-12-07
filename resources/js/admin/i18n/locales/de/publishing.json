@@ -1,0 +1,113 @@
+{
+  "title": "Veröffentlichung",
+  "description": "Verwalten Sie Ihre Content-Veröffentlichung",
+  "platforms": {
+    "title": "Plattformen",
+    "description": "Verbinden Sie Ihre Veröffentlichungsplattformen",
+    "add": "Plattform hinzufügen",
+    "edit": "Bearbeiten",
+    "delete": "Löschen",
+    "test": "Verbindung testen",
+    "testSuccess": "Verbindung erfolgreich",
+    "testFailed": "Verbindung fehlgeschlagen",
+    "name": "Name",
+    "type": "Typ",
+    "url": "URL",
+    "status": "Status",
+    "active": "Aktiv",
+    "inactive": "Inaktiv",
+    "lastSync": "Letzte Synchronisierung",
+    "articlesCount": "Veröffentlichte Artikel",
+    "successRate": "Erfolgsquote",
+    "types": {
+      "wordpress": "WordPress",
+      "custom_api": "Benutzerdefinierte API",
+      "webhook": "Webhook",
+      "ftp": "FTP",
+      "other": "Sonstiges"
+    }
+  },
+  "endpoints": {
+    "title": "Endpunkte",
+    "description": "API-Endpunkte konfigurieren",
+    "add": "Endpunkt hinzufügen",
+    "edit": "Bearbeiten",
+    "delete": "Löschen",
+    "test": "Testen",
+    "name": "Name",
+    "method": "Methode",
+    "path": "Pfad",
+    "default": "Standard",
+    "setDefault": "Als Standard festlegen",
+    "headers": "Header",
+    "body": "Body",
+    "response": "Antwort"
+  },
+  "auth": {
+    "title": "Authentifizierung",
+    "type": "Typ",
+    "none": "Keine",
+    "apiKey": "API-Schlüssel",
+    "bearer": "Bearer-Token",
+    "basic": "Basis-Authentifizierung",
+    "oauth2": "OAuth 2.0",
+    "apiKeyHeader": "Header",
+    "apiKeyLocation": "Speicherort",
+    "username": "Benutzername",
+    "password": "Passwort",
+    "clientId": "Client-ID",
+    "clientSecret": "Client-Secret",
+    "accessToken": "Zugriffstoken",
+    "refreshToken": "Aktualisierungstoken"
+  },
+  "queue": {
+    "title": "Veröffentlichungswarteschlange",
+    "description": "Ausstehende Veröffentlichungen verwalten",
+    "empty": "Warteschlange ist leer",
+    "content": "Inhalt",
+    "platform": "Plattform",
+    "status": "Status",
+    "scheduledAt": "Geplant für",
+    "priority": "Priorität",
+    "actions": "Aktionen",
+    "cancel": "Abbrechen",
+    "retry": "Wiederholen",
+    "publishNow": "Jetzt veröffentlichen",
+    "viewLogs": "Protokolle anzeigen",
+    "bulkCancel": "Ausgewählte abbrechen",
+    "bulkPublish": "Ausgewählte veröffentlichen",
+    "selectAll": "Alle auswählen"
+  },
+  "status": {
+    "pending": "Ausstehend",
+    "scheduled": "Geplant",
+    "publishing": "Wird veröffentlicht",
+    "published": "Veröffentlicht",
+    "failed": "Fehlgeschlagen",
+    "cancelled": "Abgebrochen"
+  },
+  "priority": {
+    "high": "Hoch",
+    "default": "Normal",
+    "low": "Niedrig"
+  },
+  "errors": {
+    "connectionFailed": "Plattformverbindung fehlgeschlagen",
+    "authFailed": "Authentifizierung fehlgeschlagen",
+    "timeout": "Zeitüberschreitung der Anfrage",
+    "invalidResponse": "Ungültige Antwort",
+    "rateLimited": "Ratenlimit erreicht",
+    "serverError": "Serverfehler",
+    "unknown": "Unbekannter Fehler"
+  },
+  "actions": {
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "delete": "Löschen",
+    "confirm": "Bestätigen",
+    "close": "Schließen",
+    "refresh": "Aktualisieren",
+    "export": "Exportieren",
+    "import": "Importieren"
+  }
+}

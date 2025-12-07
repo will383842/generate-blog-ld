@@ -1,0 +1,112 @@
+{
+  "title": "कवरेज",
+  "views": {
+    "global": "वैश्विक दृश्य",
+    "byCountry": "देश के अनुसार",
+    "byLanguage": "भाषा के अनुसार",
+    "byTheme": "विषय के अनुसार",
+    "gaps": "अंतराल",
+    "objectives": "उद्देश्य"
+  },
+  "global": {
+    "title": "वैश्विक कवरेज",
+    "description": "क्षेत्र के अनुसार कवरेज का अवलोकन",
+    "map": "कवरेज मानचित्र",
+    "legend": {
+      "high": "उच्च कवरेज (>80%)",
+      "medium": "मध्यम कवरेज (40-80%)",
+      "low": "निम्न कवरेज (<40%)",
+      "none": "कवर नहीं किया गया"
+    }
+  },
+  "stats": {
+    "covered": "कवर किए गए देश",
+    "missing": "गायब देश",
+    "percentage": "% कवरेज",
+    "trend": "रुझान",
+    "articles": "लेख",
+    "languages": "भाषाएँ",
+    "themes": "कवर किए गए विषय",
+    "total": "कुल",
+    "growth": "+{{value}}% इस महीने"
+  },
+  "filters": {
+    "region": "क्षेत्र",
+    "continent": "महाद्वीप",
+    "status": "स्थिति",
+    "platform": "प्लेटफॉर्म",
+    "theme": "विषय",
+    "language": "भाषा",
+    "minCoverage": "न्यूनतम कवरेज",
+    "maxCoverage": "अधिकतम कवरेज"
+  },
+  "regions": {
+    "all": "सभी क्षेत्र",
+    "europe": "यूरोप",
+    "northAmerica": "उत्तरी अमेरिका",
+    "southAmerica": "दक्षिण अमेरिका",
+    "asia": "एशिया",
+    "africa": "अफ्रीका",
+    "oceania": "ओशिनिया",
+    "middleEast": "मध्य पूर्व"
+  },
+  "gaps": {
+    "title": "कवरेज अंतराल",
+    "description": "देश और विषय जिन्हें सामग्री की आवश्यकता है",
+    "priority": {
+      "high": "उच्च प्राथमिकता",
+      "medium": "मध्यम प्राथमिकता",
+      "low": "निम्न प्राथमिकता"
+    },
+    "noContent": "कोई सामग्री नहीं",
+    "outdated": "पुरानी सामग्री",
+    "incomplete": "आंशिक कवरेज",
+    "missingLanguages": "गायब भाषाएँ",
+    "missingThemes": "गायब विषय"
+  },
+  "objectives": {
+    "title": "कवरेज उद्देश्य",
+    "description": "क्षेत्र और विषय के अनुसार अपने उद्देश्य निर्धारित करें",
+    "set": "उद्देश्य निर्धारित करें",
+    "edit": "उद्देश्य संपादित करें",
+    "delete": "उद्देश्य हटाएं",
+    "target": "लक्ष्य",
+    "current": "वर्तमान",
+    "progress": "प्रगति",
+    "deadline": "समय सीमा",
+    "achieved": "उद्देश्य प्राप्त",
+    "onTrack": "ट्रैक पर",
+    "atRisk": "जोखिम में",
+    "behind": "पीछे"
+  },
+  "actions": {
+    "generateMissing": "गायब सामग्री उत्पन्न करें",
+    "setObjective": "उद्देश्य निर्धारित करें",
+    "exportReport": "रिपोर्ट निर्यात करें",
+    "viewDetails": "विवरण देखें",
+    "createProgram": "प्रोग्राम बनाएं"
+  },
+  "table": {
+    "country": "देश",
+    "region": "क्षेत्र",
+    "articles": "लेख",
+    "languages": "भाषाएँ",
+    "themes": "विषय",
+    "coverage": "कवरेज",
+    "lastUpdated": "अंतिम अपडेट",
+    "actions": "कार्रवाई"
+  },
+  "details": {
+    "title": "कवरेज विवरण: {{country}}",
+    "byLanguage": "भाषा के अनुसार",
+    "byTheme": "विषय के अनुसार",
+    "recentArticles": "हाल के लेख",
+    "missingContent": "गायब सामग्री"
+  },
+  "messages": {
+    "objectiveSet": "उद्देश्य सफलतापूर्वक निर्धारित",
+    "objectiveDeleted": "उद्देश्य हटाया गया",
+    "reportExported": "रिपोर्ट निर्यात की गई",
+    "generationStarted": "गायब सामग्री उत्पादन शुरू हुआ"
+  }
+}

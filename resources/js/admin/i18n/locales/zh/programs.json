@@ -1,0 +1,110 @@
+{
+  "title": "程序",
+  "description": "管理您的生成程序",
+  "list": {
+    "title": "程序列表",
+    "add": "新建程序",
+    "edit": "编辑",
+    "delete": "删除",
+    "duplicate": "复制",
+    "run": "运行",
+    "pause": "暂停",
+    "resume": "恢复",
+    "empty": "暂无程序",
+    "createFirst": "创建您的第一个程序"
+  },
+  "fields": {
+    "name": "名称",
+    "description": "描述",
+    "type": "类型",
+    "platform": "平台",
+    "template": "模板",
+    "status": "状态",
+    "priority": "优先级",
+    "schedule": "计划",
+    "articlesPerRun": "每次运行文章数",
+    "totalArticles": "文章总数",
+    "generatedArticles": "已生成文章",
+    "remainingArticles": "剩余文章",
+    "progress": "进度",
+    "createdAt": "创建时间",
+    "updatedAt": "更新时间",
+    "lastRunAt": "上次运行",
+    "nextRunAt": "下次运行"
+  },
+  "types": {
+    "country": "按国家",
+    "service": "按服务",
+    "topic": "按主题",
+    "custom": "自定义"
+  },
+  "status": {
+    "draft": "草稿",
+    "active": "活跃",
+    "paused": "已暂停",
+    "completed": "已完成"
+  },
+  "priority": {
+    "high": "高",
+    "default": "普通",
+    "low": "低"
+  },
+  "variables": {
+    "title": "变量",
+    "add": "添加变量",
+    "name": "名称",
+    "values": "值",
+    "description": "描述",
+    "country": "国家",
+    "city": "城市",
+    "service": "服务",
+    "keyword": "关键词",
+    "custom": "自定义"
+  },
+  "templates": {
+    "title": "模板",
+    "description": "管理您的生成模板",
+    "add": "新建模板",
+    "edit": "编辑",
+    "delete": "删除",
+    "duplicate": "复制",
+    "preview": "预览",
+    "fields": {
+      "name": "名称",
+      "description": "描述",
+      "prompt": "提示词",
+      "structure": "结构",
+      "variables": "可用变量"
+    },
+    "empty": "暂无模板"
+  },
+  "detail": {
+    "overview": "概览",
+    "articles": "文章",
+    "variables": "变量",
+    "schedule": "计划",
+    "logs": "日志",
+    "stats": "统计"
+  },
+  "stats": {
+    "totalGenerated": "总生成数",
+    "successRate": "成功率",
+    "avgQuality": "平均质量",
+    "avgGenerationTime": "平均时间"
+  },
+  "actions": {
+    "runNow": "立即运行",
+    "generateBatch": "批量生成",
+    "stopGeneration": "停止生成",
+    "viewArticles": "查看文章",
+    "exportArticles": "导出文章"
+  },
+  "messages": {
+    "created": "程序创建成功",
+    "updated": "程序已更新",
+    "deleted": "程序已删除",
+    "started": "生成已开始",
+    "paused": "程序已暂停",
+    "resumed": "程序已恢复"
+  }
+}

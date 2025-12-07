@@ -8,9 +8,14 @@ use Illuminate\Support\Facades\Log;
 /**
  * Service de génération de slugs avec support multi-alphabets
  * Gère la translittération pour cyrillique, chinois, arabe et devanagari
+ * 
+ * CORRIGÉ: Limite de slug réduite à 70 caractères pour SEO optimal
  */
 class SlugService
 {
+    // Limite SEO recommandée pour les slugs
+    const MAX_SLUG_LENGTH = 70;
+
     // Mapping des langues vers leurs méthodes de translittération
     protected array $transliterationMap = [
         'ru' => 'cyrillicToLatin',
@@ -28,10 +33,13 @@ class SlugService
      * 
      * @param string $title Titre à slugifier
      * @param string $lang Code langue (fr, en, ru, zh, ar, hi, etc.)
+     * @param int|null $maxLength Longueur maximale (défaut: 70 pour SEO)
      * @return string Slug généré
      */
-    public function generateSlug(string $title, string $lang = 'en'): string
+    public function generateSlug(string $title, string $lang = 'en', ?int $maxLength = null): string
     {
+        $maxLength = $maxLength ?? self::MAX_SLUG_LENGTH;
+
         // Si la langue nécessite une translittération
         if (isset($this->transliterationMap[$lang])) {
             $method = $this->transliterationMap[$lang];
@@ -47,8 +55,8 @@ class SlugService
         // Génération du slug standard Laravel
         $slug = Str::slug($title);
 
-        // Nettoyage additionnel si nécessaire
-        $slug = $this->cleanSlug($slug);
+        // Nettoyage et limitation de longueur
+        $slug = $this->cleanSlug($slug, $maxLength);
 
         return $slug;
     }
@@ -91,7 +99,6 @@ class SlugService
      */
     public function cyrillicToLatin(string $text): string
     {
-        // Table de translittération russe → latin
         $translitMap = [
             // Minuscules
             'а' => 'a',  'б' => 'b',  'в' => 'v',  'г' => 'g',  'д' => 'd',
@@ -125,17 +132,12 @@ class SlugService
 
     /**
      * Convertit le chinois en pinyin (romanisation)
-     * Utilise une approche simplifiée pour les caractères courants
      * 
      * @param string $text Texte en chinois
      * @return string Texte en pinyin
      */
     public function chineseToPinyin(string $text): string
     {
-        // Pour une vraie implémentation production, utiliser une librairie comme:
-        // composer require overtrue/pinyin
-        // Ici, approche simplifiée avec caractères les plus courants
-
         $pinyinMap = [
             // Caractères très fréquents
             '中' => 'zhong', '国' => 'guo',  '人' => 'ren',  '的' => 'de',
@@ -159,47 +161,37 @@ class SlugService
             '院' => 'yuan',  '房' => 'fang', '车' => 'che',  '站' => 'zhan',
             '路' => 'lu',    '门' => 'men',  '城' => 'cheng','市' => 'shi',
             
-            // Mots composés courants
+            // Mots composés courants (expatriation)
             '外国' => 'waiguo',  '法国' => 'faguo',   '美国' => 'meiguo',
             '英国' => 'yingguo', '德国' => 'deguo',   '中国' => 'zhongguo',
             '移民' => 'yimin',   '签证' => 'qianzheng','护照' => 'huzhao',
             '居留' => 'juliu',   '工作' => 'gongzuo', '学习' => 'xuexi',
         ];
 
-        // Application du mapping
         $result = $text;
         foreach ($pinyinMap as $chinese => $pinyin) {
             $result = str_replace($chinese, $pinyin . ' ', $result);
         }
 
-        // Nettoyage
         $result = trim($result);
         $result = preg_replace('/\s+/', '-', $result);
 
-        // Si le texte contient encore du chinois non mappé, utiliser une approche générique
         if (preg_match('/[\x{4e00}-\x{9fa5}]/u', $result)) {
-            Log::warning("⚠️ Caractères chinois non mappés détectés", ['text' => $text]);
-            // Fallback: convertir en représentation hex ou garder tel quel
+            Log::warning("⚠️ Caractères chinois non mappés", ['text' => $text]);
             $result = $this->chineseFallback($result);
         }
 
         return $result;
     }
 
-    /**
-     * Fallback pour caractères chinois non mappés
-     */
     protected function chineseFallback(string $text): string
     {
-        // Si disponible, on pourrait utiliser iconv pour une translittération basique
         if (function_exists('iconv')) {
             $converted = @iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $text);
             if ($converted !== false && !empty($converted)) {
                 return $converted;
             }
         }
-
-        // Sinon, générer un identifiant unique basé sur le hash
         return 'chinese-' . substr(md5($text), 0, 8);
     }
 
@@ -209,16 +201,13 @@ class SlugService
 
     /**
      * Convertit l'arabe en latin
-     * Utilise la translittération ISO 233 simplifiée
      * 
      * @param string $text Texte en arabe
      * @return string Texte en latin
      */
     public function arabicToLatin(string $text): string
     {
-        // Table de translittération arabe → latin
         $translitMap = [
-            // Lettres arabes
             'ا' => 'a',  'أ' => 'a',  'إ' => 'i',  'آ' => 'a',
             'ب' => 'b',  'ت' => 't',  'ث' => 'th', 'ج' => 'j',
             'ح' => 'h',  'خ' => 'kh', 'د' => 'd',  'ذ' => 'dh',
@@ -228,23 +217,15 @@ class SlugService
             'ك' => 'k',  'ل' => 'l',  'م' => 'm',  'ن' => 'n',
             'ه' => 'h',  'و' => 'w',  'ي' => 'y',  'ى' => 'a',
             'ة' => 'h',  'ء' => 'a',
-            
-            // Voyelles longues
             'َ' => 'a',  'ِ' => 'i',  'ُ' => 'u',
             'ً' => 'an', 'ٍ' => 'in', 'ٌ' => 'un',
             'ّ' => '',   'ْ' => '',
-
-            // Lettres persanes/urdu supplémentaires
             'پ' => 'p',  'چ' => 'ch', 'ژ' => 'zh', 'گ' => 'g',
-
-            // Chiffres arabes
             '٠' => '0',  '١' => '1',  '٢' => '2',  '٣' => '3',  '٤' => '4',
             '٥' => '5',  '٦' => '6',  '٧' => '7',  '٨' => '8',  '٩' => '9',
         ];
 
         $result = strtr($text, $translitMap);
-
-        // Suppression des caractères diacritiques restants
         $result = preg_replace('/[\x{064B}-\x{065F}]/u', '', $result);
 
         return $result;
@@ -256,14 +237,12 @@ class SlugService
 
     /**
      * Convertit le devanagari (hindi) en latin
-     * Utilise la translittération IAST simplifiée
      * 
      * @param string $text Texte en devanagari
      * @return string Texte en latin
      */
     public function devanagariToLatin(string $text): string
     {
-        // Table de translittération devanagari → latin
         $translitMap = [
             // Voyelles
             'अ' => 'a',  'आ' => 'aa', 'इ' => 'i',  'ई' => 'ii',
@@ -287,7 +266,7 @@ class SlugService
             'ू' => 'uu', 'े' => 'e',  'ै' => 'ai', 'ो' => 'o',
             'ौ' => 'au', 'ं' => 'n',  'ः' => 'h',  '्' => '',
             
-            // Chiffres devanagari
+            // Chiffres
             '०' => '0',  '१' => '1',  '२' => '2',  '३' => '3',  '४' => '4',
             '५' => '5',  '६' => '6',  '७' => '7',  '८' => '8',  '९' => '9',
         ];
@@ -300,12 +279,13 @@ class SlugService
     // =========================================================================
 
     /**
-     * Nettoie un slug
+     * Nettoie un slug avec limite de longueur SEO
      * 
      * @param string $slug Slug à nettoyer
+     * @param int $maxLength Longueur maximale (défaut: 70)
      * @return string Slug nettoyé
      */
-    protected function cleanSlug(string $slug): string
+    protected function cleanSlug(string $slug, int $maxLength = 70): string
     {
         // Suppression des tirets multiples
         $slug = preg_replace('/-+/', '-', $slug);
@@ -313,10 +293,15 @@ class SlugService
         // Suppression des tirets en début/fin
         $slug = trim($slug, '-');
         
-        // Longueur maximale
-        if (strlen($slug) > 200) {
-            $slug = substr($slug, 0, 200);
-            $slug = preg_replace('/-[^-]*$/', '', $slug); // Coupe au dernier mot complet
+        // Limitation de longueur avec coupure propre
+        if (strlen($slug) > $maxLength) {
+            $slug = substr($slug, 0, $maxLength);
+            // Couper au dernier tiret pour ne pas couper un mot
+            $lastDash = strrpos($slug, '-');
+            if ($lastDash !== false && $lastDash > $maxLength - 20) {
+                $slug = substr($slug, 0, $lastDash);
+            }
+            $slug = rtrim($slug, '-');
         }
 
         return $slug;
@@ -330,7 +315,6 @@ class SlugService
      */
     public function detectScript(string $text): string
     {
-        // Détection par plages Unicode
         if (preg_match('/[\x{0400}-\x{04FF}]/u', $text)) {
             return 'cyrillic';
         }
@@ -352,9 +336,6 @@ class SlugService
 
     /**
      * Vérifie si un texte nécessite une translittération
-     * 
-     * @param string $text Texte à vérifier
-     * @return bool True si translittération nécessaire
      */
     public function needsTransliteration(string $text): bool
     {

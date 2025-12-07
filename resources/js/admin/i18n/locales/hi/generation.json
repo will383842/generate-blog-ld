@@ -1,0 +1,102 @@
+{
+  "title": "जनरेशन",
+  "description": "स्वचालित सामग्री निर्माण",
+  "queue": {
+    "title": "जनरेशन कतार",
+    "description": "लेख जनरेशन की प्रतीक्षा में",
+    "empty": "कतार खाली है",
+    "item": "आइटम",
+    "program": "प्रोग्राम",
+    "priority": "प्राथमिकता",
+    "status": "स्थिति",
+    "createdAt": "जोड़ा गया",
+    "startedAt": "शुरू हुआ",
+    "estimatedTime": "अनुमानित समय",
+    "cancel": "रद्द करें",
+    "retry": "पुनः प्रयास करें",
+    "moveToTop": "शीर्ष पर ले जाएं",
+    "bulkCancel": "चयनित रद्द करें"
+  },
+  "history": {
+    "title": "इतिहास",
+    "description": "जनरेशन इतिहास",
+    "empty": "कोई इतिहास नहीं",
+    "article": "लेख",
+    "program": "प्रोग्राम",
+    "status": "स्थिति",
+    "duration": "अवधि",
+    "tokens": "उपयोग किए गए टोकन",
+    "cost": "लागत",
+    "generatedAt": "जेनरेट किया गया",
+    "viewArticle": "लेख देखें",
+    "regenerate": "पुनः जेनरेट करें",
+    "export": "निर्यात करें"
+  },
+  "settings": {
+    "title": "जनरेशन सेटिंग्स",
+    "description": "जनरेशन विकल्प कॉन्फ़िगर करें",
+    "model": "AI मॉडल",
+    "temperature": "तापमान",
+    "maxTokens": "अधिकतम टोकन",
+    "language": "भाषा",
+    "tone": "लहजा",
+    "style": "शैली",
+    "length": "लंबाई",
+    "defaults": "डिफ़ॉल्ट मान",
+    "advanced": "उन्नत विकल्प"
+  },
+  "status": {
+    "pending": "लंबित",
+    "processing": "प्रोसेसिंग",
+    "completed": "पूर्ण",
+    "failed": "विफल",
+    "cancelled": "रद्द किया गया",
+    "retrying": "पुनः प्रयास कर रहे हैं"
+  },
+  "priority": {
+    "high": "उच्च",
+    "default": "सामान्य",
+    "low": "निम्न"
+  },
+  "stats": {
+    "today": "आज",
+    "thisWeek": "इस सप्ताह",
+    "thisMonth": "इस महीने",
+    "total": "कुल",
+    "pending": "लंबित",
+    "processing": "प्रोसेसिंग",
+    "completed": "पूर्ण",
+    "failed": "विफल",
+    "successRate": "सफलता दर",
+    "avgDuration": "औसत अवधि",
+    "tokensUsed": "उपयोग किए गए टोकन",
+    "estimatedCost": "अनुमानित लागत"
+  },
+  "actions": {
+    "generate": "जेनरेट करें",
+    "generateNow": "अभी जेनरेट करें",
+    "addToQueue": "कतार में जोड़ें",
+    "clearQueue": "कतार साफ़ करें",
+    "pauseAll": "सभी रोकें",
+    "resumeAll": "सभी फिर से शुरू करें",
+    "cancelAll": "सभी रद्द करें"
+  },
+  "messages": {
+    "generating": "जेनरेट कर रहे हैं...",
+    "generated": "लेख सफलतापूर्वक जेनरेट किया गया",
+    "failed": "जनरेशन विफल रहा",
+    "cancelled": "जनरेशन रद्द कर दिया गया",
+    "queued": "कतार में जोड़ा गया",
+    "retrying": "पुनः प्रयास कर रहे हैं..."
+  },
+  "ai": {
+    "title": "AI कॉन्फ़िगरेशन",
+    "provider": "प्रदाता",
+    "model": "मॉडल",
+    "apiKey": "API कुंजी",
+    "testConnection": "कनेक्शन परीक्षण करें",
+    "usage": "उपयोग",
+    "quota": "कोटा",
+    "remaining": "शेष"
+  }
+}

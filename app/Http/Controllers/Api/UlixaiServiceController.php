@@ -164,7 +164,7 @@ class UlixaiServiceController extends Controller
     public function destroy(int $id): JsonResponse
     {
         $service = UlixaiService::findOrFail($id);
-        
+
         // Vérifier qu'il n'a pas d'enfants
         if ($service->children()->count() > 0) {
             return response()->json([
@@ -178,6 +178,36 @@ class UlixaiServiceController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Service supprimé avec succès',
+        ]);
+    }
+
+    /**
+     * Activer un service
+     */
+    public function activate(int $id): JsonResponse
+    {
+        $service = UlixaiService::findOrFail($id);
+        $service->update(['is_active' => true]);
+
+        return response()->json([
+            'success' => true,
+            'data' => $service,
+            'message' => 'Service activé avec succès',
+        ]);
+    }
+
+    /**
+     * Désactiver un service
+     */
+    public function deactivate(int $id): JsonResponse
+    {
+        $service = UlixaiService::findOrFail($id);
+        $service->update(['is_active' => false]);
+
+        return response()->json([
+            'success' => true,
+            'data' => $service,
+            'message' => 'Service désactivé avec succès',
         ]);
     }
 }

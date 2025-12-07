@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   AreaChart,
   Area,
@@ -12,7 +11,7 @@ import {
 interface DataPoint {
   name: string;
   value: number;
-  [key: string]: any;
+  [key: string]: string | number | undefined;
 }
 
 interface Props {

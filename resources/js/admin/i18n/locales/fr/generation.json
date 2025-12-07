@@ -1,0 +1,102 @@
+{
+  "title": "Génération",
+  "description": "Génération automatique de contenu",
+  "queue": {
+    "title": "Queue de génération",
+    "description": "Articles en attente de génération",
+    "empty": "La queue est vide",
+    "item": "Élément",
+    "program": "Programme",
+    "priority": "Priorité",
+    "status": "Statut",
+    "createdAt": "Ajouté le",
+    "startedAt": "Démarré le",
+    "estimatedTime": "Temps estimé",
+    "cancel": "Annuler",
+    "retry": "Réessayer",
+    "moveToTop": "Passer en premier",
+    "bulkCancel": "Annuler la sélection"
+  },
+  "history": {
+    "title": "Historique",
+    "description": "Historique des générations",
+    "empty": "Aucun historique",
+    "article": "Article",
+    "program": "Programme",
+    "status": "Statut",
+    "duration": "Durée",
+    "tokens": "Tokens utilisés",
+    "cost": "Coût",
+    "generatedAt": "Généré le",
+    "viewArticle": "Voir l'article",
+    "regenerate": "Régénérer",
+    "export": "Exporter"
+  },
+  "settings": {
+    "title": "Paramètres de génération",
+    "description": "Configurez les options de génération",
+    "model": "Modèle IA",
+    "temperature": "Température",
+    "maxTokens": "Tokens maximum",
+    "language": "Langue",
+    "tone": "Ton",
+    "style": "Style",
+    "length": "Longueur",
+    "defaults": "Valeurs par défaut",
+    "advanced": "Options avancées"
+  },
+  "status": {
+    "pending": "En attente",
+    "processing": "En cours",
+    "completed": "Terminé",
+    "failed": "Échoué",
+    "cancelled": "Annulé",
+    "retrying": "Nouvelle tentative"
+  },
+  "priority": {
+    "high": "Haute",
+    "default": "Normale",
+    "low": "Basse"
+  },
+  "stats": {
+    "today": "Aujourd'hui",
+    "thisWeek": "Cette semaine",
+    "thisMonth": "Ce mois",
+    "total": "Total",
+    "pending": "En attente",
+    "processing": "En cours",
+    "completed": "Terminés",
+    "failed": "Échoués",
+    "successRate": "Taux de succès",
+    "avgDuration": "Durée moyenne",
+    "tokensUsed": "Tokens utilisés",
+    "estimatedCost": "Coût estimé"
+  },
+  "actions": {
+    "generate": "Générer",
+    "generateNow": "Générer maintenant",
+    "addToQueue": "Ajouter à la queue",
+    "clearQueue": "Vider la queue",
+    "pauseAll": "Tout mettre en pause",
+    "resumeAll": "Tout reprendre",
+    "cancelAll": "Tout annuler"
+  },
+  "messages": {
+    "generating": "Génération en cours...",
+    "generated": "Article généré avec succès",
+    "failed": "Échec de la génération",
+    "cancelled": "Génération annulée",
+    "queued": "Ajouté à la queue",
+    "retrying": "Nouvelle tentative..."
+  },
+  "ai": {
+    "title": "Configuration IA",
+    "provider": "Fournisseur",
+    "model": "Modèle",
+    "apiKey": "Clé API",
+    "testConnection": "Tester la connexion",
+    "usage": "Utilisation",
+    "quota": "Quota",
+    "remaining": "Restant"
+  }
+}

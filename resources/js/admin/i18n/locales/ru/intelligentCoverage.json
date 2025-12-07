@@ -1,0 +1,196 @@
+{
+  "dashboard": {
+    "title": "Интеллектуальное покрытие",
+    "subtitle": "197 стран × 9 языков × Все специальности",
+    "refresh": "Обновить",
+    "export": "Экспорт",
+    "lastUpdate": "Последнее обновление"
+  },
+  "platforms": {
+    "sosExpat": "SOS-Expat",
+    "sosExpatDesc": "Экстренная юридическая помощь для экспатов",
+    "ulixai": "Ulixai",
+    "ulixaiDesc": "Маркетплейс услуг для экспатов",
+    "ulysse": "Ulysse.AI",
+    "ulysseDesc": "ИИ-ассистент для экспатов",
+    "soon": "Скоро"
+  },
+  "scores": {
+    "global": "Общий балл",
+    "recruitment": "Рекрутинг",
+    "awareness": "Узнаваемость",
+    "founder": "Основатель",
+    "progress": "Прогресс",
+    "countries": "проанализированных стран",
+    "articlesTarget": "целевых статей",
+    "vsObjective": "vs цель 100%"
+  },
+  "distribution": {
+    "title": "Распределение по уровню покрытия",
+    "excellent": "Отлично",
+    "excellentRange": "80-100%",
+    "good": "Хорошо",
+    "goodRange": "60-79%",
+    "partial": "Частично",
+    "partialRange": "40-59%",
+    "minimal": "Минимально",
+    "minimalRange": "20-39%",
+    "missing": "Отсутствует",
+    "missingRange": "0-19%",
+    "ofCountries": "стран"
+  },
+  "quickActions": {
+    "title": "Быстрые действия",
+    "viewGrid": "Сетка 197 стран",
+    "viewGridDesc": "Все прогресс-бары сразу",
+    "viewCountries": "Список стран",
+    "viewCountriesDesc": "197 стран с расширенными фильтрами",
+    "priorityCountries": "Приоритетные страны",
+    "priorityCountriesDesc": "страны, требующие срочного внимания",
+    "generateContent": "Создать контент",
+    "generateContentDesc": "Автоматическая генерация ИИ",
+    "viewLanguages": "Просмотр языков",
+    "viewLanguagesDesc": "9 языков × 197 стран"
+  },
+  "countries": {
+    "title": "Глобальное покрытие - 197 стран",
+    "subtitle": "Полный обзор с прогресс-барами по платформам",
+    "search": "Поиск страны...",
+    "allRegions": "Все регионы",
+    "sortBy": "Сортировать по",
+    "sortByPriority": "Приоритет",
+    "sortByScore": "Общий балл",
+    "sortByRecruitment": "Рекрутинг",
+    "sortByAwareness": "Узнаваемость",
+    "sortByFounder": "Основатель",
+    "sortByName": "Название A-Z",
+    "missingOnly": "Только отсутствующие",
+    "allCountries": "Все страны",
+    "averageScore": "Средний балл",
+    "total": "Всего",
+    "clickForDetails": "Нажмите для деталей"
+  },
+  "countryDetails": {
+    "title": "Детали страны",
+    "generateMissing": "Создать недостающий контент",
+    "tabs": {
+      "recruitment": "Рекрутинг",
+      "awareness": "Узнаваемость",
+      "founder": "Основатель",
+      "languages": "Языки"
+    },
+    "missingTargets": "недостающий контент",
+    "publishedArticles": "опубликованных статей",
+    "unpublishedArticles": "неопубликованных статей"
+  },
+  "recruitment": {
+    "title": "Рекрутинг провайдеров",
+    "lawyerSpecialties": "Специализации юристов",
+    "lawyerSpecialtiesDesc": "22 правовые категории",
+    "expatDomains": "Домены экспатов",
+    "expatDomainsDesc": "Помощь экспатам",
+    "ulixaiServices": "Услуги Ulixai",
+    "ulixaiServicesDesc": "11 категорий, 3 уровня",
+    "perSpecialty": "на специальность × страну × язык"
+  },
+  "awareness": {
+    "title": "SEO узнаваемость",
+    "pillarArticles": "Основные статьи",
+    "comparatives": "Сравнения",
+    "landingPages": "Посадочные страницы",
+    "perCountryLanguage": "на страну/язык"
+  },
+  "founder": {
+    "title": "Тема основателя",
+    "name": "Williams Jullin",
+    "description": "Статьи об основателе - общие для всех платформ",
+    "sosExpatArticle": "Статья SOS-Expat",
+    "ulixaiArticle": "Статья Ulixai",
+    "crossPlatform": "Кроссплатформенный"
+  },
+  "languages": {
+    "title": "Языковое покрытие",
+    "subtitle": "Глобальный обзор 9 языков",
+    "matrix": "Матрица Страна × Язык",
+    "countriesCovered": "охваченных стран",
+    "totalArticles": "всего статей",
+    "publishedArticles": "опубликовано",
+    "averageCoverage": "среднее покрытие"
+  },
+  "generate": {
+    "title": "Генерация контента",
+    "subtitle": "Автоматически создать недостающий контент",
+    "configuration": "Конфигурация",
+    "contentTypes": "Типы контента",
+    "targetLanguages": "Целевые языки",
+    "selectCountries": "Выбор стран",
+    "priority": "Приоритет",
+    "selectAll": "Выбрать все",
+    "clear": "Очистить",
+    "summary": "Сводка генерации",
+    "totalTasks": "Всего задач",
+    "estimatedTime": "Расчётное время",
+    "estimatedCost": "Расчётная стоимость",
+    "completed": "Завершено",
+    "prepare": "Подготовить генерацию",
+    "start": "Начать",
+    "stop": "Остановить",
+    "reset": "Сбросить"
+  },
+  "status": {
+    "excellent": "Отлично",
+    "good": "Хорошо",
+    "partial": "Частично",
+    "minimal": "Минимально",
+    "missing": "Отсутствует",
+    "published": "Опубликовано",
+    "unpublished": "Не опубликовано",
+    "pending": "Ожидает",
+    "generating": "Генерируется",
+    "completed": "Завершено",
+    "failed": "Ошибка"
+  },
+  "priority": {
+    "critical": "Критический",
+    "high": "Высокий",
+    "medium": "Средний",
+    "low": "Низкий"
+  },
+  "actions": {
+    "view": "Просмотр",
+    "edit": "Редактировать",
+    "generate": "Создать",
+    "translate": "Перевести",
+    "export": "Экспорт",
+    "refresh": "Обновить"
+  },
+  "recommendations": {
+    "title": "Рекомендации ИИ",
+    "execute": "Выполнить",
+    "executeAll": "Выполнить все",
+    "noRecommendations": "Нет срочных рекомендаций"
+  },
+  "regions": {
+    "europe": "Европа",
+    "asia": "Азия",
+    "africa": "Африка",
+    "northAmerica": "Северная Америка",
+    "southAmerica": "Южная Америка",
+    "oceania": "Океания",
+    "middleEast": "Ближний Восток"
+  },
+  "metrics": {
+    "total": "Всего",
+    "published": "Опубликовано",
+    "unpublished": "Не опубликовано",
+    "missing": "Отсутствует",
+    "completed": "Завершено",
+    "targets": "Цели"
+  },
+  "legend": {
+    "title": "Легенда",
+    "recruitmentBar": "Рекрутинг",
+    "awarenessBar": "Узнаваемость",
+    "founderBar": "Основатель"
+  }
+}

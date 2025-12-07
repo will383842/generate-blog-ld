@@ -1,0 +1,109 @@
+{
+  "titles": {
+    "main": "Dashboard",
+    "platform": "Plattform-Dashboard",
+    "overview": "Übersicht",
+    "activity": "Letzte Aktivität"
+  },
+  "stats": {
+    "totalArticles": "Artikel gesamt",
+    "totalGenerated": "Generiert",
+    "totalPublished": "Veröffentlicht",
+    "totalDraft": "Entwürfe",
+    "totalScheduled": "Geplant",
+    "totalCost": "Gesamtkosten",
+    "avgQuality": "Durchschnittliche Qualität",
+    "coverage": "Abdeckung",
+    "thisMonth": "Diesen Monat",
+    "lastMonth": "Letzten Monat",
+    "variation": "{{value}}% ggü. Vorperiode",
+    "increase": "+{{value}}%",
+    "decrease": "-{{value}}%"
+  },
+  "charts": {
+    "production": {
+      "title": "Produktion",
+      "subtitle": "Täglich generierte Artikel",
+      "articles": "Artikel",
+      "pillars": "Säulenartikel",
+      "comparatives": "Vergleiche",
+      "landings": "Landingpages",
+      "press": "Pressemitteilungen"
+    },
+    "costs": {
+      "title": "KI-Kosten",
+      "subtitle": "Ausgaben nach Modell",
+      "daily": "Täglich",
+      "cumulative": "Kumulativ",
+      "budget": "Budget",
+      "actual": "Tatsächlich"
+    },
+    "quality": {
+      "title": "Qualität",
+      "subtitle": "Durchschnittsbewertung nach Typ",
+      "distribution": "Bewertungsverteilung"
+    },
+    "coverage": {
+      "title": "Abdeckung",
+      "subtitle": "Fortschritt nach Region",
+      "countries": "Abgedeckte Länder",
+      "languages": "Aktive Sprachen"
+    }
+  },
+  "activity": {
+    "title": "Letzte Aktivität",
+    "stream": "Aktivitätsverlauf",
+    "events": {
+      "created": "{{user}} hat {{item}} erstellt",
+      "published": "{{item}} wurde veröffentlicht",
+      "generated": "{{count}} Artikel generiert",
+      "error": "Generierungsfehler: {{message}}",
+      "scheduled": "{{item}} geplant für {{date}}",
+      "qualityCheck": "Qualitätsprüfung abgeschlossen"
+    },
+    "showMore": "Mehr anzeigen",
+    "noActivity": "Keine aktuelle Aktivität"
+  },
+  "periods": {
+    "last7days": "Letzte 7 Tage",
+    "last30days": "Letzte 30 Tage",
+    "last90days": "Letzte 90 Tage",
+    "thisMonth": "Diesen Monat",
+    "lastMonth": "Letzten Monat",
+    "thisYear": "Dieses Jahr",
+    "custom": "Benutzerdefiniert"
+  },
+  "alerts": {
+    "budgetWarning": "Warnung: {{percentage}}% des Monatsbudgets verbraucht",
+    "budgetCritical": "Kritisch: Monatsbudget um {{amount}} überschritten",
+    "errorRate": "Hohe Fehlerrate: {{rate}}%",
+    "queueBacklog": "{{count}} Elemente in der Warteschlange",
+    "qualityDrop": "Qualitätsabfall bei {{count}} Artikeln festgestellt",
+    "coverageGap": "{{count}} Länder ohne aktuellen Inhalt"
+  },
+  "widgets": {
+    "quickActions": {
+      "title": "Schnellaktionen",
+      "newProgram": "Neues Programm",
+      "generateContent": "Inhalt generieren",
+      "viewQueue": "Warteschlange anzeigen",
+      "exportReport": "Bericht exportieren"
+    },
+    "topPerformers": {
+      "title": "Top-Inhalte",
+      "views": "{{count}} Aufrufe",
+      "engagement": "{{rate}}% Engagement"
+    },
+    "pendingTasks": {
+      "title": "Ausstehende Aufgaben",
+      "review": "Zu überprüfen",
+      "publish": "Zu veröffentlichen",
+      "translate": "Zu übersetzen"
+    }
+  },
+  "platforms": {
+    "select": "Plattform auswählen",
+    "all": "Alle Plattformen",
+    "compare": "Plattformen vergleichen"
+  }
+}

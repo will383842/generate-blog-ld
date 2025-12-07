@@ -1,0 +1,112 @@
+{
+  "title": "Покрытие",
+  "views": {
+    "global": "Глобальный вид",
+    "byCountry": "По странам",
+    "byLanguage": "По языкам",
+    "byTheme": "По темам",
+    "gaps": "Пробелы",
+    "objectives": "Цели"
+  },
+  "global": {
+    "title": "Глобальное покрытие",
+    "description": "Обзор покрытия по регионам",
+    "map": "Карта покрытия",
+    "legend": {
+      "high": "Высокое покрытие (>80%)",
+      "medium": "Среднее покрытие (40-80%)",
+      "low": "Низкое покрытие (<40%)",
+      "none": "Не охвачено"
+    }
+  },
+  "stats": {
+    "covered": "Охваченные страны",
+    "missing": "Отсутствующие страны",
+    "percentage": "% покрытия",
+    "trend": "Тенденция",
+    "articles": "Статьи",
+    "languages": "Языки",
+    "themes": "Охваченные темы",
+    "total": "Всего",
+    "growth": "+{{value}}% в этом месяце"
+  },
+  "filters": {
+    "region": "Регион",
+    "continent": "Континент",
+    "status": "Статус",
+    "platform": "Платформа",
+    "theme": "Тема",
+    "language": "Язык",
+    "minCoverage": "Минимальное покрытие",
+    "maxCoverage": "Максимальное покрытие"
+  },
+  "regions": {
+    "all": "Все регионы",
+    "europe": "Европа",
+    "northAmerica": "Северная Америка",
+    "southAmerica": "Южная Америка",
+    "asia": "Азия",
+    "africa": "Африка",
+    "oceania": "Океания",
+    "middleEast": "Ближний Восток"
+  },
+  "gaps": {
+    "title": "Пробелы в покрытии",
+    "description": "Страны и темы, требующие контента",
+    "priority": {
+      "high": "Высокий приоритет",
+      "medium": "Средний приоритет",
+      "low": "Низкий приоритет"
+    },
+    "noContent": "Нет контента",
+    "outdated": "Устаревший контент",
+    "incomplete": "Частичное покрытие",
+    "missingLanguages": "Отсутствующие языки",
+    "missingThemes": "Отсутствующие темы"
+  },
+  "objectives": {
+    "title": "Цели покрытия",
+    "description": "Установите свои цели по регионам и темам",
+    "set": "Установить цель",
+    "edit": "Редактировать цель",
+    "delete": "Удалить цель",
+    "target": "Цель",
+    "current": "Текущее",
+    "progress": "Прогресс",
+    "deadline": "Срок",
+    "achieved": "Цель достигнута",
+    "onTrack": "По плану",
+    "atRisk": "Под угрозой",
+    "behind": "Отстает"
+  },
+  "actions": {
+    "generateMissing": "Создать отсутствующий контент",
+    "setObjective": "Установить цель",
+    "exportReport": "Экспортировать отчет",
+    "viewDetails": "Просмотреть детали",
+    "createProgram": "Создать программу"
+  },
+  "table": {
+    "country": "Страна",
+    "region": "Регион",
+    "articles": "Статьи",
+    "languages": "Языки",
+    "themes": "Темы",
+    "coverage": "Покрытие",
+    "lastUpdated": "Последнее обновление",
+    "actions": "Действия"
+  },
+  "details": {
+    "title": "Детали покрытия: {{country}}",
+    "byLanguage": "По языкам",
+    "byTheme": "По темам",
+    "recentArticles": "Последние статьи",
+    "missingContent": "Отсутствующий контент"
+  },
+  "messages": {
+    "objectiveSet": "Цель успешно установлена",
+    "objectiveDeleted": "Цель удалена",
+    "reportExported": "Отчет экспортирован",
+    "generationStarted": "Создание отсутствующего контента начато"
+  }
+}

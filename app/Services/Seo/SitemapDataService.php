@@ -138,6 +138,7 @@ class SitemapDataService
     {
         $images = [];
 
+        // Image principale
         if ($article->image_url) {
             $images[] = [
                 'loc' => $article->image_url,
@@ -146,10 +147,160 @@ class SitemapDataService
             ];
         }
 
-        // Extraction images du contenu (optionnel)
-        // TODO: Parser le HTML pour extraire toutes les images
+        // Extraction des images du contenu HTML
+        $contentImages = $this->parseImagesFromHtml($article->content, $article);
+
+        // Fusionner et dédupliquer
+        foreach ($contentImages as $img) {
+            // Éviter les doublons basés sur l'URL
+            $isDuplicate = false;
+            foreach ($images as $existing) {
+                if ($existing['loc'] === $img['loc']) {
+                    $isDuplicate = true;
+                    break;
+                }
+            }
+
+            if (!$isDuplicate) {
+                $images[] = $img;
+            }
+        }
 
         return $images;
+    }
+
+    /**
+     * Parser le contenu HTML pour extraire les images
+     *
+     * @param string|null $html Contenu HTML
+     * @param Article $article Article pour contexte (fallback title/caption)
+     * @return array Liste d'images ['loc' => '', 'title' => '', 'caption' => '']
+     */
+    protected function parseImagesFromHtml(?string $html, Article $article): array
+    {
+        if (empty($html)) {
+            return [];
+        }
+
+        $images = [];
+
+        // Pattern pour matcher les balises img
+        $pattern = '/<img\s+[^>]*src=["\']([^"\']+)["\'][^>]*>/i';
+
+        if (preg_match_all($pattern, $html, $matches, PREG_SET_ORDER)) {
+            foreach ($matches as $match) {
+                $imgTag = $match[0];
+                $src = $match[1];
+
+                // Ignorer les images en base64 ou data URI
+                if (strpos($src, 'data:') === 0) {
+                    continue;
+                }
+
+                // Ignorer les images de tracking/pixels
+                if ($this->isTrackingPixel($src)) {
+                    continue;
+                }
+
+                // Convertir les URLs relatives en absolues
+                $absoluteUrl = $this->makeAbsoluteUrl($src, $article);
+
+                // Extraire l'attribut alt
+                $alt = $this->extractAttribute($imgTag, 'alt');
+
+                // Extraire l'attribut title
+                $title = $this->extractAttribute($imgTag, 'title');
+
+                // Construire l'entrée image
+                $images[] = [
+                    'loc' => $absoluteUrl,
+                    'title' => $title ?: ($alt ?: $article->title),
+                    'caption' => $alt ?: $article->excerpt,
+                ];
+            }
+        }
+
+        // Limiter à 1000 images par article (limite Google)
+        return array_slice($images, 0, 1000);
+    }
+
+    /**
+     * Extraire un attribut d'une balise HTML
+     *
+     * @param string $tag Balise HTML complète
+     * @param string $attribute Nom de l'attribut
+     * @return string|null Valeur de l'attribut
+     */
+    protected function extractAttribute(string $tag, string $attribute): ?string
+    {
+        $pattern = '/' . preg_quote($attribute, '/') . '=["\']([^"\']*)["\'/i';
+
+        if (preg_match($pattern, $tag, $matches)) {
+            return html_entity_decode($matches[1], ENT_QUOTES, 'UTF-8');
+        }
+
+        return null;
+    }
+
+    /**
+     * Vérifier si une URL est un pixel de tracking
+     *
+     * @param string $url
+     * @return bool
+     */
+    protected function isTrackingPixel(string $url): bool
+    {
+        $trackingPatterns = [
+            '/pixel\./',
+            '/tracking\./',
+            '/analytics\./',
+            '/1x1\./',
+            '/beacon\./',
+            '/\.gif\?/',
+            '/spacer\./',
+            '/blank\./',
+            '/transparent\./',
+        ];
+
+        foreach ($trackingPatterns as $pattern) {
+            if (preg_match($pattern, strtolower($url))) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Convertir une URL relative en absolue
+     *
+     * @param string $url URL (peut être relative)
+     * @param Article $article Article pour récupérer la base URL
+     * @return string URL absolue
+     */
+    protected function makeAbsoluteUrl(string $url, Article $article): string
+    {
+        // Si déjà absolue
+        if (preg_match('/^https?:\/\//i', $url)) {
+            return $url;
+        }
+
+        // Si commence par //
+        if (strpos($url, '//') === 0) {
+            return 'https:' . $url;
+        }
+
+        // Récupérer la base URL de la plateforme
+        $baseUrl = $article->platform->url ?? config('app.url');
+        $baseUrl = rtrim($baseUrl, '/');
+
+        // Si commence par /
+        if (strpos($url, '/') === 0) {
+            return $baseUrl . $url;
+        }
+
+        // URL relative
+        return $baseUrl . '/' . $url;
     }
 
     /**

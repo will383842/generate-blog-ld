@@ -1,0 +1,146 @@
+{
+  "title": "अनुसंधान",
+  "search": {
+    "title": "वेब खोज",
+    "query": "खोज क्वेरी",
+    "placeholder": "जानकारी खोजें...",
+    "results": "परिणाम",
+    "noResults": "कोई परिणाम नहीं मिला",
+    "sources": "स्रोत",
+    "sourceCount": "{{count}} स्रोत मिले",
+    "relevance": "प्रासंगिकता",
+    "date": "तिथि",
+    "cached": "कैश्ड परिणाम",
+    "refresh": "रीफ्रेश करें",
+    "saveResults": "परिणाम सहेजें",
+    "useInContent": "सामग्री में उपयोग करें",
+    "filters": {
+      "dateRange": "तिथि सीमा",
+      "sourceType": "स्रोत प्रकार",
+      "language": "भाषा",
+      "country": "देश"
+    }
+  },
+  "factCheck": {
+    "title": "तथ्य जांच",
+    "description": "जानकारी की सटीकता सत्यापित करें",
+    "claims": "दावे",
+    "addClaim": "दावा जोड़ें",
+    "verify": "सत्यापित करें",
+    "verifyAll": "सभी सत्यापित करें",
+    "verification": {
+      "verified": "सत्यापित",
+      "unverified": "असत्यापित",
+      "disputed": "विवादित",
+      "false": "गलत",
+      "partiallyTrue": "आंशिक रूप से सच"
+    },
+    "confidence": {
+      "title": "विश्वास स्तर",
+      "high": "उच्च",
+      "medium": "मध्यम",
+      "low": "निम्न"
+    },
+    "sources": {
+      "title": "सत्यापन स्रोत",
+      "primary": "प्राथमिक स्रोत",
+      "secondary": "द्वितीयक स्रोत",
+      "addSource": "स्रोत जोड़ें"
+    },
+    "report": {
+      "generate": "रिपोर्ट उत्पन्न करें",
+      "export": "निर्यात करें"
+    }
+  },
+  "mining": {
+    "title": "स्वचालित माइनिंग",
+    "description": "स्वचालित जानकारी निष्कर्षण",
+    "config": {
+      "title": "कॉन्फ़िगरेशन",
+      "sources": "मॉनिटर करने के स्रोत",
+      "frequency": "आवृत्ति",
+      "topics": "फॉलो करने के विषय",
+      "keywords": "कीवर्ड"
+    },
+    "frequency": {
+      "hourly": "प्रति घंटा",
+      "daily": "दैनिक",
+      "weekly": "साप्ताहिक"
+    },
+    "topics": {
+      "add": "विषय जोड़ें",
+      "edit": "संपादित करें",
+      "delete": "हटाएं"
+    },
+    "auto": {
+      "enabled": "स्वचालित माइनिंग सक्षम",
+      "disabled": "स्वचालित माइनिंग अक्षम",
+      "toggle": "सक्षम/अक्षम करें"
+    },
+    "results": {
+      "title": "माइनिंग परिणाम",
+      "new": "नई जानकारी",
+      "reviewed": "समीक्षित",
+      "saved": "सहेजा गया",
+      "ignored": "अनदेखा किया गया"
+    }
+  },
+  "sources": {
+    "title": "स्रोत प्रबंधन",
+    "add": "स्रोत जोड़ें",
+    "edit": "स्रोत संपादित करें",
+    "delete": "स्रोत हटाएं",
+    "priority": {
+      "title": "प्राथमिकता",
+      "high": "उच्च",
+      "medium": "मध्यम",
+      "low": "निम्न"
+    },
+    "reliability": {
+      "title": "विश्वसनीयता",
+      "trusted": "विश्वसनीय",
+      "neutral": "तटस्थ",
+      "untrusted": "अविश्वसनीय"
+    },
+    "types": {
+      "official": "आधिकारिक",
+      "news": "समाचार",
+      "academic": "अकादमिक",
+      "blog": "ब्लॉग",
+      "social": "सोशल मीडिया",
+      "other": "अन्य"
+    },
+    "fields": {
+      "name": "नाम",
+      "url": "URL",
+      "type": "प्रकार",
+      "priority": "प्राथमिकता",
+      "reliability": "विश्वसनीयता",
+      "notes": "नोट्स"
+    }
+  },
+  "cache": {
+    "title": "खोज कैश",
+    "entries": "कैश्ड प्रविष्टियां",
+    "size": "कैश आकार",
+    "clear": "कैश साफ़ करें",
+    "clearConfirm": "क्या आप वाकई कैश साफ़ करना चाहते हैं?",
+    "expiration": "समाप्ति",
+    "hitRate": "हिट दर"
+  },
+  "actions": {
+    "search": "खोजें",
+    "verify": "सत्यापित करें",
+    "save": "सहेजें",
+    "export": "निर्यात करें",
+    "refresh": "रीफ्रेश करें"
+  },
+  "messages": {
+    "searching": "खोज रहा है...",
+    "verifying": "सत्यापित हो रहा है...",
+    "saved": "परिणाम सहेजे गए",
+    "cacheCleared": "कैश साफ़ किया गया",
+    "miningStarted": "माइनिंग शुरू हुई",
+    "miningStopped": "माइनिंग रुकी"
+  }
+}

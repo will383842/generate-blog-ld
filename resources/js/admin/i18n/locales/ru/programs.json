@@ -1,0 +1,110 @@
+{
+  "title": "Программы",
+  "description": "Управление программами генерации",
+  "list": {
+    "title": "Список программ",
+    "add": "Новая программа",
+    "edit": "Редактировать",
+    "delete": "Удалить",
+    "duplicate": "Дублировать",
+    "run": "Запустить",
+    "pause": "Приостановить",
+    "resume": "Возобновить",
+    "empty": "Нет программ",
+    "createFirst": "Создайте свою первую программу"
+  },
+  "fields": {
+    "name": "Название",
+    "description": "Описание",
+    "type": "Тип",
+    "platform": "Платформа",
+    "template": "Шаблон",
+    "status": "Статус",
+    "priority": "Приоритет",
+    "schedule": "Расписание",
+    "articlesPerRun": "Статей за запуск",
+    "totalArticles": "Всего статей",
+    "generatedArticles": "Сгенерировано статей",
+    "remainingArticles": "Осталось статей",
+    "progress": "Прогресс",
+    "createdAt": "Создано",
+    "updatedAt": "Обновлено",
+    "lastRunAt": "Последний запуск",
+    "nextRunAt": "Следующий запуск"
+  },
+  "types": {
+    "country": "По стране",
+    "service": "По услуге",
+    "topic": "По теме",
+    "custom": "Пользовательский"
+  },
+  "status": {
+    "draft": "Черновик",
+    "active": "Активна",
+    "paused": "Приостановлена",
+    "completed": "Завершена"
+  },
+  "priority": {
+    "high": "Высокий",
+    "default": "Обычный",
+    "low": "Низкий"
+  },
+  "variables": {
+    "title": "Переменные",
+    "add": "Добавить переменную",
+    "name": "Название",
+    "values": "Значения",
+    "description": "Описание",
+    "country": "Страна",
+    "city": "Город",
+    "service": "Услуга",
+    "keyword": "Ключевое слово",
+    "custom": "Пользовательский"
+  },
+  "templates": {
+    "title": "Шаблоны",
+    "description": "Управление шаблонами генерации",
+    "add": "Новый шаблон",
+    "edit": "Редактировать",
+    "delete": "Удалить",
+    "duplicate": "Дублировать",
+    "preview": "Предпросмотр",
+    "fields": {
+      "name": "Название",
+      "description": "Описание",
+      "prompt": "Промпт",
+      "structure": "Структура",
+      "variables": "Доступные переменные"
+    },
+    "empty": "Нет шаблонов"
+  },
+  "detail": {
+    "overview": "Обзор",
+    "articles": "Статьи",
+    "variables": "Переменные",
+    "schedule": "Расписание",
+    "logs": "Логи",
+    "stats": "Статистика"
+  },
+  "stats": {
+    "totalGenerated": "Всего сгенерировано",
+    "successRate": "Успешность",
+    "avgQuality": "Средняя качество",
+    "avgGenerationTime": "Среднее время"
+  },
+  "actions": {
+    "runNow": "Запустить сейчас",
+    "generateBatch": "Сгенерировать пакет",
+    "stopGeneration": "Остановить генерацию",
+    "viewArticles": "Просмотр статей",
+    "exportArticles": "Экспорт статей"
+  },
+  "messages": {
+    "created": "Программа успешно создана",
+    "updated": "Программа обновлена",
+    "deleted": "Программа удалена",
+    "started": "Генерация запущена",
+    "paused": "Программа приостановлена",
+    "resumed": "Программа возобновлена"
+  }
+}

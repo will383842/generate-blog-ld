@@ -52,6 +52,17 @@ class RequestIndexing implements ShouldQueue
     public int $timeout = 60;
 
     /**
+     * Délais entre tentatives (backoff exponentiel)
+     * 1min, 5min, 15min (APIs Google/IndexNow)
+     *
+     * @return array<int>
+     */
+    public function backoff(): array
+    {
+        return [60, 300, 900];
+    }
+
+    /**
      * Créer une nouvelle instance du job
      *
      * @param int $articleId ID de l'article

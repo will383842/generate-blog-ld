@@ -1,0 +1,178 @@
+{
+  "title": "प्रशासन",
+  "description": "सिस्टम प्रबंधन",
+  "users": {
+    "title": "उपयोगकर्ता",
+    "description": "उपयोगकर्ताओं का प्रबंधन",
+    "add": "नया उपयोगकर्ता",
+    "edit": "संपादित करें",
+    "delete": "हटाएं",
+    "invite": "आमंत्रित करें",
+    "fields": {
+      "name": "नाम",
+      "email": "ईमेल",
+      "role": "भूमिका",
+      "status": "स्थिति",
+      "createdAt": "बनाया गया",
+      "lastLogin": "अंतिम लॉगिन"
+    },
+    "status": {
+      "active": "सक्रिय",
+      "inactive": "निष्क्रिय",
+      "pending": "लंबित"
+    },
+    "actions": {
+      "activate": "सक्रिय करें",
+      "deactivate": "निष्क्रिय करें",
+      "resetPassword": "पासवर्ड रीसेट करें",
+      "impersonate": "के रूप में लॉगिन करें"
+    },
+    "empty": "कोई उपयोगकर्ता नहीं"
+  },
+  "roles": {
+    "title": "भूमिकाएं",
+    "description": "भूमिकाओं का प्रबंधन",
+    "add": "नई भूमिका",
+    "edit": "संपादित करें",
+    "delete": "हटाएं",
+    "fields": {
+      "name": "नाम",
+      "description": "विवरण",
+      "permissions": "अनुमतियां",
+      "usersCount": "उपयोगकर्ता"
+    },
+    "default": {
+      "admin": "प्रशासक",
+      "editor": "संपादक",
+      "author": "लेखक",
+      "viewer": "दर्शक"
+    },
+    "empty": "कोई भूमिकाएं नहीं"
+  },
+  "permissions": {
+    "title": "अनुमतियां",
+    "description": "अनुमतियों का प्रबंधन",
+    "categories": {
+      "content": "सामग्री",
+      "programs": "कार्यक्रम",
+      "publishing": "प्रकाशन",
+      "settings": "सेटिंग्स",
+      "admin": "प्रशासन"
+    },
+    "actions": {
+      "view": "देखें",
+      "create": "बनाएं",
+      "edit": "संपादित करें",
+      "delete": "हटाएं",
+      "manage": "प्रबंधित करें"
+    }
+  },
+  "activity": {
+    "title": "गतिविधि",
+    "description": "गतिविधि लॉग",
+    "user": "उपयोगकर्ता",
+    "action": "कार्रवाई",
+    "target": "लक्ष्य",
+    "ip": "IP पता",
+    "timestamp": "समय",
+    "details": "विवरण",
+    "filters": {
+      "user": "उपयोगकर्ता",
+      "action": "कार्रवाई",
+      "dateRange": "तिथि सीमा"
+    },
+    "empty": "कोई गतिविधि नहीं"
+  },
+  "system": {
+    "title": "सिस्टम",
+    "description": "सिस्टम जानकारी",
+    "version": "संस्करण",
+    "environment": "वातावरण",
+    "phpVersion": "PHP संस्करण",
+    "laravelVersion": "Laravel संस्करण",
+    "databaseSize": "डेटाबेस आकार",
+    "diskUsage": "डिस्क उपयोग",
+    "memoryUsage": "मेमोरी",
+    "uptime": "अपटाइम",
+    "lastUpdate": "अंतिम अपडेट",
+    "health": "स्वास्थ्य स्थिति",
+    "healthy": "स्वस्थ",
+    "warning": "चेतावनी",
+    "critical": "गंभीर"
+  },
+  "workers": {
+    "title": "वर्कर्स",
+    "description": "वर्कर प्रबंधन",
+    "status": "स्थिति",
+    "queue": "कतार",
+    "jobs": "कार्य",
+    "failed": "विफल",
+    "processed": "संसाधित",
+    "memory": "मेमोरी",
+    "uptime": "अपटाइम",
+    "start": "शुरू करें",
+    "stop": "रोकें",
+    "restart": "पुनः आरंभ करें",
+    "empty": "कोई वर्कर नहीं"
+  },
+  "errors": {
+    "title": "त्रुटियां",
+    "description": "त्रुटि लॉग",
+    "message": "संदेश",
+    "file": "फ़ाइल",
+    "line": "पंक्ति",
+    "trace": "ट्रेस",
+    "occurrences": "घटनाएं",
+    "lastOccurrence": "अंतिम घटना",
+    "resolve": "हल करें",
+    "ignore": "अनदेखा करें",
+    "empty": "कोई त्रुटियां नहीं"
+  },
+  "backups": {
+    "title": "बैकअप",
+    "description": "बैकअप प्रबंधन",
+    "create": "बैकअप बनाएं",
+    "restore": "पुनर्स्थापित करें",
+    "download": "डाउनलोड करें",
+    "delete": "हटाएं",
+    "name": "नाम",
+    "size": "आकार",
+    "createdAt": "बनाया गया",
+    "type": "प्रकार",
+    "status": "स्थिति",
+    "types": {
+      "full": "पूर्ण",
+      "database": "डेटाबेस",
+      "files": "फ़ाइलें"
+    },
+    "schedule": "शेड्यूल",
+    "lastBackup": "अंतिम बैकअप",
+    "nextBackup": "अगला बैकअप",
+    "empty": "कोई बैकअप नहीं"
+  },
+  "settings": {
+    "title": "सिस्टम सेटिंग्स",
+    "description": "उन्नत कॉन्फ़िगरेशन",
+    "cache": {
+      "title": "कैश",
+      "clear": "कैश साफ़ करें",
+      "clearAll": "सभी कैश साफ़ करें",
+      "config": "कॉन्फ़िग कैश",
+      "routes": "रूट्स कैश",
+      "views": "व्यूज कैश"
+    },
+    "maintenance": {
+      "title": "रखरखाव",
+      "enable": "रखरखाव मोड सक्षम करें",
+      "disable": "रखरखाव मोड अक्षम करें",
+      "status": "स्थिति",
+      "message": "संदेश"
+    },
+    "logs": {
+      "title": "लॉग्स",
+      "view": "लॉग्स देखें",
+      "download": "डाउनलोड करें",
+      "clear": "लॉग्स साफ़ करें"
+    }
+  }
+}

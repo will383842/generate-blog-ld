@@ -1,0 +1,102 @@
+{
+  "title": "التوليد",
+  "description": "توليد المحتوى التلقائي",
+  "queue": {
+    "title": "قائمة الانتظار للتوليد",
+    "description": "المقالات في انتظار التوليد",
+    "empty": "قائمة الانتظار فارغة",
+    "item": "عنصر",
+    "program": "برنامج",
+    "priority": "الأولوية",
+    "status": "الحالة",
+    "createdAt": "أضيف في",
+    "startedAt": "بدأ في",
+    "estimatedTime": "الوقت المقدر",
+    "cancel": "إلغاء",
+    "retry": "إعادة المحاولة",
+    "moveToTop": "نقل إلى الأعلى",
+    "bulkCancel": "إلغاء المحدد"
+  },
+  "history": {
+    "title": "السجل",
+    "description": "سجل التوليد",
+    "empty": "لا يوجد سجل",
+    "article": "مقالة",
+    "program": "برنامج",
+    "status": "الحالة",
+    "duration": "المدة",
+    "tokens": "الرموز المستخدمة",
+    "cost": "التكلفة",
+    "generatedAt": "تم التوليد في",
+    "viewArticle": "عرض المقالة",
+    "regenerate": "إعادة التوليد",
+    "export": "تصدير"
+  },
+  "settings": {
+    "title": "إعدادات التوليد",
+    "description": "تكوين خيارات التوليد",
+    "model": "نموذج الذكاء الاصطناعي",
+    "temperature": "درجة الحرارة",
+    "maxTokens": "الحد الأقصى للرموز",
+    "language": "اللغة",
+    "tone": "النبرة",
+    "style": "الأسلوب",
+    "length": "الطول",
+    "defaults": "القيم الافتراضية",
+    "advanced": "خيارات متقدمة"
+  },
+  "status": {
+    "pending": "قيد الانتظار",
+    "processing": "قيد المعالجة",
+    "completed": "مكتمل",
+    "failed": "فشل",
+    "cancelled": "ملغى",
+    "retrying": "إعادة المحاولة"
+  },
+  "priority": {
+    "high": "عالية",
+    "default": "عادية",
+    "low": "منخفضة"
+  },
+  "stats": {
+    "today": "اليوم",
+    "thisWeek": "هذا الأسبوع",
+    "thisMonth": "هذا الشهر",
+    "total": "الإجمالي",
+    "pending": "قيد الانتظار",
+    "processing": "قيد المعالجة",
+    "completed": "مكتمل",
+    "failed": "فشل",
+    "successRate": "معدل النجاح",
+    "avgDuration": "متوسط المدة",
+    "tokensUsed": "الرموز المستخدمة",
+    "estimatedCost": "التكلفة المقدرة"
+  },
+  "actions": {
+    "generate": "توليد",
+    "generateNow": "توليد الآن",
+    "addToQueue": "إضافة إلى القائمة",
+    "clearQueue": "مسح القائمة",
+    "pauseAll": "إيقاف الكل مؤقتاً",
+    "resumeAll": "استئناف الكل",
+    "cancelAll": "إلغاء الكل"
+  },
+  "messages": {
+    "generating": "جارٍ التوليد...",
+    "generated": "تم توليد المقالة بنجاح",
+    "failed": "فشل التوليد",
+    "cancelled": "تم إلغاء التوليد",
+    "queued": "تمت الإضافة إلى القائمة",
+    "retrying": "جارٍ إعادة المحاولة..."
+  },
+  "ai": {
+    "title": "تكوين الذكاء الاصطناعي",
+    "provider": "المزود",
+    "model": "النموذج",
+    "apiKey": "مفتاح API",
+    "testConnection": "اختبار الاتصال",
+    "usage": "الاستخدام",
+    "quota": "الحصة",
+    "remaining": "المتبقي"
+  }
+}

@@ -1,0 +1,98 @@
+{
+  "title": "Качество",
+  "description": "Контроль качества контента",
+  "scores": {
+    "title": "Оценки качества",
+    "description": "Анализ оценки качества",
+    "overall": "Общая оценка",
+    "seo": "SEO",
+    "readability": "Читаемость",
+    "originality": "Оригинальность",
+    "structure": "Структура",
+    "grammar": "Грамматика",
+    "engagement": "Вовлечённость",
+    "distribution": "Распределение оценок",
+    "trend": "Тренд",
+    "average": "Среднее",
+    "minimum": "Минимум",
+    "maximum": "Максимум"
+  },
+  "review": {
+    "title": "Проверка",
+    "description": "Статьи в ожидании проверки",
+    "pendingReview": "Ожидает проверки",
+    "needsImprovement": "Требуется улучшение",
+    "approved": "Одобрено",
+    "rejected": "Отклонено",
+    "approve": "Одобрить",
+    "reject": "Отклонить",
+    "requestChanges": "Запросить изменения",
+    "sendToEditor": "Отправить редактору",
+    "bulkApprove": "Одобрить выбранные",
+    "bulkReject": "Отклонить выбранные",
+    "empty": "Нет статей на проверке"
+  },
+  "rules": {
+    "title": "Правила качества",
+    "description": "Настроить правила валидации",
+    "add": "Новое правило",
+    "edit": "Редактировать",
+    "delete": "Удалить",
+    "enable": "Включить",
+    "disable": "Отключить",
+    "name": "Название",
+    "type": "Тип",
+    "threshold": "Порог",
+    "weight": "Вес",
+    "action": "Действие",
+    "categories": {
+      "seo": "SEO",
+      "readability": "Читаемость",
+      "grammar": "Грамматика",
+      "structure": "Структура",
+      "content": "Контент"
+    },
+    "actions": {
+      "warn": "Предупредить",
+      "block": "Заблокировать",
+      "flag": "Отметить"
+    },
+    "empty": "Правила не настроены"
+  },
+  "analysis": {
+    "title": "Анализ",
+    "analyzing": "Анализируем...",
+    "issues": "Обнаружены проблемы",
+    "warnings": "Предупреждения",
+    "suggestions": "Предложения",
+    "passed": "Пройдено",
+    "fix": "Исправить",
+    "ignore": "Игнорировать",
+    "fixAll": "Исправить всё"
+  },
+  "levels": {
+    "excellent": "Отлично",
+    "good": "Хорошо",
+    "average": "Средне",
+    "poor": "Плохо",
+    "critical": "Критично"
+  },
+  "metrics": {
+    "wordCount": "Количество слов",
+    "sentenceCount": "Количество предложений",
+    "paragraphCount": "Абзацы",
+    "avgSentenceLength": "Средняя длина предложения",
+    "avgWordLength": "Средняя длина слова",
+    "readingTime": "Время чтения",
+    "fleschScore": "Оценка Флеша",
+    "keywordDensity": "Плотность ключевых слов"
+  },
+  "stats": {
+    "totalAnalyzed": "Всего проанализировано",
+    "avgScore": "Средняя оценка",
+    "excellent": "Отлично",
+    "good": "Хорошо",
+    "average": "Средне",
+    "poor": "Плохо"
+  }
+}

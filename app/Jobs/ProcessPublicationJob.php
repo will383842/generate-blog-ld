@@ -13,6 +13,9 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\PublicationFailedMail;
+use App\Mail\PublicationSuccessMail;
 
 /**
  * Job de publication d'un article
@@ -44,6 +47,17 @@ class ProcessPublicationJob implements ShouldQueue
      * @var int
      */
     public int $timeout = 60;
+
+    /**
+     * Délais entre tentatives (backoff exponentiel)
+     * 30s, 2min, 5min
+     *
+     * @return array<int>
+     */
+    public function backoff(): array
+    {
+        return [30, 120, 300];
+    }
 
     /**
      * Créer une nouvelle instance du job
@@ -124,6 +138,17 @@ class ProcessPublicationJob implements ShouldQueue
                 'article_id' => $article->id,
                 'platform' => $platform->name,
             ]);
+
+            // Notification de succès par email
+            $this->notifySuccess($article, $platform);
+
+            // Demande d'indexation automatique après publication
+            if (config('seo.auto_submission.enabled', true) &&
+                config('seo.auto_submission.on_publish', true)) {
+                \App\Jobs\RequestIndexing::dispatch($article->id)
+                    ->delay(now()->addMinutes(5))
+                    ->onQueue('indexing');
+            }
 
         } catch (\Exception $e) {
             Log::error('Échec de publication', [
@@ -255,6 +280,65 @@ class ProcessPublicationJob implements ShouldQueue
     }
 
     /**
+     * Notifier le succès de publication
+     *
+     * @param Article $article
+     * @param \App\Models\Platform $platform
+     * @return void
+     */
+    protected function notifySuccess(Article $article, $platform): void
+    {
+        if (!config('publishing.monitoring.send_success_alerts', false)) {
+            return;
+        }
+
+        $emails = config('publishing.monitoring.alert_emails', []);
+
+        if (empty($emails)) {
+            return;
+        }
+
+        try {
+            Mail::to($emails)->send(new PublicationSuccessMail($article, $platform));
+
+            Log::info('Email de succès envoyé', [
+                'article_id' => $article->id,
+                'recipients' => $emails,
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Échec envoi email de succès', ['error' => $e->getMessage()]);
+        }
+
+        // Notification Slack optionnelle
+        $slackWebhook = config('publishing.monitoring.slack_webhook');
+
+        if ($slackWebhook) {
+            try {
+                Http::post($slackWebhook, [
+                    'text' => "✅ Publication réussie",
+                    'attachments' => [[
+                        'color' => 'good',
+                        'fields' => [
+                            [
+                                'title' => 'Article',
+                                'value' => $article->title,
+                                'short' => true,
+                            ],
+                            [
+                                'title' => 'Plateforme',
+                                'value' => $platform->name,
+                                'short' => true,
+                            ],
+                        ],
+                    ]],
+                ]);
+            } catch (\Exception $e) {
+                Log::error('Échec notification Slack succès', ['error' => $e->getMessage()]);
+            }
+        }
+    }
+
+    /**
      * Notifier l'échec définitif
      *
      * @param Article $article
@@ -269,17 +353,26 @@ class ProcessPublicationJob implements ShouldQueue
         }
 
         $emails = config('publishing.monitoring.alert_emails', []);
-        
+
         if (empty($emails)) {
             return;
         }
 
-        // TODO: Implémenter l'envoi d'email avec Laravel Mail
-        // Mail::to($emails)->send(new PublicationFailedMail($article, $platform, $exception));
+        // Envoi d'email avec Laravel Mail
+        try {
+            Mail::to($emails)->send(new PublicationFailedMail($article, $platform, $exception));
 
-        // Alternative : notification Slack
+            Log::info('Email d\'échec envoyé', [
+                'article_id' => $article->id,
+                'recipients' => $emails,
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Échec envoi email de notification', ['error' => $e->getMessage()]);
+        }
+
+        // Notification Slack en complément
         $slackWebhook = config('publishing.monitoring.slack_webhook');
-        
+
         if ($slackWebhook) {
             try {
                 Http::post($slackWebhook, [

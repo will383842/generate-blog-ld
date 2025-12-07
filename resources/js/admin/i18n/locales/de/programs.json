@@ -1,0 +1,110 @@
+{
+  "title": "Programme",
+  "description": "Verwalten Sie Ihre Generierungsprogramme",
+  "list": {
+    "title": "Programmliste",
+    "add": "Neues Programm",
+    "edit": "Bearbeiten",
+    "delete": "Löschen",
+    "duplicate": "Duplizieren",
+    "run": "Ausführen",
+    "pause": "Pausieren",
+    "resume": "Fortsetzen",
+    "empty": "Keine Programme",
+    "createFirst": "Erstellen Sie Ihr erstes Programm"
+  },
+  "fields": {
+    "name": "Name",
+    "description": "Beschreibung",
+    "type": "Typ",
+    "platform": "Plattform",
+    "template": "Vorlage",
+    "status": "Status",
+    "priority": "Priorität",
+    "schedule": "Zeitplan",
+    "articlesPerRun": "Artikel pro Durchlauf",
+    "totalArticles": "Artikel gesamt",
+    "generatedArticles": "Generierte Artikel",
+    "remainingArticles": "Verbleibende Artikel",
+    "progress": "Fortschritt",
+    "createdAt": "Erstellt am",
+    "updatedAt": "Aktualisiert am",
+    "lastRunAt": "Letzter Durchlauf",
+    "nextRunAt": "Nächster Durchlauf"
+  },
+  "types": {
+    "country": "Nach Land",
+    "service": "Nach Service",
+    "topic": "Nach Thema",
+    "custom": "Benutzerdefiniert"
+  },
+  "status": {
+    "draft": "Entwurf",
+    "active": "Aktiv",
+    "paused": "Pausiert",
+    "completed": "Abgeschlossen"
+  },
+  "priority": {
+    "high": "Hoch",
+    "default": "Normal",
+    "low": "Niedrig"
+  },
+  "variables": {
+    "title": "Variablen",
+    "add": "Variable hinzufügen",
+    "name": "Name",
+    "values": "Werte",
+    "description": "Beschreibung",
+    "country": "Land",
+    "city": "Stadt",
+    "service": "Service",
+    "keyword": "Schlüsselwort",
+    "custom": "Benutzerdefiniert"
+  },
+  "templates": {
+    "title": "Vorlagen",
+    "description": "Verwalten Sie Ihre Generierungsvorlagen",
+    "add": "Neue Vorlage",
+    "edit": "Bearbeiten",
+    "delete": "Löschen",
+    "duplicate": "Duplizieren",
+    "preview": "Vorschau",
+    "fields": {
+      "name": "Name",
+      "description": "Beschreibung",
+      "prompt": "Prompt",
+      "structure": "Struktur",
+      "variables": "Verfügbare Variablen"
+    },
+    "empty": "Keine Vorlagen"
+  },
+  "detail": {
+    "overview": "Übersicht",
+    "articles": "Artikel",
+    "variables": "Variablen",
+    "schedule": "Zeitplan",
+    "logs": "Protokolle",
+    "stats": "Statistiken"
+  },
+  "stats": {
+    "totalGenerated": "Gesamt generiert",
+    "successRate": "Erfolgsrate",
+    "avgQuality": "Durchschnittliche Qualität",
+    "avgGenerationTime": "Durchschnittliche Zeit"
+  },
+  "actions": {
+    "runNow": "Jetzt ausführen",
+    "generateBatch": "Stapel generieren",
+    "stopGeneration": "Generierung stoppen",
+    "viewArticles": "Artikel anzeigen",
+    "exportArticles": "Artikel exportieren"
+  },
+  "messages": {
+    "created": "Programm erfolgreich erstellt",
+    "updated": "Programm aktualisiert",
+    "deleted": "Programm gelöscht",
+    "started": "Generierung gestartet",
+    "paused": "Programm pausiert",
+    "resumed": "Programm fortgesetzt"
+  }
+}

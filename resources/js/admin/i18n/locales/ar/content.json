@@ -1,0 +1,121 @@
+{
+  "title": "المحتوى",
+  "description": "إدارة المقالات والمحتوى الخاص بك",
+  "articles": {
+    "title": "المقالات",
+    "description": "إدارة مقالاتك",
+    "add": "مقال جديد",
+    "edit": "تحرير المقال",
+    "delete": "حذف المقال",
+    "duplicate": "تكرار",
+    "archive": "أرشفة",
+    "publish": "نشر",
+    "unpublish": "إلغاء النشر",
+    "schedule": "جدولة",
+    "preview": "معاينة",
+    "fields": {
+      "title": "العنوان",
+      "slug": "الرابط المختصر",
+      "content": "المحتوى",
+      "excerpt": "المقتطف",
+      "featuredImage": "الصورة البارزة",
+      "category": "التصنيف",
+      "tags": "الوسوم",
+      "author": "المؤلف",
+      "status": "الحالة",
+      "publishedAt": "تاريخ النشر",
+      "createdAt": "تاريخ الإنشاء",
+      "updatedAt": "تاريخ التحديث"
+    },
+    "status": {
+      "draft": "مسودة",
+      "published": "منشور",
+      "archived": "مؤرشف",
+      "scheduled": "مجدول"
+    },
+    "filters": {
+      "all": "الكل",
+      "drafts": "المسودات",
+      "published": "المنشورة",
+      "archived": "المؤرشفة"
+    },
+    "bulk": {
+      "publish": "نشر المحدد",
+      "unpublish": "إلغاء نشر المحدد",
+      "delete": "حذف المحدد",
+      "archive": "أرشفة المحدد"
+    },
+    "empty": "لم يتم العثور على مقالات",
+    "createFirst": "إنشاء مقالك الأول"
+  },
+  "categories": {
+    "title": "التصنيفات",
+    "description": "إدارة تصنيفاتك",
+    "add": "تصنيف جديد",
+    "edit": "تحرير التصنيف",
+    "delete": "حذف التصنيف",
+    "fields": {
+      "name": "الاسم",
+      "slug": "الرابط المختصر",
+      "description": "الوصف",
+      "parent": "التصنيف الأب",
+      "color": "اللون",
+      "icon": "الأيقونة"
+    },
+    "articlesCount": "المقالات",
+    "empty": "لا توجد تصنيفات",
+    "noParent": "لا شيء (تصنيف جذر)"
+  },
+  "tags": {
+    "title": "الوسوم",
+    "description": "إدارة وسومك",
+    "add": "وسم جديد",
+    "edit": "تحرير الوسم",
+    "delete": "حذف الوسم",
+    "fields": {
+      "name": "الاسم",
+      "slug": "الرابط المختصر",
+      "description": "الوصف",
+      "color": "اللون"
+    },
+    "articlesCount": "المقالات",
+    "empty": "لا توجد وسوم",
+    "merge": "دمج الوسوم"
+  },
+  "editor": {
+    "title": "المحرر",
+    "save": "حفظ",
+    "saveAndPublish": "حفظ ونشر",
+    "saveDraft": "حفظ كمسودة",
+    "preview": "معاينة",
+    "settings": "الإعدادات",
+    "seo": "تحسين محركات البحث",
+    "media": "الوسائط",
+    "history": "السجل",
+    "autosave": "الحفظ التلقائي",
+    "lastSaved": "آخر حفظ",
+    "wordCount": "الكلمات",
+    "readingTime": "وقت القراءة",
+    "toolbar": {
+      "bold": "عريض",
+      "italic": "مائل",
+      "underline": "تحته خط",
+      "strikethrough": "يتوسطه خط",
+      "heading": "عنوان",
+      "link": "رابط",
+      "image": "صورة",
+      "list": "قائمة",
+      "quote": "اقتباس",
+      "code": "كود",
+      "table": "جدول"
+    }
+  },
+  "media": {
+    "title": "الوسائط",
+    "selectImage": "اختر صورة",
+    "uploadImage": "رفع صورة",
+    "removeImage": "إزالة الصورة",
+    "altText": "النص البديل",
+    "caption": "التسمية التوضيحية"
+  }
+}

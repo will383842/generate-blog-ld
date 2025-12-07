@@ -142,6 +142,15 @@ class Kernel extends ConsoleKernel
         ->monthlyOn(15, '03:00')
         ->name('export-training-monthly')
         ->withoutOverlapping();
+
+        // =====================================================================
+        // MAINTENANCE - Nettoyage des logs (quotidien à 02:00)
+        // =====================================================================
+
+        $schedule->command('logs:clean --days=7')
+                 ->dailyAt('02:00')
+                 ->name('logs-cleanup-daily')
+                 ->withoutOverlapping();
     }
 
     protected function commands(): void

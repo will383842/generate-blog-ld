@@ -17,6 +17,11 @@ use Illuminate\Support\Facades\Cache;
 
 /**
  * CoverageController - Statistiques de couverture géographique et linguistique
+ * 
+ * OPTIMISÉ: Suppression des requêtes N+1
+ * - Préchargement des entités en amont
+ * - Utilisation de keyBy() pour indexation rapide
+ * - Cache augmenté pour réduire la charge DB
  */
 class CoverageController extends Controller
 {
@@ -24,6 +29,8 @@ class CoverageController extends Controller
      * Couverture par plateforme
      * 
      * GET /api/coverage/by-platform
+     * 
+     * OPTIMISÉ: Préchargement des plateformes
      */
     public function byPlatform(Request $request): JsonResponse
     {
@@ -51,8 +58,17 @@ class CoverageController extends Controller
                 $totalCountries = Country::count();
                 $totalLanguages = Language::count();
 
-                $results = $stats->map(function ($stat) use ($totalCountries, $totalLanguages) {
-                    $platform = Platform::find($stat->platform_id);
+                // ✅ OPTIMISÉ: Précharger TOUTES les plateformes en une seule requête
+                $platformIds = $stats->pluck('platform_id')->unique()->filter();
+                $platforms = Platform::whereIn('id', $platformIds)->get()->keyBy('id');
+
+                $results = $stats->map(function ($stat) use ($totalCountries, $totalLanguages, $platforms) {
+                    // ✅ OPTIMISÉ: Accès O(1) au lieu de requête SQL
+                    $platform = $platforms->get($stat->platform_id);
+                    
+                    if (!$platform) {
+                        return null;
+                    }
                     
                     return [
                         'platform' => [
@@ -64,12 +80,16 @@ class CoverageController extends Controller
                             'countries' => [
                                 'covered' => $stat->countries_covered,
                                 'total' => $totalCountries,
-                                'percentage' => round(($stat->countries_covered / $totalCountries) * 100, 2),
+                                'percentage' => $totalCountries > 0 
+                                    ? round(($stat->countries_covered / $totalCountries) * 100, 2)
+                                    : 0,
                             ],
                             'languages' => [
                                 'covered' => $stat->languages_covered,
                                 'total' => $totalLanguages,
-                                'percentage' => round(($stat->languages_covered / $totalLanguages) * 100, 2),
+                                'percentage' => $totalLanguages > 0
+                                    ? round(($stat->languages_covered / $totalLanguages) * 100, 2)
+                                    : 0,
                             ],
                         ],
                         'articles' => [
@@ -78,7 +98,7 @@ class CoverageController extends Controller
                             'draft' => $stat->total_articles - $stat->published_articles,
                         ],
                     ];
-                });
+                })->filter()->values();
 
                 return response()->json([
                     'success' => true,
@@ -99,6 +119,8 @@ class CoverageController extends Controller
      * Couverture par pays
      * 
      * GET /api/coverage/by-country
+     * 
+     * OPTIMISÉ: Préchargement des pays
      */
     public function byCountry(Request $request): JsonResponse
     {
@@ -121,8 +143,17 @@ class CoverageController extends Controller
 
                 $stats = $query->get();
 
-                $results = $stats->map(function ($stat) {
-                    $country = Country::find($stat->country_id);
+                // ✅ OPTIMISÉ: Précharger TOUS les pays en une seule requête
+                $countryIds = $stats->pluck('country_id')->unique()->filter();
+                $countries = Country::whereIn('id', $countryIds)->get()->keyBy('id');
+
+                $results = $stats->map(function ($stat) use ($countries) {
+                    // ✅ OPTIMISÉ: Accès O(1) au lieu de requête SQL
+                    $country = $countries->get($stat->country_id);
+                    
+                    if (!$country) {
+                        return null;
+                    }
                     
                     return [
                         'country' => [
@@ -134,7 +165,7 @@ class CoverageController extends Controller
                         'languages_count' => $stat->languages_count,
                         'content_types_count' => $stat->content_types_count,
                     ];
-                });
+                })->filter()->values();
 
                 return response()->json([
                     'success' => true,
@@ -159,54 +190,68 @@ class CoverageController extends Controller
      * Couverture par thème
      * 
      * GET /api/coverage/by-theme
+     * 
+     * OPTIMISÉ: Préchargement des thèmes
      */
     public function byTheme(Request $request): JsonResponse
     {
-        try {
-            $platformId = $request->get('platform_id');
+        $platformId = $request->get('platform_id');
+        $cacheKey = 'coverage.by_theme.' . ($platformId ?? 'all');
 
-            $query = Article::select([
-                    'theme_id',
-                    DB::raw('COUNT(*) as total_articles'),
-                    DB::raw('COUNT(DISTINCT country_id) as countries_count'),
-                    DB::raw('COUNT(DISTINCT language_id) as languages_count'),
-                ])
-                ->whereNotNull('theme_id')
-                ->groupBy('theme_id');
+        return Cache::remember($cacheKey, 600, function () use ($platformId) {
+            try {
+                $query = Article::select([
+                        'theme_id',
+                        DB::raw('COUNT(*) as total_articles'),
+                        DB::raw('COUNT(DISTINCT country_id) as countries_count'),
+                        DB::raw('COUNT(DISTINCT language_id) as languages_count'),
+                    ])
+                    ->whereNotNull('theme_id')
+                    ->groupBy('theme_id');
 
-            if ($platformId) {
-                $query->where('platform_id', $platformId);
+                if ($platformId) {
+                    $query->where('platform_id', $platformId);
+                }
+
+                $stats = $query->get();
+
+                // ✅ OPTIMISÉ: Précharger TOUS les thèmes en une seule requête
+                $themeIds = $stats->pluck('theme_id')->unique()->filter();
+                $themes = Theme::whereIn('id', $themeIds)->get()->keyBy('id');
+
+                $results = $stats->map(function ($stat) use ($themes) {
+                    // ✅ OPTIMISÉ: Accès O(1) au lieu de requête SQL
+                    $theme = $themes->get($stat->theme_id);
+                    
+                    if (!$theme) {
+                        return null;
+                    }
+                    
+                    return [
+                        'theme' => [
+                            'id' => $theme->id,
+                            'name' => $theme->name,
+                            'slug' => $theme->slug,
+                        ],
+                        'articles_count' => $stat->total_articles,
+                        'countries_count' => $stat->countries_count,
+                        'languages_count' => $stat->languages_count,
+                    ];
+                })->filter()->values();
+
+                return response()->json([
+                    'success' => true,
+                    'data' => $results,
+                ]);
+
+            } catch (\Exception $e) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Erreur lors de la récupération',
+                    'error' => $e->getMessage(),
+                ], 500);
             }
-
-            $stats = $query->get();
-
-            $results = $stats->map(function ($stat) {
-                $theme = Theme::find($stat->theme_id);
-                
-                return [
-                    'theme' => [
-                        'id' => $theme->id,
-                        'name' => $theme->name,
-                        'slug' => $theme->slug,
-                    ],
-                    'articles_count' => $stat->total_articles,
-                    'countries_count' => $stat->countries_count,
-                    'languages_count' => $stat->languages_count,
-                ];
-            });
-
-            return response()->json([
-                'success' => true,
-                'data' => $results,
-            ]);
-
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Erreur lors de la récupération',
-                'error' => $e->getMessage(),
-            ], 500);
-        }
+        });
     }
 
     /**
@@ -275,6 +320,8 @@ class CoverageController extends Controller
      * Heatmap de couverture
      * 
      * GET /api/coverage/heatmap
+     * 
+     * OPTIMISÉ: Préchargement des pays et langues
      */
     public function heatmap(Request $request): JsonResponse
     {
@@ -292,21 +339,34 @@ class CoverageController extends Controller
                     ->groupBy('country_id', 'language_id')
                     ->get();
 
-                $heatmap = [];
-                foreach ($data as $item) {
-                    $country = Country::find($item->country_id);
-                    $language = Language::find($item->language_id);
+                // ✅ OPTIMISÉ: Précharger TOUS les pays et langues en 2 requêtes seulement
+                $countryIds = $data->pluck('country_id')->unique()->filter();
+                $languageIds = $data->pluck('language_id')->unique()->filter();
+                
+                $countries = Country::whereIn('id', $countryIds)->get()->keyBy('id');
+                $languages = Language::whereIn('id', $languageIds)->get()->keyBy('id');
+
+                $heatmap = $data->map(function ($item) use ($countries, $languages) {
+                    // ✅ OPTIMISÉ: Accès O(1) au lieu de requêtes SQL
+                    $country = $countries->get($item->country_id);
+                    $language = $languages->get($item->language_id);
                     
-                    $heatmap[] = [
+                    return [
                         'country' => $country->iso2 ?? null,
+                        'country_name' => $country->name ?? null,
                         'language' => $language->code ?? null,
+                        'language_name' => $language->name ?? null,
                         'count' => $item->count,
                     ];
-                }
+                })->filter(fn($item) => $item['country'] && $item['language'])->values();
 
                 return response()->json([
                     'success' => true,
                     'data' => $heatmap,
+                    'meta' => [
+                        'total_combinations' => $heatmap->count(),
+                        'total_articles' => $heatmap->sum('count'),
+                    ],
                 ]);
 
             } catch (\Exception $e) {

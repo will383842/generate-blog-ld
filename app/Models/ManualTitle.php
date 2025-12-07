@@ -7,10 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ManualTitle extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'title',
@@ -21,10 +22,13 @@ class ManualTitle extends Model
         'suggested_template',
         'context',
         'status',
+        'scheduled_at',
+        'batch_uuid',
     ];
 
     protected $casts = [
         'context' => 'array',
+        'scheduled_at' => 'datetime',
     ];
 
     // =========================================================================
@@ -33,6 +37,7 @@ class ManualTitle extends Model
 
     const STATUS_PENDING = 'pending';
     const STATUS_QUEUED = 'queued';
+    const STATUS_SCHEDULED = 'scheduled';
     const STATUS_PROCESSING = 'processing';
     const STATUS_COMPLETED = 'completed';
     const STATUS_FAILED = 'failed';
@@ -156,7 +161,58 @@ class ManualTitle extends Model
      */
     public function markAsQueued(): void
     {
-        $this->update(['status' => self::STATUS_QUEUED]);
+        $this->update([
+            'status' => self::STATUS_QUEUED,
+            'scheduled_at' => null,
+        ]);
+    }
+
+    /**
+     * Marquer comme programmé
+     *
+     * @param \DateTimeInterface|string $scheduledAt Date de programmation
+     */
+    public function markAsScheduled($scheduledAt): void
+    {
+        $this->update([
+            'status' => self::STATUS_SCHEDULED,
+            'scheduled_at' => $scheduledAt,
+        ]);
+    }
+
+    /**
+     * Vérifier si la génération est programmée
+     */
+    public function isScheduled(): bool
+    {
+        return $this->status === self::STATUS_SCHEDULED && $this->scheduled_at !== null;
+    }
+
+    /**
+     * Vérifier si la génération programmée est prête à être exécutée
+     */
+    public function isReadyToProcess(): bool
+    {
+        if ($this->status !== self::STATUS_SCHEDULED) {
+            return false;
+        }
+
+        return $this->scheduled_at && $this->scheduled_at->isPast();
+    }
+
+    /**
+     * Obtenir le délai restant avant exécution
+     *
+     * @return int Délai en secondes (0 si déjà passé)
+     */
+    public function getDelayInSeconds(): int
+    {
+        if (!$this->scheduled_at) {
+            return 0;
+        }
+
+        $delay = now()->diffInSeconds($this->scheduled_at, false);
+        return max(0, $delay);
     }
 
     /**

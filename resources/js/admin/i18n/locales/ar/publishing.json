@@ -1,0 +1,113 @@
+{
+  "title": "النشر",
+  "description": "إدارة نشر المحتوى الخاص بك",
+  "platforms": {
+    "title": "المنصات",
+    "description": "ربط منصات النشر الخاصة بك",
+    "add": "إضافة منصة",
+    "edit": "تعديل",
+    "delete": "حذف",
+    "test": "اختبار الاتصال",
+    "testSuccess": "نجح الاتصال",
+    "testFailed": "فشل الاتصال",
+    "name": "الاسم",
+    "type": "النوع",
+    "url": "الرابط",
+    "status": "الحالة",
+    "active": "نشط",
+    "inactive": "غير نشط",
+    "lastSync": "آخر مزامنة",
+    "articlesCount": "المقالات المنشورة",
+    "successRate": "معدل النجاح",
+    "types": {
+      "wordpress": "ووردبريس",
+      "custom_api": "واجهة برمجية مخصصة",
+      "webhook": "خطاف ويب",
+      "ftp": "بروتوكول نقل الملفات",
+      "other": "أخرى"
+    }
+  },
+  "endpoints": {
+    "title": "نقاط النهاية",
+    "description": "تكوين نقاط نهاية الواجهة البرمجية",
+    "add": "إضافة نقطة نهاية",
+    "edit": "تعديل",
+    "delete": "حذف",
+    "test": "اختبار",
+    "name": "الاسم",
+    "method": "الطريقة",
+    "path": "المسار",
+    "default": "افتراضي",
+    "setDefault": "تعيين كافتراضي",
+    "headers": "الرؤوس",
+    "body": "المحتوى",
+    "response": "الاستجابة"
+  },
+  "auth": {
+    "title": "المصادقة",
+    "type": "النوع",
+    "none": "بدون",
+    "apiKey": "مفتاح الواجهة البرمجية",
+    "bearer": "رمز الحامل",
+    "basic": "مصادقة أساسية",
+    "oauth2": "OAuth 2.0",
+    "apiKeyHeader": "الرأس",
+    "apiKeyLocation": "الموقع",
+    "username": "اسم المستخدم",
+    "password": "كلمة المرور",
+    "clientId": "معرف العميل",
+    "clientSecret": "سر العميل",
+    "accessToken": "رمز الوصول",
+    "refreshToken": "رمز التحديث"
+  },
+  "queue": {
+    "title": "قائمة انتظار النشر",
+    "description": "إدارة المنشورات المعلقة",
+    "empty": "قائمة الانتظار فارغة",
+    "content": "المحتوى",
+    "platform": "المنصة",
+    "status": "الحالة",
+    "scheduledAt": "مجدول لـ",
+    "priority": "الأولوية",
+    "actions": "الإجراءات",
+    "cancel": "إلغاء",
+    "retry": "إعادة المحاولة",
+    "publishNow": "نشر الآن",
+    "viewLogs": "عرض السجلات",
+    "bulkCancel": "إلغاء المحدد",
+    "bulkPublish": "نشر المحدد",
+    "selectAll": "تحديد الكل"
+  },
+  "status": {
+    "pending": "قيد الانتظار",
+    "scheduled": "مجدول",
+    "publishing": "جاري النشر",
+    "published": "منشور",
+    "failed": "فشل",
+    "cancelled": "ملغى"
+  },
+  "priority": {
+    "high": "عالية",
+    "default": "عادية",
+    "low": "منخفضة"
+  },
+  "errors": {
+    "connectionFailed": "فشل الاتصال بالمنصة",
+    "authFailed": "فشلت المصادقة",
+    "timeout": "انتهت مهلة الطلب",
+    "invalidResponse": "استجابة غير صالحة",
+    "rateLimited": "تم الوصول إلى حد المعدل",
+    "serverError": "خطأ في الخادم",
+    "unknown": "خطأ غير معروف"
+  },
+  "actions": {
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "delete": "حذف",
+    "confirm": "تأكيد",
+    "close": "إغلاق",
+    "refresh": "تحديث",
+    "export": "تصدير",
+    "import": "استيراد"
+  }
+}

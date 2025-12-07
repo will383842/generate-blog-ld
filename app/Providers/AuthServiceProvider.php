@@ -2,6 +2,12 @@
 
 namespace App\Providers;
 
+use App\Models\Article;
+use App\Models\PressRelease;
+use App\Models\Program;
+use App\Policies\ArticlePolicy;
+use App\Policies\PressReleasePolicy;
+use App\Policies\ProgramPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
@@ -12,7 +18,9 @@ class AuthServiceProvider extends ServiceProvider
      * @var array<class-string, class-string>
      */
     protected $policies = [
-        //
+        Article::class => ArticlePolicy::class,
+        PressRelease::class => PressReleasePolicy::class,
+        Program::class => ProgramPolicy::class,
     ];
 
     /**
@@ -20,6 +28,6 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        $this->registerPolicies();
     }
 }

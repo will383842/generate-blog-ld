@@ -141,6 +141,34 @@ class PlatformKnowledgeController extends Controller
     }
 
     /**
+     * Liste knowledge par type
+     * GET /api/platform-knowledge/by-type/{type}
+     */
+    public function byType(string $type): JsonResponse
+    {
+        // Validate type
+        $validTypes = PlatformKnowledge::TYPES;
+        if (!in_array($type, $validTypes)) {
+            return response()->json([
+                'error' => 'Invalid knowledge type',
+                'valid_types' => $validTypes,
+            ], 422);
+        }
+
+        $knowledge = PlatformKnowledge::where('knowledge_type', $type)
+            ->with(['platform', 'translations'])
+            ->orderBy('priority', 'desc')
+            ->get()
+            ->groupBy('platform_id');
+
+        return response()->json([
+            'type' => $type,
+            'knowledge' => $knowledge,
+            'total' => PlatformKnowledge::where('knowledge_type', $type)->count(),
+        ]);
+    }
+
+    /**
      * Liste knowledge par plateforme
      * GET /api/platform-knowledge/platform/{platformId}
      */

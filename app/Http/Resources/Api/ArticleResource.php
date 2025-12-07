@@ -82,11 +82,11 @@ class ArticleResource extends JsonResource
                 ]);
             }),
             
-            // Stats
+            // Stats - utilise les attributs pré-calculés par withCount() pour éviter N+1
             'stats' => $this->when($request->has('stats'), [
-                'internal_links_count' => $this->internalLinks()->count(),
-                'external_links_count' => $this->externalLinks()->count(),
-                'translations_count' => $this->translations()->count(),
+                'internal_links_count' => $this->internal_links_count ?? 0,
+                'external_links_count' => $this->external_links_count ?? 0,
+                'translations_count' => $this->translations_count ?? 0,
                 'generation_cost' => $this->generation_cost,
             ]),
         ];

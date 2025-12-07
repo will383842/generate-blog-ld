@@ -7,9 +7,13 @@ use App\Models\ArticleFaq;
 use App\Models\Country;
 use App\Models\Language;
 use App\Models\Platform;
+use App\Models\ContentTemplate;
 use App\Services\Quality\ContentQualityEnforcer;
 use App\Services\Quality\GoldenExamplesService;
 use App\Services\AI\GptService;
+use App\Services\Content\TemplateManager;
+use App\Services\Content\PlatformKnowledgeService;
+use App\Services\Content\Traits\UseContentTemplates;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
@@ -34,18 +38,25 @@ use Illuminate\Support\Str;
  */
 class LandingGenerator
 {
+    use UseContentTemplates;
+
     protected GptService $gptService;
     protected LandingSectionManager $sectionManager;
     protected TestimonialService $testimonialService;
+    protected PlatformKnowledgeService $knowledgeService;
 
     public function __construct(
         GptService $gptService,
         LandingSectionManager $sectionManager,
-        TestimonialService $testimonialService
+        TestimonialService $testimonialService,
+        TemplateManager $templateManager,
+        PlatformKnowledgeService $knowledgeService
     ) {
         $this->gptService = $gptService;
         $this->sectionManager = $sectionManager;
         $this->testimonialService = $testimonialService;
+        $this->knowledgeService = $knowledgeService;
+        $this->setTemplateManager($templateManager);
     }
 
     /**
@@ -72,11 +83,21 @@ class LandingGenerator
         $country = Country::findOrFail($params['country_id']);
         $language = Language::findOrFail($params['language_id']);
 
+        // Charger le template si disponible
+        $templateSlug = $params['template_slug'] ?? null;
+        $this->loadTemplate('landing', $language->code, $templateSlug);
+
+        if ($this->hasActiveTemplate()) {
+            Log::info('LandingGenerator: Template chargé', [
+                'template_slug' => $this->getActiveTemplateSlug(),
+            ]);
+        }
+
         // Construction du contexte
         $context = $this->buildContext($params, $platform, $country, $language);
 
         // Récupération des sections activées
-        $enabledSections = $params['sections_enabled'] 
+        $enabledSections = $params['sections_enabled']
             ?? $this->sectionManager->getEnabledSections($params['platform_id']);
 
         Log::info('Génération landing page', [
@@ -425,6 +446,13 @@ class LandingGenerator
         $countryNameColumn = 'name_' . $language->code;
         $countryName = $country->$countryNameColumn ?? $country->name;
 
+        // Récupérer le knowledge de la plateforme
+        $knowledgeContext = $this->knowledgeService->getKnowledgeContext(
+            $platform,
+            $language->code,
+            'landings'
+        );
+
         return [
             'platform_name' => $platform->name,
             'platform_slug' => $platform->slug,
@@ -436,6 +464,7 @@ class LandingGenerator
             'target_audience' => $params['target_audience'] ?? 'expatriés',
             'keywords' => $params['keywords'] ?? [],
             'tone' => $this->determineTone($language->code),
+            'knowledge' => $knowledgeContext,
         ];
     }
 
@@ -462,9 +491,14 @@ class LandingGenerator
 
     protected function buildHeroPrompt(array $context): string
     {
+        $knowledgeSection = '';
+        if (!empty($context['knowledge'])) {
+            $knowledgeSection = "\n\n## CONTEXTE MARQUE (à respecter strictement) ##\n{$context['knowledge']}\n";
+        }
+
         return <<<PROMPT
 Tu es un expert en copywriting pour landing pages à haute conversion.
-
+{$knowledgeSection}
 Génère un hero section pour une landing page dans le contexte suivant :
 - Plateforme : {$context['platform_name']}
 - Pays : {$context['country_name']}

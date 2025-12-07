@@ -1,0 +1,99 @@
+{
+  "title": "Qualité",
+  "description": "Contrôle qualité du contenu",
+  "scores": {
+    "title": "Scores de qualité",
+    "description": "Analyse des scores de qualité",
+    "overall": "Score global",
+    "seo": "SEO",
+    "readability": "Lisibilité",
+    "originality": "Originalité",
+    "structure": "Structure",
+    "grammar": "Grammaire",
+    "engagement": "Engagement",
+    "distribution": "Distribution des scores",
+    "trend": "Tendance",
+    "average": "Moyenne",
+    "minimum": "Minimum",
+    "maximum": "Maximum"
+  },
+  "review": {
+    "title": "Révision",
+    "description": "Articles en attente de révision",
+    "pendingReview": "En attente de révision",
+    "needsImprovement": "À améliorer",
+    "approved": "Approuvés",
+    "rejected": "Rejetés",
+    "approve": "Approuver",
+    "reject": "Rejeter",
+    "requestChanges": "Demander des modifications",
+    "sendToEditor": "Envoyer à l'éditeur",
+    "bulkApprove": "Approuver la sélection",
+    "bulkReject": "Rejeter la sélection",
+    "empty": "Aucun article en révision"
+  },
+  "rules": {
+    "title": "Règles de qualité",
+    "description": "Configurez les règles de validation",
+    "add": "Nouvelle règle",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "enable": "Activer",
+    "disable": "Désactiver",
+    "name": "Nom",
+    "description": "Description",
+    "type": "Type",
+    "threshold": "Seuil",
+    "weight": "Poids",
+    "action": "Action",
+    "categories": {
+      "seo": "SEO",
+      "readability": "Lisibilité",
+      "grammar": "Grammaire",
+      "structure": "Structure",
+      "content": "Contenu"
+    },
+    "actions": {
+      "warn": "Avertir",
+      "block": "Bloquer",
+      "flag": "Signaler"
+    },
+    "empty": "Aucune règle configurée"
+  },
+  "analysis": {
+    "title": "Analyse",
+    "analyzing": "Analyse en cours...",
+    "issues": "Problèmes détectés",
+    "warnings": "Avertissements",
+    "suggestions": "Suggestions",
+    "passed": "Validé",
+    "fix": "Corriger",
+    "ignore": "Ignorer",
+    "fixAll": "Tout corriger"
+  },
+  "levels": {
+    "excellent": "Excellent",
+    "good": "Bon",
+    "average": "Moyen",
+    "poor": "Faible",
+    "critical": "Critique"
+  },
+  "metrics": {
+    "wordCount": "Nombre de mots",
+    "sentenceCount": "Nombre de phrases",
+    "paragraphCount": "Paragraphes",
+    "avgSentenceLength": "Longueur moyenne des phrases",
+    "avgWordLength": "Longueur moyenne des mots",
+    "readingTime": "Temps de lecture",
+    "fleschScore": "Score Flesch",
+    "keywordDensity": "Densité des mots-clés"
+  },
+  "stats": {
+    "totalAnalyzed": "Total analysé",
+    "avgScore": "Score moyen",
+    "excellent": "Excellents",
+    "good": "Bons",
+    "average": "Moyens",
+    "poor": "Faibles"
+  }
+}

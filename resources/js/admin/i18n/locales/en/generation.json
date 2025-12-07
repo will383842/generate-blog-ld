@@ -1,0 +1,102 @@
+{
+  "title": "Generation",
+  "description": "Automatic content generation",
+  "queue": {
+    "title": "Generation queue",
+    "description": "Articles waiting for generation",
+    "empty": "Queue is empty",
+    "item": "Item",
+    "program": "Program",
+    "priority": "Priority",
+    "status": "Status",
+    "createdAt": "Added at",
+    "startedAt": "Started at",
+    "estimatedTime": "Estimated time",
+    "cancel": "Cancel",
+    "retry": "Retry",
+    "moveToTop": "Move to top",
+    "bulkCancel": "Cancel selected"
+  },
+  "history": {
+    "title": "History",
+    "description": "Generation history",
+    "empty": "No history",
+    "article": "Article",
+    "program": "Program",
+    "status": "Status",
+    "duration": "Duration",
+    "tokens": "Tokens used",
+    "cost": "Cost",
+    "generatedAt": "Generated at",
+    "viewArticle": "View article",
+    "regenerate": "Regenerate",
+    "export": "Export"
+  },
+  "settings": {
+    "title": "Generation settings",
+    "description": "Configure generation options",
+    "model": "AI Model",
+    "temperature": "Temperature",
+    "maxTokens": "Max tokens",
+    "language": "Language",
+    "tone": "Tone",
+    "style": "Style",
+    "length": "Length",
+    "defaults": "Default values",
+    "advanced": "Advanced options"
+  },
+  "status": {
+    "pending": "Pending",
+    "processing": "Processing",
+    "completed": "Completed",
+    "failed": "Failed",
+    "cancelled": "Cancelled",
+    "retrying": "Retrying"
+  },
+  "priority": {
+    "high": "High",
+    "default": "Normal",
+    "low": "Low"
+  },
+  "stats": {
+    "today": "Today",
+    "thisWeek": "This week",
+    "thisMonth": "This month",
+    "total": "Total",
+    "pending": "Pending",
+    "processing": "Processing",
+    "completed": "Completed",
+    "failed": "Failed",
+    "successRate": "Success rate",
+    "avgDuration": "Average duration",
+    "tokensUsed": "Tokens used",
+    "estimatedCost": "Estimated cost"
+  },
+  "actions": {
+    "generate": "Generate",
+    "generateNow": "Generate now",
+    "addToQueue": "Add to queue",
+    "clearQueue": "Clear queue",
+    "pauseAll": "Pause all",
+    "resumeAll": "Resume all",
+    "cancelAll": "Cancel all"
+  },
+  "messages": {
+    "generating": "Generating...",
+    "generated": "Article generated successfully",
+    "failed": "Generation failed",
+    "cancelled": "Generation cancelled",
+    "queued": "Added to queue",
+    "retrying": "Retrying..."
+  },
+  "ai": {
+    "title": "AI Configuration",
+    "provider": "Provider",
+    "model": "Model",
+    "apiKey": "API Key",
+    "testConnection": "Test connection",
+    "usage": "Usage",
+    "quota": "Quota",
+    "remaining": "Remaining"
+  }
+}

@@ -1,0 +1,128 @@
+{
+  "releases": {
+    "title": "Comunicados de imprensa",
+    "list": "Lista de comunicados",
+    "create": "Novo comunicado",
+    "edit": "Editar comunicado",
+    "empty": "Sem comunicados",
+    "emptyDescription": "Crie seu primeiro comunicado de imprensa"
+  },
+  "dossiers": {
+    "title": "Kits de imprensa",
+    "list": "Lista de kits",
+    "create": "Novo kit",
+    "edit": "Editar kit",
+    "empty": "Sem kits",
+    "emptyDescription": "Crie seu primeiro kit de imprensa",
+    "sections": {
+      "title": "Seções do kit",
+      "intro": "Introdução",
+      "keyFigures": "Números-chave",
+      "quotes": "Citações",
+      "timeline": "Cronograma",
+      "team": "Equipe",
+      "contact": "Contato de imprensa",
+      "media": "Kit de mídia"
+    },
+    "builder": {
+      "title": "Construtor de kit",
+      "addSection": "Adicionar seção",
+      "reorder": "Reordenar",
+      "preview": "Visualizar"
+    }
+  },
+  "editor": {
+    "preview": "Visualizar",
+    "previewPdf": "Visualizar PDF",
+    "previewWord": "Visualizar Word"
+  },
+  "templates": {
+    "title": "Modelos",
+    "select": "Selecionar modelo",
+    "create": "Criar modelo",
+    "edit": "Editar modelo",
+    "delete": "Excluir modelo",
+    "default": "Modelo padrão",
+    "categories": {
+      "general": "Geral",
+      "product": "Lançamento de produto",
+      "event": "Evento",
+      "partnership": "Parceria",
+      "financial": "Resultados financeiros",
+      "crisis": "Comunicação de crise"
+    }
+  },
+  "media": {
+    "title": "Mídia do comunicado",
+    "photos": "Fotos",
+    "charts": "Gráficos",
+    "infographics": "Infográficos",
+    "logos": "Logos",
+    "gallery": "Galeria",
+    "upload": "Adicionar mídia",
+    "fromUnsplash": "Do Unsplash",
+    "fromDalle": "Gerar com DALL-E",
+    "fromLibrary": "Da biblioteca"
+  },
+  "export": {
+    "title": "Exportar",
+    "formats": {
+      "pdf": "PDF",
+      "word": "Word (.docx)",
+      "html": "HTML",
+      "markdown": "Markdown"
+    },
+    "options": {
+      "includeMedia": "Incluir mídia",
+      "includeMetadata": "Incluir metadados",
+      "addHeaderFooter": "Adicionar cabeçalho/rodapé",
+      "watermark": "Marca d'água"
+    },
+    "download": "Baixar",
+    "send": "Enviar por email"
+  },
+  "fields": {
+    "title": "Título do comunicado",
+    "subtitle": "Subtítulo",
+    "date": "Data de publicação",
+    "location": "Localização",
+    "embargo": "Data de embargo",
+    "body": "Corpo do comunicado",
+    "boilerplate": "Sobre a empresa",
+    "contact": {
+      "title": "Contato de imprensa",
+      "name": "Nome",
+      "role": "Cargo",
+      "email": "Email",
+      "phone": "Telefone"
+    },
+    "quotes": {
+      "title": "Citações",
+      "add": "Adicionar citação",
+      "text": "Citação",
+      "author": "Autor",
+      "role": "Cargo"
+    }
+  },
+  "status": {
+    "draft": "Rascunho",
+    "review": "Em revisão",
+    "approved": "Aprovado",
+    "published": "Publicado",
+    "embargoed": "Embargado"
+  },
+  "actions": {
+    "publish": "Publicar",
+    "embargo": "Definir embargo",
+    "approve": "Aprovar",
+    "sendForReview": "Enviar para revisão",
+    "duplicate": "Duplicar",
+    "export": "Exportar"
+  },
+  "validation": {
+    "titleRequired": "Título é obrigatório",
+    "dateRequired": "Data é obrigatória",
+    "bodyRequired": "Conteúdo é obrigatório",
+    "contactRequired": "É necessário pelo menos um contato de imprensa"
+  }
+}

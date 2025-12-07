@@ -52,6 +52,17 @@ class GenerateImage implements ShouldQueue
     public int $timeout = 120; // 2 minutes
 
     /**
+     * Délais entre tentatives (backoff exponentiel)
+     * 30s, 1min, 2min (DALL-E peut être lent)
+     *
+     * @return array<int>
+     */
+    public function backoff(): array
+    {
+        return [30, 60, 120];
+    }
+
+    /**
      * Créer une nouvelle instance du job
      *
      * @param int $articleId ID de l'article

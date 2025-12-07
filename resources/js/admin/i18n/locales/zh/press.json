@@ -1,0 +1,128 @@
+{
+  "releases": {
+    "title": "新闻稿",
+    "list": "新闻稿列表",
+    "create": "新建新闻稿",
+    "edit": "编辑新闻稿",
+    "empty": "暂无新闻稿",
+    "emptyDescription": "创建您的第一篇新闻稿"
+  },
+  "dossiers": {
+    "title": "新闻资料袋",
+    "list": "资料袋列表",
+    "create": "新建资料袋",
+    "edit": "编辑资料袋",
+    "empty": "暂无资料袋",
+    "emptyDescription": "创建您的第一个新闻资料袋",
+    "sections": {
+      "title": "资料袋板块",
+      "intro": "简介",
+      "keyFigures": "关键数据",
+      "quotes": "引用",
+      "timeline": "时间线",
+      "team": "团队",
+      "contact": "新闻联系人",
+      "media": "媒体资料包"
+    },
+    "builder": {
+      "title": "资料袋构建器",
+      "addSection": "添加板块",
+      "reorder": "重新排序",
+      "preview": "预览"
+    }
+  },
+  "editor": {
+    "preview": "预览",
+    "previewPdf": "PDF预览",
+    "previewWord": "Word预览"
+  },
+  "templates": {
+    "title": "模板",
+    "select": "选择模板",
+    "create": "创建模板",
+    "edit": "编辑模板",
+    "delete": "删除模板",
+    "default": "默认模板",
+    "categories": {
+      "general": "通用",
+      "product": "产品发布",
+      "event": "活动",
+      "partnership": "合作伙伴",
+      "financial": "财务业绩",
+      "crisis": "危机公关"
+    }
+  },
+  "media": {
+    "title": "新闻稿媒体",
+    "photos": "照片",
+    "charts": "图表",
+    "infographics": "信息图",
+    "logos": "标志",
+    "gallery": "图库",
+    "upload": "添加媒体",
+    "fromUnsplash": "从Unsplash",
+    "fromDalle": "用DALL-E生成",
+    "fromLibrary": "从媒体库"
+  },
+  "export": {
+    "title": "导出",
+    "formats": {
+      "pdf": "PDF",
+      "word": "Word (.docx)",
+      "html": "HTML",
+      "markdown": "Markdown"
+    },
+    "options": {
+      "includeMedia": "包含媒体",
+      "includeMetadata": "包含元数据",
+      "addHeaderFooter": "添加页眉/页脚",
+      "watermark": "水印"
+    },
+    "download": "下载",
+    "send": "通过邮件发送"
+  },
+  "fields": {
+    "title": "新闻稿标题",
+    "subtitle": "副标题",
+    "date": "发布日期",
+    "location": "地点",
+    "embargo": "禁发日期",
+    "body": "新闻稿正文",
+    "boilerplate": "关于公司",
+    "contact": {
+      "title": "新闻联系人",
+      "name": "姓名",
+      "role": "职位",
+      "email": "邮箱",
+      "phone": "电话"
+    },
+    "quotes": {
+      "title": "引用",
+      "add": "添加引用",
+      "text": "引用内容",
+      "author": "作者",
+      "role": "职位"
+    }
+  },
+  "status": {
+    "draft": "草稿",
+    "review": "审核中",
+    "approved": "已批准",
+    "published": "已发布",
+    "embargoed": "禁发期"
+  },
+  "actions": {
+    "publish": "发布",
+    "embargo": "设置禁发",
+    "approve": "批准",
+    "sendForReview": "发送审核",
+    "duplicate": "复制",
+    "export": "导出"
+  },
+  "validation": {
+    "titleRequired": "标题为必填项",
+    "dateRequired": "日期为必填项",
+    "bodyRequired": "内容为必填项",
+    "contactRequired": "至少需要一个新闻联系人"
+  }
+}

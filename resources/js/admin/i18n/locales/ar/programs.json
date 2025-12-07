@@ -1,0 +1,110 @@
+{
+  "title": "البرامج",
+  "description": "إدارة برامج التوليد",
+  "list": {
+    "title": "قائمة البرامج",
+    "add": "برنامج جديد",
+    "edit": "تعديل",
+    "delete": "حذف",
+    "duplicate": "نسخ",
+    "run": "تشغيل",
+    "pause": "إيقاف مؤقت",
+    "resume": "استئناف",
+    "empty": "لا توجد برامج",
+    "createFirst": "أنشئ برنامجك الأول"
+  },
+  "fields": {
+    "name": "الاسم",
+    "description": "الوصف",
+    "type": "النوع",
+    "platform": "المنصة",
+    "template": "القالب",
+    "status": "الحالة",
+    "priority": "الأولوية",
+    "schedule": "الجدولة",
+    "articlesPerRun": "مقالات لكل تشغيل",
+    "totalArticles": "إجمالي المقالات",
+    "generatedArticles": "المقالات المولدة",
+    "remainingArticles": "المقالات المتبقية",
+    "progress": "التقدم",
+    "createdAt": "تاريخ الإنشاء",
+    "updatedAt": "تاريخ التحديث",
+    "lastRunAt": "آخر تشغيل",
+    "nextRunAt": "التشغيل التالي"
+  },
+  "types": {
+    "country": "حسب البلد",
+    "service": "حسب الخدمة",
+    "topic": "حسب الموضوع",
+    "custom": "مخصص"
+  },
+  "status": {
+    "draft": "مسودة",
+    "active": "نشط",
+    "paused": "متوقف",
+    "completed": "مكتمل"
+  },
+  "priority": {
+    "high": "عالية",
+    "default": "عادية",
+    "low": "منخفضة"
+  },
+  "variables": {
+    "title": "المتغيرات",
+    "add": "إضافة متغير",
+    "name": "الاسم",
+    "values": "القيم",
+    "description": "الوصف",
+    "country": "البلد",
+    "city": "المدينة",
+    "service": "الخدمة",
+    "keyword": "الكلمة المفتاحية",
+    "custom": "مخصص"
+  },
+  "templates": {
+    "title": "القوالب",
+    "description": "إدارة قوالب التوليد",
+    "add": "قالب جديد",
+    "edit": "تعديل",
+    "delete": "حذف",
+    "duplicate": "نسخ",
+    "preview": "معاينة",
+    "fields": {
+      "name": "الاسم",
+      "description": "الوصف",
+      "prompt": "الأمر",
+      "structure": "الهيكل",
+      "variables": "المتغيرات المتاحة"
+    },
+    "empty": "لا توجد قوالب"
+  },
+  "detail": {
+    "overview": "نظرة عامة",
+    "articles": "المقالات",
+    "variables": "المتغيرات",
+    "schedule": "الجدولة",
+    "logs": "السجلات",
+    "stats": "الإحصائيات"
+  },
+  "stats": {
+    "totalGenerated": "إجمالي المولد",
+    "successRate": "معدل النجاح",
+    "avgQuality": "متوسط الجودة",
+    "avgGenerationTime": "متوسط الوقت"
+  },
+  "actions": {
+    "runNow": "تشغيل الآن",
+    "generateBatch": "توليد دفعة",
+    "stopGeneration": "إيقاف التوليد",
+    "viewArticles": "عرض المقالات",
+    "exportArticles": "تصدير المقالات"
+  },
+  "messages": {
+    "created": "تم إنشاء البرنامج بنجاح",
+    "updated": "تم تحديث البرنامج",
+    "deleted": "تم حذف البرنامج",
+    "started": "بدأ التوليد",
+    "paused": "تم إيقاف البرنامج مؤقتاً",
+    "resumed": "تم استئناف البرنامج"
+  }
+}

@@ -1,24 +1,72 @@
 ﻿{
   "compilerOptions": {
+    // Cible et environnement
     "target": "ES2020",
-    "useDefineForClassFields": true,
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "module": "ESNext",
-    "skipLibCheck": true,
     "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noEmit": true,
     "jsx": "react-jsx",
+    
+    // Types Vite et Node
+    "types": ["vite/client", "node"],
+    
+    // Strict mode
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
+    "noImplicitReturns": true,
+    "noImplicitOverride": true,
+    "noUncheckedIndexedAccess": false,
+    "exactOptionalPropertyTypes": false,
+    
+    // Interop modules
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
+    
+    // Résolution
+    "resolveJsonModule": true,
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "useDefineForClassFields": true,
+    
+    // Alias paths
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./resources/js/admin/*"]
+      "@/*": ["./resources/js/admin/*"],
+      "@/components/*": ["./resources/js/admin/components/*"],
+      "@/hooks/*": ["./resources/js/admin/hooks/*"],
+      "@/stores/*": ["./resources/js/admin/stores/*"],
+      "@/utils/*": ["./resources/js/admin/utils/*"],
+      "@/types/*": ["./resources/js/admin/types/*"],
+      "@/pages/*": ["./resources/js/admin/pages/*"],
+      "@/lib/*": ["./resources/js/admin/lib/*"],
+      "@/i18n/*": ["./resources/js/admin/i18n/*"]
     }
   },
-  "include": ["resources/js/admin"]
+  
+  "include": [
+    "resources/js/admin/**/*.ts",
+    "resources/js/admin/**/*.tsx",
+    "resources/js/admin/**/*.d.ts",
+    "resources/js/admin/vite-env.d.ts"
+  ],
+  
+  "exclude": [
+    "node_modules",
+    "dist",
+    "build",
+    "public",
+    "vendor",
+    "storage",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/*.spec.ts",
+    "**/*.spec.tsx"
+  ],
+  
+  "references": []
 }

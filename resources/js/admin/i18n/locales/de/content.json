@@ -1,0 +1,121 @@
+{
+  "title": "Inhalt",
+  "description": "Verwalten Sie Ihre Artikel und Inhalte",
+  "articles": {
+    "title": "Artikel",
+    "description": "Verwalten Sie Ihre Artikel",
+    "add": "Neuer Artikel",
+    "edit": "Artikel bearbeiten",
+    "delete": "Artikel löschen",
+    "duplicate": "Duplizieren",
+    "archive": "Archivieren",
+    "publish": "Veröffentlichen",
+    "unpublish": "Veröffentlichung aufheben",
+    "schedule": "Planen",
+    "preview": "Vorschau",
+    "fields": {
+      "title": "Titel",
+      "slug": "Slug",
+      "content": "Inhalt",
+      "excerpt": "Auszug",
+      "featuredImage": "Beitragsbild",
+      "category": "Kategorie",
+      "tags": "Schlagwörter",
+      "author": "Autor",
+      "status": "Status",
+      "publishedAt": "Veröffentlichungsdatum",
+      "createdAt": "Erstellt am",
+      "updatedAt": "Aktualisiert am"
+    },
+    "status": {
+      "draft": "Entwurf",
+      "published": "Veröffentlicht",
+      "archived": "Archiviert",
+      "scheduled": "Geplant"
+    },
+    "filters": {
+      "all": "Alle",
+      "drafts": "Entwürfe",
+      "published": "Veröffentlicht",
+      "archived": "Archiviert"
+    },
+    "bulk": {
+      "publish": "Ausgewählte veröffentlichen",
+      "unpublish": "Veröffentlichung ausgewählter aufheben",
+      "delete": "Ausgewählte löschen",
+      "archive": "Ausgewählte archivieren"
+    },
+    "empty": "Keine Artikel gefunden",
+    "createFirst": "Erstellen Sie Ihren ersten Artikel"
+  },
+  "categories": {
+    "title": "Kategorien",
+    "description": "Verwalten Sie Ihre Kategorien",
+    "add": "Neue Kategorie",
+    "edit": "Kategorie bearbeiten",
+    "delete": "Kategorie löschen",
+    "fields": {
+      "name": "Name",
+      "slug": "Slug",
+      "description": "Beschreibung",
+      "parent": "Übergeordnete Kategorie",
+      "color": "Farbe",
+      "icon": "Symbol"
+    },
+    "articlesCount": "Artikel",
+    "empty": "Keine Kategorien",
+    "noParent": "Keine (Hauptkategorie)"
+  },
+  "tags": {
+    "title": "Schlagwörter",
+    "description": "Verwalten Sie Ihre Schlagwörter",
+    "add": "Neues Schlagwort",
+    "edit": "Schlagwort bearbeiten",
+    "delete": "Schlagwort löschen",
+    "fields": {
+      "name": "Name",
+      "slug": "Slug",
+      "description": "Beschreibung",
+      "color": "Farbe"
+    },
+    "articlesCount": "Artikel",
+    "empty": "Keine Schlagwörter",
+    "merge": "Schlagwörter zusammenführen"
+  },
+  "editor": {
+    "title": "Editor",
+    "save": "Speichern",
+    "saveAndPublish": "Speichern und veröffentlichen",
+    "saveDraft": "Als Entwurf speichern",
+    "preview": "Vorschau",
+    "settings": "Einstellungen",
+    "seo": "SEO",
+    "media": "Medien",
+    "history": "Verlauf",
+    "autosave": "Automatisches Speichern",
+    "lastSaved": "Zuletzt gespeichert",
+    "wordCount": "Wörter",
+    "readingTime": "Lesezeit",
+    "toolbar": {
+      "bold": "Fett",
+      "italic": "Kursiv",
+      "underline": "Unterstrichen",
+      "strikethrough": "Durchgestrichen",
+      "heading": "Überschrift",
+      "link": "Link",
+      "image": "Bild",
+      "list": "Liste",
+      "quote": "Zitat",
+      "code": "Code",
+      "table": "Tabelle"
+    }
+  },
+  "media": {
+    "title": "Medien",
+    "selectImage": "Bild auswählen",
+    "uploadImage": "Bild hochladen",
+    "removeImage": "Bild entfernen",
+    "altText": "Alternativtext",
+    "caption": "Bildunterschrift"
+  }
+}

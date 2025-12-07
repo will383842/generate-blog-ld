@@ -1,0 +1,143 @@
+{
+  "title": "AI & Costs",
+  "models": {
+    "title": "AI Models",
+    "gpt4": "GPT-4",
+    "gpt4Turbo": "GPT-4 Turbo",
+    "gpt35": "GPT-3.5 Turbo",
+    "claude": "Claude",
+    "claudeInstant": "Claude Instant",
+    "perplexity": "Perplexity",
+    "dalle": "DALL-E",
+    "active": "Active",
+    "inactive": "Inactive",
+    "default": "Default",
+    "setDefault": "Set as default"
+  },
+  "costs": {
+    "title": "Costs",
+    "daily": "Daily cost",
+    "weekly": "Weekly cost",
+    "monthly": "Monthly cost",
+    "yearly": "Yearly cost",
+    "total": "Total cost",
+    "byModel": "By model",
+    "byContent": "By content type",
+    "byPlatform": "By platform",
+    "prediction": "Prediction",
+    "budget": {
+      "title": "Budget",
+      "set": "Set budget",
+      "current": "Current budget",
+      "remaining": "Remaining",
+      "used": "Used",
+      "percentage": "{{value}}% used",
+      "alert": "Alert at {{value}}%",
+      "exceeded": "Budget exceeded"
+    },
+    "breakdown": {
+      "title": "Cost breakdown",
+      "tokens": "Tokens",
+      "inputTokens": "Input tokens",
+      "outputTokens": "Output tokens",
+      "images": "Images",
+      "searches": "Searches",
+      "other": "Other"
+    }
+  },
+  "performance": {
+    "title": "Performance",
+    "latency": {
+      "title": "Latency",
+      "average": "Average",
+      "p50": "P50",
+      "p95": "P95",
+      "p99": "P99"
+    },
+    "successRate": {
+      "title": "Success rate",
+      "value": "{{value}}%"
+    },
+    "errors": {
+      "title": "Errors",
+      "total": "Total errors",
+      "rate": "Error rate",
+      "types": {
+        "timeout": "Timeout",
+        "rateLimit": "Rate limit",
+        "serverError": "Server error",
+        "invalidResponse": "Invalid response",
+        "other": "Other"
+      }
+    },
+    "queue": {
+      "title": "Queue",
+      "pending": "Pending",
+      "processing": "Processing",
+      "avgWaitTime": "Average wait time"
+    },
+    "throughput": {
+      "title": "Throughput",
+      "requestsPerMinute": "Requests/minute",
+      "tokensPerMinute": "Tokens/minute"
+    }
+  },
+  "prompts": {
+    "title": "Prompt management",
+    "list": "Prompt list",
+    "create": "New prompt",
+    "edit": "Edit prompt",
+    "delete": "Delete prompt",
+    "optimize": "Optimize",
+    "test": "Test",
+    "version": {
+      "title": "Versions",
+      "current": "Current version",
+      "history": "History",
+      "restore": "Restore",
+      "compare": "Compare"
+    },
+    "compare": {
+      "title": "Comparison",
+      "sideBySide": "Side by side",
+      "metrics": "Metrics"
+    },
+    "categories": {
+      "generation": "Generation",
+      "summarization": "Summarization",
+      "translation": "Translation",
+      "analysis": "Analysis",
+      "factCheck": "Fact check"
+    },
+    "fields": {
+      "name": "Name",
+      "category": "Category",
+      "template": "Template",
+      "variables": "Variables",
+      "model": "Recommended model"
+    }
+  },
+  "charts": {
+    "costEvolution": "Cost evolution",
+    "modelUsage": "Usage by model",
+    "contentTypeCosts": "Costs by content type",
+    "dailyCosts": "Daily costs",
+    "tokenUsage": "Token usage"
+  },
+  "settings": {
+    "title": "AI Settings",
+    "defaultModel": "Default model",
+    "temperature": "Temperature",
+    "maxTokens": "Max tokens",
+    "timeout": "Timeout (seconds)",
+    "retries": "Number of retries",
+    "fallbackModel": "Fallback model"
+  },
+  "messages": {
+    "budgetUpdated": "Budget updated",
+    "promptSaved": "Prompt saved",
+    "promptDeleted": "Prompt deleted",
+    "testStarted": "Test started",
+    "optimizing": "Optimizing..."
+  }
+}

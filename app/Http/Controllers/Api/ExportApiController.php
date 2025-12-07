@@ -184,6 +184,33 @@ class ExportApiController extends Controller
     }
 
     /**
+     * Export queue list
+     */
+    public function queue(Request $request): JsonResponse
+    {
+        return $this->queueStatus($request);
+    }
+
+    /**
+     * Delete export
+     */
+    public function delete(int $exportId): JsonResponse
+    {
+        $export = ExportQueue::findOrFail($exportId);
+
+        // Delete file if exists
+        if ($export->file_path && file_exists(storage_path('app/' . $export->file_path))) {
+            unlink(storage_path('app/' . $export->file_path));
+        }
+
+        $export->delete();
+
+        return response()->json([
+            'message' => 'Export deleted successfully',
+        ]);
+    }
+
+    /**
      * Export queue status
      */
     public function queueStatus(Request $request): JsonResponse

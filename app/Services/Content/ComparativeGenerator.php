@@ -7,11 +7,14 @@ use App\Models\ArticleFaq;
 use App\Models\Country;
 use App\Models\Language;
 use App\Models\Platform;
+use App\Models\ContentTemplate;
 use App\Services\AI\GptService;
 use App\Services\AI\PerplexityService;
 use App\Services\UnsplashService;
 use App\Services\Content\PlatformKnowledgeService;
 use App\Services\Content\BrandValidationService;
+use App\Services\Content\TemplateManager;
+use App\Services\Content\Traits\UseContentTemplates;
 use App\Services\Quality\ContentQualityEnforcer;
 use App\Services\Quality\GoldenExamplesService;
 use Illuminate\Support\Facades\DB;
@@ -50,6 +53,8 @@ use Illuminate\Support\Str;
  */
 class ComparativeGenerator
 {
+    use UseContentTemplates;
+
     protected GptService $gpt;
     protected PerplexityService $perplexity;
     protected UnsplashService $unsplash;
@@ -103,7 +108,8 @@ class ComparativeGenerator
         PlatformKnowledgeService $knowledgeService,
         BrandValidationService $brandValidator,
         ContentQualityEnforcer $qualityEnforcer,
-        GoldenExamplesService $goldenService
+        GoldenExamplesService $goldenService,
+        TemplateManager $templateManager
     ) {
         $this->gpt = $gpt;
         $this->perplexity = $perplexity;
@@ -117,6 +123,7 @@ class ComparativeGenerator
         $this->brandValidator = $brandValidator;
         $this->qualityEnforcer = $qualityEnforcer;
         $this->goldenService = $goldenService;
+        $this->setTemplateManager($templateManager);
     }
 
     /**
@@ -142,6 +149,27 @@ class ComparativeGenerator
 
         // Récupération entités
         $platform = Platform::findOrFail($params['platform_id']);
+
+        // Charger le template si disponible
+        $languageCode = $params['language_code'] ?? 'fr';
+        $templateSlug = $params['template_slug'] ?? null;
+        $this->loadTemplate('comparative', $languageCode, $templateSlug);
+
+        if ($this->hasActiveTemplate()) {
+            $wordCount = $this->getTemplateWordCount();
+            if ($wordCount) {
+                $this->config['total_words_min'] = $wordCount['min'];
+                $this->config['total_words_max'] = $wordCount['max'];
+            }
+            $faqCount = $this->getTemplateFaqCount();
+            if ($faqCount) {
+                $this->config['faqs_count'] = $faqCount;
+            }
+
+            Log::info('ComparativeGenerator: Template chargé', [
+                'template_slug' => $this->getActiveTemplateSlug(),
+            ]);
+        }
         $country = Country::with('translations')->findOrFail($params['country_id']);
         $language = Language::findOrFail(
             Language::where('code', $params['language_code'])->firstOrFail()->id
@@ -646,7 +674,21 @@ class ComparativeGenerator
     private function generateIntroduction(array $params): string
     {
         $competitorsCount = count($params['competitors']);
-        
+
+        // Récupérer le contexte knowledge
+        $knowledgeSection = '';
+        if (isset($params['platform']) && isset($params['language_code'])) {
+            $knowledgeContext = $this->knowledgeService->getKnowledgeContext(
+                $params['platform'],
+                $params['language_code'],
+                'comparatives'
+            );
+
+            if (!empty($knowledgeContext)) {
+                $knowledgeSection = "\n\n## CONTEXTE MARQUE (à respecter strictement) ##\n{$knowledgeContext}\n";
+            }
+        }
+
         $prompt = <<<PROMPT
 Rédige une introduction engageante pour un article comparatif de PLATEFORMES pour expatriés en {$params['country']}.
 
@@ -661,6 +703,7 @@ Longueur : 100-150 mots
 Langue : {$params['language_code']}
 Ton : Professionnel, objectif, informatif
 IMPORTANT : Mentionner que {$params['platform_name']} se distingue par sa couverture exceptionnelle
+{$knowledgeSection}
 PROMPT;
 
         // ✅ ENRICHISSEMENT AVEC GOLDEN EXAMPLES (PHASE 13)
@@ -808,6 +851,20 @@ PROMPT;
      */
     private function generateConclusion(array $params): string
     {
+        // Récupérer le contexte knowledge
+        $knowledgeSection = '';
+        if (isset($params['platform']) && isset($params['language_code'])) {
+            $knowledgeContext = $this->knowledgeService->getKnowledgeContext(
+                $params['platform'],
+                $params['language_code'],
+                'comparatives'
+            );
+
+            if (!empty($knowledgeContext)) {
+                $knowledgeSection = "\n\n## CONTEXTE MARQUE (à respecter strictement) ##\n{$knowledgeContext}\n";
+            }
+        }
+
         $prompt = <<<PROMPT
 Rédige une conclusion pour un comparatif de plateformes pour expatriés en {$params['country']}.
 
@@ -819,6 +876,7 @@ Rédige une conclusion pour un comparatif de plateformes pour expatriés en {$pa
 Longueur : 80-100 mots
 Langue : {$params['language_code']}
 Ton : Encourageant, mettant en valeur la plateforme
+{$knowledgeSection}
 PROMPT;
 
         $response = $this->gpt->chat([

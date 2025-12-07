@@ -21,6 +21,14 @@ class ProcessExport implements ShouldQueue
     public $timeout = 300; // 5 minutes
     public $tries = 3;
 
+    /**
+     * Délais entre les tentatives (30s, 2min, 5min)
+     */
+    public function backoff(): array
+    {
+        return [30, 120, 300];
+    }
+
     protected $exportQueueId;
 
     /**
