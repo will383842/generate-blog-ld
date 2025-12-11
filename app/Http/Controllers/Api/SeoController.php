@@ -679,3 +679,43 @@ class SeoController extends Controller
         ];
     }
 }
+
+    /**
+     * Get articles without schema markup
+     */
+    public function articlesWithoutSchema(): JsonResponse
+    {
+        $articles = Article::whereNull('schema_markup')
+            ->where('status', 'published')
+            ->select('id', 'title', 'platform_id')
+            ->limit(50)
+            ->get()
+            ->map(function ($article) {
+                return [
+                    'id' => $article->id,
+                    'title' => $article->title,
+                    'platform' => $article->platform->name ?? 'Unknown',
+                ];
+            });
+
+        return response()->json($articles);
+    }
+
+    /**
+     * Get schema statistics
+     */
+    public function schemaStats(): JsonResponse
+    {
+        $stats = [
+            'withSchema' => Article::whereNotNull('schema_markup')
+                ->where('status', 'published')
+                ->count(),
+            'withoutSchema' => Article::whereNull('schema_markup')
+                ->where('status', 'published')
+                ->count(),
+            'errors' => 0,
+        ];
+
+        return response()->json($stats);
+    }
+}

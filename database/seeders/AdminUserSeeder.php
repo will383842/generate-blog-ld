@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Hash;
  * 
  * PRODUCTION READY:
  * - Le compte principal Williams est TOUJOURS créé
+ * - Le mot de passe est défini via variable d'environnement (ADMIN_PASSWORD)
  * - Le compte dev est créé UNIQUEMENT en environnement local/development/staging
  * - En production, seul le compte Williams existe
  */
@@ -25,7 +26,7 @@ class AdminUserSeeder extends Seeder
             ['email' => 'williamsjullin@gmail.com'],
             [
                 'name' => 'Williams Jullin',
-                'password' => Hash::make('MJullin2006/*%'),
+                'password' => Hash::make(env('ADMIN_PASSWORD')),
                 'role' => 'super_admin',
                 'is_active' => true,
                 'last_login_at' => null,

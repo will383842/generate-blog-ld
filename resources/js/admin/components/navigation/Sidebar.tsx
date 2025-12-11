@@ -390,8 +390,10 @@ export function Sidebar({ defaultCollapsed = false, onCollapsedChange }: Sidebar
           <StatusIndicator isCollapsed={isCollapsed} />
         </div>
 
-        {/* Menu */}
-        <SidebarMenu isCollapsed={isCollapsed} />
+        {/* Menu - FIXED: overflow-y-auto pour scroll */}
+        <div className="flex-1 overflow-y-auto">
+          <SidebarMenu isCollapsed={isCollapsed} />
+        </div>
 
         {/* Footer - User Profile */}
         <div className="mt-auto border-t border-slate-800 p-2 shrink-0">

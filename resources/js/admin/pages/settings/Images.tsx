@@ -3,8 +3,9 @@
  * File 364 - Image source and optimization settings
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   Image,
   GripVertical,
@@ -48,46 +49,88 @@ interface ImageSource {
   priority: number;
 }
 
+interface ImageSettings {
+  defaultSource: string;
+  dalle: {
+    style: string;
+    size: string;
+    quality: string;
+    model: string;
+  };
+  unsplash: {
+    orientation: string;
+    color: string;
+    safeSearch: boolean;
+  };
+  optimization: {
+    enabled: boolean;
+    maxWidth: number;
+    maxHeight: number;
+    quality: number;
+    format: string;
+    lazyLoading: boolean;
+  };
+  attribution: {
+    enabled: boolean;
+    template: string;
+    position: string;
+  };
+}
+
 export default function ImagesSettingsPage() {
   const { t } = useTranslation();
   const { toast } = useToast();
+  const queryClient = useQueryClient();
 
-  const [sources, setSources] = useState<ImageSource[]>([
-    { id: 'unsplash', name: 'Unsplash', icon: '📷', enabled: true, priority: 1 },
-    { id: 'dalle', name: 'DALL-E', icon: '🎨', enabled: true, priority: 2 },
-    { id: 'upload', name: 'Upload manuel', icon: '📤', enabled: true, priority: 3 },
-  ]);
+  const [draggedItem, setDraggedItem] = useState<string | null>(null);
 
-  const [settings, setSettings] = useState({
-    defaultSource: 'unsplash',
-    dalle: {
-      style: 'natural',
-      size: '1024x1024',
-      quality: 'standard',
-      model: 'dall-e-3',
-    },
-    unsplash: {
-      orientation: 'landscape',
-      color: '',
-      safeSearch: true,
-    },
-    optimization: {
-      enabled: true,
-      maxWidth: 1920,
-      maxHeight: 1080,
-      quality: 85,
-      format: 'webp',
-      lazyLoading: true,
-    },
-    attribution: {
-      enabled: true,
-      template: 'Photo by {author} on {source}',
-      position: 'caption',
+  // Fetch image settings
+  const { data: settingsData, isLoading } = useQuery({
+    queryKey: ['settings', 'images'],
+    queryFn: async () => {
+      const res = await fetch('/api/admin/settings/images');
+      if (!res.ok) throw new Error('Failed to fetch settings');
+      return res.json();
     },
   });
 
-  const [draggedItem, setDraggedItem] = useState<string | null>(null);
-  const [isSaving, setIsSaving] = useState(false);
+  const [sources, setSources] = useState<ImageSource[]>([]);
+  const [settings, setSettings] = useState<ImageSettings | null>(null);
+
+  // Update local state when data is loaded
+  useEffect(() => {
+    if (settingsData) {
+      setSources(settingsData.sources || []);
+      setSettings(settingsData.settings || null);
+    }
+  }, [settingsData]);
+
+  // Save mutation
+  const saveMutation = useMutation({
+    mutationFn: async (data: { sources: ImageSource[], settings: ImageSettings }) => {
+      const res = await fetch('/api/admin/settings/images', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      if (!res.ok) throw new Error('Failed to save settings');
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['settings', 'images'] });
+      toast({
+        title: 'Paramètres sauvegardés',
+        description: 'Les paramètres d\'images ont été mis à jour',
+      });
+    },
+    onError: () => {
+      toast({
+        title: 'Erreur',
+        description: 'Impossible de sauvegarder les paramètres',
+        variant: 'destructive',
+      });
+    },
+  });
 
   // Handle drag start
   const handleDragStart = (id: string) => {
@@ -124,17 +167,19 @@ export default function ImagesSettingsPage() {
   };
 
   // Save settings
-  const handleSave = async () => {
-    setIsSaving(true);
-    try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      toast({ title: 'Paramètres enregistrés' });
-    } catch (error) {
-      toast({ title: 'Erreur', variant: 'destructive' });
-    } finally {
-      setIsSaving(false);
+  const handleSave = () => {
+    if (settings) {
+      saveMutation.mutate({ sources, settings });
     }
   };
+
+  if (isLoading || !settings) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -143,12 +188,14 @@ export default function ImagesSettingsPage() {
         <div>
           <h1 className="text-2xl font-bold flex items-center gap-2">
             <Image className="h-6 w-6" />
-            Images
+            Configuration Images
           </h1>
-          <p className="text-muted-foreground">Configuration des sources d'images</p>
+          <p className="text-muted-foreground">
+            Gérez les sources et l'optimisation des images
+          </p>
         </div>
-        <Button onClick={handleSave} disabled={isSaving}>
-          {isSaving ? (
+        <Button onClick={handleSave} disabled={saveMutation.isPending}>
+          {saveMutation.isPending ? (
             <Loader2 className="h-4 w-4 mr-2 animate-spin" />
           ) : (
             <Save className="h-4 w-4 mr-2" />
@@ -157,302 +204,183 @@ export default function ImagesSettingsPage() {
         </Button>
       </div>
 
-      {/* Sources Priority */}
+      {/* Image Sources */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">Sources d'images</CardTitle>
+          <CardTitle>Sources d'images</CardTitle>
           <CardDescription>
-            Glissez-déposez pour définir l'ordre de priorité
+            Configurez l'ordre de priorité des sources d'images (glisser-déposer)
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          {sources.map((source) => (
+            <div
+              key={source.id}
+              draggable
+              onDragStart={() => handleDragStart(source.id)}
+              onDragOver={(e) => handleDragOver(e, source.id)}
+              onDrop={handleDrop}
+              className={cn(
+                'flex items-center justify-between p-4 border rounded-lg cursor-move',
+                'hover:bg-accent transition-colors',
+                draggedItem === source.id && 'opacity-50'
+              )}
+            >
+              <div className="flex items-center gap-3">
+                <GripVertical className="h-5 w-5 text-muted-foreground" />
+                <span className="text-2xl">{source.icon}</span>
+                <div>
+                  <p className="font-medium">{source.name}</p>
+                  <p className="text-sm text-muted-foreground">
+                    Priorité: {source.priority}
+                  </p>
+                </div>
+              </div>
+              <Switch
+                checked={source.enabled}
+                onCheckedChange={() => toggleSource(source.id)}
+              />
+            </div>
+          ))}
+        </CardContent>
+      </Card>
+
+      {/* Default Source */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Source par défaut</CardTitle>
+          <CardDescription>
+            Choisissez la source utilisée par défaut
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="space-y-2">
-            {sources.sort((a, b) => a.priority - b.priority).map(source => (
-              <div
-                key={source.id}
-                draggable
-                onDragStart={() => handleDragStart(source.id)}
-                onDragOver={(e) => handleDragOver(e, source.id)}
-                onDrop={handleDrop}
-                className={cn(
-                  'flex items-center justify-between p-4 border rounded-lg cursor-move transition-colors',
-                  draggedItem === source.id && 'opacity-50 bg-muted',
-                  !source.enabled && 'opacity-60'
-                )}
-              >
-                <div className="flex items-center gap-3">
-                  <GripVertical className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-2xl">{source.icon}</span>
-                  <div>
-                    <p className="font-medium">{source.name}</p>
-                    <p className="text-xs text-muted-foreground">Priorité {source.priority}</p>
-                  </div>
-                </div>
-                <Switch
-                  checked={source.enabled}
-                  onCheckedChange={() => toggleSource(source.id)}
-                />
+          <RadioGroup
+            value={settings.defaultSource}
+            onValueChange={(value) => setSettings({ ...settings, defaultSource: value })}
+          >
+            {sources.filter(s => s.enabled).map(source => (
+              <div key={source.id} className="flex items-center space-x-2">
+                <RadioGroupItem value={source.id} id={source.id} />
+                <Label htmlFor={source.id} className="flex items-center gap-2 cursor-pointer">
+                  <span className="text-xl">{source.icon}</span>
+                  {source.name}
+                </Label>
               </div>
             ))}
-          </div>
-
-          <div className="mt-4">
-            <Label>Source par défaut</Label>
-            <Select
-              value={settings.defaultSource}
-              onValueChange={(v) => setSettings({ ...settings, defaultSource: v })}
-            >
-              <SelectTrigger className="mt-1">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {sources.filter(s => s.enabled).map(source => (
-                  <SelectItem key={source.id} value={source.id}>
-                    <div className="flex items-center gap-2">
-                      <span>{source.icon}</span>
-                      {source.name}
-                    </div>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+          </RadioGroup>
         </CardContent>
       </Card>
 
       {/* DALL-E Settings */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-base flex items-center gap-2">
-            <Sparkles className="h-4 w-4" />
-            Paramètres DALL-E
-          </CardTitle>
+          <CardTitle>Paramètres DALL-E</CardTitle>
+          <CardDescription>
+            Configuration pour la génération d'images IA
+          </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-2 gap-4">
             <div>
-              <Label>Modèle</Label>
+              <Label>Style</Label>
               <Select
-                value={settings.dalle.model}
-                onValueChange={(v) => setSettings({
+                value={settings.dalle.style}
+                onValueChange={(value) => setSettings({
                   ...settings,
-                  dalle: { ...settings.dalle, model: v },
+                  dalle: { ...settings.dalle, style: value }
                 })}
               >
-                <SelectTrigger className="mt-1">
+                <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="dall-e-3">DALL-E 3 (Recommandé)</SelectItem>
-                  <SelectItem value="dall-e-2">DALL-E 2</SelectItem>
+                  <SelectItem value="natural">Naturel</SelectItem>
+                  <SelectItem value="vivid">Vif</SelectItem>
                 </SelectContent>
               </Select>
             </div>
-
             <div>
               <Label>Taille</Label>
               <Select
                 value={settings.dalle.size}
-                onValueChange={(v) => setSettings({
+                onValueChange={(value) => setSettings({
                   ...settings,
-                  dalle: { ...settings.dalle, size: v },
+                  dalle: { ...settings.dalle, size: value }
                 })}
               >
-                <SelectTrigger className="mt-1">
+                <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="1024x1024">1024×1024 (Carré)</SelectItem>
-                  <SelectItem value="1792x1024">1792×1024 (Paysage)</SelectItem>
-                  <SelectItem value="1024x1792">1024×1792 (Portrait)</SelectItem>
+                  <SelectItem value="1024x1024">1024x1024</SelectItem>
+                  <SelectItem value="1792x1024">1792x1024</SelectItem>
+                  <SelectItem value="1024x1792">1024x1792</SelectItem>
                 </SelectContent>
               </Select>
-            </div>
-
-            <div>
-              <Label>Style</Label>
-              <RadioGroup
-                value={settings.dalle.style}
-                onValueChange={(v) => setSettings({
-                  ...settings,
-                  dalle: { ...settings.dalle, style: v },
-                })}
-                className="flex gap-4 mt-2"
-              >
-                <div className="flex items-center gap-2">
-                  <RadioGroupItem value="natural" id="natural" />
-                  <Label htmlFor="natural">Naturel</Label>
-                </div>
-                <div className="flex items-center gap-2">
-                  <RadioGroupItem value="vivid" id="vivid" />
-                  <Label htmlFor="vivid">Vivide</Label>
-                </div>
-              </RadioGroup>
-            </div>
-
-            <div>
-              <Label>Qualité</Label>
-              <RadioGroup
-                value={settings.dalle.quality}
-                onValueChange={(v) => setSettings({
-                  ...settings,
-                  dalle: { ...settings.dalle, quality: v },
-                })}
-                className="flex gap-4 mt-2"
-              >
-                <div className="flex items-center gap-2">
-                  <RadioGroupItem value="standard" id="standard" />
-                  <Label htmlFor="standard">Standard</Label>
-                </div>
-                <div className="flex items-center gap-2">
-                  <RadioGroupItem value="hd" id="hd" />
-                  <Label htmlFor="hd">HD</Label>
-                </div>
-              </RadioGroup>
             </div>
           </div>
         </CardContent>
       </Card>
 
-      {/* Unsplash Settings */}
+      {/* Optimization Settings */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-base flex items-center gap-2">
-            <Camera className="h-4 w-4" />
-            Paramètres Unsplash
-          </CardTitle>
+          <CardTitle>Optimisation</CardTitle>
+          <CardDescription>
+            Paramètres d'optimisation automatique des images
+          </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <Label>Orientation par défaut</Label>
-              <Select
-                value={settings.unsplash.orientation}
-                onValueChange={(v) => setSettings({
-                  ...settings,
-                  unsplash: { ...settings.unsplash, orientation: v },
-                })}
-              >
-                <SelectTrigger className="mt-1">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="landscape">Paysage</SelectItem>
-                  <SelectItem value="portrait">Portrait</SelectItem>
-                  <SelectItem value="squarish">Carré</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div>
-              <Label>Couleur dominante</Label>
-              <Select
-                value={settings.unsplash.color || 'any'}
-                onValueChange={(v) => setSettings({
-                  ...settings,
-                  unsplash: { ...settings.unsplash, color: v === 'any' ? '' : v },
-                })}
-              >
-                <SelectTrigger className="mt-1">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="any">Toutes couleurs</SelectItem>
-                  <SelectItem value="black_and_white">Noir & Blanc</SelectItem>
-                  <SelectItem value="black">Noir</SelectItem>
-                  <SelectItem value="white">Blanc</SelectItem>
-                  <SelectItem value="blue">Bleu</SelectItem>
-                  <SelectItem value="green">Vert</SelectItem>
-                  <SelectItem value="red">Rouge</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-
+        <CardContent className="space-y-4">
           <div className="flex items-center justify-between">
-            <div>
-              <p className="font-medium">Recherche sécurisée</p>
-              <p className="text-sm text-muted-foreground">Filtrer le contenu adulte</p>
-            </div>
-            <Switch
-              checked={settings.unsplash.safeSearch}
-              onCheckedChange={(v) => setSettings({
-                ...settings,
-                unsplash: { ...settings.unsplash, safeSearch: v },
-              })}
-            />
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Optimization */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base flex items-center gap-2">
-            <Settings className="h-4 w-4" />
-            Optimisation
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="flex items-center justify-between p-4 border rounded-lg">
-            <div>
-              <p className="font-medium">Optimisation automatique</p>
-              <p className="text-sm text-muted-foreground">
-                Compresser et redimensionner les images
-              </p>
-            </div>
+            <Label>Activer l'optimisation</Label>
             <Switch
               checked={settings.optimization.enabled}
-              onCheckedChange={(v) => setSettings({
+              onCheckedChange={(checked) => setSettings({
                 ...settings,
-                optimization: { ...settings.optimization, enabled: v },
+                optimization: { ...settings.optimization, enabled: checked }
               })}
             />
           </div>
 
           {settings.optimization.enabled && (
-            <div className="space-y-6 pl-4 border-l-2 border-muted">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <>
+              <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label>Largeur maximum (px)</Label>
+                  <Label>Largeur max (px)</Label>
                   <Input
                     type="number"
                     value={settings.optimization.maxWidth}
                     onChange={(e) => setSettings({
                       ...settings,
-                      optimization: { ...settings.optimization, maxWidth: parseInt(e.target.value) },
+                      optimization: { ...settings.optimization, maxWidth: parseInt(e.target.value) }
                     })}
-                    className="mt-1"
                   />
                 </div>
                 <div>
-                  <Label>Hauteur maximum (px)</Label>
+                  <Label>Hauteur max (px)</Label>
                   <Input
                     type="number"
                     value={settings.optimization.maxHeight}
                     onChange={(e) => setSettings({
                       ...settings,
-                      optimization: { ...settings.optimization, maxHeight: parseInt(e.target.value) },
+                      optimization: { ...settings.optimization, maxHeight: parseInt(e.target.value) }
                     })}
-                    className="mt-1"
                   />
                 </div>
               </div>
 
               <div>
-                <div className="flex items-center justify-between mb-2">
-                  <Label>Qualité de compression</Label>
-                  <span className="font-medium">{settings.optimization.quality}%</span>
-                </div>
+                <Label>Qualité: {settings.optimization.quality}%</Label>
                 <Slider
                   value={[settings.optimization.quality]}
-                  onValueChange={(v) => setSettings({
+                  onValueChange={([value]) => setSettings({
                     ...settings,
-                    optimization: { ...settings.optimization, quality: v[0] },
+                    optimization: { ...settings.optimization, quality: value }
                   })}
-                  min={50}
+                  min={1}
                   max={100}
-                  step={5}
+                  step={1}
+                  className="mt-2"
                 />
               </div>
 
@@ -460,37 +388,22 @@ export default function ImagesSettingsPage() {
                 <Label>Format de sortie</Label>
                 <Select
                   value={settings.optimization.format}
-                  onValueChange={(v) => setSettings({
+                  onValueChange={(value) => setSettings({
                     ...settings,
-                    optimization: { ...settings.optimization, format: v },
+                    optimization: { ...settings.optimization, format: value }
                   })}
                 >
-                  <SelectTrigger className="mt-1">
+                  <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="webp">WebP (Recommandé)</SelectItem>
+                    <SelectItem value="webp">WebP</SelectItem>
                     <SelectItem value="jpeg">JPEG</SelectItem>
                     <SelectItem value="png">PNG</SelectItem>
-                    <SelectItem value="avif">AVIF</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
-
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="font-medium">Lazy loading</p>
-                  <p className="text-sm text-muted-foreground">Charger les images à la demande</p>
-                </div>
-                <Switch
-                  checked={settings.optimization.lazyLoading}
-                  onCheckedChange={(v) => setSettings({
-                    ...settings,
-                    optimization: { ...settings.optimization, lazyLoading: v },
-                  })}
-                />
-              </div>
-            </div>
+            </>
           )}
         </CardContent>
       </Card>
@@ -498,75 +411,60 @@ export default function ImagesSettingsPage() {
       {/* Attribution */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">Attribution</CardTitle>
+          <CardTitle>Attribution</CardTitle>
           <CardDescription>
-            Créditez automatiquement les sources d'images
+            Configuration de l'attribution des sources d'images
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-6">
+        <CardContent className="space-y-4">
           <div className="flex items-center justify-between">
-            <div>
-              <p className="font-medium">Activer les attributions</p>
-              <p className="text-sm text-muted-foreground">
-                Requis pour Unsplash
-              </p>
-            </div>
+            <Label>Activer l'attribution</Label>
             <Switch
               checked={settings.attribution.enabled}
-              onCheckedChange={(v) => setSettings({
+              onCheckedChange={(checked) => setSettings({
                 ...settings,
-                attribution: { ...settings.attribution, enabled: v },
+                attribution: { ...settings.attribution, enabled: checked }
               })}
             />
           </div>
 
           {settings.attribution.enabled && (
-            <div className="space-y-4">
+            <>
               <div>
-                <div className="flex items-center gap-2">
-                  <Label>Template d'attribution</Label>
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger>
-                        <Info className="h-4 w-4 text-muted-foreground" />
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>Variables: {'{author}'}, {'{source}'}, {'{url}'}</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                </div>
+                <Label>Template d'attribution</Label>
                 <Input
                   value={settings.attribution.template}
                   onChange={(e) => setSettings({
                     ...settings,
-                    attribution: { ...settings.attribution, template: e.target.value },
+                    attribution: { ...settings.attribution, template: e.target.value }
                   })}
-                  className="mt-1"
                   placeholder="Photo by {author} on {source}"
                 />
+                <p className="text-xs text-muted-foreground mt-1">
+                  Variables: {'{author}'}, {'{source}'}
+                </p>
               </div>
 
               <div>
                 <Label>Position</Label>
                 <Select
                   value={settings.attribution.position}
-                  onValueChange={(v) => setSettings({
+                  onValueChange={(value) => setSettings({
                     ...settings,
-                    attribution: { ...settings.attribution, position: v },
+                    attribution: { ...settings.attribution, position: value }
                   })}
                 >
-                  <SelectTrigger className="mt-1">
+                  <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="caption">Légende de l'image</SelectItem>
+                    <SelectItem value="caption">Légende</SelectItem>
+                    <SelectItem value="overlay">Superposition</SelectItem>
                     <SelectItem value="footer">Pied de page</SelectItem>
-                    <SelectItem value="overlay">Overlay sur l'image</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
-            </div>
+            </>
           )}
         </CardContent>
       </Card>

@@ -6,6 +6,11 @@ use App\Models\Author;
 use App\Models\AuthorTranslation;
 use Illuminate\Database\Seeder;
 
+/**
+ * AuthorSeeder - Création des profils auteurs E-E-A-T
+ * 
+ * PRODUCTION READY - Version avec Manon d'Ulixai
+ */
 class AuthorSeeder extends Seeder
 {
     public function run(): void
@@ -64,50 +69,55 @@ class AuthorSeeder extends Seeder
                 ],
             ],
             
-            // Expert Immigration Asie
+            // Manon - Expert Ulixai
             [
-                'slug' => 'jean-martin-immigration',
-                'name' => 'Jean Martin',
-                'email' => 'j.martin@sos-expat.com',
-                'photo_url' => '/images/authors/jean-martin.jpg',
-                'credentials' => ['Avocat en droit international', '15 ans d\'expérience', 'Expert visas Asie'],
-                'countries' => ['TH', 'VN', 'SG', 'MY', 'ID', 'PH', 'KH', 'LA', 'MM'],
-                'specialties' => ['immigration', 'visa', 'permis_travail'],
-                'themes' => ['expatriation'],
-                'linkedin_url' => 'https://linkedin.com/in/jean-martin-immigration',
+                'slug' => 'manon-ulixai',
+                'name' => 'Manon',
+                'email' => 'manon@ulixai.com',
+                'photo_url' => '/images/authors/manon-ulixai.jpg',
+                'credentials' => ['Expert services expatriés', 'Marketplace Ulixai', 'International'],
+                'countries' => [], // Tous les pays
+                'specialties' => ['services', 'quotidien', 'marketplace'],
+                'themes' => ['expatriation', 'affiliation'],
+                'linkedin_url' => 'https://linkedin.com/in/manon-ulixai',
+                'website_url' => 'https://ulixai.com',
                 'is_default' => false,
                 'translations' => [
                     'fr' => [
-                        'bio' => "Avocat spécialisé en droit de l'immigration, Jean Martin conseille les expatriés en Asie du Sud-Est depuis 15 ans. Basé à Bangkok, il maîtrise les procédures de visa de toute la région.",
-                        'job_title' => 'Avocat en droit de l\'immigration',
+                        'bio' => "Expert Ulixai, Manon accompagne les expatriés dans leur quotidien à l'étranger en les connectant aux meilleurs prestataires de services locaux.",
+                        'job_title' => 'Expert Services Expatriés',
                     ],
                     'en' => [
-                        'bio' => "Immigration law specialist Jean Martin has been advising expats in Southeast Asia for 15 years. Based in Bangkok, he masters visa procedures across the region.",
-                        'job_title' => 'Immigration Lawyer',
+                        'bio' => "Ulixai expert, Manon helps expats in their daily life abroad by connecting them with the best local service providers.",
+                        'job_title' => 'Expat Services Expert',
                     ],
-                ],
-            ],
-            
-            // Expert Fiscal Europe
-            [
-                'slug' => 'marie-dupont-fiscal',
-                'name' => 'Marie Dupont',
-                'email' => 'm.dupont@sos-expat.com',
-                'photo_url' => '/images/authors/marie-dupont.jpg',
-                'credentials' => ['Expert-comptable', 'Fiscalité internationale', '12 ans d\'expérience'],
-                'countries' => ['ES', 'PT', 'DE', 'FR', 'IT', 'BE', 'NL', 'CH'],
-                'specialties' => ['fiscal', 'comptabilite', 'creation_entreprise'],
-                'themes' => ['expatriation', 'fondateur'],
-                'linkedin_url' => 'https://linkedin.com/in/marie-dupont-fiscal',
-                'is_default' => false,
-                'translations' => [
-                    'fr' => [
-                        'bio' => "Expert-comptable spécialisée en fiscalité internationale, Marie Dupont accompagne les entrepreneurs expatriés en Europe depuis 12 ans.",
-                        'job_title' => 'Expert-comptable, fiscalité internationale',
+                    'de' => [
+                        'bio' => "Ulixai-Expertin Manon unterstützt Expats in ihrem Alltag im Ausland, indem sie sie mit den besten lokalen Dienstleistern verbindet.",
+                        'job_title' => 'Expertin für Expat-Dienstleistungen',
                     ],
-                    'en' => [
-                        'bio' => "International tax specialist Marie Dupont has been supporting expat entrepreneurs in Europe for 12 years.",
-                        'job_title' => 'Chartered Accountant, International Tax',
+                    'es' => [
+                        'bio' => "Experta de Ulixai, Manon ayuda a los expatriados en su vida diaria en el extranjero conectándolos con los mejores proveedores de servicios locales.",
+                        'job_title' => 'Experta en Servicios para Expatriados',
+                    ],
+                    'pt' => [
+                        'bio' => "Especialista da Ulixai, Manon ajuda expatriados no seu dia a dia no exterior, conectando-os aos melhores prestadores de serviços locais.",
+                        'job_title' => 'Especialista em Serviços para Expatriados',
+                    ],
+                    'ru' => [
+                        'bio' => "Эксперт Ulixai, Манон помогает экспатам в их повседневной жизни за границей, связывая их с лучшими местными поставщиками услуг.",
+                        'job_title' => 'Эксперт по услугам для экспатов',
+                    ],
+                    'zh' => [
+                        'bio' => "Ulixai专家Manon通过将外籍人士与最好的本地服务提供商联系起来，帮助他们在国外的日常生活。",
+                        'job_title' => '外籍人士服务专家',
+                    ],
+                    'ar' => [
+                        'bio' => "خبيرة Ulixai، مانون تساعد المغتربين في حياتهم اليومية في الخارج من خلال ربطهم بأفضل مقدمي الخدمات المحليين.",
+                        'job_title' => 'خبيرة خدمات المغتربين',
+                    ],
+                    'hi' => [
+                        'bio' => "Ulixai विशेषज्ञ, मैनन विदेश में प्रवासियों को स्थानीय सेवा प्रदाताओं से जोड़कर उनके दैनिक जीवन में मदद करती हैं।",
+                        'job_title' => 'प्रवासी सेवा विशेषज्ञ',
                     ],
                 ],
             ],
@@ -132,6 +142,34 @@ class AuthorSeeder extends Seeder
                     'en' => [
                         'bio' => "Ulixai is the expat services marketplace. Our editorial team shares tips and best practices to make your life abroad easier.",
                         'job_title' => 'Ulixai Editorial Team',
+                    ],
+                    'de' => [
+                        'bio' => "Ulixai ist der Marktplatz für Expat-Dienstleistungen. Unser Redaktionsteam teilt Tipps und Best Practices, um Ihr Leben im Ausland zu erleichtern.",
+                        'job_title' => 'Ulixai Redaktionsteam',
+                    ],
+                    'es' => [
+                        'bio' => "Ulixai es el marketplace de servicios para expatriados. Nuestro equipo editorial comparte consejos y mejores prácticas para facilitar su vida en el extranjero.",
+                        'job_title' => 'Equipo editorial Ulixai',
+                    ],
+                    'pt' => [
+                        'bio' => "Ulixai é o marketplace de serviços para expatriados. Nossa equipe editorial compartilha dicas e melhores práticas para facilitar sua vida no exterior.",
+                        'job_title' => 'Equipe editorial Ulixai',
+                    ],
+                    'ru' => [
+                        'bio' => "Ulixai - это торговая площадка услуг для экспатов. Наша редакционная команда делится советами и лучшими практиками, чтобы облегчить вашу жизнь за границей.",
+                        'job_title' => 'Редакционная команда Ulixai',
+                    ],
+                    'zh' => [
+                        'bio' => "Ulixai是外籍人士服务市场。我们的编辑团队分享技巧和最佳实践，让您的国外生活更轻松。",
+                        'job_title' => 'Ulixai编辑团队',
+                    ],
+                    'ar' => [
+                        'bio' => "Ulixai هو سوق خدمات المغتربين. يشارك فريقنا التحريري النصائح وأفضل الممارسات لتسهيل حياتك في الخارج.",
+                        'job_title' => 'فريق تحرير Ulixai',
+                    ],
+                    'hi' => [
+                        'bio' => "Ulixai प्रवासी सेवाओं का बाज़ार है। हमारी संपादकीय टीम आपके विदेश में जीवन को आसान बनाने के लिए सुझाव और सर्वोत्तम प्रथाएं साझा करती है।",
+                        'job_title' => 'Ulixai संपादकीय टीम',
                     ],
                 ],
             ],

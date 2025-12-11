@@ -23,6 +23,16 @@ use App\Http\Controllers\Api\PublicationQueueController;
 use App\Http\Controllers\Api\IndexingQueueController;
 use App\Http\Controllers\Api\AutomationSettingsController;
 use App\Http\Controllers\Api\SeoController;
+
+// NOUVEAUX CONTROLLERS
+use App\Http\Controllers\Api\Admin\WorkersController;
+use App\Http\Controllers\Api\Analytics\AnalyticsController;
+use App\Http\Controllers\Api\Coverage\CoverageController;
+use App\Http\Controllers\Api\Live\LiveController;
+use App\Http\Controllers\Api\Press\PressController;
+use App\Http\Controllers\Api\Profile\ProfileController;
+use App\Http\Controllers\Api\Settings\SettingsController;
+
 use Illuminate\Support\Facades\Route;
 
 // =========================================================================
@@ -52,6 +62,13 @@ Route::middleware(['auth:sanctum', 'admin.auth'])->prefix('admin')->group(functi
     // =====================================================================
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/me', [AuthController::class, 'me']);
+
+    // =====================================================================
+    // WORKERS (NOUVEAU)
+    // =====================================================================
+    Route::get('/workers', [WorkersController::class, 'index']);
+    Route::post('/workers/stop-all', [WorkersController::class, 'stopAll']);
+    Route::post('/workers/start-all', [WorkersController::class, 'startAll']);
 
     // =====================================================================
     // ARTICLES
@@ -156,238 +173,164 @@ Route::middleware(['auth:sanctum', 'admin.auth'])->prefix('admin')->group(functi
     });
 
     // =====================================================================
-    // COVERAGE
-    // =====================================================================
-    Route::prefix('coverage')->group(function () {
-        // Routes existantes (contrôleur réel)
-        Route::get('/by-platform', [\App\Http\Controllers\Api\CoverageController::class, 'byPlatform']);
-        Route::get('/by-country', [\App\Http\Controllers\Api\CoverageController::class, 'byCountry']);
-        Route::get('/by-theme', [\App\Http\Controllers\Api\CoverageController::class, 'byTheme']);
-        Route::get('/gaps', [\App\Http\Controllers\Api\CoverageController::class, 'gaps']);
-        Route::get('/heatmap', [\App\Http\Controllers\Api\CoverageController::class, 'heatmap']);
-        
-        // Routes mock
-        Route::get('/', function () {
-            return response()->json([
-                'success' => true,
-                'data' => [
-                    'total_countries' => 197,
-                    'covered_countries' => 0,
-                    'coverage_percentage' => 0,
-                    'by_platform' => [],
-                    'by_language' => [],
-                    'gaps' => [],
-                ],
-            ]);
-        });
-        
-        Route::get('/matrix', function () {
-            return response()->json([
-                'success' => true,
-                'data' => [
-                    'countries' => [],
-                    'languages' => [],
-                    'matrix' => [],
-                ],
-            ]);
-        });
-        
-        Route::get('/languages', function () {
-            return response()->json([
-                'success' => true,
-                'data' => [
-                    ['code' => 'fr', 'name' => 'Français', 'coverage' => 0],
-                    ['code' => 'en', 'name' => 'English', 'coverage' => 0],
-                    ['code' => 'es', 'name' => 'Español', 'coverage' => 0],
-                    ['code' => 'de', 'name' => 'Deutsch', 'coverage' => 0],
-                    ['code' => 'it', 'name' => 'Italiano', 'coverage' => 0],
-                    ['code' => 'pt', 'name' => 'Português', 'coverage' => 0],
-                    ['code' => 'ar', 'name' => 'العربية', 'coverage' => 0],
-                    ['code' => 'zh', 'name' => '中文', 'coverage' => 0],
-                    ['code' => 'ja', 'name' => '日本語', 'coverage' => 0],
-                ],
-                'total' => 9,
-            ]);
-        });
-        
-        Route::get('/objectives', function () {
-            return response()->json([
-                'success' => true,
-                'data' => [],
-                'total' => 0,
-                'completed' => 0,
-                'in_progress' => 0,
-                'pending' => 0,
-            ]);
-        });
-        
-        Route::get('/filters', function () {
-            return response()->json([
-                'success' => true,
-                'data' => [
-                    'countries' => [],
-                    'languages' => [],
-                    'platforms' => [],
-                    'specialties' => [],
-                ],
-            ]);
-        });
-    });
-
-    // =====================================================================
-    // STATS
-    // =====================================================================
-    Route::prefix('stats')->group(function () {
-        // Routes existantes (contrôleur réel)
-        Route::get('/dashboard', [\App\Http\Controllers\Api\StatsController::class, 'dashboard']);
-        Route::get('/costs', [\App\Http\Controllers\Api\StatsController::class, 'costs']);
-        Route::get('/production', [\App\Http\Controllers\Api\StatsController::class, 'production']);
-        Route::get('/quality', [\App\Http\Controllers\Api\StatsController::class, 'quality']);
-        Route::get('/platform', [\App\Http\Controllers\Api\StatsController::class, 'platform']);
-        
-        // Route global corrigée
-        Route::get('/global', function () {
-            return response()->json([
-                // Structure de génération
-                'generation' => [
-                    'processing' => 0,
-                    'queued' => 0,
-                    'completed_today' => 0,
-                    'failed_today' => 0,
-                ],
-                
-                // Structure de traduction
-                'translation' => [
-                    'processing' => 0,
-                    'queued' => 0,
-                    'completed_today' => 0,
-                ],
-                
-                // Structure de publication
-                'publishing' => [
-                    'pending' => 0,
-                    'publishing' => 0,
-                    'published_today' => 0,
-                ],
-                
-                // Alertes
-                'alerts' => [],
-                
-                // Stats du jour
-                'today' => [
-                    'generated' => 0,
-                    'published' => 0,
-                    'targets' => [
-                        'generated' => 100,
-                        'published' => 100,
-                    ],
-                ],
-                
-                // Stats de la semaine
-                'week' => [
-                    'generated' => 0,
-                    'published' => 0,
-                ],
-                
-                // Stats du mois
-                'month' => [
-                    'generated' => 0,
-                    'published' => 0,
-                ],
-                
-                // Timestamp de dernière mise à jour
-                'lastUpdated' => now()->toIso8601String(),
-            ]);
-        });
-    });
-
-    // =====================================================================
-    // THEMES
-    // =====================================================================
-    Route::prefix('themes')->group(function () {
-        Route::get('/', [\App\Http\Controllers\Api\ThemeController::class, 'index']);
-        Route::get('/{id}', [\App\Http\Controllers\Api\ThemeController::class, 'show']);
-
-        Route::middleware('admin.auth:admin')->group(function () {
-            Route::post('/', [\App\Http\Controllers\Api\ThemeController::class, 'store']);
-            Route::put('/{id}', [\App\Http\Controllers\Api\ThemeController::class, 'update']);
-        });
-
-        Route::delete('/{id}', [\App\Http\Controllers\Api\ThemeController::class, 'destroy'])->middleware('admin.auth:super_admin');
-    });
-
-    // =====================================================================
-    // PROVIDER TYPES
-    // =====================================================================
-    Route::prefix('provider-types')->group(function () {
-        Route::get('/', [\App\Http\Controllers\Api\ProviderTypeController::class, 'index']);
-        Route::get('/{id}', [\App\Http\Controllers\Api\ProviderTypeController::class, 'show']);
-    });
-
-    // =====================================================================
-    // AUTHORS
-    // =====================================================================
-    Route::prefix('authors')->group(function () {
-        Route::get('/', [\App\Http\Controllers\Api\AuthorController::class, 'index']);
-        Route::get('/{id}', [\App\Http\Controllers\Api\AuthorController::class, 'show']);
-
-        Route::middleware('admin.auth:admin')->group(function () {
-            Route::post('/', [\App\Http\Controllers\Api\AuthorController::class, 'store']);
-            Route::put('/{id}', [\App\Http\Controllers\Api\AuthorController::class, 'update']);
-        });
-
-        Route::delete('/{id}', [\App\Http\Controllers\Api\AuthorController::class, 'destroy'])->middleware('admin.auth:super_admin');
-    });
-
-    // =====================================================================
-    // AFFILIATES
-    // =====================================================================
-    Route::prefix('affiliates')->group(function () {
-        Route::get('/', [\App\Http\Controllers\Api\AffiliateController::class, 'index']);
-        Route::get('/{id}', [\App\Http\Controllers\Api\AffiliateController::class, 'show']);
-
-        Route::middleware('admin.auth:admin')->group(function () {
-            Route::post('/', [\App\Http\Controllers\Api\AffiliateController::class, 'store']);
-            Route::put('/{id}', [\App\Http\Controllers\Api\AffiliateController::class, 'update']);
-        });
-
-        Route::delete('/{id}', [\App\Http\Controllers\Api\AffiliateController::class, 'destroy'])->middleware('admin.auth:super_admin');
-    });
-
-    // =====================================================================
-    // PLATFORMS
-    // =====================================================================
-    Route::prefix('platforms')->group(function () {
-        Route::get('/', [\App\Http\Controllers\Api\PlatformController::class, 'index']);
-        Route::get('/{id}', [\App\Http\Controllers\Api\PlatformController::class, 'show']);
-    });
-
-    // =====================================================================
-    // COUNTRIES
-    // =====================================================================
-    Route::prefix('countries')->group(function () {
-        Route::get('/', [\App\Http\Controllers\Api\CountryController::class, 'index']);
-        Route::get('/{id}', [\App\Http\Controllers\Api\CountryController::class, 'show']);
-    });
-
-    // =====================================================================
-    // LANGUAGES
-    // =====================================================================
-    Route::prefix('languages')->group(function () {
-        Route::get('/', [\App\Http\Controllers\Api\LanguageController::class, 'index']);
-        Route::get('/{id}', [\App\Http\Controllers\Api\LanguageController::class, 'show']);
-    });
-
-    // =====================================================================
     // QUEUE
     // =====================================================================
     Route::prefix('queue')->group(function () {
         Route::get('/', [QueueController::class, 'index']);
         Route::get('/stats', [QueueController::class, 'stats']);
+        Route::get('/{id}', [QueueController::class, 'show']);
+
         Route::middleware('admin.auth:admin')->group(function () {
             Route::post('/{id}/retry', [QueueController::class, 'retry']);
             Route::post('/{id}/cancel', [QueueController::class, 'cancel']);
-            Route::post('/clear-failed', [QueueController::class, 'clearFailed']);
+            Route::delete('/{id}', [QueueController::class, 'destroy']);
+        });
+    });
+
+    // =====================================================================
+    // PILLAR ARTICLES
+    // =====================================================================
+    Route::prefix('pillars')->group(function () {
+        Route::get('/', [PillarController::class, 'index']);
+        Route::get('/{id}', [PillarController::class, 'show']);
+
+        Route::middleware('admin.auth:admin')->group(function () {
+            Route::post('/', [PillarController::class, 'store'])->middleware('throttle:10,1');
+            Route::put('/{id}', [PillarController::class, 'update']);
+            Route::post('/{id}/link-articles', [PillarController::class, 'linkArticles']);
+        });
+    });
+
+    // =====================================================================
+    // DOSSIERS DE PRESSE
+    // =====================================================================
+    Route::prefix('dossiers')->group(function () {
+        Route::get('/', [DossierController::class, 'index']);
+        Route::get('/{id}', [DossierController::class, 'show']);
+
+        Route::middleware('admin.auth:admin')->group(function () {
+            Route::post('/', [DossierController::class, 'store']);
+            Route::put('/{id}', [DossierController::class, 'update']);
+            Route::post('/{id}/publish', [DossierController::class, 'publish']);
+        });
+    });
+
+    // =====================================================================
+    // QUALITY CHECK
+    // =====================================================================
+    Route::prefix('quality')->group(function () {
+        Route::post('/check', [QualityController::class, 'check']);
+        Route::post('/batch-check', [QualityController::class, 'batchCheck']);
+        Route::get('/stats', [QualityController::class, 'stats']);
+    });
+
+    // =====================================================================
+    // BRAND VALIDATION
+    // =====================================================================
+    Route::prefix('brand')->group(function () {
+        Route::post('/validate', [BrandValidationController::class, 'validate']);
+        Route::get('/guidelines', [BrandValidationController::class, 'guidelines']);
+    });
+
+    // =====================================================================
+    // GOLDEN EXAMPLES (Apprentissage)
+    // =====================================================================
+    Route::prefix('golden-examples')->group(function () {
+        Route::get('/', [GoldenExamplesController::class, 'index']);
+        Route::get('/{id}', [GoldenExamplesController::class, 'show']);
+
+        Route::middleware('admin.auth:admin')->group(function () {
+            Route::post('/', [GoldenExamplesController::class, 'store']);
+            Route::put('/{id}', [GoldenExamplesController::class, 'update']);
+            Route::delete('/{id}', [GoldenExamplesController::class, 'destroy']);
+        });
+    });
+
+    // =====================================================================
+    // FEEDBACK
+    // =====================================================================
+    Route::post('/feedback', [FeedbackController::class, 'store']);
+    Route::get('/feedback', [FeedbackController::class, 'index'])->middleware('admin.auth:admin');
+
+    // =====================================================================
+    // PLATFORM KNOWLEDGE
+    // =====================================================================
+    Route::prefix('platform-knowledge')->group(function () {
+        Route::get('/', [PlatformKnowledgeController::class, 'index']);
+        Route::get('/{platformId}', [PlatformKnowledgeController::class, 'show']);
+
+        Route::middleware('admin.auth:admin')->group(function () {
+            Route::put('/{platformId}', [PlatformKnowledgeController::class, 'update']);
+        });
+    });
+
+    // =====================================================================
+    // MANUAL TITLES
+    // =====================================================================
+    Route::prefix('manual-titles')->group(function () {
+        Route::get('/', [ManualTitleController::class, 'index']);
+
+        Route::middleware('admin.auth:admin')->group(function () {
+            Route::post('/', [ManualTitleController::class, 'store']);
+            Route::put('/{id}', [ManualTitleController::class, 'update']);
+            Route::delete('/{id}', [ManualTitleController::class, 'destroy']);
+        });
+    });
+
+    // =====================================================================
+    // KNOWLEDGE BASE
+    // =====================================================================
+    Route::prefix('knowledge')->group(function () {
+        Route::get('/', [KnowledgeController::class, 'index']);
+        Route::get('/{id}', [KnowledgeController::class, 'show']);
+
+        Route::middleware('admin.auth:admin')->group(function () {
+            Route::post('/', [KnowledgeController::class, 'store']);
+            Route::put('/{id}', [KnowledgeController::class, 'update']);
+            Route::delete('/{id}', [KnowledgeController::class, 'destroy']);
+        });
+    });
+
+    // =====================================================================
+    // EXPORT
+    // =====================================================================
+    Route::prefix('export')->group(function () {
+        Route::get('/configs', [ExportApiController::class, 'configs']);
+        Route::get('/configs/{id}', [ExportApiController::class, 'showConfig']);
+        Route::post('/configs', [ExportApiController::class, 'createConfig'])->middleware('admin.auth:admin');
+        Route::post('/export', [ExportApiController::class, 'export'])->middleware('admin.auth:admin');
+        Route::get('/history', [ExportApiController::class, 'history']);
+    });
+
+    // =====================================================================
+    // RESEARCH
+    // =====================================================================
+    Route::prefix('research')->group(function () {
+        Route::post('/search', [ResearchController::class, 'search']);
+        Route::get('/sources', [ResearchController::class, 'sources']);
+    });
+
+    // =====================================================================
+    // MONITORING
+    // =====================================================================
+    Route::prefix('monitoring')->group(function () {
+        Route::get('/costs', [MonitoringController::class, 'costs']);
+        Route::get('/performance', [MonitoringController::class, 'performance']);
+        Route::get('/usage', [MonitoringController::class, 'usage']);
+        Route::get('/alerts', [MonitoringController::class, 'alerts']);
+    });
+
+    // =====================================================================
+    // PRESETS
+    // =====================================================================
+    Route::prefix('presets')->group(function () {
+        Route::get('/', [PresetController::class, 'index']);
+        Route::get('/{id}', [PresetController::class, 'show']);
+
+        Route::middleware('admin.auth:admin')->group(function () {
+            Route::post('/', [PresetController::class, 'store']);
+            Route::put('/{id}', [PresetController::class, 'update']);
+            Route::delete('/{id}', [PresetController::class, 'destroy']);
         });
     });
 
@@ -397,10 +340,10 @@ Route::middleware(['auth:sanctum', 'admin.auth'])->prefix('admin')->group(functi
     Route::prefix('publication-queue')->group(function () {
         Route::get('/', [PublicationQueueController::class, 'index']);
         Route::get('/stats', [PublicationQueueController::class, 'stats']);
+
         Route::middleware('admin.auth:admin')->group(function () {
             Route::post('/', [PublicationQueueController::class, 'store']);
-            Route::post('/{id}/publish-now', [PublicationQueueController::class, 'publishNow']);
-            Route::put('/{id}', [PublicationQueueController::class, 'update']);
+            Route::post('/{id}/publish', [PublicationQueueController::class, 'publish']);
             Route::delete('/{id}', [PublicationQueueController::class, 'destroy']);
         });
     });
@@ -411,177 +354,30 @@ Route::middleware(['auth:sanctum', 'admin.auth'])->prefix('admin')->group(functi
     Route::prefix('indexing-queue')->group(function () {
         Route::get('/', [IndexingQueueController::class, 'index']);
         Route::get('/stats', [IndexingQueueController::class, 'stats']);
+
         Route::middleware('admin.auth:admin')->group(function () {
             Route::post('/', [IndexingQueueController::class, 'store']);
-            Route::post('/{id}/retry', [IndexingQueueController::class, 'retry']);
-        });
-    });
-
-    // =====================================================================
-    // PILLARS
-    // =====================================================================
-    Route::prefix('pillars')->group(function () {
-        Route::get('/', [PillarController::class, 'index']);
-        Route::get('/{id}', [PillarController::class, 'show']);
-        Route::middleware('admin.auth:admin')->group(function () {
-            Route::post('/', [PillarController::class, 'store']);
-            Route::put('/{id}', [PillarController::class, 'update']);
-        });
-        Route::delete('/{id}', [PillarController::class, 'destroy'])->middleware('admin.auth:super_admin');
-    });
-
-    // =====================================================================
-    // MANUAL TITLES
-    // =====================================================================
-    Route::prefix('manual-titles')->group(function () {
-        Route::get('/', [ManualTitleController::class, 'index']);
-        Route::middleware('admin.auth:admin')->group(function () {
-            Route::post('/', [ManualTitleController::class, 'store']);
-            Route::post('/generate', [ManualTitleController::class, 'generate']);
-        });
-    });
-
-    // =====================================================================
-    // DOSSIERS
-    // =====================================================================
-    Route::prefix('dossiers')->group(function () {
-        Route::get('/', [DossierController::class, 'index']);
-        Route::get('/{id}', [DossierController::class, 'show']);
-        Route::middleware('admin.auth:admin')->group(function () {
-            Route::post('/', [DossierController::class, 'store']);
-            Route::put('/{id}', [DossierController::class, 'update']);
-        });
-        Route::delete('/{id}', [DossierController::class, 'destroy'])->middleware('admin.auth:super_admin');
-    });
-
-    // =====================================================================
-    // QUALITY
-    // =====================================================================
-    Route::prefix('quality')->group(function () {
-        Route::get('/check', [QualityController::class, 'check']);
-        Route::get('/{id}/history', [QualityController::class, 'history']);
-    });
-
-    // =====================================================================
-    // GOLDEN EXAMPLES
-    // =====================================================================
-    Route::prefix('golden-examples')->group(function () {
-        Route::get('/', [GoldenExamplesController::class, 'index']);
-        Route::get('/{id}', [GoldenExamplesController::class, 'show']);
-        Route::middleware('admin.auth:admin')->group(function () {
-            Route::post('/', [GoldenExamplesController::class, 'store']);
-            Route::post('/{id}/evaluate', [GoldenExamplesController::class, 'evaluate']);
-        });
-    });
-
-    // =====================================================================
-    // BRAND VALIDATION
-    // =====================================================================
-    Route::prefix('brand-validation')->group(function () {
-        Route::post('/check', [BrandValidationController::class, 'check']);
-        Route::get('/guidelines', [BrandValidationController::class, 'guidelines']);
-    });
-
-    // =====================================================================
-    // FEEDBACK
-    // =====================================================================
-    Route::prefix('feedback')->group(function () {
-        Route::get('/', [FeedbackController::class, 'index']);
-        Route::post('/', [FeedbackController::class, 'store']);
-    });
-
-    // =====================================================================
-    // PLATFORM KNOWLEDGE
-    // =====================================================================
-    Route::prefix('platform-knowledge')->group(function () {
-        Route::get('/', [PlatformKnowledgeController::class, 'index']);
-        Route::get('/{id}', [PlatformKnowledgeController::class, 'show']);
-        Route::middleware('admin.auth:admin')->group(function () {
-            Route::post('/', [PlatformKnowledgeController::class, 'store']);
-            Route::put('/{id}', [PlatformKnowledgeController::class, 'update']);
-        });
-    });
-
-    // =====================================================================
-    // MONITORING
-    // =====================================================================
-    Route::prefix('monitoring')->group(function () {
-        Route::get('/overview', [MonitoringController::class, 'overview']);
-        Route::get('/realtime', [MonitoringController::class, 'realtime']);
-        
-        // Live Monitoring Routes (Phase 30)
-        Route::prefix('live')->group(function () {
-            Route::get('/overview', [MonitoringController::class, 'liveOverview']);
-            Route::get('/generation', [MonitoringController::class, 'liveGeneration']);
-            Route::get('/translation', [MonitoringController::class, 'liveTranslation']);
-            Route::get('/publishing', [MonitoringController::class, 'livePublishing']);
-            Route::get('/indexing', [MonitoringController::class, 'liveIndexing']);
-            Route::get('/alerts', [MonitoringController::class, 'liveAlerts']);
-        });
-    });
-
-    // =====================================================================
-    // RESEARCH
-    // =====================================================================
-    Route::prefix('research')->group(function () {
-        Route::get('/', [ResearchController::class, 'index']);
-        Route::middleware('admin.auth:admin')->group(function () {
-            Route::post('/search', [ResearchController::class, 'search']);
-        });
-    });
-
-    // =====================================================================
-    // PRESETS
-    // =====================================================================
-    Route::prefix('presets')->group(function () {
-        Route::get('/', [PresetController::class, 'index']);
-        Route::get('/{id}', [PresetController::class, 'show']);
-        Route::middleware('admin.auth:admin')->group(function () {
-            Route::post('/', [PresetController::class, 'store']);
-            Route::put('/{id}', [PresetController::class, 'update']);
-        });
-        Route::delete('/{id}', [PresetController::class, 'destroy'])->middleware('admin.auth:super_admin');
-    });
-
-    // =====================================================================
-    // EXPORT
-    // =====================================================================
-    Route::prefix('export')->group(function () {
-        Route::get('/articles', [ExportApiController::class, 'articles']);
-        Route::get('/stats', [ExportApiController::class, 'stats']);
-        Route::get('/coverage', [ExportApiController::class, 'coverage']);
-    });
-
-    // =====================================================================
-    // SETTINGS
-    // =====================================================================
-    Route::prefix('settings')->group(function () {
-        Route::get('/', [\App\Http\Controllers\Api\SettingsController::class, 'index']);
-        Route::middleware('admin.auth:admin')->group(function () {
-            Route::put('/', [\App\Http\Controllers\Api\SettingsController::class, 'update']);
+            Route::post('/batch', [IndexingQueueController::class, 'batch']);
+            Route::post('/{id}/submit', [IndexingQueueController::class, 'submit']);
         });
     });
 
     // =====================================================================
     // AUTOMATION SETTINGS
     // =====================================================================
-    Route::prefix('automation-settings')->group(function () {
-        Route::get('/', [AutomationSettingsController::class, 'index']);
+    Route::prefix('automation')->group(function () {
+        Route::get('/settings', [AutomationSettingsController::class, 'index']);
+
         Route::middleware('admin.auth:admin')->group(function () {
-            Route::put('/', [AutomationSettingsController::class, 'update']);
-            Route::post('/enable', [AutomationSettingsController::class, 'enable']);
-            Route::post('/enable-full', [AutomationSettingsController::class, 'enableFull']);
-            Route::post('/disable', [AutomationSettingsController::class, 'disable']);
-            Route::post('/reset', [AutomationSettingsController::class, 'reset']);
-            Route::get('/env-info', [AutomationSettingsController::class, 'envInfo']);
+            Route::put('/settings', [AutomationSettingsController::class, 'update']);
         });
     });
 
     // =====================================================================
-    // MEDIA & ASSETS
+    // MEDIA (Placeholder routes)
     // =====================================================================
     Route::prefix('media')->group(function () {
-        // Liste des médias avec pagination
+        // Liste
         Route::get('/', function (Illuminate\Http\Request $request) {
             return response()->json([
                 'success' => true,
@@ -695,6 +491,13 @@ Route::middleware(['auth:sanctum', 'admin.auth'])->prefix('admin')->group(functi
     });
 
     // =====================================================================
+    // COVERAGE FILTERS (NOUVEAU)
+    // =====================================================================
+    Route::prefix('coverage')->group(function () {
+        Route::get('/filters', [CoverageController::class, 'filters']);
+    });
+
+    // =====================================================================
     // SEO MODULE
     // =====================================================================
     Route::prefix('seo')->group(function () {
@@ -709,6 +512,10 @@ Route::middleware(['auth:sanctum', 'admin.auth'])->prefix('admin')->group(functi
             Route::post('/validate', [SeoController::class, 'validateSchema']);
             Route::put('/article/{articleId}', [SeoController::class, 'articleSchema']);
         });
+
+        // Schema - Articles without schema (NOUVEAU)
+        Route::get('/articles-without-schema', [SeoController::class, 'articlesWithoutSchema']);
+        Route::get('/schema-stats', [SeoController::class, 'schemaStats']);
 
         // Redirects
         Route::prefix('redirects')->group(function () {
@@ -740,5 +547,49 @@ Route::middleware(['auth:sanctum', 'admin.auth'])->prefix('admin')->group(functi
             Route::get('/queue', [SeoController::class, 'indexingQueue']);
             Route::get('/not-indexed', [SeoController::class, 'notIndexedArticles']);
         });
+    });
+
+    // =====================================================================
+    // SETTINGS (NOUVEAU)
+    // =====================================================================
+    Route::prefix('settings')->group(function () {
+        Route::get('/images', [SettingsController::class, 'imagesSettings']);
+        Route::put('/images', [SettingsController::class, 'updateImagesSettings']);
+    });
+
+    // =====================================================================
+    // ANALYTICS (NOUVEAU)
+    // =====================================================================
+    Route::prefix('analytics')->group(function () {
+        Route::get('/benchmarks', [AnalyticsController::class, 'benchmarks']);
+        Route::get('/top-performers', [AnalyticsController::class, 'topPerformers']);
+        Route::get('/dashboard', [AnalyticsController::class, 'dashboard']);
+        Route::get('/traffic', [AnalyticsController::class, 'traffic']);
+        Route::get('/insights', [AnalyticsController::class, 'insights']);
+        Route::get('/historical', [AnalyticsController::class, 'historical']);
+    });
+
+    // =====================================================================
+    // LIVE MONITORING (NOUVEAU)
+    // =====================================================================
+    Route::prefix('live')->group(function () {
+        Route::get('/generation', [LiveController::class, 'generation']);
+    });
+
+    // =====================================================================
+    // PRESS ANALYTICS (NOUVEAU)
+    // =====================================================================
+    Route::prefix('press')->group(function () {
+        Route::get('/analytics', [PressController::class, 'analytics']);
+    });
+
+    // =====================================================================
+    // PROFILE (NOUVEAU)
+    // =====================================================================
+    Route::prefix('profile')->group(function () {
+        Route::get('/sessions', [ProfileController::class, 'sessions']);
+        Route::get('/login-history', [ProfileController::class, 'loginHistory']);
+        Route::delete('/sessions/{sessionId}', [ProfileController::class, 'revokeSession']);
+        Route::post('/sessions/revoke-all', [ProfileController::class, 'revokeAllSessions']);
     });
 });

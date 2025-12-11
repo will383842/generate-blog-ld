@@ -23,8 +23,8 @@ import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
-import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/Tabs';
+import {
   SelectRoot as Select,
   SelectContent,
   SelectItem,
@@ -36,7 +36,7 @@ import { CoverageMatrix } from '@/components/coverage/CoverageMatrix';
 import { LanguageBreakdown } from '@/components/coverage/LanguageBreakdown';
 import { ObjectivesTracker } from '@/components/coverage/ObjectivesTracker';
 import { QuickGenerateButton } from '@/components/coverage/QuickGenerate';
-import { IntelligentMap } from '@/pages/coverage/IntelligentMap';
+import IntelligentMap from '@/pages/coverage/IntelligentMap';
 import { WorldMap } from '@/components/Maps/WorldMap';
 import type { CountryData } from '@/components/Maps/WorldMap';
 import { useCoverageGlobal, useCoverageGaps, useExportCoverageReport } from '@/hooks/useCoverage';

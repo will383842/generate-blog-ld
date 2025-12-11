@@ -4,7 +4,8 @@
  */
 
 import React, { useState } from 'react';
-import { Monitor, Smartphone, Tablet, MapPin, Calendar, LogOut, Shield, AlertCircle } from 'lucide-react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { Monitor, Smartphone, Tablet, MapPin, Calendar, LogOut, Shield, AlertCircle, Loader2 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
@@ -43,322 +44,280 @@ interface LoginHistory {
 
 export default function ProfileSessionsPage() {
   const { toast } = useToast();
+  const queryClient = useQueryClient();
   const [showRevokeAll, setShowRevokeAll] = useState(false);
   const [sessionToRevoke, setSessionToRevoke] = useState<string | null>(null);
 
-  const [activeSessions] = useState<Session[]>([
-    {
-      id: '1',
-      device: 'Windows PC',
-      deviceType: 'desktop',
-      browser: 'Chrome 120',
-      os: 'Windows 11',
-      location: 'Marseille, France',
-      ip: '91.160.45.123',
-      lastActive: 'Maintenant',
-      isCurrent: true,
+  // Fetch active sessions
+  const { data: activeSessions = [], isLoading: sessionsLoading } = useQuery<Session[]>({
+    queryKey: ['profile', 'sessions'],
+    queryFn: async () => {
+      const res = await fetch('/api/admin/profile/sessions');
+      if (!res.ok) throw new Error('Failed to fetch sessions');
+      return res.json();
     },
-    {
-      id: '2',
-      device: 'iPhone 15 Pro',
-      deviceType: 'mobile',
-      browser: 'Safari',
-      os: 'iOS 17',
-      location: 'Paris, France',
-      ip: '82.124.33.87',
-      lastActive: 'Il y a 2 heures',
-      isCurrent: false,
-    },
-    {
-      id: '3',
-      device: 'MacBook Pro',
-      deviceType: 'desktop',
-      browser: 'Firefox 121',
-      os: 'macOS 14',
-      location: 'Lyon, France',
-      ip: '90.45.12.234',
-      lastActive: 'Il y a 1 jour',
-      isCurrent: false,
-    },
-  ]);
+  });
 
-  const [loginHistory] = useState<LoginHistory[]>([
-    {
-      id: '1',
-      timestamp: '2024-12-10 14:30',
-      device: 'Windows PC - Chrome',
-      location: 'Marseille, France',
-      ip: '91.160.45.123',
-      success: true,
+  // Fetch login history
+  const { data: loginHistory = [], isLoading: historyLoading } = useQuery<LoginHistory[]>({
+    queryKey: ['profile', 'login-history'],
+    queryFn: async () => {
+      const res = await fetch('/api/admin/profile/login-history');
+      if (!res.ok) throw new Error('Failed to fetch login history');
+      return res.json();
     },
-    {
-      id: '2',
-      timestamp: '2024-12-10 09:15',
-      device: 'iPhone - Safari',
-      location: 'Paris, France',
-      ip: '82.124.33.87',
-      success: true,
-    },
-    {
-      id: '3',
-      timestamp: '2024-12-09 18:45',
-      device: 'MacBook Pro - Firefox',
-      location: 'Lyon, France',
-      ip: '90.45.12.234',
-      success: true,
-    },
-    {
-      id: '4',
-      timestamp: '2024-12-09 11:20',
-      device: 'Unknown Device - Chrome',
-      location: 'Bucarest, Roumanie',
-      ip: '89.234.156.78',
-      success: false,
-    },
-    {
-      id: '5',
-      timestamp: '2024-12-08 16:30',
-      device: 'Windows PC - Chrome',
-      location: 'Marseille, France',
-      ip: '91.160.45.123',
-      success: true,
-    },
-  ]);
+  });
 
-  const getDeviceIcon = (type: string) => {
-    switch (type) {
-      case 'mobile':
-        return <Smartphone className="w-5 h-5" />;
-      case 'tablet':
-        return <Tablet className="w-5 h-5" />;
-      default:
-        return <Monitor className="w-5 h-5" />;
+  // Revoke session mutation
+  const revokeSessionMutation = useMutation({
+    mutationFn: async (sessionId: string) => {
+      const res = await fetch(`/api/admin/profile/sessions/${sessionId}`, {
+        method: 'DELETE',
+      });
+      if (!res.ok) throw new Error('Failed to revoke session');
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['profile', 'sessions'] });
+      toast({
+        title: 'Session révoquée',
+        description: 'La session a été déconnectée avec succès',
+      });
+      setSessionToRevoke(null);
+    },
+    onError: () => {
+      toast({
+        title: 'Erreur',
+        description: 'Impossible de révoquer la session',
+        variant: 'destructive',
+      });
+    },
+  });
+
+  // Revoke all sessions mutation
+  const revokeAllMutation = useMutation({
+    mutationFn: async () => {
+      const res = await fetch('/api/admin/profile/sessions/revoke-all', {
+        method: 'POST',
+      });
+      if (!res.ok) throw new Error('Failed to revoke all sessions');
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['profile', 'sessions'] });
+      toast({
+        title: 'Sessions révoquées',
+        description: 'Toutes les autres sessions ont été déconnectées',
+      });
+      setShowRevokeAll(false);
+    },
+    onError: () => {
+      toast({
+        title: 'Erreur',
+        description: 'Impossible de révoquer les sessions',
+        variant: 'destructive',
+      });
+    },
+  });
+
+  const handleRevokeSession = (sessionId: string) => {
+    setSessionToRevoke(sessionId);
+  };
+
+  const confirmRevokeSession = () => {
+    if (sessionToRevoke) {
+      revokeSessionMutation.mutate(sessionToRevoke);
     }
   };
 
-  const handleRevokeSession = (sessionId: string) => {
-    setSessionToRevoke(null);
-    toast({ title: 'Session révoquée avec succès' });
+  const handleRevokeAll = () => {
+    setShowRevokeAll(true);
   };
 
-  const handleRevokeAll = () => {
-    setShowRevokeAll(false);
-    toast({ title: 'Toutes les sessions ont été révoquées' });
+  const confirmRevokeAll = () => {
+    revokeAllMutation.mutate();
   };
+
+  const getDeviceIcon = (deviceType: Session['deviceType']) => {
+    switch (deviceType) {
+      case 'desktop':
+        return <Monitor className="h-5 w-5" />;
+      case 'mobile':
+        return <Smartphone className="h-5 w-5" />;
+      case 'tablet':
+        return <Tablet className="h-5 w-5" />;
+    }
+  };
+
+  if (sessionsLoading || historyLoading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
 
   return (
-    <div className="p-6 space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold flex items-center gap-2">
-            <Shield className="w-6 h-6" />
-            Sessions
-          </h1>
-          <p className="text-muted-foreground">Gérez vos sessions actives et l'historique des connexions</p>
-        </div>
-        <Button variant="destructive" onClick={() => setShowRevokeAll(true)}>
-          <LogOut className="w-4 h-4 mr-2" />
-          Révoquer toutes les sessions
-        </Button>
-      </div>
-
-      {/* Security Alert */}
-      <Card className="border-orange-200 bg-orange-50">
-        <CardContent className="pt-6">
-          <div className="flex gap-3">
-            <AlertCircle className="w-5 h-5 text-orange-600 flex-shrink-0 mt-0.5" />
+    <div className="space-y-6">
+      {/* Active Sessions */}
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between">
             <div>
-              <div className="font-medium text-orange-900">Activité suspecte détectée</div>
-              <div className="text-sm text-orange-700 mt-1">
-                Une tentative de connexion échouée depuis Bucarest, Roumanie a été enregistrée le 09/12/2024 à 11:20.
-                Si ce n'était pas vous, nous vous recommandons de changer votre mot de passe immédiatement.
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      <div className="grid grid-cols-2 gap-6">
-        {/* Active Sessions */}
-        <div className="col-span-1 space-y-4">
-          <Card>
-            <CardHeader>
               <CardTitle>Sessions actives</CardTitle>
-              <CardDescription>
-                {activeSessions.length} {activeSessions.length > 1 ? 'appareils connectés' : 'appareil connecté'}
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
+              <CardDescription>Gérez vos sessions de connexion actives</CardDescription>
+            </div>
+            <Button
+              variant="outline"
+              onClick={handleRevokeAll}
+              disabled={activeSessions.filter(s => !s.isCurrent).length === 0}
+            >
+              <LogOut className="h-4 w-4 mr-2" />
+              Déconnecter les autres
+            </Button>
+          </div>
+        </CardHeader>
+        <CardContent>
+          {activeSessions.length === 0 ? (
+            <div className="text-center py-12 text-muted-foreground">
+              <Shield className="h-12 w-12 mx-auto mb-4 opacity-50" />
+              <p>Aucune session active</p>
+            </div>
+          ) : (
+            <div className="space-y-4">
               {activeSessions.map((session) => (
                 <div
                   key={session.id}
-                  className="p-4 border rounded-lg space-y-3 hover:bg-accent transition-colors"
+                  className="flex items-start justify-between p-4 border rounded-lg"
                 >
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-start gap-3">
-                      <div className="p-2 bg-primary/10 rounded-lg">
-                        {getDeviceIcon(session.deviceType)}
-                      </div>
-                      <div>
-                        <div className="font-medium flex items-center gap-2">
-                          {session.device}
-                          {session.isCurrent && (
-                            <Badge variant="default" className="text-xs">
-                              Session actuelle
-                            </Badge>
-                          )}
-                        </div>
-                        <div className="text-sm text-muted-foreground">
-                          {session.browser} · {session.os}
-                        </div>
-                      </div>
+                  <div className="flex items-start gap-4">
+                    <div className="p-2 bg-muted rounded-lg">
+                      {getDeviceIcon(session.deviceType)}
                     </div>
-                    {!session.isCurrent && (
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => setSessionToRevoke(session.id)}
-                      >
-                        <LogOut className="w-4 h-4" />
-                      </Button>
-                    )}
-                  </div>
-
-                  <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                    <div className="flex items-center gap-1">
-                      <MapPin className="w-3 h-3" />
-                      {session.location}
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Calendar className="w-3 h-3" />
-                      {session.lastActive}
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <p className="font-medium">{session.device}</p>
+                        {session.isCurrent && (
+                          <Badge variant="default" className="text-xs">
+                            Session actuelle
+                          </Badge>
+                        )}
+                      </div>
+                      <div className="text-sm text-muted-foreground space-y-1 mt-1">
+                        <p>
+                          {session.browser} • {session.os}
+                        </p>
+                        <p className="flex items-center gap-1">
+                          <MapPin className="h-3 w-3" />
+                          {session.location} • {session.ip}
+                        </p>
+                        <p className="flex items-center gap-1">
+                          <Calendar className="h-3 w-3" />
+                          {session.lastActive}
+                        </p>
+                      </div>
                     </div>
                   </div>
+                  {!session.isCurrent && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleRevokeSession(session.id)}
+                    >
+                      <LogOut className="h-4 w-4" />
+                    </Button>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
-                  <div className="text-xs text-muted-foreground font-mono">
-                    IP: {session.ip}
+      {/* Login History */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Historique de connexion</CardTitle>
+          <CardDescription>Dernières tentatives de connexion à votre compte</CardDescription>
+        </CardHeader>
+        <CardContent>
+          {loginHistory.length === 0 ? (
+            <div className="text-center py-12 text-muted-foreground">
+              <Calendar className="h-12 w-12 mx-auto mb-4 opacity-50" />
+              <p>Aucun historique disponible</p>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {loginHistory.map((login) => (
+                <div
+                  key={login.id}
+                  className="flex items-start justify-between p-3 border rounded-lg"
+                >
+                  <div className="flex items-start gap-3">
+                    <div
+                      className={`p-2 rounded-lg ${
+                        login.success ? 'bg-green-100' : 'bg-red-100'
+                      }`}
+                    >
+                      {login.success ? (
+                        <Shield className="h-4 w-4 text-green-600" />
+                      ) : (
+                        <AlertCircle className="h-4 w-4 text-red-600" />
+                      )}
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <p className="font-medium text-sm">{login.device}</p>
+                        <Badge variant={login.success ? 'default' : 'destructive'}>
+                          {login.success ? 'Réussie' : 'Échouée'}
+                        </Badge>
+                      </div>
+                      <div className="text-xs text-muted-foreground space-y-1 mt-1">
+                        <p>{login.timestamp}</p>
+                        <p>
+                          {login.location} • {login.ip}
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 </div>
               ))}
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Login History */}
-        <div className="col-span-1">
-          <Card>
-            <CardHeader>
-              <CardTitle>Historique des connexions</CardTitle>
-              <CardDescription>Dernières activités sur votre compte</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                {loginHistory.map((login) => (
-                  <div
-                    key={login.id}
-                    className={`p-3 border rounded-lg ${
-                      !login.success ? 'border-red-200 bg-red-50' : ''
-                    }`}
-                  >
-                    <div className="flex items-start justify-between mb-2">
-                      <div className="flex items-center gap-2">
-                        <Badge variant={login.success ? 'default' : 'destructive'} className="text-xs">
-                          {login.success ? 'Succès' : 'Échec'}
-                        </Badge>
-                        <span className="text-xs text-muted-foreground">
-                          {login.timestamp}
-                        </span>
-                      </div>
-                    </div>
-                    <div className="text-sm font-medium">{login.device}</div>
-                    <div className="flex items-center gap-3 text-xs text-muted-foreground mt-1">
-                      <div className="flex items-center gap-1">
-                        <MapPin className="w-3 h-3" />
-                        {login.location}
-                      </div>
-                      <div className="font-mono">
-                        {login.ip}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
-
-      {/* Stats */}
-      <div className="grid grid-cols-4 gap-4">
-        <Card>
-          <CardContent className="pt-6">
-            <div className="text-center">
-              <div className="text-3xl font-bold">{activeSessions.length}</div>
-              <div className="text-sm text-muted-foreground">Sessions actives</div>
             </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <div className="text-center">
-              <div className="text-3xl font-bold">{loginHistory.filter(l => l.success).length}</div>
-              <div className="text-sm text-muted-foreground">Connexions réussies</div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <div className="text-center">
-              <div className="text-3xl font-bold text-red-600">
-                {loginHistory.filter(l => !l.success).length}
-              </div>
-              <div className="text-sm text-muted-foreground">Tentatives échouées</div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <div className="text-center">
-              <div className="text-3xl font-bold">3</div>
-              <div className="text-sm text-muted-foreground">Pays différents</div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+          )}
+        </CardContent>
+      </Card>
 
       {/* Revoke Session Dialog */}
       <AlertDialog open={!!sessionToRevoke} onOpenChange={() => setSessionToRevoke(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Révoquer cette session ?</AlertDialogTitle>
+            <AlertDialogTitle>Déconnecter cette session ?</AlertDialogTitle>
             <AlertDialogDescription>
-              Cette action déconnectera l'appareil de votre compte. Vous pourrez toujours vous reconnecter depuis cet appareil plus tard.
+              Cette session sera immédiatement déconnectée et devra se reconnecter.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Annuler</AlertDialogCancel>
-            <AlertDialogAction onClick={() => handleRevokeSession(sessionToRevoke!)}>
-              Révoquer
+            <AlertDialogAction onClick={confirmRevokeSession}>
+              Déconnecter
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
 
-      {/* Revoke All Sessions Dialog */}
+      {/* Revoke All Dialog */}
       <AlertDialog open={showRevokeAll} onOpenChange={setShowRevokeAll}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Révoquer toutes les sessions ?</AlertDialogTitle>
+            <AlertDialogTitle>Déconnecter toutes les autres sessions ?</AlertDialogTitle>
             <AlertDialogDescription>
-              Cette action déconnectera tous les appareils de votre compte, sauf celui que vous utilisez actuellement.
-              Cette action est irréversible.
+              Toutes les sessions actives sauf celle-ci seront déconnectées.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Annuler</AlertDialogCancel>
-            <AlertDialogAction onClick={handleRevokeAll} className="bg-red-600 hover:bg-red-700">
-              Révoquer toutes les sessions
+            <AlertDialogAction onClick={confirmRevokeAll}>
+              Déconnecter tout
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

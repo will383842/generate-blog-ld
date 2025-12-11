@@ -6,6 +6,7 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import {
   FileCode,
   ArrowLeft,
@@ -43,6 +44,12 @@ import { SchemaMarkupEditor } from '@/components/seo/SchemaMarkupEditor';
 import { SCHEMA_TYPES, SchemaType } from '@/types/seo';
 import { cn } from '@/lib/utils';
 
+interface ArticleWithoutSchema {
+  id: number;
+  title: string;
+  platform: string;
+}
+
 export default function SchemaPage() {
   const { t } = useTranslation();
 
@@ -54,15 +61,38 @@ export default function SchemaPage() {
   const [bulkType, setBulkType] = useState<SchemaType>('Article');
 
   // API hooks
-  const { data: templates, isLoading } = useSchemaTemplates();
+  const { data: templates, isLoading: templatesLoading } = useSchemaTemplates();
   const generateSchema = useGenerateSchema();
 
-  // Mock articles without schema (would come from API)
-  const articlesWithoutSchema = [
-    { id: 1, title: 'Article sans schema 1', platform: 'SOS-Expat' },
-    { id: 2, title: 'Article sans schema 2', platform: 'Ulixai' },
-    { id: 3, title: 'Article sans schema 3', platform: 'SOS-Expat' },
-  ];
+  // Fetch articles without schema
+  const { data: articlesWithoutSchema = [], isLoading: articlesLoading } = useQuery<ArticleWithoutSchema[]>({
+    queryKey: ['seo', 'articles-without-schema'],
+    queryFn: async () => {
+      const res = await fetch('/api/admin/seo/articles-without-schema');
+      if (!res.ok) throw new Error('Failed to fetch articles');
+      return res.json();
+    },
+  });
+
+  // Fetch schema stats
+  const { data: schemaStats } = useQuery({
+    queryKey: ['seo', 'schema-stats'],
+    queryFn: async () => {
+      const res = await fetch('/api/admin/seo/schema-stats');
+      if (!res.ok) throw new Error('Failed to fetch stats');
+      return res.json();
+    },
+  });
+
+  const isLoading = templatesLoading || articlesLoading;
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -102,7 +132,7 @@ export default function SchemaPage() {
         <Card>
           <CardContent className="pt-4">
             <p className="text-sm text-muted-foreground">Articles avec schema</p>
-            <p className="text-2xl font-bold text-green-600">1,245</p>
+            <p className="text-2xl font-bold text-green-600">{schemaStats?.withSchema || 0}</p>
           </CardContent>
         </Card>
         <Card className="border-yellow-200">
@@ -114,7 +144,7 @@ export default function SchemaPage() {
         <Card>
           <CardContent className="pt-4">
             <p className="text-sm text-muted-foreground">Erreurs validation</p>
-            <p className="text-2xl font-bold text-red-600">2</p>
+            <p className="text-2xl font-bold text-red-600">{schemaStats?.errors || 0}</p>
           </CardContent>
         </Card>
       </div>
@@ -150,132 +180,117 @@ export default function SchemaPage() {
                     className="pl-9"
                   />
                 </div>
-                <Button variant="outline">
-                  Rechercher
+                <Button variant="outline" onClick={() => window.open('https://schema.org', '_blank')}>
+                  <ExternalLink className="h-4 w-4 mr-2" />
+                  Schema.org
                 </Button>
               </div>
             </CardContent>
           </Card>
 
-          <SchemaMarkupEditor articleId={selectedArticleId} />
+          <SchemaMarkupEditor
+            articleId={selectedArticleId}
+            onArticleChange={setSelectedArticleId}
+          />
         </TabsContent>
 
         {/* Templates Tab */}
         <TabsContent value="templates" className="mt-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {SCHEMA_TYPES.map(type => {
-              const template = templates?.find(t => t.type === type.value);
-              return (
-                <Card key={type.value} className="hover:shadow-md transition-shadow">
-                  <CardHeader>
-                    <div className="flex items-center justify-between">
-                      <CardTitle className="text-base">{type.label}</CardTitle>
-                      {template?.isDefault && (
-                        <Badge variant="secondary">Par défaut</Badge>
-                      )}
-                    </div>
-                    <CardDescription>{type.description}</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-sm text-muted-foreground mb-4">
-                      <p>Champs requis : {template?.requiredFields.length || 0}</p>
-                      <p>Champs optionnels : {template?.optionalFields.length || 0}</p>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Button variant="outline" size="sm" className="flex-1">
-                        Modifier
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => window.open(
-                          `https://schema.org/${type.value}`,
-                          '_blank'
-                        )}
-                      >
-                        <ExternalLink className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </div>
+          <Card>
+            <CardHeader>
+              <CardTitle>Templates disponibles</CardTitle>
+              <CardDescription>
+                Modèles prédéfinis pour différents types de contenu
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {templates && templates.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {templates.map((template: any) => (
+                    <Card key={template.id} className="cursor-pointer hover:border-primary">
+                      <CardContent className="pt-4">
+                        <div className="flex items-start justify-between">
+                          <div>
+                            <h3 className="font-semibold">{template.name}</h3>
+                            <p className="text-sm text-muted-foreground">{template.type}</p>
+                          </div>
+                          <Badge>{template.type}</Badge>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-12 text-muted-foreground">
+                  <FileCode className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                  <p>Aucun template disponible</p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
         </TabsContent>
 
-        {/* Missing Schema Tab */}
+        {/* Missing Schemas Tab */}
         <TabsContent value="missing" className="mt-6">
           <Card>
             <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-base">Articles sans schema markup</CardTitle>
-                <Button size="sm" onClick={() => setShowBulkDialog(true)}>
-                  <Wand2 className="h-4 w-4 mr-2" />
-                  Générer pour tous
-                </Button>
-              </div>
+              <CardTitle>Articles sans schema</CardTitle>
+              <CardDescription>
+                Ces articles n'ont pas encore de données structurées
+              </CardDescription>
             </CardHeader>
             <CardContent>
-              <ScrollArea className="h-[400px]">
-                <div className="space-y-2">
+              {articlesWithoutSchema.length > 0 ? (
+                <div className="space-y-3">
                   {articlesWithoutSchema.map(article => (
                     <div
                       key={article.id}
-                      className="flex items-center justify-between p-3 rounded-lg border hover:bg-muted/50"
+                      className="flex items-center justify-between p-3 border rounded-lg"
                     >
                       <div>
                         <p className="font-medium">{article.title}</p>
-                        <Badge variant="outline" className="mt-1">{article.platform}</Badge>
+                        <p className="text-sm text-muted-foreground">{article.platform}</p>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => {
-                            setSelectedArticleId(article.id);
-                            setActiveTab('editor');
-                          }}
-                        >
-                          Éditer
-                        </Button>
-                        <Button
-                          size="sm"
-                          onClick={() => generateSchema.mutate({
-                            articleId: article.id,
-                            type: 'Article',
-                          })}
-                          disabled={generateSchema.isPending}
-                        >
-                          {generateSchema.isPending ? (
-                            <Loader2 className="h-4 w-4 animate-spin" />
-                          ) : (
-                            <Wand2 className="h-4 w-4" />
-                          )}
-                        </Button>
-                      </div>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          setSelectedArticleId(article.id);
+                          setActiveTab('editor');
+                        }}
+                      >
+                        <Wand2 className="h-4 w-4 mr-2" />
+                        Générer
+                      </Button>
                     </div>
                   ))}
                 </div>
-              </ScrollArea>
+              ) : (
+                <div className="text-center py-12 text-muted-foreground">
+                  <Check className="h-12 w-12 mx-auto mb-4 text-green-500" />
+                  <p>Tous les articles ont un schema !</p>
+                </div>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
       </Tabs>
 
-      {/* Bulk Generate Dialog */}
+      {/* Bulk Generation Dialog */}
       <Dialog open={showBulkDialog} onOpenChange={setShowBulkDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Génération bulk de schema</DialogTitle>
+            <DialogTitle>Génération en masse</DialogTitle>
             <DialogDescription>
-              Générez automatiquement les données structurées pour tous les articles sans schema
+              Générer automatiquement des schemas pour tous les articles
             </DialogDescription>
           </DialogHeader>
+
           <div className="space-y-4">
             <div>
-              <label className="text-sm font-medium">Type de schema par défaut</label>
+              <label className="text-sm font-medium">Type de schema</label>
               <Select value={bulkType} onValueChange={(v) => setBulkType(v as SchemaType)}>
-                <SelectTrigger className="mt-1">
+                <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -287,22 +302,23 @@ export default function SchemaPage() {
                 </SelectContent>
               </Select>
             </div>
-            <div className="p-4 rounded-lg bg-yellow-50 border border-yellow-200">
-              <div className="flex items-start gap-2">
-                <AlertTriangle className="h-4 w-4 text-yellow-600 mt-0.5" />
-                <div className="text-sm text-yellow-800">
-                  <p className="font-medium">Attention</p>
-                  <p>Cette action va générer les schemas pour {articlesWithoutSchema.length} articles. 
-                  Vérifiez les résultats après génération.</p>
-                </div>
-              </div>
+
+            <div className="rounded-lg bg-yellow-50 p-4">
+              <p className="text-sm">
+                Cette action va générer les schemas pour {articlesWithoutSchema.length} articles.
+                Cette opération peut prendre plusieurs minutes.
+              </p>
             </div>
           </div>
+
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowBulkDialog(false)}>
               Annuler
             </Button>
-            <Button onClick={() => setShowBulkDialog(false)}>
+            <Button onClick={() => {
+              // Trigger bulk generation
+              setShowBulkDialog(false);
+            }}>
               <Wand2 className="h-4 w-4 mr-2" />
               Générer ({articlesWithoutSchema.length})
             </Button>
