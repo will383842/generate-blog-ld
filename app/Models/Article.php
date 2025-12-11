@@ -45,6 +45,7 @@ class Article extends Model
         'theme_type',
         'theme_id',
         'author_id',
+        'primary_keyword_id',
         'quality_score',
         'status',
         'published_at',
@@ -70,6 +71,7 @@ class Article extends Model
 
         // ✅ AJOUT
         'locale_slugs' => 'array',
+        'primary_keyword_id' => 'integer',
     ];
 
     protected $appends = ['locale'];
@@ -198,6 +200,11 @@ class Article extends Model
     public function author(): BelongsTo
     {
         return $this->belongsTo(Author::class);
+    }
+
+    public function primaryKeyword(): BelongsTo
+    {
+        return $this->belongsTo(Keyword::class, 'primary_keyword_id');
     }
 
     public function translations(): HasMany

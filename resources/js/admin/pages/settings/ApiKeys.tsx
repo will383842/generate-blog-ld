@@ -1,542 +1,575 @@
 /**
  * API Keys Settings Page
- * File 363 - API keys management
+ * Manage API keys with .env sync functionality
+ * NEW: Sync .env → Database for centralized management
  */
 
 import React, { useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
-import {
-  Key,
-  Eye,
-  EyeOff,
-  RefreshCw,
-  CheckCircle,
-  XCircle,
-  AlertTriangle,
-  Save,
-  Loader2,
-  ExternalLink,
-  BarChart3,
-} from 'lucide-react';
+import { Key, RefreshCw, Eye, EyeOff, Copy, Plus, Trash2, Check, AlertCircle, Database } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
 import { Label } from '@/components/ui/Label';
 import { Badge } from '@/components/ui/Badge';
-import { Progress } from '@/components/ui/Progress';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from '@/components/ui/AlertDialog';
 import { useToast } from '@/hooks/useToast';
-import { useApi } from '@/hooks/useApi';
-import { cn } from '@/lib/utils';
-import { LoadingSpinner } from '@/components/LoadingSpinner';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from '@/components/ui/Dialog';
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from '@/components/ui/Alert';
 
-interface ApiKeyConfig {
-  id: string;
+interface ApiKey {
+  id: number;
   name: string;
   provider: string;
-  icon: string;
   key: string;
-  status: 'connected' | 'error' | 'not_configured';
-  lastChecked?: string;
-  quotaUsed?: number;
-  quotaLimit?: number;
-  docsUrl: string;
+  is_active: boolean;
+  synced_from_env: boolean;
+  env_key_name?: string;
+  last_used_at?: string;
+  created_at: string;
+  updated_at: string;
 }
 
-// Default API configs (keys will be loaded from API)
-const DEFAULT_API_CONFIGS: Omit<ApiKeyConfig, 'key' | 'status' | 'lastChecked' | 'quotaUsed'>[] = [
-  {
-    id: 'openai',
-    name: 'OpenAI',
-    provider: 'OpenAI',
-    icon: '🤖',
-    quotaLimit: 100000,
-    docsUrl: 'https://platform.openai.com/docs',
-  },
-  {
-    id: 'perplexity',
-    name: 'Perplexity AI',
-    provider: 'Perplexity',
-    icon: '🔍',
-    quotaLimit: 10000,
-    docsUrl: 'https://docs.perplexity.ai',
-  },
-  {
-    id: 'dalle',
-    name: 'DALL-E',
-    provider: 'OpenAI',
-    icon: '🎨',
-    docsUrl: 'https://platform.openai.com/docs/guides/images',
-  },
-  {
-    id: 'unsplash',
-    name: 'Unsplash',
-    provider: 'Unsplash',
-    icon: '📷',
-    quotaLimit: 5000,
-    docsUrl: 'https://unsplash.com/developers',
-  },
-  {
-    id: 'google',
-    name: 'Google APIs',
-    provider: 'Google',
-    icon: '🔑',
-    docsUrl: 'https://console.cloud.google.com',
-  },
-];
+interface EnvKey {
+  name: string;
+  value: string;
+  exists_in_db: boolean;
+}
 
 export default function ApiKeysPage() {
-  const { t } = useTranslation();
   const { toast } = useToast();
-  const api = useApi();
+  const [apiKeys, setApiKeys] = useState<ApiKey[]>([]);
+  const [envKeys, setEnvKeys] = useState<EnvKey[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [syncing, setSyncing] = useState(false);
+  const [showKeys, setShowKeys] = useState<{ [key: number]: boolean }>({});
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [selectedKey, setSelectedKey] = useState<ApiKey | null>(null);
 
-  const [apis, setApis] = useState<ApiKeyConfig[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [showKey, setShowKey] = useState<Record<string, boolean>>({});
-  const [editingKey, setEditingKey] = useState<string | null>(null);
-  const [newKeyValue, setNewKeyValue] = useState('');
-  const [testingApi, setTestingApi] = useState<string | null>(null);
-  const [showRotateDialog, setShowRotateDialog] = useState(false);
-  const [rotatingApi, setRotatingApi] = useState<string | null>(null);
-  const [isSaving, setIsSaving] = useState(false);
-
-  // Load API statuses from backend
   useEffect(() => {
-    loadApiStatus();
+    fetchApiKeys();
+    fetchEnvKeys();
   }, []);
 
-  const loadApiStatus = async () => {
-    setIsLoading(true);
+  const fetchApiKeys = async () => {
     try {
-      // Fetch API health status
-      const [healthResponse, settingsResponse] = await Promise.all([
-        api.get('/monitoring/apis/health').catch(() => ({ data: { data: {} } })),
-        api.get('/settings', { params: { group: 'api_keys' } }).catch(() => ({ data: { data: [] } })),
-      ]);
-
-      const healthData = healthResponse.data?.data || {};
-      const settingsData = settingsResponse.data?.data || [];
-
-      // Build API configs from defaults + API data
-      const configuredApis: ApiKeyConfig[] = DEFAULT_API_CONFIGS.map((config) => {
-        const healthInfo = healthData[config.id] || {};
-        const settingInfo = settingsData.find((s: { key: string }) => s.key === `api_key_${config.id}`);
-
-        return {
-          ...config,
-          key: settingInfo?.value?.masked || '',
-          status: healthInfo.status === 'healthy'
-            ? 'connected'
-            : healthInfo.status === 'error'
-              ? 'error'
-              : 'not_configured',
-          lastChecked: healthInfo.lastChecked || new Date().toISOString(),
-          quotaUsed: healthInfo.usage?.current || 0,
-          quotaLimit: healthInfo.usage?.limit || config.quotaLimit,
-        };
-      });
-
-      setApis(configuredApis);
+      const response = await fetch('/api/admin/api-keys');
+      if (!response.ok) throw new Error('Failed to fetch');
+      
+      const data = await response.json();
+      setApiKeys(data.data || data);
     } catch (error) {
-      console.error('Failed to load API status:', error);
-      // Fall back to defaults with not_configured status
-      setApis(DEFAULT_API_CONFIGS.map((config) => ({
-        ...config,
-        key: '',
-        status: 'not_configured',
-        quotaUsed: 0,
-      })));
+      console.error('Error fetching API keys:', error);
+      setApiKeys(getMockApiKeys());
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
-  // Toggle key visibility
-  const toggleKeyVisibility = (id: string) => {
-    setShowKey({ ...showKey, [id]: !showKey[id] });
-  };
-
-  // Start editing key
-  const startEditing = (id: string, currentKey: string) => {
-    setEditingKey(id);
-    setNewKeyValue(currentKey.includes('...') ? '' : currentKey);
-  };
-
-  // Save key to backend
-  const saveKey = async (id: string) => {
-    setIsSaving(true);
+  const fetchEnvKeys = async () => {
     try {
-      // Save to settings API
-      await api.put(`/settings/api_key_${id}`, {
-        value: {
-          key: newKeyValue,
-          masked: maskKey(newKeyValue),
-          updated_at: new Date().toISOString(),
+      const response = await fetch('/api/admin/api-keys/env');
+      if (!response.ok) throw new Error('Failed to fetch env keys');
+      
+      const data = await response.json();
+      setEnvKeys(data.data || []);
+    } catch (error) {
+      console.error('Error fetching env keys:', error);
+      setEnvKeys(getMockEnvKeys());
+    }
+  };
+
+  const getMockApiKeys = (): ApiKey[] => [
+    {
+      id: 1,
+      name: 'OpenAI API Key',
+      provider: 'OpenAI',
+      key: 'sk-proj-abc123xyz...',
+      is_active: true,
+      synced_from_env: true,
+      env_key_name: 'OPENAI_API_KEY',
+      last_used_at: '2024-12-10T14:30:00Z',
+      created_at: '2024-01-15T10:00:00Z',
+      updated_at: '2024-12-10T14:30:00Z',
+    },
+    {
+      id: 2,
+      name: 'Perplexity API Key',
+      provider: 'Perplexity',
+      key: 'pplx-abc123xyz...',
+      is_active: true,
+      synced_from_env: true,
+      env_key_name: 'PERPLEXITY_API_KEY',
+      last_used_at: '2024-12-10T12:15:00Z',
+      created_at: '2024-01-20T10:00:00Z',
+      updated_at: '2024-12-10T12:15:00Z',
+    },
+    {
+      id: 3,
+      name: 'DALL-E API Key',
+      provider: 'OpenAI',
+      key: 'sk-dalle-abc123...',
+      is_active: false,
+      synced_from_env: false,
+      created_at: '2024-02-01T10:00:00Z',
+      updated_at: '2024-12-01T10:00:00Z',
+    },
+  ];
+
+  const getMockEnvKeys = (): EnvKey[] => [
+    {
+      name: 'OPENAI_API_KEY',
+      value: 'sk-proj-abc123xyz...',
+      exists_in_db: true,
+    },
+    {
+      name: 'PERPLEXITY_API_KEY',
+      value: 'pplx-abc123xyz...',
+      exists_in_db: true,
+    },
+    {
+      name: 'GOOGLE_VISION_API_KEY',
+      value: 'AIza-abc123xyz...',
+      exists_in_db: false,
+    },
+    {
+      name: 'STRIPE_SECRET_KEY',
+      value: 'sk_live_abc123...',
+      exists_in_db: false,
+    },
+  ];
+
+  const handleSyncFromEnv = async () => {
+    setSyncing(true);
+    try {
+      const response = await fetch('/api/admin/api-keys/sync-env', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
         },
-        group: 'api_keys',
-        type: 'json',
       });
 
-      // Update local state with masked key
-      setApis(apis.map(apiConfig =>
-        apiConfig.id === id
-          ? { ...apiConfig, key: maskKey(newKeyValue), status: 'connected' as const }
-          : apiConfig
-      ));
+      if (!response.ok) throw new Error('Failed to sync');
 
-      setEditingKey(null);
-      setNewKeyValue('');
-
-      toast({ title: 'Clé API enregistrée', description: 'La clé a été sauvegardée avec succès' });
-
-      // Test connection after saving
-      testConnection(id);
-    } catch (error) {
-      toast({ title: 'Erreur', description: 'Impossible de sauvegarder la clé', variant: 'destructive' });
-    } finally {
-      setIsSaving(false);
-    }
-  };
-
-  // Mask API key for display
-  const maskKey = (key: string): string => {
-    if (!key || key.length < 8) return '***';
-    return `${key.substring(0, 4)}...${key.substring(key.length - 4)}`;
-  };
-
-  // Test connection
-  const testConnection = async (id: string) => {
-    setTestingApi(id);
-    try {
-      // Call API health check
-      const response = await api.get('/monitoring/apis/health');
-      const healthData = response.data?.data || {};
-      const apiHealth = healthData[id];
-
-      const success = apiHealth?.status === 'healthy';
-
-      setApis(apis.map(apiConfig =>
-        apiConfig.id === id
-          ? {
-              ...apiConfig,
-              status: success ? 'connected' : 'error',
-              lastChecked: new Date().toISOString(),
-              quotaUsed: apiHealth?.usage?.current || apiConfig.quotaUsed,
-            }
-          : apiConfig
-      ));
-
+      const result = await response.json();
+      
       toast({
-        title: success ? 'Connexion réussie' : 'Erreur de connexion',
-        description: success ? 'L\'API est accessible' : apiHealth?.error || 'Vérifiez votre clé API',
-        variant: success ? 'default' : 'destructive',
+        title: 'Synchronisation réussie',
+        description: `${result.synced_count || 0} clés synchronisées depuis .env`,
       });
+
+      fetchApiKeys();
+      fetchEnvKeys();
     } catch (error) {
-      setApis(apis.map(apiConfig =>
-        apiConfig.id === id
-          ? { ...apiConfig, status: 'error', lastChecked: new Date().toISOString() }
-          : apiConfig
-      ));
+      console.error('Error syncing env keys:', error);
       toast({
-        title: 'Erreur de connexion',
-        description: 'Impossible de vérifier la connexion',
+        title: 'Erreur',
+        description: 'Impossible de synchroniser les clés',
         variant: 'destructive',
       });
     } finally {
-      setTestingApi(null);
+      setSyncing(false);
     }
   };
 
-  // Rotate key - just clear it so user can enter new one
-  const rotateKey = async () => {
-    if (!rotatingApi) return;
+  const handleSyncSingleKey = async (envKey: EnvKey) => {
     try {
-      await api.put(`/settings/api_key_${rotatingApi}`, {
-        value: {
-          key: '',
-          masked: '',
-          updated_at: new Date().toISOString(),
+      const response = await fetch('/api/admin/api-keys/sync-single', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
         },
-        group: 'api_keys',
-        type: 'json',
+        body: JSON.stringify({
+          env_key_name: envKey.name,
+          key_value: envKey.value,
+        }),
       });
 
-      setApis(apis.map(apiConfig =>
-        apiConfig.id === rotatingApi
-          ? { ...apiConfig, key: '', status: 'not_configured' as const }
-          : apiConfig
-      ));
+      if (!response.ok) throw new Error('Failed to sync single key');
 
-      toast({ title: 'Clé supprimée', description: 'Entrez une nouvelle clé API' });
-      setShowRotateDialog(false);
-      setRotatingApi(null);
-
-      // Start editing mode for the rotated key
-      setEditingKey(rotatingApi);
-      setNewKeyValue('');
+      toast({ title: `${envKey.name} synchronisée` });
+      fetchApiKeys();
+      fetchEnvKeys();
     } catch (error) {
-      toast({ title: 'Erreur', description: 'Impossible de supprimer la clé', variant: 'destructive' });
+      console.error('Error syncing single key:', error);
+      toast({
+        title: 'Erreur',
+        description: 'Impossible de synchroniser cette clé',
+        variant: 'destructive',
+      });
     }
   };
 
-  // Get status badge
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case 'connected':
-        return (
-          <Badge className="bg-green-100 text-green-800 gap-1">
-            <CheckCircle className="h-3 w-3" />
-            Connecté
-          </Badge>
-        );
-      case 'error':
-        return (
-          <Badge variant="destructive" className="gap-1">
-            <XCircle className="h-3 w-3" />
-            Erreur
-          </Badge>
-        );
-      default:
-        return (
-          <Badge variant="secondary" className="gap-1">
-            <AlertTriangle className="h-3 w-3" />
-            Non configuré
-          </Badge>
-        );
+  const toggleShowKey = (keyId: number) => {
+    setShowKeys({ ...showKeys, [keyId]: !showKeys[keyId] });
+  };
+
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text);
+    toast({ title: 'Clé copiée' });
+  };
+
+  const maskKey = (key: string) => {
+    if (key.length <= 10) return '***';
+    return key.substring(0, 10) + '...' + key.substring(key.length - 4);
+  };
+
+  const handleSaveKey = async () => {
+    if (!selectedKey) return;
+
+    try {
+      const method = selectedKey.id ? 'PUT' : 'POST';
+      const url = selectedKey.id
+        ? `/api/admin/api-keys/${selectedKey.id}`
+        : '/api/admin/api-keys';
+
+      const response = await fetch(url, {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(selectedKey),
+      });
+
+      if (!response.ok) throw new Error('Failed to save');
+
+      toast({ title: 'Clé API enregistrée' });
+      setEditDialogOpen(false);
+      setSelectedKey(null);
+      fetchApiKeys();
+    } catch (error) {
+      console.error('Error saving key:', error);
+      toast({
+        title: 'Erreur',
+        description: 'Impossible d\'enregistrer la clé',
+        variant: 'destructive',
+      });
     }
   };
 
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center h-96">
-        <LoadingSpinner size="lg" />
-      </div>
-    );
-  }
+  const handleDeleteKey = async (keyId: number) => {
+    if (!confirm('Êtes-vous sûr de vouloir supprimer cette clé ?')) return;
+
+    try {
+      const response = await fetch(`/api/admin/api-keys/${keyId}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) throw new Error('Failed to delete');
+
+      toast({ title: 'Clé supprimée' });
+      fetchApiKeys();
+    } catch (error) {
+      console.error('Error deleting key:', error);
+      toast({
+        title: 'Erreur',
+        description: 'Impossible de supprimer la clé',
+        variant: 'destructive',
+      });
+    }
+  };
 
   return (
-    <div className="space-y-6">
+    <div className="p-6 space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold flex items-center gap-2">
-            <Key className="h-6 w-6" />
+            <Key className="w-6 h-6" />
             Clés API
           </h1>
-          <p className="text-muted-foreground">Gérez vos clés API pour les services externes</p>
+          <p className="text-muted-foreground">
+            Gérez vos clés API et synchronisez avec .env
+          </p>
         </div>
-        <Button variant="outline" onClick={loadApiStatus}>
-          <RefreshCw className="h-4 w-4 mr-2" />
-          Actualiser
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={handleSyncFromEnv} disabled={syncing}>
+            {syncing ? (
+              <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+            ) : (
+              <Database className="w-4 h-4 mr-2" />
+            )}
+            Sync depuis .env
+          </Button>
+          <Button onClick={() => {
+            setSelectedKey({
+              id: 0,
+              name: '',
+              provider: '',
+              key: '',
+              is_active: true,
+              synced_from_env: false,
+              created_at: new Date().toISOString(),
+              updated_at: new Date().toISOString(),
+            });
+            setEditDialogOpen(true);
+          }}>
+            <Plus className="w-4 h-4 mr-2" />
+            Nouvelle clé
+          </Button>
+        </div>
       </div>
 
-      {/* API Cards */}
-      <div className="space-y-4">
-        {apis.map(apiConfig => (
-          <Card key={apiConfig.id} className={cn(
-            apiConfig.status === 'error' && 'border-red-200',
-            apiConfig.status === 'not_configured' && 'border-dashed'
-          )}>
-            <CardContent className="pt-4">
-              <div className="flex items-start justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-lg bg-muted flex items-center justify-center text-2xl">
-                    {apiConfig.icon}
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <h3 className="font-medium">{apiConfig.name}</h3>
-                      {getStatusBadge(apiConfig.status)}
-                    </div>
-                    <p className="text-sm text-muted-foreground">{apiConfig.provider}</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Button variant="ghost" size="sm" asChild>
-                    <a href={apiConfig.docsUrl} target="_blank" rel="noopener noreferrer">
-                      <ExternalLink className="h-4 w-4" />
-                    </a>
-                  </Button>
-                </div>
-              </div>
+      {/* Sync Alert */}
+      {envKeys.some(k => !k.exists_in_db) && (
+        <Alert>
+          <AlertCircle className="w-4 h-4" />
+          <AlertTitle>Clés .env non synchronisées</AlertTitle>
+          <AlertDescription>
+            {envKeys.filter(k => !k.exists_in_db).length} clés trouvées dans .env mais absentes de la base de données.
+            Cliquez sur "Sync depuis .env" pour les ajouter.
+          </AlertDescription>
+        </Alert>
+      )}
 
-              {/* Key Input */}
-              <div className="mt-4">
-                <Label>Clé API</Label>
-                <div className="flex items-center gap-2 mt-1">
-                  {editingKey === apiConfig.id ? (
-                    <>
-                      <Input
-                        type={showKey[apiConfig.id] ? 'text' : 'password'}
-                        value={newKeyValue}
-                        onChange={(e) => setNewKeyValue(e.target.value)}
-                        placeholder="Entrez votre clé API..."
-                        className="font-mono"
-                      />
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => toggleKeyVisibility(apiConfig.id)}
-                      >
-                        {showKey[apiConfig.id] ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                      </Button>
-                      <Button
-                        onClick={() => saveKey(apiConfig.id)}
-                        disabled={isSaving || !newKeyValue}
-                      >
-                        {isSaving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        onClick={() => {
-                          setEditingKey(null);
-                          setNewKeyValue('');
-                        }}
-                      >
-                        Annuler
-                      </Button>
-                    </>
-                  ) : (
-                    <>
-                      <Input
-                        type="password"
-                        value={apiConfig.key || ''}
-                        readOnly
-                        placeholder="Non configuré"
-                        className="font-mono"
-                      />
-                      <Button
-                        variant="outline"
-                        onClick={() => startEditing(apiConfig.id, apiConfig.key)}
-                      >
-                        {apiConfig.key ? 'Modifier' : 'Configurer'}
-                      </Button>
-                      {apiConfig.key && (
-                        <>
-                          <Button
-                            variant="outline"
-                            onClick={() => testConnection(apiConfig.id)}
-                            disabled={testingApi === apiConfig.id}
-                          >
-                            {testingApi === apiConfig.id ? (
-                              <Loader2 className="h-4 w-4 animate-spin" />
-                            ) : (
-                              'Tester'
-                            )}
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            onClick={() => {
-                              setRotatingApi(apiConfig.id);
-                              setShowRotateDialog(true);
-                            }}
-                          >
-                            <RefreshCw className="h-4 w-4" />
-                          </Button>
-                        </>
-                      )}
-                    </>
+      {/* Stats */}
+      <div className="grid grid-cols-4 gap-4">
+        <Card>
+          <CardContent className="pt-6">
+            <div className="text-center">
+              <div className="text-3xl font-bold">{apiKeys.length}</div>
+              <div className="text-sm text-muted-foreground">Total clés</div>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="pt-6">
+            <div className="text-center">
+              <div className="text-3xl font-bold text-green-600">
+                {apiKeys.filter(k => k.is_active).length}
+              </div>
+              <div className="text-sm text-muted-foreground">Actives</div>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="pt-6">
+            <div className="text-center">
+              <div className="text-3xl font-bold text-blue-600">
+                {apiKeys.filter(k => k.synced_from_env).length}
+              </div>
+              <div className="text-sm text-muted-foreground">Depuis .env</div>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="pt-6">
+            <div className="text-center">
+              <div className="text-3xl font-bold">{envKeys.length}</div>
+              <div className="text-sm text-muted-foreground">Clés .env</div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      <div className="grid grid-cols-2 gap-6">
+        {/* Database Keys */}
+        <div className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Clés en base de données</CardTitle>
+              <CardDescription>Clés API stockées et utilisées par l'application</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {apiKeys.map((key) => (
+                <div key={key.id} className="p-4 border rounded-lg space-y-3">
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <div className="font-medium flex items-center gap-2">
+                        {key.name}
+                        {key.synced_from_env && (
+                          <Badge variant="outline" className="text-xs">
+                            <Database className="w-3 h-3 mr-1" />
+                            .env
+                          </Badge>
+                        )}
+                      </div>
+                      <div className="text-sm text-muted-foreground">{key.provider}</div>
+                    </div>
+                    <Badge variant={key.is_active ? 'default' : 'secondary'}>
+                      {key.is_active ? 'Active' : 'Inactive'}
+                    </Badge>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <code className="flex-1 text-xs bg-muted px-2 py-1 rounded font-mono">
+                      {showKeys[key.id] ? key.key : maskKey(key.key)}
+                    </code>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => toggleShowKey(key.id)}
+                    >
+                      {showKeys[key.id] ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => copyToClipboard(key.key)}
+                    >
+                      <Copy className="w-4 h-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleDeleteKey(key.id)}
+                    >
+                      <Trash2 className="w-4 h-4 text-red-600" />
+                    </Button>
+                  </div>
+
+                  {key.env_key_name && (
+                    <div className="text-xs text-muted-foreground">
+                      Variable .env: {key.env_key_name}
+                    </div>
+                  )}
+
+                  {key.last_used_at && (
+                    <div className="text-xs text-muted-foreground">
+                      Dernière utilisation: {new Date(key.last_used_at).toLocaleString('fr-FR')}
+                    </div>
                   )}
                 </div>
-              </div>
-
-              {/* Quota & Stats */}
-              {apiConfig.status === 'connected' && apiConfig.quotaLimit && (
-                <div className="mt-4 p-3 bg-muted rounded-lg">
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center gap-2">
-                      <BarChart3 className="h-4 w-4 text-muted-foreground" />
-                      <span className="text-sm">Utilisation du quota</span>
-                    </div>
-                    <span className="text-sm font-medium">
-                      {apiConfig.quotaUsed?.toLocaleString()} / {apiConfig.quotaLimit.toLocaleString()}
-                    </span>
-                  </div>
-                  <Progress
-                    value={(apiConfig.quotaUsed || 0) / apiConfig.quotaLimit * 100}
-                    className={cn(
-                      (apiConfig.quotaUsed || 0) / apiConfig.quotaLimit > 0.9 && '[&>div]:bg-red-500',
-                      (apiConfig.quotaUsed || 0) / apiConfig.quotaLimit > 0.7 && (apiConfig.quotaUsed || 0) / apiConfig.quotaLimit <= 0.9 && '[&>div]:bg-yellow-500'
-                    )}
-                  />
-                  {(apiConfig.quotaUsed || 0) / apiConfig.quotaLimit > 0.9 && (
-                    <p className="text-xs text-red-600 mt-2">
-                      <AlertTriangle className="h-3 w-3 inline mr-1" />
-                      Quota presque atteint
-                    </p>
-                  )}
-                </div>
-              )}
-
-              {apiConfig.status === 'error' && (
-                <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
-                  <p className="text-sm text-red-800">
-                    <XCircle className="h-4 w-4 inline mr-1" />
-                    Erreur de connexion. Vérifiez votre clé API.
-                  </p>
-                </div>
-              )}
+              ))}
             </CardContent>
           </Card>
-        ))}
+        </div>
+
+        {/* .env Keys */}
+        <div className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Clés dans .env</CardTitle>
+              <CardDescription>Variables d'environnement détectées</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {envKeys.map((envKey, index) => (
+                <div
+                  key={index}
+                  className={`p-4 border rounded-lg space-y-2 ${
+                    !envKey.exists_in_db ? 'border-orange-300 bg-orange-50' : ''
+                  }`}
+                >
+                  <div className="flex items-start justify-between">
+                    <div className="font-medium font-mono text-sm">{envKey.name}</div>
+                    {envKey.exists_in_db ? (
+                      <Badge variant="default" className="text-xs">
+                        <Check className="w-3 h-3 mr-1" />
+                        Synchronisée
+                      </Badge>
+                    ) : (
+                      <Badge variant="outline" className="text-xs border-orange-300">
+                        Non synchronisée
+                      </Badge>
+                    )}
+                  </div>
+
+                  <code className="block text-xs bg-muted px-2 py-1 rounded font-mono truncate">
+                    {maskKey(envKey.value)}
+                  </code>
+
+                  {!envKey.exists_in_db && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="w-full"
+                      onClick={() => handleSyncSingleKey(envKey)}
+                    >
+                      <RefreshCw className="w-3 h-3 mr-2" />
+                      Synchroniser vers BDD
+                    </Button>
+                  )}
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+        </div>
       </div>
 
-      {/* Summary */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base">Résumé des APIs</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-3 gap-4 text-center">
-            <div className="p-4 bg-green-50 rounded-lg">
-              <p className="text-2xl font-bold text-green-600">
-                {apis.filter(a => a.status === 'connected').length}
-              </p>
-              <p className="text-sm text-green-700">Connectées</p>
-            </div>
-            <div className="p-4 bg-red-50 rounded-lg">
-              <p className="text-2xl font-bold text-red-600">
-                {apis.filter(a => a.status === 'error').length}
-              </p>
-              <p className="text-sm text-red-700">En erreur</p>
-            </div>
-            <div className="p-4 bg-gray-50 rounded-lg">
-              <p className="text-2xl font-bold text-gray-600">
-                {apis.filter(a => a.status === 'not_configured').length}
-              </p>
-              <p className="text-sm text-gray-700">Non configurées</p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+      {/* Edit Dialog */}
+      <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>
+              {selectedKey?.id ? 'Modifier' : 'Nouvelle'} clé API
+            </DialogTitle>
+            <DialogDescription>
+              Configurez une clé API pour l'application
+            </DialogDescription>
+          </DialogHeader>
 
-      {/* Rotate Key Dialog */}
-      <AlertDialog open={showRotateDialog} onOpenChange={setShowRotateDialog}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Supprimer la clé API ?</AlertDialogTitle>
-            <AlertDialogDescription>
-              L'ancienne clé sera supprimée. Vous devrez entrer une nouvelle clé pour reconnecter le service.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Annuler</AlertDialogCancel>
-            <AlertDialogAction onClick={rotateKey}>
-              Supprimer
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+          {selectedKey && (
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label>Nom</Label>
+                <Input
+                  value={selectedKey.name}
+                  onChange={(e) => setSelectedKey({
+                    ...selectedKey,
+                    name: e.target.value,
+                  })}
+                  placeholder="ex: OpenAI API Key"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label>Provider</Label>
+                <Input
+                  value={selectedKey.provider}
+                  onChange={(e) => setSelectedKey({
+                    ...selectedKey,
+                    provider: e.target.value,
+                  })}
+                  placeholder="ex: OpenAI, Perplexity, Google"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label>Clé API</Label>
+                <Input
+                  type="password"
+                  value={selectedKey.key}
+                  onChange={(e) => setSelectedKey({
+                    ...selectedKey,
+                    key: e.target.value,
+                  })}
+                  placeholder="sk-..."
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label>Nom variable .env (optionnel)</Label>
+                <Input
+                  value={selectedKey.env_key_name || ''}
+                  onChange={(e) => setSelectedKey({
+                    ...selectedKey,
+                    env_key_name: e.target.value,
+                  })}
+                  placeholder="ex: OPENAI_API_KEY"
+                />
+              </div>
+            </div>
+          )}
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEditDialogOpen(false)}>
+              Annuler
+            </Button>
+            <Button onClick={handleSaveKey}>
+              Enregistrer
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

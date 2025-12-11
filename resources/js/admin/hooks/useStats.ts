@@ -46,13 +46,49 @@ export interface Activity {
   metadata?: Record<string, unknown>;
 }
 
+// Backend response structure for dashboard
+export interface DashboardStatsData {
+  articles: {
+    total: number;
+    published: number;
+    draft: number;
+    pending: number;
+    review?: number;
+    by_type?: Record<string, number>;
+  };
+  generation_24h: {
+    total: number;
+    successful: number;
+    failed: number;
+    avg_duration_seconds: number;
+    total_cost: number;
+  };
+  costs: {
+    today: number;
+    month: number;
+  };
+  top_countries?: Array<{
+    country: string;
+    code: string | null;
+    count: number;
+  }>;
+  coverage?: {
+    countries: number;
+    languages: number;
+  };
+  trends?: {
+    total?: { value: number; isPositive: boolean };
+    published?: { value: number; isPositive: boolean };
+    draft?: { value: number; isPositive: boolean };
+    review?: { value: number; isPositive: boolean };
+    costs?: { value: number; isPositive: boolean };
+  };
+}
+
+// API response wrapper
 export interface DashboardStats {
-  articles_count: number;
-  articles_this_month: number;
-  total_words: number;
-  languages_count: number;
-  costs_this_month: number;
-  budget_limit: number;
+  success?: boolean;
+  data: DashboardStatsData;
 }
 
 export interface CostStatsResponse {
@@ -86,7 +122,7 @@ export function useDashboardStats(platformId?: string) {
   return useQuery<DashboardStats>({
     queryKey: statsKeys.dashboard(platformId),
     queryFn: async (): Promise<DashboardStats> => {
-      const { data } = await api.get<DashboardStats>('/stats/dashboard', {
+      const { data } = await api.get<DashboardStats>('/admin/stats/dashboard', {
         params: { platform_id: platformId }
       });
       return data;
@@ -101,7 +137,7 @@ export function useCostStats(period = 'month') {
   return useQuery<CostStatsResponse>({
     queryKey: statsKeys.costs(period),
     queryFn: async (): Promise<CostStatsResponse> => {
-      const { data } = await api.get<CostStatsResponse>('/stats/costs', { params: { period } });
+      const { data } = await api.get<CostStatsResponse>('/admin/stats/costs', { params: { period } });
       return data;
     },
   });
@@ -113,7 +149,7 @@ export function useProductionStats(days = 7) {
   return useQuery<ProductionStatsResponse>({
     queryKey: statsKeys.production(days),
     queryFn: async (): Promise<ProductionStatsResponse> => {
-      const { data } = await api.get<ProductionStatsResponse>('/stats/production', { params: { days } });
+      const { data } = await api.get<ProductionStatsResponse>('/admin/stats/production', { params: { days } });
       return data;
     },
     staleTime: 5 * 60 * 1000,
@@ -127,7 +163,7 @@ export function useCostsTimeline(days = 7) {
     queryKey: statsKeys.costsTimeline(days),
     queryFn: async (): Promise<CostStatsResponse> => {
       const period = days <= 7 ? 'week' : days <= 30 ? 'month' : 'year';
-      const { data } = await api.get<CostStatsResponse>('/stats/costs', { params: { period } });
+      const { data } = await api.get<CostStatsResponse>('/admin/stats/costs', { params: { period } });
       return data;
     },
     staleTime: 5 * 60 * 1000,
@@ -151,7 +187,7 @@ export function useActivityStream(limit = 20) {
   return useQuery<{ data: Activity[] }>({
     queryKey: statsKeys.activity(limit),
     queryFn: async (): Promise<{ data: Activity[] }> => {
-      const { data } = await api.get<MonitoringErrorsResponse>('/monitoring/errors', { params: { limit } });
+      const { data } = await api.get<MonitoringErrorsResponse>('/admin/monitoring/errors', { params: { limit } });
       // Transform monitoring data to activities format
       const activities: Activity[] = (data.data || []).map((item: MonitoringErrorItem, index: number) => ({
         id: item.id || `activity-${index}`,
@@ -173,7 +209,7 @@ export function useCoverageStats() {
   return useQuery<CoverageStatsResponse>({
     queryKey: statsKeys.coverage(),
     queryFn: async (): Promise<CoverageStatsResponse> => {
-      const { data } = await api.get<CoverageStatsResponse>('/coverage/by-platform');
+      const { data } = await api.get<CoverageStatsResponse>('/admin/coverage/by-platform');
       return data;
     },
   });
@@ -193,7 +229,7 @@ export function useCoverageHeatmap() {
   return useQuery<{ data: HeatmapItem[] }>({
     queryKey: statsKeys.heatmap(),
     queryFn: async (): Promise<{ data: HeatmapItem[] }> => {
-      const { data } = await api.get<{ data: HeatmapItem[] }>('/coverage/heatmap');
+      const { data } = await api.get<{ data: HeatmapItem[] }>('/admin/coverage/heatmap');
       return data;
     },
     staleTime: 10 * 60 * 1000,
@@ -216,7 +252,7 @@ export function useCoverageGaps(platformId?: string) {
   return useQuery<{ data: GapItem[] }>({
     queryKey: statsKeys.gaps(platformId),
     queryFn: async (): Promise<{ data: GapItem[] }> => {
-      const { data } = await api.get<{ data: GapItem[] }>('/coverage/gaps', {
+      const { data } = await api.get<{ data: GapItem[] }>('/admin/coverage/gaps', {
         params: { platform_id: platformId }
       });
       return data;

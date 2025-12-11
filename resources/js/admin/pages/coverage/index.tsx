@@ -1,9 +1,9 @@
 /**
- * Coverage Index Page
- * Global coverage overview with heatmap, stats, and quick actions
+ * Coverage Index Page - AVEC WORLDMAP INTÉGRÉE
+ * Global coverage overview with interactive map, stats, and quick actions
  */
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
@@ -17,12 +17,14 @@ import {
   ArrowRight,
   Sparkles,
   Download,
+  Map as MapIcon,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
 import {
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/Tabs';
   SelectRoot as Select,
   SelectContent,
   SelectItem,
@@ -34,6 +36,9 @@ import { CoverageMatrix } from '@/components/coverage/CoverageMatrix';
 import { LanguageBreakdown } from '@/components/coverage/LanguageBreakdown';
 import { ObjectivesTracker } from '@/components/coverage/ObjectivesTracker';
 import { QuickGenerateButton } from '@/components/coverage/QuickGenerate';
+import { IntelligentMap } from '@/pages/coverage/IntelligentMap';
+import { WorldMap } from '@/components/Maps/WorldMap';
+import type { CountryData } from '@/components/Maps/WorldMap';
 import { useCoverageGlobal, useCoverageGaps, useExportCoverageReport } from '@/hooks/useCoverage';
 import { PLATFORMS } from '@/utils/constants';
 import type { PlatformId } from '@/types/program';
@@ -41,6 +46,7 @@ import type { PlatformId } from '@/types/program';
 export default function CoverageIndexPage() {
   const navigate = useNavigate();
   const [platformId, setPlatformId] = useState<PlatformId | ''>('');
+  const [hoveredCountry, setHoveredCountry] = useState<string | null>(null);
   const selectedPlatformId = platformId || undefined;
 
   const { data: coverageData } = useCoverageGlobal({ platformId: selectedPlatformId });
@@ -48,13 +54,35 @@ export default function CoverageIndexPage() {
   const exportReport = useExportCoverageReport();
 
   const summary = coverageData?.data?.summary;
+  const countries = coverageData?.data?.countries || [];
   const topCountries = coverageData?.data?.topCountries || [];
   const bottomCountries = coverageData?.data?.bottomCountries || [];
   const recentProgress = coverageData?.data?.recentProgress || [];
   const criticalGaps = gapsData?.data || [];
 
+  // Préparer les données pour la WorldMap
+  const mapData: CountryData[] = useMemo(() => {
+    return countries.map((country) => ({
+      code: country.countryId,
+      name: country.countryName,
+      value: country.percentage,
+      metadata: {
+        articles: country.articlesCount,
+        languages: country.languagesCount,
+      },
+    }));
+  }, [countries]);
+
   const handleExport = () => {
     exportReport.mutate({ format: 'xlsx', filters: { platformId: platformId || undefined } });
+  };
+
+  const handleCountryClick = (country: CountryData) => {
+    navigate(`/coverage/countries?code=${country.code}`);
+  };
+
+  const handleCountryHover = (country: CountryData | null) => {
+    setHoveredCountry(country?.code || null);
   };
 
   return (
@@ -96,6 +124,64 @@ export default function CoverageIndexPage() {
       {/* Summary Cards */}
       <CoverageSummaryCards platformId={platformId || undefined} />
 
+
+      {/* WORLDMAP & INTELLIGENT MAP - TABS */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <MapIcon className="w-5 h-5" />
+            Carte de couverture mondiale
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Tabs defaultValue="worldmap">
+            <TabsList>
+              <TabsTrigger value="worldmap">Carte Globale</TabsTrigger>
+              <TabsTrigger value="intelligent">Carte Intelligente</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="worldmap" className="mt-4">
+              <div className="mb-4 flex items-center gap-4 text-sm text-muted-foreground">
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 bg-red-500 rounded" />
+                  <span>&lt; 40% couverture</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 bg-amber-500 rounded" />
+                  <span>40-79% couverture</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 bg-green-500 rounded" />
+                  <span>≥ 80% couverture</span>
+                </div>
+                <div className="ml-auto text-xs">
+                  Cliquez sur un pays pour voir le détail
+                </div>
+              </div>
+              <WorldMap
+                data={mapData}
+                onCountryClick={handleCountryClick}
+                onCountryHover={handleCountryHover}
+                height={500}
+                showLegend={true}
+                colorScale={{
+                  low: '#ef4444', // red-500
+                  medium: '#f59e0b', // amber-500
+                  high: '#22c55e', // green-500
+                }}
+                thresholds={{
+                  low: 40,
+                  high: 80,
+                }}
+              />
+            </TabsContent>
+
+            <TabsContent value="intelligent" className="mt-4">
+              <IntelligentMap platformId={selectedPlatformId} />
+            </TabsContent>
+          </Tabs>
+        </CardContent>
+      </Card>
       {/* Main Content Grid */}
       <div className="grid grid-cols-3 gap-6">
         {/* Coverage Matrix */}
@@ -159,7 +245,10 @@ export default function CoverageIndexPage() {
               {topCountries.slice(0, 5).map((country, index) => (
                 <div
                   key={country.countryId}
-                  className="flex items-center justify-between"
+                  className={cn(
+                    "flex items-center justify-between transition-colors rounded-md p-2",
+                    hoveredCountry === country.countryId && "bg-primary/5"
+                  )}
                 >
                   <div className="flex items-center gap-2">
                     <span className="text-sm font-medium text-muted-foreground w-4">

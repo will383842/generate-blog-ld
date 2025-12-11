@@ -25,7 +25,7 @@ class ArticleResource extends JsonResource
             'country' => [
                 'id' => $this->country_id,
                 'name' => $this->country->name ?? null,
-                'code' => $this->country->iso2 ?? null,
+                'code' => $this->country->code ?? null,
             ],
             'language' => [
                 'id' => $this->language_id,

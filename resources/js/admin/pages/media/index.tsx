@@ -108,7 +108,7 @@ export default function MediaPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {statsLoading ? '...' : stats?.total.toLocaleString()}
+              {statsLoading ? '...' : (stats?.total ?? 0).toLocaleString()}
             </div>
             <p className="text-xs text-muted-foreground mt-1">
               {t('media:stats.uploadedThisMonth', { count: stats?.uploadedThisMonth || 0 })}
@@ -144,7 +144,7 @@ export default function MediaPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {statsLoading ? '...' : stats?.unused.toLocaleString()}
+              {statsLoading ? '...' : (stats?.unused ?? 0).toLocaleString()}
             </div>
             {stats?.unused && stats.unused > 0 && (
               <Button
@@ -201,7 +201,7 @@ export default function MediaPage() {
                       <span className={config.color}>{config.icon}</span>
                     </div>
                     <p className="font-medium capitalize">{type}</p>
-                    <p className="text-2xl font-bold">{count.toLocaleString()}</p>
+                    <p className="text-2xl font-bold">{(count ?? 0).toLocaleString()}</p>
                     <p className="text-xs text-muted-foreground">{formatSize(size)}</p>
                   </div>
                 );

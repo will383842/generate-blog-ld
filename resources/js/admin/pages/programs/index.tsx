@@ -188,7 +188,7 @@ export default function ProgramsListPage() {
         </Card>
         <Card>
           <CardContent className="pt-4">
-            <p className="text-2xl font-bold">{stats.totalGenerated.toLocaleString()}</p>
+            <p className="text-2xl font-bold">{(stats.totalGenerated ?? 0).toLocaleString()}</p>
             <p className="text-xs text-muted-foreground">Articles générés</p>
           </CardContent>
         </Card>

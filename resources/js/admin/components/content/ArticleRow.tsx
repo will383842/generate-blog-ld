@@ -180,7 +180,7 @@ export const ArticleRow = memo(function ArticleRow({
 
       {/* Word Count */}
       <TableCell className="text-right tabular-nums">
-        {article.wordCount.toLocaleString()}
+        {(article.wordCount ?? 0).toLocaleString()}
       </TableCell>
 
       {/* Date */}

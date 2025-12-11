@@ -100,7 +100,13 @@ const fetchMediaUsage = async (id: number): Promise<MediaUsage[]> => {
 
 const fetchMediaStats = async (): Promise<MediaStats> => {
   const response = await api.get<ApiResponse<MediaStats>>('/admin/media/stats');
-  return response.data.data;
+  // Handle both { data: {...} } and { success: true, data: {...} } formats
+  return response.data?.data ?? {
+    total: 0,
+    by_type: { image: 0, video: 0, document: 0, audio: 0 },
+    total_size: 0,
+    recent_uploads: 0,
+  };
 };
 
 const uploadMedia = async ({
@@ -159,7 +165,8 @@ const bulkAction = async (action: BulkMediaAction): Promise<void> => {
 // Folders
 const fetchFolders = async (): Promise<MediaFolder[]> => {
   const response = await api.get<ApiResponse<MediaFolder[]>>('/admin/media/folders');
-  return response.data.data;
+  // Handle both { data: [...] } and { success: true, data: [...] } formats
+  return response.data?.data ?? [];
 };
 
 const fetchFolder = async (id: number): Promise<MediaFolder> => {

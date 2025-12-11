@@ -11,7 +11,10 @@ import { Toaster } from 'sonner';
 import i18n from '@/i18n';
 import { ThemeProvider, useTheme } from '@/contexts/ThemeContext';
 import { useAuthStore } from '@/stores/authStore';
-import { AppRouter } from '@/router';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { routes } from '@/router';
+
+const router = createBrowserRouter(routes);
 
 // ============================================================================
 // Query Client Configuration
@@ -182,7 +185,7 @@ function AppContent() {
     <>
       <ThemeSync />
       <AuthInit>
-        <AppRouter />
+        <RouterProvider router={router} />
       </AuthInit>
       <Toaster
         position="top-right"

@@ -52,9 +52,9 @@ class StatsController extends Controller
                 $generationStats = GenerationLog::where('created_at', '>=', now()->subDay())
                     ->select([
                         DB::raw('COUNT(*) as total'),
-                        DB::raw('COUNT(CASE WHEN status = "success" THEN 1 END) as successful'),
+                        DB::raw('COUNT(CASE WHEN status = "completed" THEN 1 END) as successful'),
                         DB::raw('COUNT(CASE WHEN status = "failed" THEN 1 END) as failed'),
-                        DB::raw('AVG(duration_seconds) as avg_duration'),
+                        DB::raw('AVG(duration_ms) / 1000 as avg_duration'),
                         DB::raw('SUM(cost) as total_cost'),
                     ])
                     ->first();
@@ -78,7 +78,7 @@ class StatsController extends Controller
                         $country = Country::find($item->country_id);
                         return [
                             'country' => $country->name ?? 'Unknown',
-                            'code' => $country->iso2 ?? null,
+                            'code' => $country->code ?? null,
                             'count' => $item->count,
                         ];
                     });
@@ -291,7 +291,7 @@ class StatsController extends Controller
                             : 0;
 
                         return [
-                            'countryCode' => $country?->iso2 ?? 'XX',
+                            'countryCode' => $country?->code ?? 'XX',
                             'countryName' => $country?->name ?? 'Inconnu',
                             'flag' => $country?->flag ?? '',
                             'totalArticles' => $item->total_articles,

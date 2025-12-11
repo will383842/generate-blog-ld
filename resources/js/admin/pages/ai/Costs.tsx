@@ -316,7 +316,7 @@ export default function AICostsPage() {
                             ${day.total.toFixed(2)}
                           </TableCell>
                           <TableCell className="text-right">
-                            {day.requests_count.toLocaleString()}
+                            {(day.requests_count ?? 0).toLocaleString()}
                           </TableCell>
                           <TableCell className="text-right">
                             {(day.tokens_used / 1000).toFixed(1)}k

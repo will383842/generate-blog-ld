@@ -159,7 +159,7 @@ class CoverageController extends Controller
                         'country' => [
                             'id' => $country->id,
                             'name' => $country->name,
-                            'code' => $country->iso2,
+                            'code' => $country->code,
                         ],
                         'articles_count' => $stat->total_articles,
                         'languages_count' => $stat->languages_count,
@@ -268,25 +268,27 @@ class CoverageController extends Controller
         return Cache::remember($cacheKey, 300, function () use ($platformId, $languageCode) {
             try {
                 // Pays sans aucun contenu
-                $countriesWithoutContent = Country::whereNotExists(function ($query) use ($platformId, $languageCode) {
+                $languageId = Language::where('code', $languageCode)->value('id');
+                $countriesWithoutContent = Country::whereNotExists(function ($query) use ($platformId, $languageId) {
                     $query->select(DB::raw(1))
                         ->from('articles')
                         ->whereColumn('articles.country_id', 'countries.id')
                         ->where('articles.platform_id', $platformId)
-                        ->whereHas('language', fn($q) => $q->where('code', $languageCode));
-                })->get(['id', 'name', 'iso2']);
+                        ->where('articles.language_id', $languageId);
+                })->get(['id', 'name_fr as name', 'code']);
 
                 // Thèmes avec peu de contenu
                 $themesLowCoverage = Theme::select([
                         'themes.id',
-                        'themes.name',
+                        'themes.name_fr as name',
+                        'themes.slug',
                         DB::raw('COUNT(articles.id) as articles_count'),
                     ])
                     ->leftJoin('articles', function ($join) use ($platformId) {
                         $join->on('articles.theme_id', '=', 'themes.id')
                             ->where('articles.platform_id', $platformId);
                     })
-                    ->groupBy('themes.id', 'themes.name')
+                    ->groupBy('themes.id', 'themes.name_fr', 'themes.slug')
                     ->having('articles_count', '<', 10)
                     ->get();
 
@@ -296,7 +298,7 @@ class CoverageController extends Controller
                         'countries_without_content' => $countriesWithoutContent->map(fn($c) => [
                             'id' => $c->id,
                             'name' => $c->name,
-                            'code' => $c->iso2,
+                            'code' => $c->code,
                         ]),
                         'themes_low_coverage' => $themesLowCoverage,
                         'summary' => [
@@ -352,7 +354,7 @@ class CoverageController extends Controller
                     $language = $languages->get($item->language_id);
                     
                     return [
-                        'country' => $country->iso2 ?? null,
+                        'country' => $country->code ?? null,
                         'country_name' => $country->name ?? null,
                         'language' => $language->code ?? null,
                         'language_name' => $language->name ?? null,

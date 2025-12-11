@@ -12,7 +12,14 @@
       "Bash(php artisan:*)",
       "Bash(composer require:*)",
       "Bash(done)",
-      "Bash(dir /b \"C:\\Users\\simon\\Documents\\Projets\\generate-blog-ld\\resources\\js\\admin\\i18n\\locales\")"
+      "Bash(dir /b \"C:\\Users\\simon\\Documents\\Projets\\generate-blog-ld\\resources\\js\\admin\\i18n\\locales\")",
+      "Bash(del \"C:\\Users\\simon\\Documents\\Projets\\generate-blog-ld\\reset_password.php\")",
+      "Bash(php check_user.php:*)",
+      "Bash(php test_login.php:*)",
+      "Bash(php fix_password.php:*)",
+      "Bash(curl:*)",
+      "Bash(composer dump-autoload:*)",
+      "Bash(TOKEN=\"14|32zyON1uKZWA6GrxEkiTAJibtPqjWo68fjyj2sDV1e45ec35\")"
     ],
     "deny": [],
     "ask": []

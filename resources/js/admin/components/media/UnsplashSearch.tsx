@@ -376,7 +376,7 @@ export const UnsplashSearch: React.FC<UnsplashSearchProps> = ({
                     <div className="absolute top-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity">
                       <Badge variant="secondary" className="text-xs">
                         <Heart className="h-3 w-3 mr-1" />
-                        {photo.likes.toLocaleString()}
+                        {(photo.likes ?? 0).toLocaleString()}
                       </Badge>
                     </div>
                   </div>
@@ -489,7 +489,7 @@ export const UnsplashSearch: React.FC<UnsplashSearchProps> = ({
                   </span>
                   <span className="flex items-center gap-1">
                     <Heart className="h-4 w-4" />
-                    {previewPhoto.likes.toLocaleString()}
+                    {(previewPhoto.likes ?? 0).toLocaleString()}
                   </span>
                 </div>
                 <Button

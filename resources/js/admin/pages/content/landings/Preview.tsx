@@ -348,7 +348,7 @@ export const LandingPreview: React.FC = () => {
     return [
       {
         label: t('landing:performance.views'),
-        value: performance.views.toLocaleString(),
+        value: (performance.views ?? 0).toLocaleString(),
         icon: <Eye className="h-4 w-4" />,
         status: 'good',
       },

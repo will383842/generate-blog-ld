@@ -1,0 +1,559 @@
+# LANDING HERO - EXTREME PERFECTION V10.1 ULTIMATE
+# TARGET: SEO 98/100 + AI Ranking 100/100 + Multilingue Expert
+# Génère contenu #1 MONDIAL toutes langues
+
+═══════════════════════════════════════════════════════════════════════
+CONTEXTE & VARIABLES
+═══════════════════════════════════════════════════════════════════════
+
+Platform: {platform_name} ({platform_url})
+USP: {platform_usp}
+Content Type: {content_type}
+Provider Type: {provider_type}
+Specialty: {specialty}
+Country: {country}
+Language: {language}
+Keyword: {keyword}
+LSI Keywords: {lsi_keywords}
+Target Density: {target_density}
+
+═══════════════════════════════════════════════════════════════════════
+MISSION ULTIMATE PAR TYPE
+═══════════════════════════════════════════════════════════════════════
+
+{#if content_type == 'recrutement'}
+**OBJECTIF:** Convertir {provider_type} qualifiés en prestataires inscrits
+**KPI:** Taux inscription >25% (vs 8% industrie)
+**CTA Principal:** "Créer Profil Pro Gratuit" / "Rejoindre {platform_name}"
+**Psychologie:** Status, Revenus, Autonomie, Liberté géographique
+**Tone:** B2B professionnel, data-driven, ROI-focused
+{#else}
+**OBJECTIF:** Convertir visiteurs en leads qualifiés cherchant {provider_type}
+**KPI:** Taux conversion >18% (vs 5% industrie)
+**CTA Principal:** "Trouver {provider_type}" / "Recevoir 5 Devis"
+**Psychologie:** Urgence, Sécurité, Qualité, Gain temps
+**Tone:** B2C rassurant, empathique, solution-oriented
+{#endif}
+
+═══════════════════════════════════════════════════════════════════════
+SEO EXTREME 98/100 - RÈGLES ABSOLUES
+═══════════════════════════════════════════════════════════════════════
+
+## 🎯 KEYWORD OPTIMIZATION ULTRA
+
+✅ H1: Keyword '{keyword}' dans 5-10 PREMIERS MOTS (obligatoire)
+✅ H1 Length: 40-60 caractères EXACT (affichage SERP optimal)
+✅ H1 Format: [Chiffre] + [Power Word] + {keyword} + [Benefit]
+✅ Keyword Density H1: 2.5-3.5% (concentration maximale)
+✅ LSI Integration: 2-3 LSI keywords dans Hero (naturel)
+✅ Semantic Clusters: Utiliser variantes (synonymes, pluriel)
+✅ Long-tail: Inclure 1 long-tail question format
+
+**Exemples H1 98/100:**
+- FR: "Top 10 {keyword} Vérifiés {country} | Devis 24h Garanti"
+- EN: "Find Expert {keyword} in {country} | 10,000+ Verified Pros"
+- ES: "Encuentra {keyword} Profesional {country} | Respuesta 2h"
+
+## 📊 E-E-A-T MAXIMUM (Google Quality Raters)
+
+**Experience (Expérience):**
+✅ Cite données réelles: "10,000+ {provider_type} actifs" avec source
+✅ Statistiques vérifiables: "Moyenne 4.8/5 sur 2,347 avis"
+✅ Témoignages contextuels: Quote réel avec nom + pays
+✅ Case studies micro: "Jean (Paris) a trouvé son avocat en 4h"
+
+**Expertise (Expertise):**
+✅ Credentials: "{platform_name}, leader mondial expatriés depuis 2020"
+✅ Certifications: "Prestataires vérifiés ISO 9001 / background checks"
+✅ Partnerships: "Partenaire officiel Ambassades / Consulats"
+✅ Awards: "Élu Meilleure Plateforme Expat 2024" si applicable
+
+**Authoritativeness (Autorité):**
+✅ Volume: "197 pays couverts • 1.2M utilisateurs"
+✅ Media mentions: "Vu sur: Forbes, BBC, Le Monde" avec logos
+✅ Trust signals: Secure badges (SSL, Payment, Privacy)
+✅ Backlinks hints: "Recommandé par [Organisation]"
+
+**Trustworthiness (Confiance):**
+✅ Transparence: Prix affichés, Pas de frais cachés
+✅ Guarantees: "Satisfait ou Remboursé 30j" / "Support 24/7 inclus"
+✅ Privacy: RGPD compliant badge visible
+✅ Reviews: "2,347 avis vérifiés" avec étoiles
+
+## 🤖 AI RANKING 100/100 (SearchGPT, Perplexity, Claude)
+
+**CRITICAL 2025:** IA models préfèrent contenus structurés extractibles
+
+✅ **Direct Answer First (Position 0 IA):**
+   - Première phrase = Réponse complète standalone
+   - Format: "{keyword} désigne/est/permet [définition 40-60 mots]"
+   - Extractible sans contexte (IA peut citer tel quel)
+
+✅ **Citations Optimisées:**
+   - Facts avec sources: "[Stat] (Source: [Organisation], 2024)"
+   - URLs citables: Inclure {platform_url} dans texte
+   - Attributions claires: "{platform_name} offre..."
+
+✅ **Structured Facts:**
+   - Listes numérotées: "3 avantages clés:"
+   - Bullet points courts: Max 15 mots/bullet
+   - Tables comparatives: Critères clairs
+
+✅ **Semantic Clarity:**
+   - Éviter ambiguïté: "24 heures" pas "un jour"
+   - Définir acronymes: "RGPD (Règlement Général Protection Données)"
+   - Context complet: Toujours inclure {country} si pertinent
+
+✅ **Factual Accuracy Signals:**
+   - Dates précises: "Janvier 2025" pas "récemment"
+   - Chiffres vérifiables: "10,000+" avec source interne
+   - No speculation: Facts only, pas "probablement"
+
+✅ **Question-Answer Format:**
+   - Anticipate questions: "Combien coûte {keyword}?"
+   - Answer immediate: Prix moyen avec range
+   - Follow-up ready: Info complète en 1 paragraphe
+
+## 🌍 MULTILINGUAL EXCELLENCE
+
+**RTL Languages (Arabic):**
+✅ Direction: <div dir="rtl" lang="ar">
+✅ Typography: Font Noto Sans Arabic / Amiri
+✅ Numbers: Keep Western (1,234) mais support Arabic (١٢٣٤)
+✅ Cultural: Formal tone, respectful, religious neutrality
+
+**CJK Languages (Chinese, Japanese):**
+✅ Typography: Noto Sans CJK / Source Han Sans
+✅ Line-height: 1.8 (vs 1.5 Latin) pour lisibilité
+✅ Punctuation: Chinese 、。vs Western .,
+✅ Honorifics: Japanese さん / 様 appropriés
+✅ Simplified vs Traditional: ZH-CN vs ZH-TW
+
+**European Languages:**
+✅ Accents parfaits: é è ê ë ñ ü ö (pas remplacer par e n u o)
+✅ Formality levels: Français vous/tu, Espagnol usted/tú
+✅ Cultural refs: EUR currency, European dates (DD/MM/YYYY)
+
+**Local SEO per Country:**
+✅ Currency: {country} → EUR, THB, USD auto
+✅ Phone format: +33, +66, +1 selon pays
+✅ Address format: Local conventions
+✅ Business hours: Timezone local {country}
+
+## 📱 CORE WEB VITALS EXTREME
+
+✅ **LCP (Largest Contentful Paint) <1.0s:**
+   - Hero image: WebP/AVIF, 50-80KB max
+   - Preload critical: <link rel="preload" as="image">
+   - Lazy load: Below fold only
+   - CDN: Cloudflare/CloudFront edge
+
+✅ **FID (First Input Delay) <50ms:**
+   - JS minimal Hero section
+   - Defer non-critical scripts
+   - Event handlers optimized
+
+✅ **CLS (Cumulative Layout Shift) = 0:**
+   - Image dimensions: width/height explicit
+   - Font loading: font-display: swap
+   - Reserve space: skeleton loaders
+   - No dynamic inject: Pre-render all
+
+✅ **Mobile-First:**
+   - Touch targets: 48×48px minimum
+   - Font size: 16px+ (no zoom)
+   - Viewport: <meta viewport> proper
+   - Tap delay: touch-action: manipulation
+
+═══════════════════════════════════════════════════════════════════════
+STRUCTURE HTML HERO - SEMANTIC PERFECT
+═══════════════════════════════════════════════════════════════════════
+
+```html
+<section class="hero" itemscope itemtype="https://schema.org/Service">
+    <!-- Schema.org Service enriched -->
+    <meta itemprop="serviceType" content="{provider_type}">
+    <meta itemprop="areaServed" content="{country}">
+    <meta itemprop="provider" content="{platform_name}">
+    
+    <div class="hero__container">
+        <!-- LEFT COLUMN: Content -->
+        <div class="hero__content">
+            
+            <!-- BREADCRUMB (SEO + UX) -->
+            <nav aria-label="Breadcrumb" itemscope itemtype="https://schema.org/BreadcrumbList">
+                <ol class="breadcrumb">
+                    <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                        <a itemprop="item" href="{platform_url}/{language}">
+                            <span itemprop="name">Accueil</span>
+                        </a>
+                        <meta itemprop="position" content="1">
+                    </li>
+                    <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                        <a itemprop="item" href="{platform_url}/{language}/{country}">
+                            <span itemprop="name">{country_name}</span>
+                        </a>
+                        <meta itemprop="position" content="2">
+                    </li>
+                    <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                        <span itemprop="name">{provider_type}</span>
+                        <meta itemprop="position" content="3">
+                    </li>
+                </ol>
+            </nav>
+            
+            <!-- TRUST BADGES (Above H1 for credibility) -->
+            <div class="trust-badges" role="img" aria-label="Trust indicators">
+                <span class="badge">✓ SSL Sécurisé</span>
+                <span class="badge">★ 4.8/5 (2,347 avis)</span>
+                <span class="badge">🌍 197 Pays</span>
+            </div>
+            
+            <!-- H1 OPTIMIZED (Keyword in first 10 words) -->
+            <h1 class="hero__title" itemprop="name">
+                {#if content_type == 'recrutement'}
+                    <!-- Recrutement: Highlight revenus/opportunités -->
+                    <span class="highlight-number">10,000+</span>
+                    Clients Qualifiés Cherchent
+                    <span class="highlight-keyword">{keyword}</span>
+                    en {country} | Inscription Gratuite
+                {#else}
+                    <!-- Notoriété: Highlight vitesse/qualité -->
+                    Trouvez Votre
+                    <span class="highlight-keyword">{keyword}</span>
+                    Expert en {country} | Devis en <span class="highlight-number">24h</span>
+                {#endif}
+            </h1>
+            
+            <!-- H2 SUBTITLE (LSI keywords integration) -->
+            <h2 class="hero__subtitle" itemprop="description">
+                {#if content_type == 'recrutement'}
+                    {platform_name} connecte {provider_type} professionnels avec 
+                    expatriés dans {country}. <strong>0% commission</strong> • 
+                    Paiement sécurisé • Dashboard complet inclus.
+                {#else}
+                    Plateforme #1 des expatriés • <strong>10,000+ {provider_type} vérifiés</strong> 
+                    dans 197 pays • Support juridique 24/7 • Satisfaction garantie 100%
+                {#endif}
+            </h2>
+            
+            <!-- VALUE PROPS (Bullet points with icons) -->
+            <ul class="hero__benefits" role="list">
+                {#if content_type == 'recrutement'}
+                    <li class="benefit">
+                        <span class="benefit__icon" aria-hidden="true">🎯</span>
+                        <strong>Accès clients qualifiés:</strong> 10,000+ expatriés 
+                        actifs dans {country} cherchent {provider_type}
+                    </li>
+                    <li class="benefit">
+                        <span class="benefit__icon" aria-hidden="true">💰</span>
+                        <strong>0% commission:</strong> Gardez 100% revenus (vs 15-25% concurrents)
+                    </li>
+                    <li class="benefit">
+                        <span class="benefit__icon" aria-hidden="true">📊</span>
+                        <strong>Dashboard pro complet:</strong> Agenda, devis, factures, 
+                        paiements sécurisés Stripe
+                    </li>
+                    <li class="benefit">
+                        <span class="benefit__icon" aria-hidden="true">✓</span>
+                        <strong>Profil vérifié:</strong> +300% visibilité vs annuaires 
+                        classiques (données internes 2024)
+                    </li>
+                    <li class="benefit">
+                        <span class="benefit__icon" aria-hidden="true">🛡️</span>
+                        <strong>Protection litiges:</strong> Support juridique inclus + 
+                        système escrow sécurisé
+                    </li>
+                {#else}
+                    <li class="benefit">
+                        <span class="benefit__icon" aria-hidden="true">⚡</span>
+                        <strong>Réponse en 24h garantie:</strong> 5 devis comparatifs 
+                        de {provider_type} vérifiés dans {country}
+                    </li>
+                    <li class="benefit">
+                        <span class="benefit__icon" aria-hidden="true">✓</span>
+                        <strong>100% vérifiés:</strong> Background checks, certifications, 
+                        assurances validées
+                    </li>
+                    <li class="benefit">
+                        <span class="benefit__icon" aria-hidden="true">🌍</span>
+                        <strong>Couverture mondiale:</strong> 10,000+ {provider_type} 
+                        dans 197 pays dont {country}
+                    </li>
+                    <li class="benefit">
+                        <span class="benefit__icon" aria-hidden="true">🛡️</span>
+                        <strong>Paiement sécurisé escrow:</strong> Argent bloqué jusqu'à 
+                        prestation validée + garantie satisfaction
+                    </li>
+                    <li class="benefit">
+                        <span class="benefit__icon" aria-hidden="true">📞</span>
+                        <strong>Support 24/7:</strong> Assistance juridique incluse en 
+                        cas de litige (197 pays, 9 langues)
+                    </li>
+                {#endif}
+            </ul>
+            
+            <!-- SOCIAL PROOF (Temoignage micro) -->
+            <blockquote class="hero__testimonial" itemprop="review" itemscope itemtype="https://schema.org/Review">
+                <p itemprop="reviewBody">
+                    {#if content_type == 'recrutement'}
+                        "J'ai multiplié mes revenus par 3 en 6 mois avec {platform_name}. 
+                        Les clients sont qualifiés et le système zéro commission change tout."
+                    {#else}
+                        "J'ai trouvé mon {provider_type} en 4 heures via {platform_name}. 
+                        Professionnel, réactif, et tarif transparent. Parfait pour expats."
+                    {#endif}
+                </p>
+                <footer>
+                    <cite itemprop="author" itemscope itemtype="https://schema.org/Person">
+                        <span itemprop="name">
+                            {#if content_type == 'recrutement'}Marie L.{#else}Jean-Marc D.{#endif}
+                        </span>
+                    </cite>
+                    <span class="location">{country}</span>
+                    <span class="rating" itemprop="reviewRating" itemscope itemtype="https://schema.org/Rating">
+                        <meta itemprop="ratingValue" content="5">
+                        <meta itemprop="bestRating" content="5">
+                        ★★★★★
+                    </span>
+                </footer>
+            </blockquote>
+            
+            <!-- CTA PRIMARY (Above fold obligatoire) -->
+            <div class="hero__cta">
+                {#if content_type == 'recrutement'}
+                    <a href="{platform_url}/{language}/inscription-pro" 
+                       class="btn btn--primary btn--large"
+                       itemprop="potentialAction" itemscope itemtype="https://schema.org/RegisterAction">
+                        <span itemprop="name">Créer Mon Profil Gratuit →</span>
+                    </a>
+                    <p class="cta-micro">
+                        ✓ Inscription 5 minutes • 0% commission • 10,000+ clients actifs
+                    </p>
+                {#else}
+                    <a href="{platform_url}/{language}/{country}/{provider_type}" 
+                       class="btn btn--primary btn--large"
+                       itemprop="potentialAction" itemscope itemtype="https://schema.org/SearchAction">
+                        <span itemprop="name">Trouver {provider_type} →</span>
+                    </a>
+                    <p class="cta-micro">
+                        ✓ Gratuit • Sans engagement • 5 devis en 24h • Support inclus
+                    </p>
+                {#endif}
+                
+                <!-- Secondary CTA (lower friction) -->
+                <button class="btn btn--secondary" data-modal="how-it-works">
+                    Comment ça marche ?
+                </button>
+            </div>
+            
+            <!-- TRUST INDICATORS (Logos partners) -->
+            <div class="trust-logos" aria-label="Our partners">
+                <p class="trust-logos__label">Partenaires officiels:</p>
+                <div class="logos-grid">
+                    <img src="/assets/logos/stripe.svg" alt="Stripe Verified Partner" width="80" height="30">
+                    <img src="/assets/logos/ssl.svg" alt="SSL Secured" width="60" height="30">
+                    <!-- Add real partners logos -->
+                </div>
+            </div>
+            
+        </div>
+        
+        <!-- RIGHT COLUMN: Visual -->
+        <div class="hero__visual">
+            <!-- Image optimized Core Web Vitals -->
+            <picture>
+                <source type="image/avif" 
+                        srcset="{image_url}.avif" 
+                        media="(min-width: 768px)">
+                <source type="image/webp" 
+                        srcset="{image_url}.webp" 
+                        media="(min-width: 768px)">
+                <img src="{image_url}.jpg" 
+                     alt="{keyword} professionnel à {country} - {platform_name}"
+                     width="600" 
+                     height="400" 
+                     loading="eager"
+                     decoding="async"
+                     itemprop="image"
+                     fetchpriority="high">
+            </picture>
+            
+            <!-- Stats overlay (visual social proof) -->
+            <div class="stats-overlay" aria-label="Platform statistics">
+                <div class="stat">
+                    <span class="stat__number">10,000+</span>
+                    <span class="stat__label">{provider_type} actifs</span>
+                </div>
+                <div class="stat">
+                    <span class="stat__number">197</span>
+                    <span class="stat__label">Pays couverts</span>
+                </div>
+                <div class="stat">
+                    <span class="stat__number">4.8/5</span>
+                    <span class="stat__label">Satisfaction</span>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+    
+    <!-- STRUCTURED DATA (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Service",
+        "name": "{keyword} - {country}",
+        "description": "{#if content_type == 'recrutement'}Plateforme professionnelle connectant {provider_type} avec clients qualifiés expatriés{#else}Trouvez {provider_type} vérifiés dans {country} en 24h{#endif}",
+        "provider": {
+            "@type": "Organization",
+            "name": "{platform_name}",
+            "url": "{platform_url}",
+            "logo": "{platform_url}/logo.png",
+            "sameAs": [
+                "https://facebook.com/{platform_name}",
+                "https://twitter.com/{platform_name}",
+                "https://linkedin.com/company/{platform_name}"
+            ]
+        },
+        "areaServed": {
+            "@type": "Country",
+            "name": "{country_name}"
+        },
+        "availableChannel": {
+            "@type": "ServiceChannel",
+            "serviceUrl": "{platform_url}/{language}/{country}/{provider_type}"
+        },
+        "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": "4.8",
+            "reviewCount": "2347",
+            "bestRating": "5"
+        },
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "EUR",
+            "description": "{#if content_type == 'recrutement'}Inscription gratuite sans commission{#else}Comparaison gratuite de devis{#endif}"
+        }
+    }
+    </script>
+    
+</section>
+```
+
+═══════════════════════════════════════════════════════════════════════
+CHECKLIST VALIDATION 98/100
+═══════════════════════════════════════════════════════════════════════
+
+SEO TECHNIQUE:
+☐ Keyword dans 5-10 premiers mots H1
+☐ H1 40-60 caractères exact
+☐ H2 contient 2 LSI keywords naturels
+☐ Meta title optimisé (généré auto)
+☐ Meta description optimisée (généré auto)
+☐ URL slug SEO-friendly: /{language}/{country}/{provider_type}
+☐ Alt text image avec keyword
+☐ Internal links (min 3) vers pages connexes
+☐ External link (1) vers source authoritative
+
+SEO CONTENU:
+☐ Keyword density Hero: 2-3%
+☐ LSI keywords: 2-3 intégrés naturellement
+☐ Readability: Flesch 60+ (niveau lycée)
+☐ Paragraphes: Max 3 lignes
+☐ Bullets: Max 15 mots/bullet
+☐ Stats citées avec sources
+☐ Dates précises (pas "récemment")
+
+E-E-A-T:
+☐ Experience: Données réelles vérifiables
+☐ Expertise: Credentials mentionnés
+☐ Authoritativeness: Volume/couverture
+☐ Trust: Guarantees + badges visibles
+
+AI RANKING:
+☐ Direct answer première phrase (extractible)
+☐ Citations avec sources
+☐ Structured facts (listes/tables)
+☐ Question-answer format
+☐ Factual accuracy signals
+☐ URLs citables dans texte
+
+SCHEMA.ORG:
+☐ Service schema complet
+☐ Organization schema
+☐ AggregateRating schema
+☐ Review schema (testimonial)
+☐ BreadcrumbList schema
+☐ JSON-LD valide (tester Google Rich Results)
+
+CORE WEB VITALS:
+☐ Image WebP/AVIF <80KB
+☐ Width/height explicites (no CLS)
+☐ Loading="eager" above fold
+☐ Fetchpriority="high" hero image
+☐ Font-display: swap
+☐ Touch targets 48×48px min
+
+MULTILINGUAL:
+☐ Lang attribute correct (<html lang="{language}">)
+☐ Hreflang tags (généré auto)
+☐ RTL si Arabic (dir="rtl")
+☐ Cultural adaptation (dates/currency/formality)
+☐ Fonts appropriés (CJK/Arabic)
+
+ACCESSIBILITY:
+☐ ARIA labels (role, aria-label)
+☐ Alt text descriptifs
+☐ Keyboard navigation
+☐ Color contrast 4.5:1 min (WCAG AA)
+☐ Focus visible
+
+CONVERSION:
+☐ CTA above fold obligatoire
+☐ CTA contraste élevé (5:1 min)
+☐ Friction reducers (gratuit, sans engagement)
+☐ Social proof above fold
+☐ Trust signals multiples
+
+═══════════════════════════════════════════════════════════════════════
+NOTES PERFECTION EXTREME
+═══════════════════════════════════════════════════════════════════════
+
+1. **Keyword First 10 Words:** Non négociable. Google pèse +40% premiers mots.
+
+2. **AI Extractibility:** SearchGPT/Perplexity privilégient contenus citables proprement.
+
+3. **Cultural Adaptation:** Pas simple traduction. Adapter exemples/références locales.
+
+4. **Stats Sources:** Toujours citer source (même interne). Crédibilité IA ++.
+
+5. **Mobile-First:** 68% trafic mobile (données 2024). Desktop = fallback.
+
+6. **Schema.org:** Google utilise 100% pour rich snippets. Tester obligatoire.
+
+7. **Core Web Vitals:** Impact direct ranking 2024. LCP <1s = top 5%.
+
+8. **Zero-Click Content:** Fournir réponse complète sans click. Google reward.
+
+═══════════════════════════════════════════════════════════════════════
+GENERATION INSTRUCTIONS GPT-4
+═══════════════════════════════════════════════════════════════════════
+
+Tu es un expert SEO senior + AI optimization specialist + Multilingual copywriter.
+
+Génère Hero section HTML COMPLET suivant template ci-dessus avec:
+- Variables remplacées par valeurs réelles
+- Contenu 100% unique (pas template générique)
+- HTML semantic parfait
+- Schema.org JSON-LD complet
+- Checklist validée 98/100
+
+Output: HTML pur prêt production (pas commentaires, pas explications).
+
+Langue cible: {language}
+Tone: {#if content_type == 'recrutement'}B2B professionnel{#else}B2C empathique{#endif}
+Cultural: Adapter 100% culture {country}
+
+CRITIQUE: Keyword '{keyword}' DOIT apparaître dans 5-10 premiers mots H1.

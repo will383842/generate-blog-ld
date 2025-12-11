@@ -182,7 +182,7 @@ export default function CoverageThemesPage() {
             <div className="flex items-center gap-2">
               <FileText className="w-5 h-5 text-blue-600" />
               <div>
-                <p className="text-2xl font-bold">{stats.totalArticles.toLocaleString()}</p>
+                <p className="text-2xl font-bold">{(stats.totalArticles ?? 0).toLocaleString()}</p>
                 <p className="text-xs text-muted-foreground">Articles</p>
               </div>
             </div>

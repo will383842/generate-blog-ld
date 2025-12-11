@@ -61,6 +61,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(\App\Services\Content\TitleService::class);
         $this->app->singleton(\App\Services\Content\QualityChecker::class);
         $this->app->singleton(\App\Services\Content\LinkService::class);
+        $this->app->singleton(\App\Services\Content\KeywordIntegrationService::class);
         $this->app->singleton(PlatformKnowledgeService::class);
         $this->app->singleton(BrandValidationService::class);
 
@@ -210,11 +211,12 @@ class AppServiceProvider extends ServiceProvider
 | SERVICES ENREGISTRÉS
 |--------------------------------------------------------------------------
 |
-| PHASE 4 : Content Generation (5 services)
+| PHASE 4 : Content Generation (6 services)
 | - ArticleGenerator : Génération articles IA
 | - TitleService : Génération titres optimisés SEO
 | - QualityChecker : Vérification qualité contenu
 | - LinkService : Gestion liens internes/externes
+| - KeywordIntegrationService : Intégration mots-clés SEO ✨
 | - PlatformKnowledgeService : Connaissance plateformes
 |
 | PHASE 18 : Export PDF/WORD (2 services)
@@ -283,6 +285,7 @@ class AppServiceProvider extends ServiceProvider
 | Tester services enregistrés :
 |
 | php artisan tinker
+| >>> app(\App\Services\Content\KeywordIntegrationService::class)
 | >>> app(\App\Services\AI\ModelSelectionService::class)
 | >>> app(\App\Services\Monitoring\CostMonitoringService::class)
 |

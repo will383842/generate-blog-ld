@@ -207,7 +207,7 @@ export default function RedirectsPage() {
                         <span className="text-muted-foreground mx-2">→</span>
                         <code className="text-sm">{redirect.to}</code>
                       </div>
-                      <Badge variant="secondary">{redirect.hits.toLocaleString()} hits</Badge>
+                      <Badge variant="secondary">{(redirect.hits ?? 0).toLocaleString()} hits</Badge>
                     </div>
                   ))}
                 </div>

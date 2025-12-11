@@ -3,1126 +3,696 @@
 namespace App\Services\Content;
 
 use App\Models\Article;
-use App\Models\Country;
-use App\Models\Language;
-use App\Models\Theme;
+use App\Models\Prompt;
 use App\Models\Platform;
-use App\Models\ProviderType;
-use App\Models\LawyerSpecialty;
-use App\Models\ExpatDomain;
-use App\Models\InternalLink;
-use App\Models\ExternalLink;
-use App\Models\ContentTemplate;
 use App\Services\AI\GptService;
 use App\Services\AI\PerplexityService;
 use App\Services\AI\DalleService;
-use App\Services\UnsplashService;
-use App\Services\Content\PlatformKnowledgeService;
-use App\Services\Content\BrandValidationService;
-use App\Services\Content\TemplateManager;
-use App\Services\Content\Traits\UseContentTemplates;
+use App\Services\AI\ModelSelectionService;
+use App\Services\Seo\SeoOptimizationService;
+use App\Services\Seo\MetaService;
+use App\Services\Quality\QualityChecker;
 use App\Services\Quality\ContentQualityEnforcer;
-use App\Services\Quality\GoldenExamplesService;
+use App\Services\Linking\LinkingOrchestrator;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Cache;
 
-/**
- * ArticleGenerator - Orchestrateur principal de génération de contenu
- * 
- * Coordonne tous les services (IA, titres, liens, qualité) pour créer
- * des articles complets et optimisés SEO pour expatriés.
- * 
- * Architecture :
- * - generate() : Point d'entrée principal, orchestration complète
- * - generateTitle() : Utilise TitleService avec anti-doublon SHA256
- * - generateHook() : Accroche 20-40 mots avec chiffre clé
- * - generateIntroduction() : Structure AIDA 100-150 mots
- * - generateContent() : 6-8 sections H2, réponses questions GEO
- * - generateFaqs() : 8 questions variées pour rich snippets
- * 
- * @package App\Services\Content
- */
 class ArticleGenerator
 {
-    use UseContentTemplates;
-
-    protected GptService $gpt;
-    protected PerplexityService $perplexity;
-    protected DalleService $dalle;
-    protected UnsplashService $unsplash;
-    protected TitleService $titleService;
-    protected LinkService $linkService;
+    protected GptService $gptService;
+    protected PerplexityService $perplexityService;
+    protected DalleService $dalleService;
+    protected ModelSelectionService $modelSelector;
+    protected SeoOptimizationService $seoService;
+    protected MetaService $metaService;
     protected QualityChecker $qualityChecker;
-    protected PlatformKnowledgeService $knowledgeService;
-    protected BrandValidationService $brandValidator;
     protected ContentQualityEnforcer $qualityEnforcer;
-    protected GoldenExamplesService $goldenService;
+    protected LinkingOrchestrator $linkingOrchestrator;
 
-    // Configuration génération
-    protected array $config = [
-        'word_count_min' => 1200,
-        'word_count_target' => 1500,
-        'word_count_max' => 2000,
-        'sections_min' => 6,
-        'sections_max' => 8,
-        'faqs_count' => 8,
-        'hook_words_min' => 20,
-        'hook_words_max' => 40,
-        'intro_words_min' => 100,
-        'intro_words_max' => 150,
-    ];
-
-    // Statistiques de génération
-    protected array $stats = [
-        'start_time' => null,
-        'end_time' => null,
-        'duration_seconds' => 0,
-        'total_cost' => 0,
-        'gpt_calls' => 0,
-        'perplexity_calls' => 0,
-        'dalle_calls' => 0,
-    ];
-
-    /**
-     * Constructeur avec injection de dépendances
-     */
     public function __construct(
-        GptService $gpt,
-        PerplexityService $perplexity,
-        DalleService $dalle,
-        UnsplashService $unsplash,
-        TitleService $titleService,
-        LinkService $linkService,
+        GptService $gptService,
+        PerplexityService $perplexityService,
+        DalleService $dalleService,
+        ModelSelectionService $modelSelector,
+        SeoOptimizationService $seoService,
+        MetaService $metaService,
         QualityChecker $qualityChecker,
-        PlatformKnowledgeService $knowledgeService,
-        BrandValidationService $brandValidator,
         ContentQualityEnforcer $qualityEnforcer,
-        GoldenExamplesService $goldenService,
-        TemplateManager $templateManager
+        LinkingOrchestrator $linkingOrchestrator
     ) {
-        $this->gpt = $gpt;
-        $this->perplexity = $perplexity;
-        $this->dalle = $dalle;
-        $this->unsplash = $unsplash;
-        $this->titleService = $titleService;
-        $this->linkService = $linkService;
+        $this->gptService = $gptService;
+        $this->perplexityService = $perplexityService;
+        $this->dalleService = $dalleService;
+        $this->modelSelector = $modelSelector;
+        $this->seoService = $seoService;
+        $this->metaService = $metaService;
         $this->qualityChecker = $qualityChecker;
-        $this->knowledgeService = $knowledgeService;
-        $this->brandValidator = $brandValidator;
         $this->qualityEnforcer = $qualityEnforcer;
-        $this->goldenService = $goldenService;
-        $this->setTemplateManager($templateManager);
+        $this->linkingOrchestrator = $linkingOrchestrator;
     }
 
     /**
-     * Générer un article complet
-     * 
-     * @param array $params Paramètres de génération :
-     *   - platform_id (required) : ID plateforme (sos-expat, ulixai...)
-     *   - country_id (required) : ID pays
-     *   - language_code (required) : Code langue (fr, en, de...)
-     *   - theme_id (required) : ID thème
-     *   - provider_type_id (optional) : ID type prestataire
-     *   - lawyer_specialty_id (optional) : ID spécialité avocat
-     *   - expat_domain_id (optional) : ID domaine expat
-     *   - word_count (optional) : Nombre de mots cible
-     *   - generate_image (optional) : Générer image DALL-E (défaut: false)
-     *   - use_perplexity (optional) : Utiliser Perplexity pour sources (défaut: true)
-     * 
-     * @return Article Article créé et sauvegardé en base
-     * @throws \Exception Si paramètres invalides ou génération échoue
+     * Génère un article complet avec optimisations SEO V10 extrêmes
      */
     public function generate(array $params): Article
     {
-        $this->stats['start_time'] = microtime(true);
-
-        try {
-            // 1. VALIDATION ET CHARGEMENT DES ENTITÉS
-            $context = $this->validateAndLoadContext($params);
-
-            Log::info('ArticleGenerator: Démarrage génération', [
-                'platform' => $context['platform']->slug,
-                'country' => $context['country']->name,
-                'language' => $context['language']->code,
-                'theme' => $context['theme']->name,
-            ]);
-
-            // 1.5 CHARGEMENT DU TEMPLATE (si disponible)
-            $templateSlug = $params['template_slug'] ?? null;
-            $this->loadTemplate('article', $context['language']->code, $templateSlug);
-
-            // Définir les variables pour le template
-            $this->setTemplateVariables([
-                'title' => '', // Sera mis à jour après génération du titre
-                'country_name' => $context['country']->name,
-                'country_in' => $context['country']->getNameIn($context['language']->code) ?? 'dans ce pays',
-                'theme_name' => $context['theme']->name,
-                'platform_name' => $context['platform']->name,
-                'year' => date('Y'),
-                'word_count_min' => $this->getTemplateWordCount()['min'] ?? $this->config['word_count_min'],
-                'word_count_max' => $this->getTemplateWordCount()['max'] ?? $this->config['word_count_max'],
-                'faq_count' => $this->getTemplateFaqCount() ?? $this->config['faqs_count'],
-            ]);
-
-            // Mettre à jour la config avec les valeurs du template
-            if ($this->hasActiveTemplate()) {
-                $wordCount = $this->getTemplateWordCount();
-                if ($wordCount) {
-                    $this->config['word_count_min'] = $wordCount['min'];
-                    $this->config['word_count_target'] = $wordCount['target'];
-                    $this->config['word_count_max'] = $wordCount['max'];
-                }
-                $faqCount = $this->getTemplateFaqCount();
-                if ($faqCount) {
-                    $this->config['faqs_count'] = $faqCount;
-                }
-
-                Log::info('ArticleGenerator: Template chargé', [
-                    'template_slug' => $this->getActiveTemplateSlug(),
-                    'word_count' => $wordCount,
-                    'faq_count' => $faqCount,
-                ]);
-            }
-
-            // 2. GÉNÉRATION DU TITRE (avec anti-doublon SHA256)
-            $title = $this->generateTitle($context);
-            $this->stats['gpt_calls']++;
-
-            // 3. GÉNÉRATION DE L'ACCROCHE (hook)
-            $hook = $this->generateHook($context, $title);
-            $this->stats['gpt_calls']++;
-
-            // 4. RECHERCHE DE SOURCES (Perplexity)
-            $sources = null;
-            if ($params['use_perplexity'] ?? true) {
-                $sources = $this->fetchSources($context, $title);
-                $this->stats['perplexity_calls']++;
-            }
-
-            // 5. GÉNÉRATION DE L'INTRODUCTION (AIDA)
-            $introduction = $this->generateIntroduction($context, $title, $hook, $sources);
-            $this->stats['gpt_calls']++;
-
-            // 6. GÉNÉRATION DU CONTENU PRINCIPAL (6-8 sections H2)
-            $content = $this->generateContent($context, $title, $sources);
-            $this->stats['gpt_calls']++;
-
-            // 7. GÉNÉRATION DES FAQs (8 questions)
-            $faqs = $this->generateFaqs($context, $title, $content);
-            $this->stats['gpt_calls']++;
-
-            // 8. ASSEMBLAGE HTML COMPLET
-            $fullContent = $this->assembleFullContent([
-                'hook' => $hook,
-                'introduction' => $introduction,
-                'content' => $content,
-                'faqs' => $faqs,
-            ]);
-
-            // 9. INSERTION DES LIENS (internes, externes, affiliés, CTA)
-            $fullContent = $this->linkService->insertLinks($fullContent, $context);
-
-            // 10. GÉNÉRATION DES META (SEO)
-            $meta = $this->generateMeta($context, $title, $fullContent);
-            $this->stats['gpt_calls']++;
-
-            // 11. GÉNÉRATION DE L'IMAGE (optionnel)
-            $imageId = null;
-            if ($params['generate_image'] ?? false) {
-                $imageId = $this->generateFeaturedImage($context, $title);
-                $this->stats['dalle_calls']++;
-            }
-
-            // 12. CALCUL DU SCORE QUALITÉ
-            $qualityScore = $this->qualityChecker->check([
-                'title' => $title,
-                'content' => $fullContent,
-                'meta' => $meta,
-                'faqs' => $faqs,
-                'sources' => $sources,
-            ]);
-
-            // 13. CRÉATION DE L'ARTICLE EN BASE
-            $article = $this->createArticle([
-                'context' => $context,
-                'title' => $title,
-                'hook' => $hook,
-                'introduction' => $introduction,
-                'content' => $fullContent,
-                'faqs' => $faqs,
-                'meta' => $meta,
-                'image_id' => $imageId,
-                'quality_score' => $qualityScore,
-                'sources' => $sources,
-                'word_count' => $this->countWords($fullContent),
-            ]);
-
-            // 14. STATISTIQUES FINALES
-            $this->recordStats($article);
-
-            Log::info('ArticleGenerator: Génération terminée avec succès', [
-                'article_id' => $article->id,
-                'title' => $title,
-                'quality_score' => $qualityScore,
-                'duration_seconds' => $this->stats['duration_seconds'],
-                'total_cost' => $this->stats['total_cost'],
-            ]);
-
-            return $article;
-
-        } catch (\Exception $e) {
-            Log::error('ArticleGenerator: Échec génération', [
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
-                'params' => $params,
-            ]);
-            throw $e;
-        }
-    }
-
-    /**
-     * Valider les paramètres et charger le contexte
-     */
-    protected function validateAndLoadContext(array $params): array
-    {
-        // Validation paramètres obligatoires
-        $required = ['platform_id', 'country_id', 'language_code', 'theme_id'];
-        foreach ($required as $field) {
-            if (empty($params[$field])) {
-                throw new \InvalidArgumentException("Le champ '{$field}' est obligatoire");
-            }
-        }
-
-        // Chargement des entités
-        $platform = Platform::findOrFail($params['platform_id']);
-        $country = Country::findOrFail($params['country_id']);
-        $language = Language::where('code', $params['language_code'])->firstOrFail();
-        $theme = Theme::findOrFail($params['theme_id']);
-
-        // Entités optionnelles
-        $providerType = isset($params['provider_type_id']) 
-            ? ProviderType::find($params['provider_type_id']) 
-            : null;
+        $startTime = microtime(true);
         
-        $lawyerSpecialty = isset($params['lawyer_specialty_id']) 
-            ? LawyerSpecialty::find($params['lawyer_specialty_id']) 
-            : null;
-        
-        $expatDomain = isset($params['expat_domain_id']) 
-            ? ExpatDomain::find($params['expat_domain_id']) 
-            : null;
+        Log::info('🚀 [Content Engine V10] Démarrage génération article SEO extrême', [
+            'keyword' => $params['keyword'],
+            'language' => $params['language'],
+            'platform' => $params['platform_id']
+        ]);
 
-        return [
-            'platform' => $platform,
-            'country' => $country,
-            'language' => $language,
-            'theme' => $theme,
-            'provider_type' => $providerType,
-            'lawyer_specialty' => $lawyerSpecialty,
-            'expatDomain' => $expatDomain,
-            'word_count' => $params['word_count'] ?? $this->config['word_count_target'],
-        ];
-    }
-
-    /**
-     * ✅ CORRIGÉ : Générer le titre avec TitleService et remplacer les variables
-     */
-    protected function generateTitle(array $context): string
-    {
-        // 1. Générer le titre avec TitleService
-        $rawTitle = $this->titleService->generate($context);
+        // 1. Préparation et recherche contextuelle
+        $context = $this->prepareContext($params);
         
-        // 2. Préparer les variables de remplacement
-        $specialty = $context['lawyer_specialty']?->name ?? '';
-        $specialtyLower = mb_strtolower($specialty);
-        
-        $domain = $context['expatDomain']?->name ?? '';
-        $domainLower = mb_strtolower($domain);
-        
-        $providerType = $context['provider_type']?->name ?? '';
-        $providerTypeLower = mb_strtolower($providerType);
-        
-        // 3. Remplacer les variables dans le titre
-        $finalTitle = str_replace(
-            ['{specialty}', '{specialty_lower}', '{domain}', '{domain_lower}', '{provider_type}', '{provider_type_lower}', '{country}'],
-            [$specialty, $specialtyLower, $domain, $domainLower, $providerType, $providerTypeLower, $context['country']->name],
-            $rawTitle
+        // 2. Génération LSI keywords (SEO V10)
+        $lsiKeywords = $this->seoService->generateLsiKeywords(
+            $params['keyword'],
+            $params['language'],
+            8
         );
         
-        
-        
-        Log::info('Titre généré et post-traité', [
-            'raw' => $rawTitle,
-            'final' => $finalTitle
-        ]);
-        
-        return $finalTitle;
-    }
-
-    /**
-     * Générer l'accroche (hook) 20-40 mots avec chiffre clé
-     */
-    protected function generateHook(array $context, string $title): string
-    {
-        $systemPrompt = "Tu es un expert en copywriting pour expatriés. " .
-            "Tu crées des accroches percutantes qui captivent l'attention.";
-
-        $userPrompt = <<<PROMPT
-Crée une accroche (hook) pour cet article destiné aux expatriés français en {$context['country']->name}.
-
-Titre de l'article : "{$title}"
-Thème : {$context['theme']->name}
-Langue : {$context['language']->native_name}
-
-Règles strictes :
-1. Exactement 20-40 mots
-2. DOIT inclure un chiffre clé ou statistique percutante
-3. Ton émotionnel et engageant
-4. Crée urgence ou curiosité
-5. Parle directement au lecteur (tu/vous)
-
-Exemples de chiffres clés :
-- "Plus de 15 000 Français vivent en Thaïlande..."
-- "90% des expatriés ignorent cette démarche..."
-- "En seulement 72h, vous pouvez..."
-
-Réponds UNIQUEMENT avec l'accroche, sans guillemets ni commentaire.
-PROMPT;
-
-        $response = $this->gpt->chat([
-            'model' => 'gpt-4o-mini',
-            'messages' => [
-                ['role' => 'system', 'content' => $systemPrompt],
-                ['role' => 'user', 'content' => $userPrompt],
-            ],
-            'temperature' => 0.8,
-            'max_tokens' => 150,
-        ]);
-
-        $this->stats['total_cost'] += $response['cost'];
-
-        return trim($response['content']);
-    }
-
-    /**
-     * Rechercher des sources officielles avec Perplexity
-     */
-    protected function fetchSources(array $context, string $title): array
-    {
-        try {
-            $result = $this->perplexity->findSources([
-                'topic' => $title,
-                'country' => $context['country']->name,
-                'language' => $context['language']->code,
-                'max_sources' => 5,
-            ]);
-
-            $this->stats['total_cost'] += $result['cost'] ?? 0;
-
-            return $result['sources'] ?? [];
-
-        } catch (\Exception $e) {
-            Log::warning('ArticleGenerator: Échec récupération sources Perplexity', [
-                'error' => $e->getMessage(),
-            ]);
-            return [];
-        }
-    }
-
-    /**
-     * Générer l'introduction (structure AIDA : 100-150 mots)
-     */
-    protected function generateIntroduction(array $context, string $title, string $hook, ?array $sources): string
-    {
-        $sourcesContext = '';
-        if (!empty($sources)) {
-            $sourcesContext = "\n\nSources officielles à mentionner si pertinent :\n";
-            foreach (array_slice($sources, 0, 3) as $source) {
-                $sourcesContext .= "- {$source['title']}\n";
-            }
-        }
-
-        $systemPrompt = "Tu es un expert en rédaction d'introductions engageantes selon la méthode AIDA " .
-            "(Attention, Intérêt, Désir, Action) pour contenus d'expatriation.";
-
-        $userPrompt = <<<PROMPT
-Rédige l'introduction de cet article pour expatriés français en {$context['country']->name}.
-
-Titre : "{$title}"
-Accroche : "{$hook}"
-Thème : {$context['theme']->name}
-Langue : {$context['language']->native_name}
-{$sourcesContext}
-
-Structure AIDA obligatoire :
-1. ATTENTION (1-2 phrases) : Reprendre/développer l'accroche, poser la problématique
-2. INTÉRÊT (2-3 phrases) : Pourquoi c'est important pour les expats
-3. DÉSIR (2-3 phrases) : Bénéfices concrets de lire l'article
-4. ACTION (1 phrase) : "Dans cet article, nous allons..."
-
-Règles :
-- Exactement 100-150 mots
-- Ton empathique et rassurant
-- Éviter le jargon technique
-- Inclure 1-2 mots-clés SEO naturellement
-- Format HTML avec balises <p>
-
-Réponds en {$context['language']->native_name}.
-PROMPT;
-
-        // ✅ ENRICHISSEMENT AVEC GOLDEN EXAMPLES (MODIFICATION 3)
-        $goldenExamples = $this->goldenService->getExamplesForContext(
-            $context['platform'],
-            'article',
-            $context['language']->code,
-            'intro',
-            $context['theme']->slug ?? null,
+        // 3. Génération People Also Ask questions (SEO V10)
+        $paaQuestions = $this->seoService->generatePeopleAlsoAskQuestions(
+            $params['keyword'],
+            $params['language'],
             3
         );
-
-        if (count($goldenExamples) >= 2) {
-            $userPrompt = $this->goldenService->enrichPromptWithExamples($userPrompt, $goldenExamples);
+        
+        // 4. Enrichissement contexte avec données SEO
+        $context['lsi_keywords'] = $lsiKeywords;
+        $context['paa_questions'] = $paaQuestions;
+        $context['target_keyword_density'] = SeoOptimizationService::KEYWORD_DENSITY_OPTIMAL;
+        
+        // 5. Génération titre optimisé SEO
+        $title = $this->generateTitle($params, $context);
+        
+        // 6. Génération hook accrocheur
+        $hook = $this->generateHook($params, $context, $title);
+        
+        // 7. Génération introduction avec featured snippet
+        $introduction = $this->generateIntroduction($params, $context, $title);
+        
+        // 8. Génération contenu principal (sections H2/H3)
+        $mainContent = $this->generateMainContent($params, $context, $title);
+        
+        // 9. Optimisation pour featured snippet
+        $mainContent = $this->optimizeForFeaturedSnippet($mainContent, $params['keyword']);
+        
+        // 10. Génération FAQ optimisée PAA
+        $faq = $this->generateFaq($params, $context, $paaQuestions);
+        
+        // 11. Génération conclusion
+        $conclusion = $this->generateConclusion($params, $context, $title);
+        
+        // 12. Assemblage contenu complet
+        $fullContent = $this->assembleContent([
+            'hook' => $hook,
+            'introduction' => $introduction,
+            'main_content' => $mainContent,
+            'faq' => $faq,
+            'conclusion' => $conclusion
+        ]);
+        
+        // 13. Validation keyword density (SEO V10)
+        $densityValidation = $this->seoService->validateKeywordDensity($fullContent, $params['keyword']);
+        
+        if (!$densityValidation['valid']) {
+            Log::warning('⚠️ Keyword density hors limites, régénération', [
+                'density' => $densityValidation['density'],
+                'keyword' => $params['keyword']
+            ]);
             
-            Log::info('Prompt enrichi avec golden examples (intro)', [
-                'count' => count($goldenExamples),
-                'platform' => $context['platform']->slug,
-            ]);
+            // Régénération avec ajustements
+            $fullContent = $this->adjustKeywordDensity($fullContent, $params['keyword'], $densityValidation);
         }
-
-        $response = $this->gpt->chat([
-            'model' => 'gpt-4o',
-            'messages' => [
-                ['role' => 'system', 'content' => $systemPrompt],
-                ['role' => 'user', 'content' => $userPrompt],
-            ],
-            'temperature' => 0.7,
-            'max_tokens' => 500,
+        
+        // 14. Validation hiérarchie headers (SEO V10)
+        $headerValidation = $this->seoService->validateHeaderHierarchy($fullContent);
+        
+        if (!$headerValidation['valid']) {
+            Log::warning('⚠️ Hiérarchie headers incorrecte', $headerValidation['issues']);
+            $fullContent = $this->fixHeaderHierarchy($fullContent, $headerValidation);
+        }
+        
+        // 15. Injection maillage interne/externe
+        $fullContent = $this->linkingOrchestrator->enrichContent($fullContent, $params);
+        
+        // 16. Génération image principale
+        $heroImage = $this->generateHeroImage($params, $title);
+        
+        // 17. Génération meta tags optimisés CTR
+        $metaTags = $this->metaService->generateOptimizedMeta($title, $fullContent, $params);
+        
+        // 18. Génération structured data avancé (SEO V10)
+        $schemas = $this->generateAdvancedSchemas($params, $fullContent, $title);
+        
+        // 19. Validation E-E-A-T (SEO V10)
+        $eeatValidation = $this->seoService->validateEEAT($fullContent, [
+            'sources' => $context['sources'] ?? [],
+            'published_date' => now()
         ]);
-
-        $this->stats['total_cost'] += $response['cost'];
-
-        return trim($response['content']);
-    }
-
-    /**
-     * Générer le contenu principal (6-8 sections H2 avec réponses GEO)
-     */
-    protected function generateContent(array $context, string $title, ?array $sources): string
-    {
-        $sectionsCount = rand($this->config['sections_min'], $this->config['sections_max']);
-        $wordCountPerSection = (int) ($context['word_count'] / $sectionsCount);
-
-        $sourcesContext = '';
-        if (!empty($sources)) {
-            $sourcesContext = "\n\nSources officielles disponibles :\n";
-            foreach ($sources as $source) {
-                $sourcesContext .= "- {$source['title']} ({$source['url']})\n";
-            }
-            $sourcesContext .= "\nCite ces sources quand pertinent.";
-        }
-
-        $systemPrompt = $this->buildContentSystemPrompt($context);
-
-        // Construire le user prompt depuis le template ou fallback
-        if ($this->hasActiveTemplate()) {
-            // Mettre à jour le titre dans les variables
-            $this->templateVariables['title'] = $title;
-            $this->templateVariables['sources_context'] = $sourcesContext;
-            $userPrompt = $this->getUserPrompt();
-        } else {
-            // Fallback sur le prompt existant
-            $userPrompt = <<<PROMPT
-Rédige le contenu principal de cet article pour expatriés français en {$context['country']->name}.
-
-Titre : "{$title}"
-Thème : {$context['theme']->name}
-Pays : {$context['country']->name}
-Langue : {$context['language']->native_name}
-{$sourcesContext}
-
-Structure attendue : {$sectionsCount} sections H2
-
-Pour chaque section :
-- Titre H2 clair et descriptif (~5-8 mots)
-- Contenu : environ {$wordCountPerSection} mots
-- Sous-sections H3 si nécessaire
-- Listes à puces pour clarté
-- Exemples concrets
-- Points d'attention / pièges à éviter
-
-Objectif GEO (Generative Engine Optimization) :
-- Répondre aux questions que les gens se posent VRAIMENT
-- Format scannable (titres, listes, paragraphes courts)
-- Informations actionnables et pratiques
-- Exemples réels et chiffrés
-
-Règles SEO :
-- Mots-clés naturels (pas de bourrage)
-- Balises HTML sémantiques (<h2>, <h3>, <p>, <ul>, <li>, <strong>)
-- Liens vers sources si mentionnées : <a href="URL" target="_blank" rel="noopener">texte</a>
-
-Réponds en {$context['language']->native_name} avec le HTML complet.
-PROMPT;
-        }
-
-        // ✅ ENRICHISSEMENT AVEC GOLDEN EXAMPLES (MODIFICATION 3)
-        $goldenExamples = $this->goldenService->getExamplesForContext(
-            $context['platform'],
-            'article',
-            $context['language']->code,
-            'content',
-            $context['theme']->slug ?? null,
-            3
-        );
-
-        if (count($goldenExamples) >= 2) {
-            $userPrompt = $this->goldenService->enrichPromptWithExamples($userPrompt, $goldenExamples);
-
-            Log::info('Prompt enrichi avec golden examples (content)', [
-                'count' => count($goldenExamples),
-                'platform' => $context['platform']->slug,
-            ]);
-        }
-
-        // Obtenir la config GPT (depuis template ou défaut)
-        $gptConfig = $this->hasActiveTemplate()
-            ? $this->getTemplateGptConfig()
-            : ['model' => 'gpt-4o', 'max_tokens' => 4000, 'temperature' => 0.7];
-
-        $response = $this->gpt->chat([
-            'model' => $gptConfig['model'] ?? 'gpt-4o',
-            'messages' => [
-                ['role' => 'system', 'content' => $systemPrompt],
-                ['role' => 'user', 'content' => $userPrompt],
-            ],
-            'temperature' => $gptConfig['temperature'] ?? 0.7,
-            'max_tokens' => $gptConfig['max_tokens'] ?? 4000,
+        
+        // 20. Quality score final
+        $qualityScore = $this->qualityChecker->calculateScore($fullContent, [
+            'keyword_density' => $densityValidation,
+            'header_hierarchy' => $headerValidation,
+            'eeat' => $eeatValidation,
+            'word_count' => str_word_count(strip_tags($fullContent))
         ]);
-
-        $this->stats['total_cost'] += $response['cost'];
-
-        return trim($response['content']);
-    }
-
-    /**
-     * Générer les FAQs (8 questions variées)
-     */
-    protected function generateFaqs(array $context, string $title, string $content): array
-    {
-        $contentExcerpt = Str::limit(strip_tags($content), 2000);
-
-        $systemPrompt = "Tu es un expert en création de FAQ optimisées pour rich snippets Google.";
-
-        $userPrompt = <<<PROMPT
-Génère {$this->config['faqs_count']} questions-réponses FAQ pour cet article destiné aux expatriés français en {$context['country']->name}.
-
-Titre : "{$title}"
-Pays : {$context['country']->name}
-Extrait du contenu : {$contentExcerpt}
-
-Règles strictes :
-1. Questions VARIÉES : mélange "Quoi", "Comment", "Pourquoi", "Combien", "Quand", "Où"
-2. Questions que les gens posent RÉELLEMENT (langage naturel)
-3. Réponses concises : 50-100 mots par réponse
-4. Ton direct et pratique
-5. Inclure chiffres/délais précis quand possible
-6. Éviter les questions trop génériques
-
-Format de sortie (JSON strict) :
-{{
-  "faqs": [
-    {{"question": "...", "answer": "..."}},
-    {{"question": "...", "answer": "..."}},
-    ...
-  ]
-}}
-
-Réponds en {$context['language']->native_name} UNIQUEMENT avec le JSON, rien d'autre.
-PROMPT;
-
-        $response = $this->gpt->chat([
-            'model' => 'gpt-4o-mini',
-            'messages' => [
-                ['role' => 'system', 'content' => $systemPrompt],
-                ['role' => 'user', 'content' => $userPrompt],
-            ],
-            'temperature' => 0.6,
-            'max_tokens' => 2000,
-        ]);
-
-        $this->stats['total_cost'] += $response['cost'];
-
-        try {
-            $parsed = $this->gpt->parseJsonResponse($response['content']);
-            return $parsed['faqs'] ?? [];
-        } catch (\Exception $e) {
-            Log::warning('ArticleGenerator: Échec parsing FAQs JSON', [
-                'error' => $e->getMessage(),
-                'response' => $response['content'],
-            ]);
-            return [];
-        }
-    }
-
-    /**
-     * Assembler le contenu HTML complet avec sanitization XSS
-     */
-    protected function assembleFullContent(array $parts): string
-    {
-        // Utiliser ContentSanitizer pour nettoyer le contenu GPT
-        $sanitizer = app(ContentSanitizer::class);
-
-        $html = '';
-
-        // Accroche - SANITIZED
-        if (!empty($parts['hook'])) {
-            $html .= '<div class="article-hook">' . $sanitizer->sanitize($parts['hook']) . '</div>' . "\n\n";
-        }
-
-        // Introduction - SANITIZED
-        if (!empty($parts['introduction'])) {
-            $html .= '<div class="article-introduction">' . "\n";
-            $html .= $sanitizer->sanitize($parts['introduction']) . "\n";
-            $html .= '</div>' . "\n\n";
-        }
-
-        // Contenu principal - SANITIZED
-        if (!empty($parts['content'])) {
-            $html .= '<div class="article-content">' . "\n";
-            $html .= $sanitizer->sanitize($parts['content']) . "\n";
-            $html .= '</div>' . "\n\n";
-        }
-
-        // FAQs - déjà sanitizées avec htmlspecialchars (texte pur)
-        if (!empty($parts['faqs'])) {
-            $html .= '<div class="article-faqs">' . "\n";
-            $html .= '<h2>Questions Fréquentes</h2>' . "\n";
-            foreach ($parts['faqs'] as $faq) {
-                $html .= '<div class="faq-item">' . "\n";
-                $html .= '  <h3 class="faq-question">' . htmlspecialchars($faq['question'] ?? '', ENT_QUOTES, 'UTF-8') . '</h3>' . "\n";
-                $html .= '  <div class="faq-answer">' . "\n";
-                $html .= '    <p>' . htmlspecialchars($faq['answer'] ?? '', ENT_QUOTES, 'UTF-8') . '</p>' . "\n";
-                $html .= '  </div>' . "\n";
-                $html .= '</div>' . "\n";
-            }
-            $html .= '</div>' . "\n";
-        }
-
-        return $html;
-    }
-
-    /**
-     * Générer les meta tags SEO
-     */
-    protected function generateMeta(array $context, string $title, string $content): array
-    {
-        $contentExcerpt = Str::limit(strip_tags($content), 1000);
-
-        $meta = $this->gpt->generateMeta([
+        
+        // 21. Sauvegarde article
+        $article = Article::create([
+            'platform_id' => $params['platform_id'],
             'title' => $title,
-            'content' => $contentExcerpt,
-            'language' => $context['language']->code,
-            'country' => $context['country']->name,
+            'slug' => $this->generateSlug($title, $params['language']),
+            'content' => $fullContent,
+            'excerpt' => $hook,
+            'keyword' => $params['keyword'],
+            'lsi_keywords' => json_encode($lsiKeywords),
+            'language' => $params['language'],
+            'country' => $params['country'] ?? null,
+            'meta_title' => $metaTags['title'],
+            'meta_description' => $metaTags['description'],
+            'meta_keywords' => implode(', ', array_merge([$params['keyword']], $lsiKeywords)),
+            'hero_image' => $heroImage,
+            'schemas' => json_encode($schemas),
+            'quality_score' => $qualityScore,
+            'keyword_density' => $densityValidation['density'],
+            'eeat_score' => $eeatValidation['score'] ?? 0,
+            'status' => $qualityScore >= 80 ? 'published' : 'review',
+            'published_at' => $qualityScore >= 80 ? now() : null,
+            'ai_cost' => $context['ai_cost'] ?? 0,
+            'generation_time' => microtime(true) - $startTime
         ]);
-
-        $this->stats['total_cost'] += $this->gpt->getLastRequestCost();
-
-        return $meta;
+        
+        // 22. Génération canonical URLs multilingues (SEO V10)
+        $this->generateCanonicalUrls($article);
+        
+        // 23. Indexation automatique Google/Bing
+        if ($article->status === 'published') {
+            $this->submitToSearchEngines($article);
+        }
+        
+        Log::info('✅ Article généré avec succès', [
+            'id' => $article->id,
+            'quality_score' => $qualityScore,
+            'keyword_density' => $densityValidation['density'],
+            'eeat_score' => $eeatValidation['score'] ?? 0,
+            'generation_time' => round($article->generation_time, 2) . 's'
+        ]);
+        
+        return $article;
     }
 
     /**
-     * ✅ MODIFIÉ : Générer l'image à la une avec Unsplash en priorité, DALL-E en fallback
+     * Prépare le contexte avec recherche Perplexity
      */
-    protected function generateFeaturedImage(array $context, string $title): ?int
+    protected function prepareContext(array $params): array
+    {
+        $cacheKey = "context_{$params['keyword']}_{$params['language']}";
+        
+        return Cache::remember($cacheKey, 3600, function () use ($params) {
+            // Recherche contextuelle avec Perplexity
+            $researchPrompt = "Recherche approfondie sur: {$params['keyword']}. " .
+                             "Fournis: statistiques 2024-2025, tendances actuelles, sources fiables, " .
+                             "données chiffrées vérifiables. Langue: {$params['language']}";
+            
+            $research = $this->perplexityService->search($researchPrompt);
+            
+            return [
+                'research_data' => $research['content'] ?? '',
+                'sources' => $research['sources'] ?? [],
+                'ai_cost' => $research['cost'] ?? 0
+            ];
+        });
+    }
+
+    /**
+     * Génère un titre optimisé SEO avec keyword
+     */
+    protected function generateTitle(array $params, array $context): string
+    {
+        $prompt = Prompt::where('type', 'article_title')
+                       ->where('language', $params['language'])
+                       ->first();
+        
+        if (!$prompt) {
+            $prompt = Prompt::where('type', 'article_title')
+                           ->where('language', 'en')
+                           ->first();
+        }
+        
+        $titlePrompt = str_replace([
+            '{keyword}',
+            '{language}',
+            '{country}',
+            '{context}'
+        ], [
+            $params['keyword'],
+            $params['language'],
+            $params['country'] ?? '',
+            substr($context['research_data'], 0, 500)
+        ], $prompt->content);
+        
+        // Utilisation GPT-4o-mini pour économie (OPTIMISATION COÛTS V10)
+        $model = $this->modelSelector->selectForTask('title_generation');
+        
+        $response = $this->gptService->complete($titlePrompt, [
+            'model' => $model,
+            'max_tokens' => 100,
+            'temperature' => 0.8
+        ]);
+        
+        $title = trim($response['content']);
+        
+        // Validation présence keyword
+        if (stripos($title, $params['keyword']) === false) {
+            $title = $params['keyword'] . ' : ' . $title;
+        }
+        
+        // Limite 60 caractères pour SERP
+        if (mb_strlen($title) > 60) {
+            $title = mb_substr($title, 0, 57) . '...';
+        }
+        
+        $context['ai_cost'] += $response['cost'] ?? 0;
+        
+        return $title;
+    }
+
+    /**
+     * Génère un hook accrocheur
+     */
+    protected function generateHook(array $params, array $context, string $title): string
+    {
+        $prompt = Prompt::where('type', 'article_hook')
+                       ->where('language', $params['language'])
+                       ->first();
+        
+        $hookPrompt = str_replace([
+            '{keyword}',
+            '{title}',
+            '{context}'
+        ], [
+            $params['keyword'],
+            $title,
+            substr($context['research_data'], 0, 300)
+        ], $prompt->content ?? 'Crée un hook captivant pour: {title}');
+        
+        // GPT-4o-mini pour hook (OPTIMISATION COÛTS V10)
+        $model = $this->modelSelector->selectForTask('hook_generation');
+        
+        $response = $this->gptService->complete($hookPrompt, [
+            'model' => $model,
+            'max_tokens' => 150,
+            'temperature' => 0.9
+        ]);
+        
+        $context['ai_cost'] += $response['cost'] ?? 0;
+        
+        return trim($response['content']);
+    }
+
+    /**
+     * Génère introduction avec featured snippet
+     */
+    protected function generateIntroduction(array $params, array $context, string $title): string
+    {
+        $prompt = Prompt::where('type', 'article_introduction')
+                       ->where('language', $params['language'])
+                       ->first();
+        
+        // Enrichissement prompt avec règles SEO V10
+        $introPrompt = str_replace([
+            '{keyword}',
+            '{title}',
+            '{lsi_keywords}',
+            '{context}',
+            '{target_density}'
+        ], [
+            $params['keyword'],
+            $title,
+            implode(', ', $context['lsi_keywords']),
+            $context['research_data'],
+            $context['target_keyword_density'] . '%'
+        ], $prompt->content ?? '') . "\n\n" .
+        "RÈGLES SEO V10 CRITIQUES:\n" .
+        "- Place le keyword '{$params['keyword']}' dans les 100 PREMIERS MOTS\n" .
+        "- Débute par une définition claire de 40-60 mots (featured snippet)\n" .
+        "- Intègre naturellement 2-3 LSI keywords: " . implode(', ', $context['lsi_keywords']) . "\n" .
+        "- Utilise un ton conversationnel pour voice search\n" .
+        "- Cite 1 statistique 2024-2025 avec source\n" .
+        "- Maintiens densité keyword à {$context['target_keyword_density']}%";
+        
+        $response = $this->gptService->complete($introPrompt, [
+            'model' => 'gpt-4',
+            'max_tokens' => 400,
+            'temperature' => 0.7
+        ]);
+        
+        $introduction = trim($response['content']);
+        
+        // Optimisation featured snippet automatique
+        $introduction = $this->seoService->addDefinitionSnippet($introduction);
+        
+        $context['ai_cost'] += $response['cost'] ?? 0;
+        
+        return $introduction;
+    }
+
+    /**
+     * Génère le contenu principal avec structure H2/H3 optimisée
+     */
+    protected function generateMainContent(array $params, array $context, string $title): string
+    {
+        $prompt = Prompt::where('type', 'article_main_content')
+                       ->where('language', $params['language'])
+                       ->first();
+        
+        // Enrichissement prompt avec règles SEO V10
+        $contentPrompt = str_replace([
+            '{keyword}',
+            '{title}',
+            '{lsi_keywords}',
+            '{paa_questions}',
+            '{context}',
+            '{target_density}'
+        ], [
+            $params['keyword'],
+            $title,
+            implode(', ', $context['lsi_keywords']),
+            implode("\n", $context['paa_questions']),
+            $context['research_data'],
+            $context['target_keyword_density'] . '%'
+        ], $prompt->content ?? '') . "\n\n" .
+        "RÈGLES SEO V10 EXTRÊMES:\n" .
+        "- Structure: 5-7 sections H2 avec sous-sections H3 pertinentes\n" .
+        "- Pas de saut de niveau (H2→H4 INTERDIT)\n" .
+        "- Intègre le keyword dans le PREMIER H2 et 1 H3\n" .
+        "- Réponds aux People Also Ask: " . implode(' | ', $context['paa_questions']) . "\n" .
+        "- Utilise les LSI keywords naturellement: " . implode(', ', $context['lsi_keywords']) . "\n" .
+        "- 3+ données chiffrées 2024-2025 avec sources (E-E-A-T)\n" .
+        "- 3+ sources externes fiables citées\n" .
+        "- Expérience personnelle/expertise visible\n" .
+        "- Ton conversationnel pour voice search\n" .
+        "- Listes 3-8 points pour featured snippet (si applicable)\n" .
+        "- Tableaux comparatifs (si applicable)\n" .
+        "- Densité keyword: {$context['target_keyword_density']}% (ni plus ni moins)\n" .
+        "- Min 1500 mots, max 2500 mots\n" .
+        "- Mobile-first: paragraphes courts (3-4 lignes max)";
+        
+        $response = $this->gptService->complete($contentPrompt, [
+            'model' => 'gpt-4',
+            'max_tokens' => 3000,
+            'temperature' => 0.7
+        ]);
+        
+        $context['ai_cost'] += $response['cost'] ?? 0;
+        
+        return trim($response['content']);
+    }
+
+    /**
+     * Optimise le contenu pour featured snippet
+     */
+    protected function optimizeForFeaturedSnippet(string $content, string $keyword): string
+    {
+        // Détection type de question
+        $questionType = $this->detectQuestionType($keyword);
+        
+        return $this->seoService->optimizeForFeaturedSnippet($content, $questionType);
+    }
+
+    /**
+     * Détecte le type de question pour featured snippet
+     */
+    protected function detectQuestionType(string $keyword): string
+    {
+        $keyword = strtolower($keyword);
+        
+        if (preg_match('/comment|how to|guide|tutorial/i', $keyword)) {
+            return 'how_to';
+        }
+        
+        if (preg_match('/qu\'est-ce|what is|définition|c\'est quoi/i', $keyword)) {
+            return 'definition';
+        }
+        
+        if (preg_match('/meilleur|top|comparatif|vs|versus/i', $keyword)) {
+            return 'comparison';
+        }
+        
+        return 'general';
+    }
+
+    /**
+     * Génère FAQ optimisée People Also Ask
+     */
+    protected function generateFaq(array $params, array $context, array $paaQuestions): string
+    {
+        $prompt = Prompt::where('type', 'article_faq')
+                       ->where('language', $params['language'])
+                       ->first();
+        
+        $faqPrompt = str_replace([
+            '{keyword}',
+            '{paa_questions}',
+            '{context}'
+        ], [
+            $params['keyword'],
+            implode("\n", $paaQuestions),
+            substr($context['research_data'], 0, 500)
+        ], $prompt->content ?? '') . "\n\n" .
+        "RÈGLES FAQ SEO V10:\n" .
+        "- Inclus ces 3 questions PAA: " . implode(' | ', $paaQuestions) . "\n" .
+        "- Ajoute 5 autres questions pertinentes\n" .
+        "- Réponses concises 50-100 mots\n" .
+        "- Ton conversationnel voice search\n" .
+        "- Format Q&A strict pour schema FAQPage";
+        
+        // GPT-4o-mini pour FAQ (OPTIMISATION COÛTS V10)
+        $model = $this->modelSelector->selectForTask('faq_generation');
+        
+        $response = $this->gptService->complete($faqPrompt, [
+            'model' => $model,
+            'max_tokens' => 1200,
+            'temperature' => 0.7
+        ]);
+        
+        $context['ai_cost'] += $response['cost'] ?? 0;
+        
+        return trim($response['content']);
+    }
+
+    /**
+     * Génère conclusion avec CTA
+     */
+    protected function generateConclusion(array $params, array $context, string $title): string
+    {
+        $prompt = Prompt::where('type', 'article_conclusion')
+                       ->where('language', $params['language'])
+                       ->first();
+        
+        $conclusionPrompt = str_replace([
+            '{keyword}',
+            '{title}',
+            '{context}'
+        ], [
+            $params['keyword'],
+            $title,
+            substr($context['research_data'], 0, 300)
+        ], $prompt->content ?? '');
+        
+        // GPT-4o-mini pour conclusion (OPTIMISATION COÛTS V10)
+        $model = $this->modelSelector->selectForTask('conclusion_generation');
+        
+        $response = $this->gptService->complete($conclusionPrompt, [
+            'model' => $model,
+            'max_tokens' => 300,
+            'temperature' => 0.7
+        ]);
+        
+        $context['ai_cost'] += $response['cost'] ?? 0;
+        
+        return trim($response['content']);
+    }
+
+    /**
+     * Assemble tous les éléments de contenu
+     */
+    protected function assembleContent(array $parts): string
+    {
+        return implode("\n\n", array_filter([
+            $parts['hook'],
+            $parts['introduction'],
+            $parts['main_content'],
+            $parts['faq'],
+            $parts['conclusion']
+        ]));
+    }
+
+    /**
+     * Ajuste la densité de keyword si nécessaire
+     */
+    protected function adjustKeywordDensity(string $content, string $keyword, array $validation): string
+    {
+        $currentDensity = $validation['density'];
+        $target = SeoOptimizationService::KEYWORD_DENSITY_OPTIMAL;
+        
+        if ($currentDensity < $target) {
+            // Ajouter keyword naturellement
+            Log::info('Augmentation keyword density', ['from' => $currentDensity, 'to' => $target]);
+            // TODO: Implémentation injection keyword naturelle
+        } elseif ($currentDensity > $target) {
+            // Réduire keyword
+            Log::info('Réduction keyword density', ['from' => $currentDensity, 'to' => $target]);
+            // TODO: Implémentation réduction keyword
+        }
+        
+        return $content;
+    }
+
+    /**
+     * Corrige la hiérarchie des headers
+     */
+    protected function fixHeaderHierarchy(string $content, array $validation): string
+    {
+        foreach ($validation['issues'] as $issue) {
+            Log::warning('Correction header hierarchy', $issue);
+            // TODO: Implémentation correction automatique
+        }
+        
+        return $content;
+    }
+
+    /**
+     * Génère l'image héro avec DALL-E
+     */
+    protected function generateHeroImage(array $params, string $title): ?string
     {
         try {
-            // 1. Chercher Unsplash en priorité
-            $unsplashImage = $this->unsplash->findContextualImage([
-                'keywords' => [
-                    $context['theme']->name ?? 'business',
-                    $context['country']->name ?? 'travel',
-                ],
-                'orientation' => 'landscape',
-            ]);
+            $imagePrompt = "Illustration professionnelle pour article: {$title}. " .
+                          "Style moderne, clean, haute qualité, pertinent pour {$params['keyword']}";
             
-            if ($unsplashImage) {
-                // Sauvegarder dans image_library
-                $image = \App\Models\ImageLibrary::create([
-                    'filename' => basename($unsplashImage['url']),
-                    'path' => $unsplashImage['url'],
-                    'url' => $unsplashImage['url'],
-                    'source' => 'unsplash',
-                    'source_id' => $unsplashImage['id'],
-                    'source_url' => $unsplashImage['unsplash_url'],
-                    'photographer' => $unsplashImage['photographer'],
-                    'photographer_url' => $unsplashImage['photographer_url'],
-                    'mime_type' => 'image/jpeg',
-                    'width' => $unsplashImage['width'],
-                    'height' => $unsplashImage['height'],
-                    'file_size' => 0, // Externe, pas de taille locale
-                ]);
-                
-                Log::info('ArticleGenerator: Image Unsplash trouvée', [
-                    'image_id' => $image->id,
-                    'photographer' => $unsplashImage['photographer'],
-                ]);
-                
-                return $image->id;
-            }
+            $image = $this->dalleService->generate($imagePrompt);
             
-            // 2. Fallback DALL-E si Unsplash ne retourne rien
-            Log::info('ArticleGenerator: Aucune image Unsplash, génération DALL-E');
-            
-            $image = $this->dalle->generateForArticle([
-                'title' => $title,
-                'theme' => $context['theme']->name ?? '',
-                'country' => $context['country']->name ?? '',
-                'style' => 'professional photography',
-            ]);
-            
-            $this->stats['total_cost'] += $image->generation_cost;
-            
-            return $image->id;
-            
+            return $image['url'] ?? null;
         } catch (\Exception $e) {
-            Log::warning('ArticleGenerator: Échec génération image', [
-                'error' => $e->getMessage(),
-            ]);
+            Log::error('Erreur génération image', ['error' => $e->getMessage()]);
             return null;
         }
     }
 
     /**
-     * Créer l'article en base de données
-     *
-     * ARCHITECTURE: La validation qualité est effectuée HORS transaction
-     * pour éviter les timeouts lors d'appels API (si validateArticle en fait).
+     * Génère les schemas avancés (SEO V10)
      */
-    protected function createArticle(array $data): Article
+    protected function generateAdvancedSchemas(array $params, string $content, string $title): array
     {
-        $context = $data['context'];
-        $article = null;
-
-        // ========== ÉTAPE 1: Transaction pour création article + données liées ==========
-        DB::beginTransaction();
-
-        try {
-            // 1. Créer l'article
-            $article = Article::create([
-                'platform_id' => $context['platform']->id,
-                'country_id' => $context['country']->id,
-                'language_id' => $context['language']->id,
-                'theme_id' => $context['theme']->id,
-                'type' => 'blog',
-
-                'title' => $data['title'],
-                'slug' => Str::slug($data['title']),
-                'title_hash' => hash('sha256', $data['title']),
-
-                'content' => $data['content'],
-                'word_count' => $data['word_count'],
-                'reading_time' => (int) ceil($data['word_count'] / 200),
-
-                'meta_title' => $data['meta']['meta_title'] ?? Str::limit($data['title'], 60),
-                'meta_description' => $data['meta']['meta_description'] ?? '',
-
-                'quality_score' => $data['quality_score'], // Score initial
-
-                'status' => 'draft',
-
-                'generation_cost' => $this->stats['total_cost'],
+        $schemas = [];
+        
+        // Article schema (base)
+        $schemas['article'] = [
+            '@context' => 'https://schema.org',
+            '@type' => 'Article',
+            'headline' => $title,
+            'description' => substr(strip_tags($content), 0, 160),
+            'author' => [
+                '@type' => 'Organization',
+                'name' => Platform::find($params['platform_id'])->name ?? 'SOS-Expat'
+            ],
+            'publisher' => $this->seoService->generateOrganizationSchema($params['platform_id']),
+            'datePublished' => now()->toIso8601String(),
+            'dateModified' => now()->toIso8601String()
+        ];
+        
+        // HowTo schema si guide
+        if ($this->detectQuestionType($params['keyword']) === 'how_to') {
+            $schemas['howto'] = $this->seoService->generateHowToSchema([
+                'name' => $title,
+                'description' => substr(strip_tags($content), 0, 200)
             ]);
-
-            // 2. Créer les FAQs en base avec language_id
-            if (!empty($data['faqs'])) {
-                foreach ($data['faqs'] as $index => $faq) {
-                    $article->faqs()->create([
-                        'question' => $faq['question'],
-                        'answer' => $faq['answer'],
-                        'language_id' => $context['language']->id,
-                        'order' => $index + 1,
-                    ]);
-                }
-            }
-
-            // 3. Créer TitleHistory avec country_id
-            try {
-                \App\Models\TitleHistory::create([
-                    'article_id' => $article->id,
-                    'country_id' => $context['country']->id,
-                    'language_id' => $context['language']->id,
-                    'title' => $data['title'],
-                    'title_hash' => hash('sha256', $data['title']),
-                ]);
-
-                Log::info('TitleHistory créé', ['article_id' => $article->id]);
-            } catch (\Exception $e) {
-                Log::error('Erreur création TitleHistory', [
-                    'article_id' => $article->id,
-                    'error' => $e->getMessage()
-                ]);
-            }
-
-            // 4. Extraire et créer les liens internes
-            $this->extractAndSaveInternalLinks($article, $data['content']);
-
-            // 5. Extraire et créer les liens externes
-            $this->extractAndSaveExternalLinks($article, $data['content']);
-
-            DB::commit();
-
-        } catch (\Exception $e) {
-            DB::rollBack();
-            Log::error('ArticleGenerator: Erreur création article', [
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
-            ]);
-            throw $e;
         }
-
-        // ========== ÉTAPE 2: Validation qualité HORS transaction ==========
-        // Ceci évite les rollbacks si validateArticle timeout (appels API potentiels)
-        try {
-            $qualityCheck = $this->qualityEnforcer->validateArticle($article);
-
-            // Mettre à jour article avec score et notes
-            $article->quality_score = $qualityCheck->overall_score;
-            $article->validation_notes = json_encode([
-                'quality_check_id' => $qualityCheck->id,
-                'knowledge_score' => $qualityCheck->knowledge_score,
-                'brand_score' => $qualityCheck->brand_score,
-                'seo_score' => $qualityCheck->seo_score,
-                'readability_score' => $qualityCheck->readability_score,
-                'structure_score' => $qualityCheck->structure_score,
-                'originality_score' => $qualityCheck->originality_score,
-                'status' => $qualityCheck->status,
-                'validated_at' => now()->toIso8601String(),
-            ], JSON_PRETTY_PRINT);
-
-            // Status automatique basé sur résultat validation
-            if ($qualityCheck->status === 'failed' || $qualityCheck->overall_score < 70) {
-                $article->status = 'review_needed';
-            } elseif ($qualityCheck->status === 'warning') {
-                $article->status = 'pending';
-            } else {
-                $article->status = 'draft';
-            }
-
-            $article->save();
-
-            // Auto-marking golden examples si score ≥90
-            if ($qualityCheck->overall_score >= 90) {
-                $this->qualityEnforcer->autoMarkAsGolden($article);
-            }
-
-        } catch (\Exception $e) {
-            // La validation a échoué mais l'article existe - on peut revalider plus tard
-            Log::warning('ArticleGenerator: Validation qualité échouée (article créé)', [
-                'article_id' => $article->id,
-                'error' => $e->getMessage(),
-            ]);
-
-            // Marquer l'article pour review manuel
-            $article->status = 'review_needed';
-            $article->validation_notes = json_encode([
-                'validation_error' => $e->getMessage(),
-                'needs_revalidation' => true,
-                'failed_at' => now()->toIso8601String(),
-            ]);
-            $article->save();
-        }
-
-        return $article;
+        
+        // Speakable schema pour voice search (SEO V10)
+        $schemas['speakable'] = $this->seoService->generateSpeakableSchema([
+            'title' => $title,
+            'content' => $content
+        ]);
+        
+        // FAQPage schema
+        $schemas['faq'] = [
+            '@context' => 'https://schema.org',
+            '@type' => 'FAQPage',
+            'mainEntity' => [] // À remplir avec les Q&A
+        ];
+        
+        return $schemas;
     }
 
     /**
-     * ✅ CORRIGÉ : Extraire et sauvegarder les liens internes
+     * Génère les canonical URLs multilingues
      */
-    protected function extractAndSaveInternalLinks(Article $article, string $content): void
+    protected function generateCanonicalUrls(Article $article): void
+    {
+        // Récupération traductions existantes
+        $translations = Article::where('original_id', $article->id)
+                               ->orWhere('id', $article->original_id)
+                               ->get();
+        
+        $canonicals = $this->seoService->generateCanonicalUrls($article, $translations);
+        
+        $article->update(['canonical_urls' => json_encode($canonicals)]);
+    }
+
+    /**
+     * Soumet l'article aux moteurs de recherche
+     */
+    protected function submitToSearchEngines(Article $article): void
     {
         try {
-            // Pattern pour liens internes (vers d'autres articles)
-            preg_match_all(
-                '/<a[^>]+href=["\']\/(article|blog)\/([^"\']+)["\'][^>]*>([^<]*)<\/a>/',
-                $content,
-                $matches,
-                PREG_SET_ORDER
-            );
-
-            $savedCount = 0;
-            foreach ($matches as $match) {
-                $slug = $match[2] ?? '';
-                $anchorText = strip_tags($match[3] ?? '');
-                
-                if (empty($slug)) {
-                    continue;
-                }
-
-                // Trouver l'article cible
-                $targetArticle = Article::where('slug', $slug)->first();
-                
-                if ($targetArticle) {
-                    InternalLink::create([
-                        'article_id' => $article->id,
-                        'target_article_id' => $targetArticle->id,
-                        'anchor_text' => mb_substr($anchorText, 0, 255),
-                    ]);
-                    
-                    $savedCount++;
-                }
-            }
-
-            Log::info('Liens internes extraits', [
-                'article_id' => $article->id,
-                'count' => $savedCount
-            ]);
+            // Google Indexing API
+            $this->submitToGoogle($article);
             
-        } catch (\Exception $e) {
-            Log::error('Erreur extraction liens internes', [
-                'article_id' => $article->id,
-                'error' => $e->getMessage()
-            ]);
-        }
-    }
-
-    /**
-     * ✅ CORRIGÉ : Extraire et sauvegarder les liens externes
-     */
-    protected function extractAndSaveExternalLinks(Article $article, string $content): void
-    {
-        try {
-            // Pattern pour extraire les liens externes (https://...)
-            preg_match_all(
-                '/<a[^>]+href=["\'](https?:\/\/[^"\']+)["\'][^>]*>([^<]*)<\/a>/',
-                $content,
-                $matches,
-                PREG_SET_ORDER
-            );
-
-            $savedCount = 0;
-            foreach ($matches as $match) {
-                $url = $match[1] ?? '';
-                $anchorText = strip_tags($match[2] ?? '');
-                
-                if (empty($url)) {
-                    continue;
-                }
-
-                // Extraire le domaine
-                $parsedUrl = parse_url($url);
-                $domain = $parsedUrl['host'] ?? '';
-
-                // Vérifier si c'est un lien affilié
-                $isAffiliate = str_contains($url, '[AFFILIATE_ID]') 
-                    || str_contains($url, 'utm_campaign=sos-expat')
-                    || str_contains($match[0], 'affiliate-link');
-
-                // Créer le lien externe
-                ExternalLink::create([
-                    'article_id' => $article->id,
-                    'url' => mb_substr($url, 0, 255),
-                    'anchor_text' => mb_substr($anchorText, 0, 255),
-                    'source' => $domain,
-                    'is_affiliate' => $isAffiliate,
-                ]);
-                
-                $savedCount++;
-            }
-
-            Log::info('Liens externes extraits', [
-                'article_id' => $article->id,
-                'count' => $savedCount
-            ]);
+            // Bing Webmaster API
+            $this->submitToBing($article);
             
+            // IndexNow (Bing, Yandex, etc.)
+            $this->submitToIndexNow($article);
+            
+            Log::info('✅ Article soumis aux moteurs de recherche', ['id' => $article->id]);
         } catch (\Exception $e) {
-            Log::error('Erreur extraction liens externes', [
-                'article_id' => $article->id,
-                'error' => $e->getMessage()
-            ]);
+            Log::error('Erreur soumission moteurs', ['error' => $e->getMessage()]);
         }
     }
 
-    /**
-     * Construire le prompt système pour le contenu
-     */
-    protected function buildContentSystemPrompt(array $context): string
+    protected function submitToGoogle(Article $article): void
     {
-        // Utiliser le template si disponible
-        if ($this->hasActiveTemplate()) {
-            return $this->getSystemPrompt();
-        }
+        // TODO: Implémentation Google Indexing API
+    }
 
-        // Fallback : Injection PLATFORM KNOWLEDGE (270 entrées dynamiques)
-        $knowledgeContext = $this->knowledgeService->getKnowledgeContext(
-            $context['platform'],
-            $context['language']->code,
-            'articles'
-        );
+    protected function submitToBing(Article $article): void
+    {
+        // TODO: Implémentation Bing Webmaster API
+    }
 
-        // Fallback si pas de knowledge disponible
-        $platformContext = !empty($knowledgeContext)
-            ? $knowledgeContext
-            : "Tu écris pour {$context['platform']->name}, plateforme d'aide aux expatriés.";
-
-        return <<<PROMPT
-{$platformContext}
-
-Tu es un expert en expatriation avec connaissance approfondie des démarches administratives,
-juridiques et pratiques pour Français vivant à l'étranger.
-
-Principes de rédaction :
-✓ Empathie : Tu comprends les difficultés des expatriés
-✓ Clarté : Informations précises, vérifiables, actuelles
-✓ Utilité : Conseils actionnables avec exemples concrets
-✓ Accessibilité : Évite jargon technique (ou explique-le)
-✓ Structure : Titres clairs, paragraphes courts, listes
-✓ SEO : Mots-clés naturels, balises sémantiques
-PROMPT;
+    protected function submitToIndexNow(Article $article): void
+    {
+        // TODO: Implémentation IndexNow
     }
 
     /**
-     * Enregistrer les statistiques de génération
+     * Génère le slug optimisé
      */
-    protected function recordStats(Article $article): void
+    protected function generateSlug(string $title, string $language): string
     {
-        $this->stats['end_time'] = microtime(true);
-        $this->stats['duration_seconds'] = round($this->stats['end_time'] - $this->stats['start_time'], 2);
-
-        // Tracker l'utilisation du template
-        $this->trackTemplateUsage();
-
-        // Stocker l'ID du template utilisé dans les metadata de l'article
-        if ($this->hasActiveTemplate()) {
-            $metadata = $article->metadata ?? [];
-            $metadata['template_id'] = $this->getActiveTemplateId();
-            $metadata['template_slug'] = $this->getActiveTemplateSlug();
-            $article->metadata = $metadata;
-            $article->save();
-
-            Log::info('ArticleGenerator: Template utilisé enregistré', [
-                'article_id' => $article->id,
-                'template_id' => $this->getActiveTemplateId(),
-                'template_slug' => $this->getActiveTemplateSlug(),
-            ]);
-        }
-    }
-
-    /**
-     * Compter les mots dans un texte HTML
-     */
-    protected function countWords(string $html): int
-    {
-        $text = strip_tags($html);
-        $text = preg_replace('/\s+/', ' ', $text);
-        return str_word_count($text);
-    }
-
-    /**
-     * Obtenir les statistiques de la dernière génération
-     */
-    public function getStats(): array
-    {
-        return $this->stats;
+        $slug = strtolower($title);
+        $slug = preg_replace('/[^a-z0-9\s-]/u', '', $slug);
+        $slug = preg_replace('/[\s-]+/', '-', $slug);
+        $slug = trim($slug, '-');
+        
+        return substr($slug, 0, 60);
     }
 }

@@ -173,7 +173,7 @@ export default function PublicationQueue() {
             <div className="flex items-center justify-center h-32">
               <LoadingSpinner />
             </div>
-          ) : items.length === 0 ? (
+          ) : !items || items.length === 0 ? (
             <div className="text-center py-8 text-muted-foreground">
               <Send className="h-12 w-12 mx-auto mb-4 opacity-20" />
               <p>Aucune publication dans la queue</p>

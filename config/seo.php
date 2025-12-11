@@ -1,224 +1,288 @@
 <?php
 
 return [
-
     /*
     |--------------------------------------------------------------------------
-    | Configuration SEO - Content Engine V9.4
+    | SEO Configuration - Content Engine V10
     |--------------------------------------------------------------------------
     |
-    | Configuration complète pour tous les services SEO
+    | Configuration centralisée pour tous les paramètres SEO critiques.
+    | Objectif: 95/100 SEO score dans 197 pays × 9 langues
     |
     */
 
     // =========================================================================
-    // GOOGLE INDEXING API
+    // KEYWORD DENSITY
     // =========================================================================
-    'google_indexing_credentials' => env('GOOGLE_INDEXING_CREDENTIALS'),
-    // JSON des credentials du Service Account Google
-    // Obtenir depuis : https://console.cloud.google.com/
-
-    'google_indexing_enabled' => env('GOOGLE_INDEXING_ENABLED', true),
-
-    // =========================================================================
-    // BING WEBMASTER API
-    // =========================================================================
-    'bing_api_key' => env('BING_API_KEY'),
-    // Obtenir depuis : https://www.bing.com/webmasters
-
-    'bing_submission_enabled' => env('BING_SUBMISSION_ENABLED', true),
+    'keyword_density' => [
+        'min' => 1.0,                    // Minimum 1.0%
+        'max' => 2.5,                    // Maximum 2.5%
+        'optimal' => 1.5,                // Cible optimale 1.5%
+        'tolerance' => 0.3,              // Tolérance ±0.3%
+        'check_first_100_words' => true, // Vérifier keyword dans 100 premiers mots
+    ],
 
     // =========================================================================
-    // INDEXNOW
+    // LSI KEYWORDS
     // =========================================================================
-    'indexnow_key' => env('INDEXNOW_KEY'),
-    // Clé pour IndexNow (Bing, Yandex, etc.)
-    // Générer : https://www.indexnow.org/
+    'lsi_keywords' => [
+        'count' => 8,                           // Nombre LSI keywords par article
+        'min_occurrences_per_keyword' => 3,     // Minimum 3 occurrences par LSI
+        'cache_ttl' => 604800,                  // Cache 7 jours (en secondes)
+        'languages' => ['fr', 'en', 'es', 'de', 'it', 'pt', 'ar', 'zh', 'ja'],
+    ],
 
-    'indexnow_enabled' => env('INDEXNOW_ENABLED', false),
+    // =========================================================================
+    // FEATURED SNIPPETS (Position 0)
+    // =========================================================================
+    'featured_snippets' => [
+        'definition_min_words' => 40,     // Minimum 40 mots pour définition
+        'definition_max_words' => 60,     // Maximum 60 mots pour définition
+        'list_min_items' => 3,            // Minimum 3 items dans listes
+        'list_max_items' => 8,            // Maximum 8 items dans listes
+        'list_item_max_words' => 20,      // Maximum 20 mots par item
+        'table_min_rows' => 3,            // Minimum 3 lignes dans tableaux
+        'table_max_rows' => 10,           // Maximum 10 lignes dans tableaux
+    ],
 
     // =========================================================================
-    // SITEMAP
+    // PEOPLE ALSO ASK (PAA)
     // =========================================================================
-    'sitemap' => [
-        'cache_ttl' => 3600, // 1 heure
-        'max_urls_per_sitemap' => 50000, // Limite Google
-        'include_images' => true,
-        'include_alternates' => true, // Hreflang dans sitemap
-        
-        // Priorités par défaut
-        'default_priorities' => [
-            'homepage' => 1.0,
-            'landing' => 1.0,
-            'article' => 0.8,
-            'category' => 0.6,
-            'static_page' => 0.5,
+    'people_also_ask' => [
+        'questions_per_article' => 3,             // 3 questions PAA par article
+        'answer_min_words' => 40,                 // Minimum 40 mots par réponse
+        'answer_max_words' => 150,                // Maximum 150 mots par réponse
+        'answer_snippet_words' => 60,             // 60 mots pour snippet featured
+        'cache_ttl' => 604800,                    // Cache 7 jours
+    ],
+
+    // =========================================================================
+    // E-E-A-T (Experience, Expertise, Authoritativeness, Trust)
+    // =========================================================================
+    'eeat' => [
+        'min_statistics' => 3,                    // Minimum 3 statistiques par article
+        'min_sources' => 3,                       // Minimum 3 sources externes
+        'require_author' => true,                 // Auteur obligatoire
+        'max_content_age_months' => 12,           // Contenu max 12 mois
+        'require_update_date' => true,            // Date mise à jour obligatoire
+        'min_score' => 80,                        // Score E-E-A-T minimum 80/100
+    ],
+
+    // =========================================================================
+    // META TAGS
+    // =========================================================================
+    'meta_tags' => [
+        'title' => [
+            'min_chars' => 30,
+            'max_chars' => 60,
+            'optimal_chars' => 55,
         ],
-
-        // Fréquences par défaut
-        'default_frequencies' => [
-            'homepage' => 'daily',
-            'landing' => 'weekly',
-            'article' => 'weekly',
-            'category' => 'weekly',
-            'static_page' => 'monthly',
+        'description' => [
+            'min_chars' => 120,
+            'max_chars' => 160,
+            'optimal_chars' => 155,
+        ],
+        'keywords' => [
+            'max_count' => 10,                    // Maximum 10 keywords
         ],
     ],
 
     // =========================================================================
-    // ROBOTS.TXT
+    // HEADERS (H1-H6)
     // =========================================================================
-    'robots' => [
-        'block_ai_bots' => env('BLOCK_AI_BOTS', false), // Bloquer GPTBot, Claude-Web, etc.
-        'block_gptbot' => env('BLOCK_GPTBOT', false),
-        'crawl_delay' => env('ROBOTS_CRAWL_DELAY', false),
-        'crawl_delay_seconds' => env('ROBOTS_CRAWL_DELAY_SECONDS', 1),
-        
-        // Chemins à bloquer par défaut
-        'default_disallow' => [
-            '/admin',
-            '/api',
-            '/private',
-            '/search',
-            '/login',
-            '/register',
-            '/password',
+    'headers' => [
+        'h1_count' => 1,                          // STRICTEMENT 1 H1
+        'h2_min' => 3,                            // Minimum 3 H2
+        'h2_max' => 10,                           // Maximum 10 H2
+        'keyword_in_h1' => true,                  // Keyword OBLIGATOIRE dans H1
+        'keyword_in_first_h2' => true,            // Keyword dans premier H2
+        'check_hierarchy' => true,                // Vérifier hiérarchie (pas de sauts)
+    ],
+
+    // =========================================================================
+    // MOBILE-FIRST
+    // =========================================================================
+    'mobile' => [
+        'max_paragraph_lines' => 4,               // Maximum 4 lignes par paragraphe
+        'paragraph_words_range' => [40, 80],      // 40-80 mots par paragraphe
+        'sentence_words_range' => [15, 25],       // 15-25 mots par phrase
+        'max_section_words' => 300,               // Maximum 300 mots par section H2
+    ],
+
+    // =========================================================================
+    // VOICE SEARCH
+    // =========================================================================
+    'voice_search' => [
+        'conversational_tone' => true,            // Ton conversationnel obligatoire
+        'question_format' => true,                // Format question/réponse
+        'direct_answer_words' => 60,              // 60 mots pour réponse directe
+        'use_you_pronoun' => true,                // Utiliser "vous"/"you"
+    ],
+
+    // =========================================================================
+    // ANCHOR TEXT DIVERSITY
+    // =========================================================================
+    'anchor_text' => [
+        'distribution' => [
+            'exact_match' => 10,                  // 10% ancre exacte
+            'partial_match' => 30,                // 30% ancre partielle
+            'branded' => 20,                      // 20% ancre marque
+            'generic' => 25,                      // 25% ancre générique
+            'naked_url' => 10,                    // 10% URL nue
+            'image' => 5,                         // 5% images
+        ],
+        'tolerance' => 10,                        // Tolérance ±10%
+        'over_optimization_threshold' => 20,      // Alerte si >20% exact match
+    ],
+
+    // =========================================================================
+    // AFFILIATE LINKS
+    // =========================================================================
+    'affiliate_links' => [
+        'require_sponsored_tag' => true,          // rel="sponsored" obligatoire
+        'require_nofollow_tag' => true,           // rel="nofollow" obligatoire
+        'require_noopener_tag' => true,           // rel="noopener" obligatoire
+        'require_disclosure' => true,             // Mention "lien affilié" obligatoire
+        'max_per_article' => 5,                   // Maximum 5 liens affiliés par article
+        'min_words_between_links' => 150,         // Minimum 150 mots entre 2 liens affiliés
+    ],
+
+    // =========================================================================
+    // STRUCTURED DATA (Schema.org)
+    // =========================================================================
+    'structured_data' => [
+        'always_include' => [
+            'Article',                            // Schema Article toujours
+            'BreadcrumbList',                     // Schema Breadcrumb toujours
+            'WebPage',                            // Schema WebPage toujours
+        ],
+        'conditional' => [
+            'FAQPage' => 'has_faq',              // Si FAQ présente
+            'HowTo' => 'is_guide',               // Si guide/tutoriel
+            'Review' => 'has_reviews',           // Si avis/notes
+            'Product' => 'has_products',         // Si produits mentionnés
+            'Speakable' => 'voice_optimized',    // Si optimisé voice search
         ],
     ],
 
     // =========================================================================
-    // SEO SCORING
+    // CANONICAL URLS & HREFLANG
     // =========================================================================
-    'scoring' => [
-        'min_score_to_publish' => env('SEO_MIN_SCORE', 60),
-        'target_score' => 80,
-        'excellent_score' => 90,
-        
-        // Cache des scores
-        'cache_scores' => true,
-        'cache_ttl' => 3600, // 1 heure
-    ],
-
-    // =========================================================================
-    // SCHEMA.ORG
-    // =========================================================================
-    'schema' => [
-        'enable_organization' => true,
-        'enable_website' => true,
-        'enable_howto_detection' => true,
-        'enable_itemlist_detection' => true,
-        
-        // Organization par défaut
-        'default_organization' => [
-            'name' => env('APP_NAME', 'SOS-Expat'),
-            'url' => env('APP_URL', 'https://sos-expat.com'),
-        ],
+    'canonical' => [
+        'always_include' => true,                 // Canonical toujours présent
+        'hreflang_enabled' => true,               // Hreflang pour multilingue
+        'x_default' => 'fr',                      // Langue par défaut: français
+        'languages' => ['fr', 'en', 'es', 'de', 'it', 'pt', 'ar', 'zh', 'ja'],
     ],
 
     // =========================================================================
     // IMAGES SEO
     // =========================================================================
     'images' => [
-        'require_alt_text' => true,
-        'min_alt_length' => 20,
-        'max_alt_length' => 125,
-        'optimize_filenames' => true,
-        'generate_captions' => true,
-        
-        // Formats recommandés
-        'preferred_formats' => ['webp', 'jpg', 'png'],
-        'suggest_webp_conversion' => true,
-    ],
-
-    // =========================================================================
-    // META TAGS
-    // =========================================================================
-    'meta' => [
-        // Limites
-        'title_max_length' => 60,
-        'description_max_length' => 160,
-        'og_title_max_length' => 70,
-        'og_description_max_length' => 200,
-        
-        // Génération automatique
-        'auto_generate_keywords' => true,
-        'keyword_count' => 5, // Nombre de keywords à générer
-        
-        // OpenGraph
-        'opengraph_enabled' => true,
-        'twitter_card_enabled' => true,
-        'twitter_handle' => env('TWITTER_HANDLE', '@SOSExpat'),
-    ],
-
-    // =========================================================================
-    // HREFLANG
-    // =========================================================================
-    'hreflang' => [
-        'enabled' => true,
-        'include_x_default' => true,
-        'default_language' => 'fr',
-        
-        // Langues supportées (9 langues)
-        'supported_languages' => ['fr', 'en', 'de', 'es', 'pt', 'ru', 'zh', 'ar', 'hi'],
-    ],
-
-    // =========================================================================
-    // CANONICAL URLs
-    // =========================================================================
-    'canonical' => [
-        'enabled' => true,
-        'force_https' => true,
-        'force_www' => false, // ou true selon préférence
-        'trailing_slash' => false,
-    ],
-
-    // =========================================================================
-    // PERFORMANCE
-    // =========================================================================
-    'performance' => [
-        // Cache des métadonnées
-        'cache_meta' => true,
-        'cache_schema' => true,
-        'cache_sitemap' => true,
-        
-        // TTL par type
-        'cache_ttl' => [
-            'meta' => 3600, // 1h
-            'schema' => 86400, // 24h
-            'sitemap' => 3600, // 1h
-            'seo_score' => 3600, // 1h
+        'alt_text' => [
+            'min_chars' => 20,
+            'max_chars' => 125,
+            'include_keyword' => true,            // Keyword dans 1er alt text
         ],
+        'formats' => ['webp', 'avif', 'jpg'],     // Formats modernes prioritaires
+        'lazy_loading' => true,                   // Lazy loading obligatoire
+        'responsive' => true,                     // Srcset obligatoire
+        'max_width' => 1200,                      // Largeur max 1200px
+        'compression_quality' => 85,              // Qualité 85%
     ],
 
     // =========================================================================
-    // SOUMISSION AUTOMATIQUE
+    // CORE WEB VITALS
     // =========================================================================
-    'auto_submission' => [
-        'enabled' => env('AUTO_SUBMIT_ENABLED', true),
-        'on_publish' => true, // Soumettre dès publication
-        'on_update' => false, // Soumettre sur mise à jour
-        
-        // Services à utiliser
-        'use_google' => true,
-        'use_bing' => true,
-        'use_indexnow' => false,
-        
-        // Retry
-        'retry_on_failure' => true,
-        'max_retries' => 3,
+    'core_web_vitals' => [
+        'lcp_target' => 2.5,                      // LCP < 2.5s
+        'fid_target' => 0.1,                      // FID < 100ms
+        'cls_target' => 0.1,                      // CLS < 0.1
+        'check_enabled' => true,                  // Vérification activée
     ],
 
     // =========================================================================
-    // MONITORING
+    // CONTENT QUALITY
+    // =========================================================================
+    'content_quality' => [
+        'min_words' => 800,                       // Minimum 800 mots
+        'optimal_words' => 1500,                  // Optimal 1500 mots
+        'max_words' => 3000,                      // Maximum 3000 mots
+        'min_sections' => 4,                      // Minimum 4 sections H2
+        'readability_score_min' => 60,            // Score lisibilité min 60/100
+    ],
+
+    // =========================================================================
+    // AI MODELS & COSTS
+    // =========================================================================
+    'ai_models' => [
+        'title' => 'gpt-4o-mini',                 // Titres: GPT-4o-mini
+        'hook' => 'gpt-4o-mini',                  // Hooks: GPT-4o-mini
+        'introduction' => 'gpt-4',                // Intro: GPT-4 (qualité critique)
+        'main_content' => 'gpt-4',                // Contenu: GPT-4 (qualité critique)
+        'faq' => 'gpt-4o-mini',                   // FAQ: GPT-4o-mini
+        'conclusion' => 'gpt-4o-mini',            // Conclusion: GPT-4o-mini
+        'meta_tags' => 'gpt-4o-mini',             // Meta: GPT-4o-mini
+        'lsi_keywords' => 'gpt-4o-mini',          // LSI: GPT-4o-mini
+        'paa_questions' => 'gpt-4o-mini',         // PAA: GPT-4o-mini
+    ],
+
+    // =========================================================================
+    // CACHE SETTINGS
+    // =========================================================================
+    'cache' => [
+        'lsi_keywords_ttl' => 604800,             // 7 jours
+        'paa_questions_ttl' => 604800,            // 7 jours
+        'perplexity_research_ttl' => 604800,      // 7 jours
+        'similar_content_enabled' => true,        // Cache contenus similaires activé
+        'similar_content_threshold' => 0.95,      // Seuil similarité 95%
+        'similar_content_ttl' => 2592000,         // 30 jours
+        'max_cached_contents' => 10000,           // Max 10000 contenus en cache
+    ],
+
+    // =========================================================================
+    // BRANDS (pour ancres branded)
+    // =========================================================================
+    'brands' => [
+        'SOS-Expat.com',
+        'Ulixai.com',
+        'Ulysse.AI',
+    ],
+
+    // =========================================================================
+    // LANGUAGES & LOCALIZATION
+    // =========================================================================
+    'languages' => [
+        'fr' => ['name' => 'Français', 'rtl' => false],
+        'en' => ['name' => 'English', 'rtl' => false],
+        'es' => ['name' => 'Español', 'rtl' => false],
+        'de' => ['name' => 'Deutsch', 'rtl' => false],
+        'it' => ['name' => 'Italiano', 'rtl' => false],
+        'pt' => ['name' => 'Português', 'rtl' => false],
+        'ar' => ['name' => 'العربية', 'rtl' => true],
+        'zh' => ['name' => '中文', 'rtl' => false],
+        'ja' => ['name' => '日本語', 'rtl' => false],
+    ],
+
+    // =========================================================================
+    // TARGET SCORE
+    // =========================================================================
+    'target_score' => [
+        'seo_score' => 95,                        // Objectif 95/100
+        'quality_score' => 92,                    // Objectif 92/100
+        'eeat_score' => 85,                       // Objectif 85/100
+        'min_acceptable_seo' => 90,               // Minimum acceptable 90/100
+        'min_acceptable_quality' => 85,           // Minimum acceptable 85/100
+    ],
+
+    // =========================================================================
+    // MONITORING & ALERTS
     // =========================================================================
     'monitoring' => [
-        'log_submissions' => true,
-        'log_seo_scores' => true,
-        'alert_on_low_score' => true,
-        'low_score_threshold' => 50,
-        
-        // Email alerts
-        'alert_email' => env('SEO_ALERT_EMAIL', env('MAIL_FROM_ADDRESS')),
+        'alert_on_low_score' => true,             // Alerte si score < min
+        'alert_on_over_optimization' => true,     // Alerte sur-optimisation
+        'alert_on_high_cost' => true,             // Alerte coût élevé
+        'daily_report' => true,                   // Rapport journalier
+        'weekly_report' => true,                  // Rapport hebdomadaire
     ],
-
 ];

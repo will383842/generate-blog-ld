@@ -139,7 +139,7 @@ export function ArticleStats({
           <StatCard
             icon={FileText}
             label="Mots"
-            value={article.wordCount.toLocaleString()}
+            value={(article.wordCount ?? 0).toLocaleString()}
             color="bg-blue-500"
           />
           <StatCard

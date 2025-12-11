@@ -1,0 +1,30 @@
+import React, { useEffect } from 'react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { I18nextProvider } from 'react-i18next';
+import { Toaster } from 'sonner';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import i18n from '@/i18n';
+import { ThemeProvider, useTheme } from '@/contexts/ThemeContext';
+import { useAuthStore } from '@/stores/authStore';
+import { routes } from '@/router';
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000,
+      gcTime: 30 * 60 * 1000,
+      retry: 1,
+      retryDelay: 1000,
+      refetchOnWindowFocus: false,
+      refetchOnMount: false,
+      refetchOnReconnect: true,
+      throwOnError: false,
+    },
+    mutations: {
+      retry: 0,
+    },
+  },
+});
+
+const router = createBrowserRouter(routes);

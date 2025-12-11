@@ -1,12 +1,6 @@
 /**
- * Sidebar Component
- * Complete sidebar with header (logo), menu, and footer (user profile)
- * 
- * Features:
- * - Collapsible mode
- * - Platform quick switcher
- * - User profile dropdown
- * - Real-time status indicator
+ * Sidebar Component - VERSION CORRIGÉE
+ * FIXED: Ajout de position fixed pour que le sidebar reste à gauche
  */
 
 import React, { useState } from 'react';
@@ -49,7 +43,7 @@ import {
 import { useTheme } from '@/contexts/ThemeContext';
 import { useAuth } from '@/hooks/useAuth';
 import { useGlobalStats } from '@/hooks/useGlobalStats';
-import { SidebarMenu } from './SidebarMenu';
+import SidebarMenu from './SidebarMenu';
 import { PLATFORMS, Platform } from '@/types/stats';
 
 // ============================================================================
@@ -98,32 +92,51 @@ function PlatformSelector({ currentPlatform, onPlatformChange, isCollapsed }: Pl
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        {isCollapsed ? (
-          <Tooltip delayDuration={0}>
-            <TooltipTrigger asChild>{trigger}</TooltipTrigger>
-            <TooltipContent side="right">{currentLabel}</TooltipContent>
-          </Tooltip>
-        ) : (
-          trigger
-        )}
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="start" className="w-56">
-        <DropdownMenuLabel>Plateforme</DropdownMenuLabel>
+      {isCollapsed ? (
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <DropdownMenuTrigger asChild>
+              {trigger}
+            </DropdownMenuTrigger>
+          </TooltipTrigger>
+          <TooltipContent side="right">
+            <p>{currentLabel}</p>
+          </TooltipContent>
+        </Tooltip>
+      ) : (
+        <DropdownMenuTrigger asChild>
+          {trigger}
+        </DropdownMenuTrigger>
+      )}
+
+      <DropdownMenuContent side="right" align="start" className="w-64">
+        <DropdownMenuLabel>Sélectionner une plateforme</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuRadioGroup value={currentPlatform} onValueChange={(v) => onPlatformChange(v as Platform | 'all')}>
-          <DropdownMenuRadioItem value="all">
-            <span className="mr-2">🌐</span>
+        
+        <DropdownMenuItem
+          onClick={() => onPlatformChange('all')}
+          className="gap-2"
+        >
+          {currentPlatform === 'all' && <Check className="h-4 w-4" />}
+          <span className={currentPlatform !== 'all' ? 'ml-6' : ''}>
             Toutes les plateformes
-          </DropdownMenuRadioItem>
-          <DropdownMenuSeparator />
-          {platforms.map((platform) => (
-            <DropdownMenuRadioItem key={platform.id} value={platform.id}>
-              <span className="mr-2">{platform.icon}</span>
+          </span>
+        </DropdownMenuItem>
+        
+        <DropdownMenuSeparator />
+        
+        {platforms.map((platform) => (
+          <DropdownMenuItem
+            key={platform.id}
+            onClick={() => onPlatformChange(platform.id)}
+            className="gap-2"
+          >
+            {currentPlatform === platform.id && <Check className="h-4 w-4" />}
+            <span className={currentPlatform !== platform.id ? 'ml-6' : ''}>
               {platform.name}
-            </DropdownMenuRadioItem>
-          ))}
-        </DropdownMenuRadioGroup>
+            </span>
+          </DropdownMenuItem>
+        ))}
       </DropdownMenuContent>
     </DropdownMenu>
   );
@@ -133,94 +146,108 @@ function PlatformSelector({ currentPlatform, onPlatformChange, isCollapsed }: Pl
 // Status Indicator
 // ============================================================================
 
-function StatusIndicator({ isCollapsed }: { isCollapsed?: boolean }) {
-  const { isLive, totalActive, hasCriticalAlerts } = useGlobalStats();
+interface StatusIndicatorProps {
+  isCollapsed?: boolean;
+}
 
-  if (!isLive && !hasCriticalAlerts) return null;
+function StatusIndicator({ isCollapsed }: StatusIndicatorProps) {
+  const { stats, isLoading } = useGlobalStats();
+
+  if (isLoading || !stats) {
+    return null;
+  }
+
+  const activeGenerations = stats.activeGenerations || 0;
+  const queuedItems = stats.queuedItems || 0;
+
+  if (activeGenerations === 0 && queuedItems === 0) {
+    return null;
+  }
 
   const content = (
-    <div
-      className={cn(
-        'flex items-center gap-2 px-3 py-2 rounded-md text-sm',
-        hasCriticalAlerts
-          ? 'bg-red-500/10 text-red-600 dark:text-red-400'
-          : 'bg-green-500/10 text-green-600 dark:text-green-400'
-      )}
-    >
-      <span className="relative flex h-2 w-2">
-        <span
-          className={cn(
-            'animate-ping absolute inline-flex h-full w-full rounded-full opacity-75',
-            hasCriticalAlerts ? 'bg-red-400' : 'bg-green-400'
-          )}
-        />
-        <span
-          className={cn(
-            'relative inline-flex rounded-full h-2 w-2',
-            hasCriticalAlerts ? 'bg-red-500' : 'bg-green-500'
-          )}
-        />
-      </span>
+    <div className="flex items-center gap-2 px-3 py-2 bg-slate-800 rounded-lg">
+      <div className="relative flex h-2 w-2">
+        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
+        <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500" />
+      </div>
       {!isCollapsed && (
-        <span className="font-medium">
-          {hasCriticalAlerts ? 'Alertes critiques' : `${totalActive} en cours`}
-        </span>
+        <div className="flex-1 min-w-0">
+          <p className="text-xs text-slate-300 truncate">
+            {activeGenerations > 0 && `${activeGenerations} en cours`}
+            {activeGenerations > 0 && queuedItems > 0 && ' • '}
+            {queuedItems > 0 && `${queuedItems} en attente`}
+          </p>
+        </div>
       )}
     </div>
   );
 
   if (isCollapsed) {
     return (
-      <Tooltip delayDuration={0}>
+      <Tooltip>
         <TooltipTrigger asChild>
-          <div className="flex justify-center px-3">{content}</div>
+          <div className="px-2">
+            {content}
+          </div>
         </TooltipTrigger>
         <TooltipContent side="right">
-          {hasCriticalAlerts ? 'Alertes critiques' : `${totalActive} tâches en cours`}
+          <p>{activeGenerations} génération(s) en cours</p>
+          <p>{queuedItems} élément(s) en attente</p>
         </TooltipContent>
       </Tooltip>
     );
   }
 
-  return <div className="px-3">{content}</div>;
+  return <div className="px-2">{content}</div>;
 }
 
 // ============================================================================
 // User Profile Menu
 // ============================================================================
 
-function UserProfileMenu({ isCollapsed }: { isCollapsed?: boolean }) {
-  const { user, logout } = useAuth();
-  const { theme, setTheme } = useTheme();
+interface UserProfileMenuProps {
+  isCollapsed?: boolean;
+}
+
+function UserProfileMenu({ isCollapsed }: UserProfileMenuProps) {
   const navigate = useNavigate();
+  const { theme, setTheme } = useTheme();
+  const { user, logout } = useAuth();
 
-  if (!user) return null;
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate('/login');
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+  };
 
-  const initials = user.name
-    .split(' ')
-    .map((n) => n[0])
+  const userInitials = user?.name
+    ?.split(' ')
+    .map(n => n[0])
     .join('')
     .toUpperCase()
-    .slice(0, 2);
+    .slice(0, 2) || 'U';
 
   const trigger = (
     <Button
       variant="ghost"
       className={cn(
-        'w-full h-auto py-2 px-2',
-        isCollapsed ? 'justify-center' : 'justify-start gap-3'
+        'w-full justify-start gap-3 h-12',
+        isCollapsed && 'justify-center px-0'
       )}
     >
-      <Avatar className="h-8 w-8 shrink-0">
-        <AvatarImage src={user.avatar} alt={user.name} />
-        <AvatarFallback className="bg-primary/10 text-primary text-xs font-semibold">
-          {initials}
+      <Avatar className="h-8 w-8">
+        <AvatarImage src={user?.avatar} alt={user?.name} />
+        <AvatarFallback className="bg-primary-600 text-white text-xs">
+          {userInitials}
         </AvatarFallback>
       </Avatar>
       {!isCollapsed && (
-        <div className="flex flex-col items-start min-w-0">
-          <span className="text-sm font-medium truncate max-w-[140px]">{user.name}</span>
-          <span className="text-xs text-muted-foreground truncate max-w-[140px]">{user.email}</span>
+        <div className="flex-1 text-left min-w-0">
+          <p className="text-sm font-medium truncate text-white">{user?.name}</p>
+          <p className="text-xs text-slate-400 truncate">{user?.email}</p>
         </div>
       )}
     </Button>
@@ -228,48 +255,48 @@ function UserProfileMenu({ isCollapsed }: { isCollapsed?: boolean }) {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        {isCollapsed ? (
-          <Tooltip delayDuration={0}>
-            <TooltipTrigger asChild>{trigger}</TooltipTrigger>
-            <TooltipContent side="right">
-              <div>
-                <div className="font-medium">{user.name}</div>
-                <div className="text-xs text-muted-foreground">{user.email}</div>
-              </div>
-            </TooltipContent>
-          </Tooltip>
-        ) : (
-          trigger
-        )}
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-56">
+      {isCollapsed ? (
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <DropdownMenuTrigger asChild>
+              {trigger}
+            </DropdownMenuTrigger>
+          </TooltipTrigger>
+          <TooltipContent side="right">
+            <p>{user?.name}</p>
+          </TooltipContent>
+        </Tooltip>
+      ) : (
+        <DropdownMenuTrigger asChild>
+          {trigger}
+        </DropdownMenuTrigger>
+      )}
+
+      <DropdownMenuContent side="right" align="end" className="w-56">
         <DropdownMenuLabel>Mon compte</DropdownMenuLabel>
         <DropdownMenuSeparator />
         
-        <DropdownMenuItem onClick={() => navigate('/settings/profile')}>
+        <DropdownMenuItem onClick={() => navigate('/settings')}>
           <User className="mr-2 h-4 w-4" />
-          Profil
+          <span>Profil</span>
         </DropdownMenuItem>
         
         <DropdownMenuItem onClick={() => navigate('/settings')}>
           <Settings className="mr-2 h-4 w-4" />
-          Paramètres
+          <span>Paramètres</span>
         </DropdownMenuItem>
-        
+
+        <DropdownMenuSeparator />
+
         <DropdownMenuSub>
           <DropdownMenuSubTrigger>
-            {theme === 'dark' ? (
-              <Moon className="mr-2 h-4 w-4" />
-            ) : theme === 'light' ? (
-              <Sun className="mr-2 h-4 w-4" />
-            ) : (
-              <Monitor className="mr-2 h-4 w-4" />
-            )}
-            Thème
+            {theme === 'light' && <Sun className="mr-2 h-4 w-4" />}
+            {theme === 'dark' && <Moon className="mr-2 h-4 w-4" />}
+            {theme === 'system' && <Monitor className="mr-2 h-4 w-4" />}
+            <span>Thème</span>
           </DropdownMenuSubTrigger>
           <DropdownMenuSubContent>
-            <DropdownMenuRadioGroup value={theme} onValueChange={(v) => setTheme(v as 'light' | 'dark' | 'system')}>
+            <DropdownMenuRadioGroup value={theme} onValueChange={(value) => setTheme(value as 'light' | 'dark' | 'system')}>
               <DropdownMenuRadioItem value="light">
                 <Sun className="mr-2 h-4 w-4" />
                 Clair
@@ -285,17 +312,17 @@ function UserProfileMenu({ isCollapsed }: { isCollapsed?: boolean }) {
             </DropdownMenuRadioGroup>
           </DropdownMenuSubContent>
         </DropdownMenuSub>
-        
-        <DropdownMenuItem onClick={() => window.open('/docs', '_blank')}>
+
+        <DropdownMenuItem onClick={() => window.open('https://docs.example.com', '_blank')}>
           <HelpCircle className="mr-2 h-4 w-4" />
-          Documentation
+          <span>Documentation</span>
         </DropdownMenuItem>
-        
+
         <DropdownMenuSeparator />
-        
-        <DropdownMenuItem onClick={logout} className="text-red-600 dark:text-red-400">
+
+        <DropdownMenuItem onClick={handleLogout} className="text-red-600 dark:text-red-400">
           <LogOut className="mr-2 h-4 w-4" />
-          Déconnexion
+          <span>Déconnexion</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
@@ -319,7 +346,8 @@ export function Sidebar({ defaultCollapsed = false, onCollapsedChange }: Sidebar
     <TooltipProvider delayDuration={0}>
       <aside
         className={cn(
-          'flex flex-col h-screen bg-slate-900 dark:bg-slate-950 border-r border-slate-800 transition-all duration-300',
+          // ✅ CORRECTION: Ajout de fixed left-0 top-0 z-40
+          'fixed left-0 top-0 z-40 flex flex-col h-screen bg-slate-900 dark:bg-slate-950 border-r border-slate-800 transition-all duration-300',
           isCollapsed ? 'w-16' : 'w-64'
         )}
       >

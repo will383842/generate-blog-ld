@@ -64,11 +64,27 @@ class Country extends Model
     /**
      * Attributs à ajouter lors de la sérialisation
      */
-    protected $appends = ['name'];
+    protected $appends = ['name', 'iso2', 'flag'];
 
     // =========================================================================
     // ACCESSEURS
     // =========================================================================
+
+    /**
+     * Accesseur pour 'iso2' (alias de 'code' pour rétro-compatibilité)
+     */
+    public function getIso2Attribute(): ?string
+    {
+        return $this->attributes['code'] ?? null;
+    }
+
+    /**
+     * Accesseur pour 'flag' (alias de 'flag_svg')
+     */
+    public function getFlagAttribute(): ?string
+    {
+        return $this->attributes['flag_svg'] ?? null;
+    }
 
     /**
      * Accesseur pour 'name'

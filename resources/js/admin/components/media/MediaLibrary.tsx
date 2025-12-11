@@ -358,7 +358,7 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
             <h2 className="text-lg font-semibold">{t('media:library.title')}</h2>
             {stats && (
               <Badge variant="secondary">
-                {stats.total.toLocaleString()} {t('media:library.items')}
+                {(stats.total ?? 0).toLocaleString()} {t('media:library.items')}
               </Badge>
             )}
           </div>

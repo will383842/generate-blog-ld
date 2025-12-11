@@ -467,7 +467,7 @@ class IntelligentCoverageController extends Controller
                                 $tasks[] = [
                                     'country_id' => $countryId,
                                     'country_name' => $country->name,
-                                    'country_code' => $country->iso2,
+                                    'country_code' => $country->code,
                                     'language' => $lang,
                                     'content_type' => $contentType,
                                     'priority' => $score['priority_score'],
@@ -480,7 +480,7 @@ class IntelligentCoverageController extends Controller
                             $tasks[] = [
                                 'country_id' => $countryId,
                                 'country_name' => $country->name,
-                                'country_code' => $country->iso2,
+                                'country_code' => $country->code,
                                 'language' => $lang,
                                 'content_type' => $contentType,
                                 'priority' => $score['priority_score'],
@@ -494,7 +494,7 @@ class IntelligentCoverageController extends Controller
                                 $tasks[] = [
                                     'country_id' => $countryId,
                                     'country_name' => $country->name,
-                                    'country_code' => $country->iso2,
+                                    'country_code' => $country->code,
                                     'language' => $lang,
                                     'content_type' => $contentType,
                                     'target_name' => 'Williams Jullin',

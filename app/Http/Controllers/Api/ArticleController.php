@@ -380,7 +380,7 @@ class ArticleController extends Controller
                     'landing' => (clone $query)->where('type', 'landing')->count(),
                     'comparative' => (clone $query)->where('type', 'comparative')->count(),
                 ],
-                'avg_seo_score' => (clone $query)->avg('seo_score') ?? 0,
+                'avg_seo_score' => (clone $query)->avg('quality_score') ?? 0,
                 'avg_word_count' => (clone $query)->avg('word_count') ?? 0,
                 'this_week' => (clone $query)->where('created_at', '>=', now()->startOfWeek())->count(),
                 'this_month' => (clone $query)->where('created_at', '>=', now()->startOfMonth())->count(),

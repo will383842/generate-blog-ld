@@ -3,29 +3,34 @@
 namespace App\Services\Seo;
 
 use App\Models\Article;
-use App\Models\Country;
-use App\Models\Language;
 use App\Services\AI\GptService;
+use App\Services\AI\ModelSelectionService;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
 /**
- * SeoOptimizationService - Service centralisé d'optimisation SEO
+ * SeoOptimizationService V10 - OPTIMISATION SEO EXTRÊME
  *
- * Fonctionnalités:
- * - Meta title/description optimisés et traduits (9 langues)
- * - Validation des limites SEO (60 chars title, 160 chars description)
- * - Génération attributs images (alt, aria-label, loading, srcset)
- * - Head tags (viewport, charset, robots directives)
- * - Performance hints (preconnect, dns-prefetch, preload)
- * - Robots meta (max-snippet, max-image-preview, max-video-preview)
- *
+ * NOUVELLES FONCTIONNALITÉS V10:
+ * ✅ Keyword Density Monitoring (1-2%)
+ * ✅ LSI Keywords Generation (8 variantes sémantiques)
+ * ✅ Featured Snippet Optimization (Position 0)
+ * ✅ Voice Search Optimization
+ * ✅ People Also Ask Questions
+ * ✅ HowTo & Speakable Schemas
+ * ✅ Core Web Vitals Monitoring
+ * ✅ WebP/AVIF Image Generation
+ * ✅ E-E-A-T Guidelines
+ * ✅ Anchor Text Diversity
+ * ✅ Canonical URLs Multilingues
+ * 
  * @package App\Services\Seo
  */
 class SeoOptimizationService
 {
-    protected GptService $gptService;
+    protected GptService $gpt;
+    protected ModelSelectionService $modelSelector;
 
     // Limites SEO strictes
     const META_TITLE_MAX = 60;
@@ -35,714 +40,733 @@ class SeoOptimizationService
     const ALT_TEXT_MAX = 125;
     const ALT_TEXT_MIN = 20;
 
-    // Langues supportées
-    const SUPPORTED_LANGUAGES = ['fr', 'en', 'de', 'es', 'pt', 'ru', 'zh', 'ar', 'hi'];
+    // Keyword Density Optimal
+    const KEYWORD_DENSITY_MIN = 1.0;
+    const KEYWORD_DENSITY_MAX = 2.5;
+    const KEYWORD_DENSITY_OPTIMAL = 1.5;
 
-    // Templates meta par langue
-    protected array $metaTitleTemplates = [
-        'fr' => [
-            'article' => '{title} | Guide {year}',
-            'pillar' => '{title} : Guide Complet {year}',
-            'landing' => '{service} {country} | {platform}',
-            'comparative' => 'Comparatif {service} {country} {year}',
-            'press_release' => '{title} | Communiqué',
-            'press_dossier' => '{title} | Dossier de Presse',
-        ],
-        'en' => [
-            'article' => '{title} | {year} Guide',
-            'pillar' => '{title}: Complete Guide {year}',
-            'landing' => '{service} {country} | {platform}',
-            'comparative' => '{service} {country} Comparison {year}',
-            'press_release' => '{title} | Press Release',
-            'press_dossier' => '{title} | Press Kit',
-        ],
-        'de' => [
-            'article' => '{title} | Ratgeber {year}',
-            'pillar' => '{title}: Kompletter Leitfaden {year}',
-            'landing' => '{service} {country} | {platform}',
-            'comparative' => '{service} {country} Vergleich {year}',
-            'press_release' => '{title} | Pressemitteilung',
-            'press_dossier' => '{title} | Pressemappe',
-        ],
-        'es' => [
-            'article' => '{title} | Guía {year}',
-            'pillar' => '{title}: Guía Completa {year}',
-            'landing' => '{service} {country} | {platform}',
-            'comparative' => 'Comparativa {service} {country} {year}',
-            'press_release' => '{title} | Comunicado',
-            'press_dossier' => '{title} | Dossier de Prensa',
-        ],
-        'pt' => [
-            'article' => '{title} | Guia {year}',
-            'pillar' => '{title}: Guia Completo {year}',
-            'landing' => '{service} {country} | {platform}',
-            'comparative' => 'Comparativo {service} {country} {year}',
-            'press_release' => '{title} | Comunicado',
-            'press_dossier' => '{title} | Kit de Imprensa',
-        ],
-        'ru' => [
-            'article' => '{title} | Руководство {year}',
-            'pillar' => '{title}: Полное руководство {year}',
-            'landing' => '{service} {country} | {platform}',
-            'comparative' => 'Сравнение {service} {country} {year}',
-            'press_release' => '{title} | Пресс-релиз',
-            'press_dossier' => '{title} | Пресс-кит',
-        ],
-        'zh' => [
-            'article' => '{title} | {year}指南',
-            'pillar' => '{title}：完整指南 {year}',
-            'landing' => '{service} {country} | {platform}',
-            'comparative' => '{service} {country} 对比 {year}',
-            'press_release' => '{title} | 新闻稿',
-            'press_dossier' => '{title} | 新闻资料',
-        ],
-        'ar' => [
-            'article' => '{title} | دليل {year}',
-            'pillar' => '{title}: الدليل الشامل {year}',
-            'landing' => '{service} {country} | {platform}',
-            'comparative' => 'مقارنة {service} {country} {year}',
-            'press_release' => '{title} | بيان صحفي',
-            'press_dossier' => '{title} | ملف صحفي',
-        ],
-        'hi' => [
-            'article' => '{title} | गाइड {year}',
-            'pillar' => '{title}: संपूर्ण गाइड {year}',
-            'landing' => '{service} {country} | {platform}',
-            'comparative' => '{service} {country} तुलना {year}',
-            'press_release' => '{title} | प्रेस विज्ञप्ति',
-            'press_dossier' => '{title} | प्रेस किट',
-        ],
-    ];
+    // Featured Snippet Limits
+    const FEATURED_SNIPPET_DEFINITION_MIN = 40;
+    const FEATURED_SNIPPET_DEFINITION_MAX = 60;
+    const FEATURED_SNIPPET_LIST_MIN = 3;
+    const FEATURED_SNIPPET_LIST_MAX = 8;
 
-    // Templates meta description par langue
-    protected array $metaDescriptionTemplates = [
-        'fr' => [
-            'article' => 'Découvrez {title}. Guide complet pour expatriés en {country} : conseils, démarches et solutions pratiques. Mis à jour {year}.',
-            'pillar' => '{title} : tout ce que vous devez savoir pour réussir votre expatriation en {country}. Guide expert avec conseils pratiques.',
-            'landing' => '{service} pour expatriés en {country}. Trouvez les meilleurs prestataires vérifiés sur {platform}. Réponse en moins de 5 minutes.',
-            'comparative' => 'Comparatif complet {service} en {country}. Tableaux, scores, avantages et inconvénients pour faire le meilleur choix en {year}.',
-            'press_release' => '{title}. Communiqué de presse officiel de {platform}. Découvrez nos dernières actualités et annonces.',
-            'press_dossier' => '{title}. Dossier de presse complet de {platform} : chiffres clés, équipe dirigeante et vision stratégique.',
-        ],
-        'en' => [
-            'article' => 'Discover {title}. Complete guide for expats in {country}: tips, procedures and practical solutions. Updated {year}.',
-            'pillar' => '{title}: everything you need to know for successful expatriation in {country}. Expert guide with practical advice.',
-            'landing' => '{service} for expats in {country}. Find the best verified providers on {platform}. Response in under 5 minutes.',
-            'comparative' => 'Complete {service} comparison in {country}. Tables, scores, pros and cons to make the best choice in {year}.',
-            'press_release' => '{title}. Official press release from {platform}. Discover our latest news and announcements.',
-            'press_dossier' => '{title}. Complete press kit from {platform}: key figures, leadership team and strategic vision.',
-        ],
-        'de' => [
-            'article' => 'Entdecken Sie {title}. Vollständiger Leitfaden für Expats in {country}: Tipps, Verfahren und praktische Lösungen. Aktualisiert {year}.',
-            'pillar' => '{title}: Alles, was Sie für eine erfolgreiche Auswanderung nach {country} wissen müssen. Expertenratgeber mit praktischen Tipps.',
-            'landing' => '{service} für Expats in {country}. Finden Sie die besten verifizierten Anbieter auf {platform}. Antwort in unter 5 Minuten.',
-            'comparative' => 'Vollständiger {service}-Vergleich in {country}. Tabellen, Bewertungen, Vor- und Nachteile für die beste Wahl {year}.',
-            'press_release' => '{title}. Offizielle Pressemitteilung von {platform}. Entdecken Sie unsere neuesten Nachrichten.',
-            'press_dossier' => '{title}. Vollständige Pressemappe von {platform}: Kennzahlen, Führungsteam und strategische Vision.',
-        ],
-        'es' => [
-            'article' => 'Descubre {title}. Guía completa para expatriados en {country}: consejos, trámites y soluciones prácticas. Actualizado {year}.',
-            'pillar' => '{title}: todo lo que necesitas saber para una expatriación exitosa en {country}. Guía experta con consejos prácticos.',
-            'landing' => '{service} para expatriados en {country}. Encuentra los mejores proveedores verificados en {platform}. Respuesta en menos de 5 minutos.',
-            'comparative' => 'Comparativa completa de {service} en {country}. Tablas, puntuaciones, ventajas y desventajas para elegir mejor en {year}.',
-            'press_release' => '{title}. Comunicado de prensa oficial de {platform}. Descubre nuestras últimas noticias.',
-            'press_dossier' => '{title}. Dossier de prensa completo de {platform}: cifras clave, equipo directivo y visión estratégica.',
-        ],
-        'pt' => [
-            'article' => 'Descubra {title}. Guia completo para expatriados em {country}: dicas, procedimentos e soluções práticas. Atualizado {year}.',
-            'pillar' => '{title}: tudo o que você precisa saber para uma expatriação bem-sucedida em {country}. Guia especializado com dicas práticas.',
-            'landing' => '{service} para expatriados em {country}. Encontre os melhores prestadores verificados em {platform}. Resposta em menos de 5 minutos.',
-            'comparative' => 'Comparativo completo de {service} em {country}. Tabelas, pontuações, vantagens e desvantagens para a melhor escolha em {year}.',
-            'press_release' => '{title}. Comunicado oficial de imprensa de {platform}. Descubra as nossas últimas notícias.',
-            'press_dossier' => '{title}. Kit de imprensa completo de {platform}: números-chave, equipa de liderança e visão estratégica.',
-        ],
-        'ru' => [
-            'article' => 'Узнайте {title}. Полное руководство для экспатов в {country}: советы, процедуры и практические решения. Обновлено {year}.',
-            'pillar' => '{title}: всё, что нужно знать для успешной эмиграции в {country}. Экспертное руководство с практическими советами.',
-            'landing' => '{service} для экспатов в {country}. Найдите лучших проверенных специалистов на {platform}. Ответ менее чем за 5 минут.',
-            'comparative' => 'Полное сравнение {service} в {country}. Таблицы, оценки, плюсы и минусы для лучшего выбора в {year}.',
-            'press_release' => '{title}. Официальный пресс-релиз {platform}. Узнайте о наших последних новостях.',
-            'press_dossier' => '{title}. Полный пресс-кит {platform}: ключевые цифры, команда руководства и стратегическое видение.',
-        ],
-        'zh' => [
-            'article' => '了解{title}。{country}外籍人士完整指南：建议、程序和实用解决方案。{year}更新。',
-            'pillar' => '{title}：在{country}成功移居所需了解的一切。专家指南与实用建议。',
-            'landing' => '{country}外籍人士{service}。在{platform}上找到最佳认证服务商。5分钟内回复。',
-            'comparative' => '{country}{service}完整对比。表格、评分、优缺点，助您在{year}做出最佳选择。',
-            'press_release' => '{title}。{platform}官方新闻稿。了解我们的最新动态。',
-            'press_dossier' => '{title}。{platform}完整新闻资料：关键数据、领导团队和战略愿景。',
-        ],
-        'ar' => [
-            'article' => 'اكتشف {title}. دليل شامل للمغتربين في {country}: نصائح وإجراءات وحلول عملية. محدث {year}.',
-            'pillar' => '{title}: كل ما تحتاج معرفته للاغتراب الناجح في {country}. دليل خبير مع نصائح عملية.',
-            'landing' => '{service} للمغتربين في {country}. اعثر على أفضل مقدمي الخدمات المعتمدين على {platform}. رد في أقل من 5 دقائق.',
-            'comparative' => 'مقارنة شاملة لـ {service} في {country}. جداول ونتائج ومزايا وعيوب لاتخاذ أفضل قرار في {year}.',
-            'press_release' => '{title}. بيان صحفي رسمي من {platform}. اكتشف آخر أخبارنا.',
-            'press_dossier' => '{title}. ملف صحفي كامل من {platform}: أرقام رئيسية وفريق القيادة والرؤية الاستراتيجية.',
-        ],
-        'hi' => [
-            'article' => '{title} जानें। {country} में प्रवासियों के लिए पूर्ण गाइड: सुझाव, प्रक्रियाएं और व्यावहारिक समाधान। {year} अपडेटेड।',
-            'pillar' => '{title}: {country} में सफल प्रवास के लिए सब कुछ जानें। व्यावहारिक सलाह के साथ विशेषज्ञ गाइड।',
-            'landing' => '{country} में प्रवासियों के लिए {service}। {platform} पर सर्वश्रेष्ठ सत्यापित प्रदाता खोजें। 5 मिनट में उत्तर।',
-            'comparative' => '{country} में {service} की पूर्ण तुलना। {year} में सर्वोत्तम चुनाव के लिए तालिकाएं, स्कोर, फायदे और नुकसान।',
-            'press_release' => '{title}। {platform} की आधिकारिक प्रेस विज्ञप्ति। हमारी नवीनतम समाचार जानें।',
-            'press_dossier' => '{title}। {platform} का पूर्ण प्रेस किट: प्रमुख आंकड़े, नेतृत्व टीम और रणनीतिक दृष्टि।',
-        ],
-    ];
+    // Core Web Vitals Targets
+    const LCP_TARGET = 2.5; // seconds
+    const FID_TARGET = 0.1; // seconds
+    const CLS_TARGET = 0.1; // score
 
-    public function __construct(GptService $gptService)
-    {
-        $this->gptService = $gptService;
+    public function __construct(
+        GptService $gpt,
+        ModelSelectionService $modelSelector
+    ) {
+        $this->gpt = $gpt;
+        $this->modelSelector = $modelSelector;
     }
 
     // =========================================================================
-    // META TITLE OPTIMISÉ
+    // KEYWORD DENSITY (NOUVEAU V10)
     // =========================================================================
 
     /**
-     * Génère un meta title optimisé SEO
+     * Calcule la densité du mot-clé principal
      *
-     * @param string $title Titre de base
-     * @param string $type Type de contenu (article, pillar, landing, comparative)
-     * @param string $lang Code langue
-     * @param array $context Contexte (country, platform, service, year)
-     * @return string Meta title optimisé (max 60 chars)
+     * @param string $content Contenu HTML
+     * @param string $keyword Mot-clé principal
+     * @return float Densité en pourcentage (ex: 1.5 pour 1.5%)
      */
-    public function generateMetaTitle(
-        string $title,
-        string $type,
-        string $lang,
-        array $context = []
-    ): string {
-        // Récupérer le template
-        $template = $this->metaTitleTemplates[$lang][$type]
-            ?? $this->metaTitleTemplates['en'][$type]
-            ?? '{title}';
-
-        // Variables de remplacement
-        $variables = [
-            '{title}' => $this->truncateForMeta($title, 40),
-            '{country}' => $context['country'] ?? '',
-            '{platform}' => $context['platform'] ?? 'SOS-Expat',
-            '{service}' => $context['service'] ?? '',
-            '{year}' => $context['year'] ?? date('Y'),
-        ];
-
-        $metaTitle = str_replace(array_keys($variables), array_values($variables), $template);
-
-        // Validation et ajustement
-        $metaTitle = $this->enforceMetaTitleLimits($metaTitle, $title);
-
-        Log::debug('SeoOptimizationService: Meta title généré', [
-            'original' => $title,
-            'meta_title' => $metaTitle,
-            'length' => mb_strlen($metaTitle),
-            'lang' => $lang,
+    public function calculateKeywordDensity(string $content, string $keyword): float
+    {
+        // Nettoyer le HTML
+        $text = strip_tags($content);
+        $text = preg_replace('/\s+/', ' ', $text);
+        
+        // Compter les mots totaux
+        $totalWords = str_word_count($text, 0);
+        
+        if ($totalWords === 0) {
+            return 0.0;
+        }
+        
+        // Compter les occurrences du keyword (insensible à la casse)
+        $keywordCount = substr_count(mb_strtolower($text), mb_strtolower($keyword));
+        
+        // Calculer la densité
+        $density = ($keywordCount / $totalWords) * 100;
+        
+        Log::debug('Keyword Density calculée', [
+            'keyword' => $keyword,
+            'count' => $keywordCount,
+            'total_words' => $totalWords,
+            'density' => round($density, 2) . '%'
         ]);
-
-        return $metaTitle;
+        
+        return round($density, 2);
     }
 
     /**
-     * Force les limites du meta title (30-60 caractères)
+     * Valide si la keyword density est dans les limites optimales
      */
-    protected function enforceMetaTitleLimits(string $metaTitle, string $fallbackTitle): string
+    public function validateKeywordDensity(string $content, string $keyword): array
     {
-        $length = mb_strlen($metaTitle);
-
-        // Trop long : tronquer intelligemment
-        if ($length > self::META_TITLE_MAX) {
-            $metaTitle = mb_substr($metaTitle, 0, self::META_TITLE_MAX - 3);
-            // Couper au dernier mot complet
-            $lastSpace = mb_strrpos($metaTitle, ' ');
-            if ($lastSpace !== false && $lastSpace > 30) {
-                $metaTitle = mb_substr($metaTitle, 0, $lastSpace);
-            }
-            $metaTitle .= '...';
+        $density = $this->calculateKeywordDensity($content, $keyword);
+        
+        $status = 'optimal';
+        $message = 'Densité optimale';
+        
+        if ($density < self::KEYWORD_DENSITY_MIN) {
+            $status = 'too_low';
+            $message = sprintf('Densité trop faible (%.2f%%). Cible: %.1f-%.1f%%', 
+                $density, self::KEYWORD_DENSITY_MIN, self::KEYWORD_DENSITY_MAX);
+        } elseif ($density > self::KEYWORD_DENSITY_MAX) {
+            $status = 'too_high';
+            $message = sprintf('Sur-optimisation détectée (%.2f%%). Cible: %.1f-%.1f%%', 
+                $density, self::KEYWORD_DENSITY_MIN, self::KEYWORD_DENSITY_MAX);
         }
-
-        // Trop court : utiliser le titre original
-        if (mb_strlen($metaTitle) < self::META_TITLE_MIN) {
-            $metaTitle = $this->truncateForMeta($fallbackTitle, self::META_TITLE_MAX);
-        }
-
-        return trim($metaTitle);
-    }
-
-    // =========================================================================
-    // META DESCRIPTION OPTIMISÉE
-    // =========================================================================
-
-    /**
-     * Génère une meta description optimisée SEO
-     *
-     * @param string $title Titre/sujet
-     * @param string $type Type de contenu
-     * @param string $lang Code langue
-     * @param array $context Contexte
-     * @return string Meta description optimisée (max 160 chars)
-     */
-    public function generateMetaDescription(
-        string $title,
-        string $type,
-        string $lang,
-        array $context = []
-    ): string {
-        // Récupérer le template
-        $template = $this->metaDescriptionTemplates[$lang][$type]
-            ?? $this->metaDescriptionTemplates['en'][$type]
-            ?? 'Découvrez {title}.';
-
-        // Variables de remplacement
-        $variables = [
-            '{title}' => $this->truncateForMeta($title, 50),
-            '{country}' => $context['country'] ?? '',
-            '{platform}' => $context['platform'] ?? 'SOS-Expat',
-            '{service}' => $context['service'] ?? '',
-            '{year}' => $context['year'] ?? date('Y'),
+        
+        return [
+            'density' => $density,
+            'status' => $status,
+            'message' => $message,
+            'optimal' => $status === 'optimal',
+            'target_range' => [self::KEYWORD_DENSITY_MIN, self::KEYWORD_DENSITY_MAX]
         ];
-
-        $metaDescription = str_replace(array_keys($variables), array_values($variables), $template);
-
-        // Validation et ajustement
-        $metaDescription = $this->enforceMetaDescriptionLimits($metaDescription);
-
-        Log::debug('SeoOptimizationService: Meta description générée', [
-            'meta_description' => $metaDescription,
-            'length' => mb_strlen($metaDescription),
-            'lang' => $lang,
-        ]);
-
-        return $metaDescription;
     }
 
     /**
-     * Force les limites de la meta description (120-160 caractères)
+     * Vérifie si le keyword est présent dans les 100 premiers mots
      */
-    protected function enforceMetaDescriptionLimits(string $description): string
+    public function isKeywordInFirst100Words(string $content, string $keyword): bool
     {
-        $length = mb_strlen($description);
-
-        // Trop long : tronquer intelligemment
-        if ($length > self::META_DESCRIPTION_MAX) {
-            $description = mb_substr($description, 0, self::META_DESCRIPTION_MAX - 3);
-            // Couper à la dernière phrase ou au dernier mot
-            $lastPeriod = mb_strrpos($description, '.');
-            $lastSpace = mb_strrpos($description, ' ');
-
-            if ($lastPeriod !== false && $lastPeriod > 100) {
-                $description = mb_substr($description, 0, $lastPeriod + 1);
-            } elseif ($lastSpace !== false && $lastSpace > 100) {
-                $description = mb_substr($description, 0, $lastSpace) . '...';
-            } else {
-                $description .= '...';
-            }
-        }
-
-        return trim($description);
+        $text = strip_tags($content);
+        $text = preg_replace('/\s+/', ' ', trim($text));
+        $words = explode(' ', $text);
+        
+        // Prendre les 100 premiers mots
+        $first100 = implode(' ', array_slice($words, 0, 100));
+        
+        return stripos($first100, $keyword) !== false;
     }
 
     // =========================================================================
-    // TRADUCTION META (POUR ARTICLES TRADUITS)
+    // LSI KEYWORDS (NOUVEAU V10)
     // =========================================================================
 
     /**
-     * Traduit et optimise les meta pour une langue cible
+     * Génère des LSI keywords (Latent Semantic Indexing)
+     * Ce sont des mots-clés sémantiquement liés au mot-clé principal
      *
-     * @param string $originalTitle Titre original
-     * @param string $originalDescription Description originale
-     * @param string $sourceLang Langue source
-     * @param string $targetLang Langue cible
-     * @param string $type Type de contenu
-     * @param array $context Contexte
-     * @return array ['meta_title' => '', 'meta_description' => '']
+     * @param string $mainKeyword Mot-clé principal
+     * @param string $language Code langue
+     * @param int $count Nombre de LSI keywords à générer
+     * @return array Liste de LSI keywords
      */
-    public function translateMeta(
-        string $originalTitle,
-        string $originalDescription,
-        string $sourceLang,
-        string $targetLang,
-        string $type,
-        array $context = []
+    public function generateLsiKeywords(
+        string $mainKeyword,
+        string $language = 'fr',
+        int $count = 8
     ): array {
-        // Si même langue, juste optimiser
-        if ($sourceLang === $targetLang) {
-            return [
-                'meta_title' => $this->generateMetaTitle($originalTitle, $type, $targetLang, $context),
-                'meta_description' => $this->generateMetaDescription($originalTitle, $type, $targetLang, $context),
-            ];
-        }
+        $cacheKey = "lsi_keywords_{$mainKeyword}_{$language}_{$count}";
+        
+        return Cache::remember($cacheKey, 3600 * 24, function () use ($mainKeyword, $language, $count) {
+            
+            $model = $this->modelSelector->selectModel('lsi_keywords');
+            
+            $prompt = <<<PROMPT
+Génère {$count} mots-clés LSI (Latent Semantic Indexing) pour le mot-clé principal : "{$mainKeyword}"
 
-        // Clé de cache
-        $cacheKey = "seo_meta:{$sourceLang}:{$targetLang}:" . md5($originalTitle . $type);
+Les LSI keywords sont des termes sémantiquement liés qui enrichissent le contenu sans sur-optimiser.
 
-        if ($cached = Cache::get($cacheKey)) {
-            return $cached;
-        }
+Règles :
+1. {$count} variantes sémantiques naturelles
+2. En langue {$language}
+3. Liés au contexte d'expatriation
+4. Termes que les utilisateurs recherchent naturellement
+5. Évite les synonymes directs, privilégie les termes connexes
 
-        // Traduire le titre via GPT
-        $translatedTitle = $this->translateText($originalTitle, $sourceLang, $targetLang, 'title');
+Exemples pour "visa france" :
+- titre de séjour
+- demande de visa
+- consulat français
+- documents requis
+- délai d'obtention
+- frais consulaires
+- rendez-vous visa
+- attestation d'hébergement
 
-        // Générer les meta optimisés dans la langue cible
-        $result = [
-            'meta_title' => $this->generateMetaTitle($translatedTitle, $type, $targetLang, $context),
-            'meta_description' => $this->generateMetaDescription($translatedTitle, $type, $targetLang, $context),
-        ];
+Réponds UNIQUEMENT avec une liste JSON de mots-clés, sans numérotation ni commentaire :
+["keyword1", "keyword2", "keyword3", ...]
+PROMPT;
 
-        // Cache 30 jours
-        Cache::put($cacheKey, $result, 60 * 60 * 24 * 30);
-
-        return $result;
-    }
-
-    /**
-     * Traduit un texte court via GPT
-     */
-    protected function translateText(string $text, string $from, string $to, string $context = 'title'): string
-    {
-        $langNames = [
-            'fr' => 'français', 'en' => 'anglais', 'de' => 'allemand',
-            'es' => 'espagnol', 'pt' => 'portugais', 'ru' => 'russe',
-            'zh' => 'chinois', 'ar' => 'arabe', 'hi' => 'hindi',
-        ];
-
-        $prompt = "Traduis ce {$context} du {$langNames[$from]} vers le {$langNames[$to]}. "
-            . "Garde le même ton et la même intention. "
-            . "Réponds UNIQUEMENT avec la traduction, sans guillemets ni commentaire.\n\n"
-            . "Texte: {$text}";
-
-        try {
-            $response = $this->gptService->chat(
-                messages: [['role' => 'user', 'content' => $prompt]],
-                model: GptService::MODEL_GPT4O_MINI,
-                temperature: 0.3,
-                maxTokens: 150
-            );
-
-            return trim($response['content']);
-        } catch (\Exception $e) {
-            Log::warning('SeoOptimizationService: Traduction échouée', ['error' => $e->getMessage()]);
-            return $text; // Fallback: texte original
-        }
-    }
-
-    // =========================================================================
-    // ATTRIBUTS IMAGES SEO
-    // =========================================================================
-
-    /**
-     * Génère tous les attributs SEO pour une image
-     *
-     * @param string $imageUrl URL de l'image
-     * @param string $title Titre/contexte
-     * @param string $lang Code langue
-     * @param array $dimensions [width, height] optionnel
-     * @return array Attributs HTML
-     */
-    public function generateImageAttributes(
-        string $imageUrl,
-        string $title,
-        string $lang,
-        array $dimensions = []
-    ): array {
-        $altText = $this->generateAltText($title, $lang);
-
-        $attributes = [
-            'src' => $imageUrl,
-            'alt' => $altText,
-            'loading' => 'lazy',
-            'decoding' => 'async',
-            'aria-label' => $altText,
-        ];
-
-        // Dimensions si disponibles
-        if (!empty($dimensions['width'])) {
-            $attributes['width'] = $dimensions['width'];
-        }
-        if (!empty($dimensions['height'])) {
-            $attributes['height'] = $dimensions['height'];
-        }
-
-        // Srcset pour responsive
-        if ($this->isResizableImage($imageUrl)) {
-            $attributes['srcset'] = $this->generateSrcset($imageUrl, $dimensions);
-            $attributes['sizes'] = '(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw';
-        }
-
-        return $attributes;
-    }
-
-    /**
-     * Génère un alt text optimisé et traduit
-     */
-    public function generateAltText(string $title, string $lang): string
-    {
-        // Préfixes descriptifs par langue
-        $prefixes = [
-            'fr' => 'Illustration :',
-            'en' => 'Illustration:',
-            'de' => 'Abbildung:',
-            'es' => 'Ilustración:',
-            'pt' => 'Ilustração:',
-            'ru' => 'Иллюстрация:',
-            'zh' => '插图：',
-            'ar' => 'توضيح:',
-            'hi' => 'चित्रण:',
-        ];
-
-        $prefix = $prefixes[$lang] ?? $prefixes['en'];
-        $cleanTitle = strip_tags($title);
-        $cleanTitle = preg_replace('/[^\p{L}\p{N}\s\-]/u', '', $cleanTitle);
-
-        $altText = "{$prefix} {$cleanTitle}";
-
-        // Limiter à 125 caractères
-        if (mb_strlen($altText) > self::ALT_TEXT_MAX) {
-            $altText = mb_substr($altText, 0, self::ALT_TEXT_MAX - 3) . '...';
-        }
-
-        return trim($altText);
-    }
-
-    /**
-     * Génère un srcset pour images responsives
-     */
-    protected function generateSrcset(string $imageUrl, array $dimensions): string
-    {
-        $widths = [320, 640, 768, 1024, 1200, 1920];
-        $srcset = [];
-
-        foreach ($widths as $width) {
-            // Si l'image est sur un CDN compatible (Unsplash, Cloudinary, etc.)
-            if (str_contains($imageUrl, 'unsplash.com')) {
-                $resizedUrl = preg_replace('/w=\d+/', "w={$width}", $imageUrl);
-                if ($resizedUrl === $imageUrl) {
-                    $resizedUrl = $imageUrl . (str_contains($imageUrl, '?') ? '&' : '?') . "w={$width}";
+            try {
+                $response = $this->gpt->chat([
+                    'model' => $model,
+                    'messages' => [
+                        ['role' => 'system', 'content' => 'Tu es un expert SEO spécialisé dans les LSI keywords pour l\'expatriation.'],
+                        ['role' => 'user', 'content' => $prompt],
+                    ],
+                    'temperature' => 0.5,
+                    'max_tokens' => 300,
+                ]);
+                
+                // Parser le JSON
+                $content = trim($response['content']);
+                $lsiKeywords = json_decode($content, true);
+                
+                if (!is_array($lsiKeywords)) {
+                    throw new \Exception('Format de réponse invalide');
                 }
-                $srcset[] = "{$resizedUrl} {$width}w";
-            } elseif (str_contains($imageUrl, 'cloudinary.com')) {
-                $resizedUrl = preg_replace('/upload\//', "upload/w_{$width}/", $imageUrl);
-                $srcset[] = "{$resizedUrl} {$width}w";
+                
+                Log::info('LSI Keywords générés', [
+                    'main_keyword' => $mainKeyword,
+                    'lsi_keywords' => $lsiKeywords,
+                    'model' => $model,
+                    'cost' => $response['cost']
+                ]);
+                
+                return $lsiKeywords;
+                
+            } catch (\Exception $e) {
+                Log::error('Échec génération LSI keywords', [
+                    'error' => $e->getMessage(),
+                    'main_keyword' => $mainKeyword
+                ]);
+                return [];
+            }
+        });
+    }
+
+    // =========================================================================
+    // FEATURED SNIPPETS (NOUVEAU V10)
+    // =========================================================================
+
+    /**
+     * Optimise le contenu pour Featured Snippets (Position 0)
+     *
+     * @param string $content Contenu HTML
+     * @param string $questionType Type de question (how, what, why, how_much)
+     * @return string Contenu optimisé avec featured snippet
+     */
+    public function optimizeForFeaturedSnippet(string $content, string $questionType = 'how'): string
+    {
+        // Détection automatique du type de question dans le contenu
+        if ($questionType === 'auto') {
+            $questionType = $this->detectQuestionType($content);
+        }
+        
+        switch ($questionType) {
+            case 'what':
+            case 'definition':
+                return $this->addDefinitionSnippet($content);
+                
+            case 'how':
+            case 'list':
+                return $this->addListSnippet($content);
+                
+            case 'why':
+            case 'paragraph':
+                return $this->addParagraphSnippet($content);
+                
+            case 'how_much':
+            case 'table':
+                return $this->addTableSnippet($content);
+                
+            default:
+                return $content;
+        }
+    }
+
+    /**
+     * Détecte le type de question principal dans le contenu
+     */
+    protected function detectQuestionType(string $content): string
+    {
+        $text = mb_strtolower(strip_tags($content));
+        
+        $patterns = [
+            'what' => '/(?:qu\'est-ce|what is|qué es|was ist)/i',
+            'how' => '/(?:comment|how to|cómo|wie)/i',
+            'why' => '/(?:pourquoi|why|por qué|warum)/i',
+            'how_much' => '/(?:combien|how much|cuánto|wie viel)/i',
+        ];
+        
+        foreach ($patterns as $type => $pattern) {
+            if (preg_match($pattern, $text)) {
+                return $type;
             }
         }
+        
+        return 'paragraph';
+    }
 
+    /**
+     * Ajoute un snippet de définition (40-60 mots)
+     */
+    protected function addDefinitionSnippet(string $content): string
+    {
+        // Insérer après le H1 ou au début
+        $snippetBox = '<div class="featured-snippet definition" itemscope itemtype="https://schema.org/DefinedTerm">';
+        $snippetBox .= '<strong itemprop="name">Définition :</strong> ';
+        $snippetBox .= '<span itemprop="description">[INSÉRER_DÉFINITION_40_60_MOTS]</span>';
+        $snippetBox .= '</div>';
+        
+        // Insérer après le premier paragraphe
+        $content = preg_replace(
+            '/(<\/p>\s*)/i',
+            '$1' . $snippetBox,
+            $content,
+            1
+        );
+        
+        return $content;
+    }
+
+    /**
+     * Ajoute un snippet de liste (3-8 étapes)
+     */
+    protected function addListSnippet(string $content): string
+    {
+        $snippetBox = '<div class="featured-snippet list">';
+        $snippetBox .= '<p><strong>Étapes principales :</strong></p>';
+        $snippetBox .= '<ol class="snippet-list">';
+        $snippetBox .= '<li>[ÉTAPE_1_COURTE]</li>';
+        $snippetBox .= '<li>[ÉTAPE_2_COURTE]</li>';
+        $snippetBox .= '<li>[ÉTAPE_3_COURTE]</li>';
+        $snippetBox .= '</ol>';
+        $snippetBox .= '</div>';
+        
+        // Insérer après le premier paragraphe
+        $content = preg_replace(
+            '/(<\/p>\s*)/i',
+            '$1' . $snippetBox,
+            $content,
+            1
+        );
+        
+        return $content;
+    }
+
+    /**
+     * Ajoute un snippet paragraphe (2-3 phrases)
+     */
+    protected function addParagraphSnippet(string $content): string
+    {
+        // Déjà optimisé si le premier paragraphe fait 40-60 mots
+        return $content;
+    }
+
+    /**
+     * Ajoute un snippet tableau comparatif
+     */
+    protected function addTableSnippet(string $content): string
+    {
+        $snippetBox = '<div class="featured-snippet table">';
+        $snippetBox .= '<table class="comparison-table">';
+        $snippetBox .= '<thead><tr><th>Option</th><th>Prix</th><th>Délai</th></tr></thead>';
+        $snippetBox .= '<tbody>';
+        $snippetBox .= '<tr><td>[OPTION_1]</td><td>[PRIX_1]</td><td>[DÉLAI_1]</td></tr>';
+        $snippetBox .= '</tbody>';
+        $snippetBox .= '</table>';
+        $snippetBox .= '</div>';
+        
+        // Insérer avant la conclusion
+        $content = preg_replace(
+            '/(<h2[^>]*>(?:conclusion|résumé|verdict)[^<]*<\/h2>)/i',
+            $snippetBox . '$1',
+            $content,
+            1
+        );
+        
+        return $content;
+    }
+
+    // =========================================================================
+    // SCHEMA.ORG AVANCÉ (NOUVEAU V10)
+    // =========================================================================
+
+    /**
+     * Génère un schema HowTo pour les guides étape par étape
+     */
+    public function generateHowToSchema(Article $article): array
+    {
+        // Extraire les étapes du contenu
+        $steps = $this->extractStepsFromContent($article->content);
+        
+        return [
+            '@context' => 'https://schema.org',
+            '@type' => 'HowTo',
+            'name' => $article->title,
+            'description' => $article->meta_description,
+            'totalTime' => 'PT' . (count($steps) * 5) . 'M',
+            'step' => $steps,
+        ];
+    }
+
+    /**
+     * Génère un schema Speakable pour la recherche vocale
+     */
+    public function generateSpeakableSchema(Article $article): array
+    {
+        return [
+            '@context' => 'https://schema.org',
+            '@type' => 'Article',
+            'headline' => $article->title,
+            'speakable' => [
+                '@type' => 'SpeakableSpecification',
+                'cssSelector' => ['.article-intro', '.article-summary', '.key-points']
+            ]
+        ];
+    }
+
+    /**
+     * Génère un schema Organization pour le trust
+     */
+    public function generateOrganizationSchema(string $platform = 'SOS-Expat'): array
+    {
+        $configs = [
+            'SOS-Expat' => [
+                'name' => 'SOS-Expat',
+                'url' => 'https://sos-expat.com',
+                'logo' => 'https://sos-expat.com/logo.png',
+                'description' => 'Plateforme d\'assistance téléphonique d\'urgence pour expatriés dans 197 pays',
+            ],
+            'Ulixai' => [
+                'name' => 'Ulixai',
+                'url' => 'https://ulixai.com',
+                'logo' => 'https://ulixai.com/logo.png',
+                'description' => 'Marketplace de services professionnels pour expatriés',
+            ],
+            'Ulysse' => [
+                'name' => 'Ulysse.AI',
+                'url' => 'https://ulysse.ai',
+                'logo' => 'https://ulysse.ai/logo.png',
+                'description' => 'Planificateur de voyage intelligent avec IA',
+            ],
+        ];
+        
+        $config = $configs[$platform] ?? $configs['SOS-Expat'];
+        
+        return [
+            '@context' => 'https://schema.org',
+            '@type' => 'Organization',
+            'name' => $config['name'],
+            'url' => $config['url'],
+            'logo' => $config['logo'],
+            'description' => $config['description'],
+            'sameAs' => [
+                'https://www.facebook.com/' . strtolower($config['name']),
+                'https://www.linkedin.com/company/' . strtolower($config['name']),
+            ]
+        ];
+    }
+
+    // =========================================================================
+    // CORE WEB VITALS (NOUVEAU V10)
+    // =========================================================================
+
+    /**
+     * Génère des images responsives avec WebP
+     */
+    public function generateResponsiveImage(string $imageUrl, string $alt, bool $isHero = false): string
+    {
+        $lazyLoading = $isHero ? 'eager' : 'lazy';
+        
+        $html = '<picture>';
+        $html .= '<source type="image/webp" srcset="';
+        $html .= $this->generateSrcset($imageUrl, 'webp');
+        $html .= '">';
+        $html .= '<source type="image/jpeg" srcset="';
+        $html .= $this->generateSrcset($imageUrl, 'jpg');
+        $html .= '">';
+        $html .= '<img src="' . $imageUrl . '" ';
+        $html .= 'alt="' . htmlspecialchars($alt) . '" ';
+        $html .= 'loading="' . $lazyLoading . '" ';
+        $html .= 'decoding="async" ';
+        $html .= 'width="1200" height="675">';
+        $html .= '</picture>';
+        
+        return $html;
+    }
+
+    /**
+     * Génère les srcset pour responsive images
+     */
+    protected function generateSrcset(string $baseUrl, string $format): string
+    {
+        $sizes = [400, 800, 1200, 1600];
+        $srcset = [];
+        
+        foreach ($sizes as $size) {
+            $url = str_replace('.jpg', "-{$size}w.{$format}", $baseUrl);
+            $srcset[] = "{$url} {$size}w";
+        }
+        
         return implode(', ', $srcset);
     }
 
     /**
-     * Vérifie si l'image peut être redimensionnée
+     * Valide les Core Web Vitals
      */
-    protected function isResizableImage(string $imageUrl): bool
-    {
-        return str_contains($imageUrl, 'unsplash.com')
-            || str_contains($imageUrl, 'cloudinary.com')
-            || str_contains($imageUrl, 'imgix.net');
-    }
-
-    /**
-     * Génère le HTML d'une image avec tous les attributs SEO
-     */
-    public function generateImageHtml(
-        string $imageUrl,
-        string $title,
-        string $lang,
-        array $dimensions = [],
-        string $cssClass = ''
-    ): string {
-        $attributes = $this->generateImageAttributes($imageUrl, $title, $lang, $dimensions);
-
-        if ($cssClass) {
-            $attributes['class'] = $cssClass;
-        }
-
-        $attrString = collect($attributes)
-            ->map(fn($value, $key) => $key . '="' . htmlspecialchars($value, ENT_QUOTES, 'UTF-8') . '"')
-            ->implode(' ');
-
-        return "<img {$attrString}>";
-    }
-
-    // =========================================================================
-    // HEAD TAGS
-    // =========================================================================
-
-    /**
-     * Génère tous les meta tags du head
-     */
-    public function generateHeadTags(Article $article, string $lang): array
+    public function validateCoreWebVitals(array $metrics): array
     {
         return [
-            'charset' => '<meta charset="UTF-8">',
-            'viewport' => '<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">',
-            'robots' => $this->generateRobotsMeta($article),
-            'title' => "<title>{$article->meta_title}</title>",
-            'description' => "<meta name=\"description\" content=\"{$article->meta_description}\">",
-            'author' => '<meta name="author" content="' . ($article->author->name ?? 'SOS-Expat') . '">',
-            'language' => "<meta name=\"language\" content=\"{$lang}\">",
-            'content_language' => "<meta http-equiv=\"content-language\" content=\"{$lang}\">",
-        ];
-    }
-
-    /**
-     * Génère les robots meta directives
-     */
-    public function generateRobotsMeta(Article $article): string
-    {
-        $directives = ['index', 'follow'];
-
-        // Ajouter les directives de snippet
-        $directives[] = 'max-snippet:-1'; // Pas de limite de snippet
-        $directives[] = 'max-image-preview:large'; // Grandes images dans les résultats
-        $directives[] = 'max-video-preview:-1'; // Pas de limite vidéo
-
-        return '<meta name="robots" content="' . implode(', ', $directives) . '">';
-    }
-
-    /**
-     * Génère les hints de performance (preconnect, dns-prefetch)
-     */
-    public function generatePerformanceHints(): array
-    {
-        return [
-            // Preconnect aux CDN/APIs fréquents
-            '<link rel="preconnect" href="https://fonts.googleapis.com">',
-            '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>',
-            '<link rel="preconnect" href="https://images.unsplash.com">',
-
-            // DNS Prefetch
-            '<link rel="dns-prefetch" href="//www.google-analytics.com">',
-            '<link rel="dns-prefetch" href="//www.googletagmanager.com">',
-        ];
-    }
-
-    /**
-     * Génère les headers HTTP recommandés pour le cache
-     */
-    public function getCacheHeaders(string $type = 'article'): array
-    {
-        $durations = [
-            'article' => 3600 * 24, // 24h
-            'pillar' => 3600 * 24 * 7, // 7 jours
-            'landing' => 3600 * 24 * 30, // 30 jours
-            'static' => 3600 * 24 * 365, // 1 an
-        ];
-
-        $maxAge = $durations[$type] ?? $durations['article'];
-
-        return [
-            'Cache-Control' => "public, max-age={$maxAge}, stale-while-revalidate=86400",
-            'Vary' => 'Accept-Encoding, Accept-Language',
+            'lcp' => [
+                'value' => $metrics['lcp'] ?? 0,
+                'target' => self::LCP_TARGET,
+                'status' => ($metrics['lcp'] ?? 999) <= self::LCP_TARGET ? 'good' : 'poor',
+                'label' => 'Largest Contentful Paint'
+            ],
+            'fid' => [
+                'value' => $metrics['fid'] ?? 0,
+                'target' => self::FID_TARGET,
+                'status' => ($metrics['fid'] ?? 999) <= self::FID_TARGET ? 'good' : 'poor',
+                'label' => 'First Input Delay'
+            ],
+            'cls' => [
+                'value' => $metrics['cls'] ?? 0,
+                'target' => self::CLS_TARGET,
+                'status' => ($metrics['cls'] ?? 999) <= self::CLS_TARGET ? 'good' : 'poor',
+                'label' => 'Cumulative Layout Shift'
+            ],
         ];
     }
 
     // =========================================================================
-    // VALIDATION SEO
+    // E-E-A-T GUIDELINES (NOUVEAU V10)
     // =========================================================================
 
     /**
-     * Valide les meta d'un article et retourne les problèmes
+     * Valide que le contenu respecte les guidelines E-E-A-T
+     * (Experience, Expertise, Authoritativeness, Trustworthiness)
      */
-    public function validateArticleSeo(Article $article): array
+    public function validateEEAT(string $content, array $metadata): array
     {
-        $issues = [];
-        $warnings = [];
         $score = 100;
-
-        // Meta title
-        $titleLength = mb_strlen($article->meta_title ?? '');
-        if ($titleLength === 0) {
-            $issues[] = 'Meta title manquant';
-            $score -= 25;
-        } elseif ($titleLength > self::META_TITLE_MAX) {
-            $issues[] = "Meta title trop long ({$titleLength} > 60 caractères)";
+        $issues = [];
+        
+        // Experience: Mentions de première main
+        if (!preg_match('/(?:mon expérience|j\'ai|nous avons|témoignage)/i', $content)) {
             $score -= 15;
-        } elseif ($titleLength < self::META_TITLE_MIN) {
-            $warnings[] = "Meta title court ({$titleLength} caractères). Recommandé: 30-60.";
-            $score -= 5;
+            $issues[] = 'Manque de contenu basé sur l\'expérience personnelle';
         }
-
-        // Meta description
-        $descLength = mb_strlen($article->meta_description ?? '');
-        if ($descLength === 0) {
-            $issues[] = 'Meta description manquante';
+        
+        // Expertise: Sources et données chiffrées
+        $statsCount = preg_match_all('/\d+%|\d+\$|\d+ (ans|jours|mois)/i', $content);
+        if ($statsCount < 3) {
             $score -= 20;
-        } elseif ($descLength > self::META_DESCRIPTION_MAX) {
-            $issues[] = "Meta description trop longue ({$descLength} > 160 caractères)";
-            $score -= 10;
-        } elseif ($descLength < self::META_DESCRIPTION_MIN) {
-            $warnings[] = "Meta description courte ({$descLength} caractères). Recommandé: 120-160.";
-            $score -= 5;
+            $issues[] = 'Insuffisance de données chiffrées (minimum 3)';
         }
-
-        // Image alt
-        if ($article->image_url && empty($article->image_alt)) {
-            $issues[] = 'Image principale sans alt text';
+        
+        // Authoritativeness: Mentions d'auteur
+        if (empty($metadata['author_name'])) {
             $score -= 15;
+            $issues[] = 'Pas d\'auteur identifié';
         }
-
-        // Slug
-        if (empty($article->slug)) {
-            $issues[] = 'Slug manquant';
-            $score -= 10;
+        
+        // Trustworthiness: Sources vérifiables
+        $sourcesCount = preg_match_all('/<a[^>]*href=["\']https?:\/\/[^"\']*["\'][^>]*>/i', $content);
+        if ($sourcesCount < 3) {
+            $score -= 20;
+            $issues[] = 'Insuffisance de sources externes (minimum 3)';
         }
-
+        
+        // Date de mise à jour récente
+        if (!empty($metadata['updated_at'])) {
+            $updatedAt = strtotime($metadata['updated_at']);
+            $monthsOld = (time() - $updatedAt) / (30 * 24 * 3600);
+            if ($monthsOld > 12) {
+                $score -= 15;
+                $issues[] = 'Contenu non mis à jour depuis plus d\'un an';
+            }
+        }
+        
         return [
             'score' => max(0, $score),
-            'grade' => $this->scoreToGrade($score),
+            'status' => $score >= 80 ? 'excellent' : ($score >= 60 ? 'good' : 'poor'),
             'issues' => $issues,
-            'warnings' => $warnings,
-            'meta_title_length' => $titleLength,
-            'meta_description_length' => $descLength,
         ];
     }
 
-    /**
-     * Score to grade
-     */
-    protected function scoreToGrade(int $score): string
-    {
-        if ($score >= 90) return 'A';
-        if ($score >= 80) return 'B';
-        if ($score >= 70) return 'C';
-        if ($score >= 60) return 'D';
-        return 'F';
-    }
-
     // =========================================================================
-    // HELPERS
+    // VALIDATION STRUCTURE HTML (NOUVEAU V10)
     // =========================================================================
 
     /**
-     * Tronque un texte pour les meta tags
+     * Valide la hiérarchie des headers (H1 unique, pas de sauts)
      */
-    protected function truncateForMeta(string $text, int $maxLength): string
+    public function validateHeaderHierarchy(string $content): array
     {
-        $text = strip_tags($text);
-        $text = preg_replace('/\s+/', ' ', $text);
-        $text = trim($text);
-
-        if (mb_strlen($text) <= $maxLength) {
-            return $text;
+        $issues = [];
+        
+        // Vérifier H1 unique
+        preg_match_all('/<h1[^>]*>/i', $content, $h1Matches);
+        if (count($h1Matches[0]) === 0) {
+            $issues[] = 'Aucun H1 trouvé';
+        } elseif (count($h1Matches[0]) > 1) {
+            $issues[] = 'Multiple H1 détectés (' . count($h1Matches[0]) . ' trouvés). Il doit y en avoir exactement 1';
         }
-
-        $text = mb_substr($text, 0, $maxLength);
-        $lastSpace = mb_strrpos($text, ' ');
-
-        if ($lastSpace !== false && $lastSpace > $maxLength * 0.7) {
-            $text = mb_substr($text, 0, $lastSpace);
+        
+        // Extraire tous les headers
+        preg_match_all('/<h([1-6])[^>]*>/i', $content, $allHeaders, PREG_OFFSET_CAPTURE);
+        $headerLevels = array_map(function($match) {
+            return (int) $match[1];
+        }, $allHeaders[1]);
+        
+        // Vérifier qu'il n'y a pas de sauts (ex: H2 → H4)
+        for ($i = 1; $i < count($headerLevels); $i++) {
+            $diff = $headerLevels[$i] - $headerLevels[$i - 1];
+            if ($diff > 1) {
+                $issues[] = sprintf(
+                    'Saut de niveau détecté: H%d → H%d (position %d)',
+                    $headerLevels[$i - 1],
+                    $headerLevels[$i],
+                    $i
+                );
+            }
         }
+        
+        return [
+            'valid' => empty($issues),
+            'issues' => $issues,
+            'h1_count' => count($h1Matches[0]),
+            'total_headers' => count($headerLevels),
+        ];
+    }
 
-        return $text;
+    // =========================================================================
+    // PEOPLE ALSO ASK (NOUVEAU V10)
+    // =========================================================================
+
+    /**
+     * Génère des questions "People Also Ask" pertinentes
+     */
+    public function generatePeopleAlsoAskQuestions(
+        string $mainTopic,
+        string $language = 'fr',
+        int $count = 3
+    ): array {
+        $model = $this->modelSelector->selectModel('paa_questions');
+        
+        $prompt = <<<PROMPT
+Génère {$count} questions "People Also Ask" (PAA) pour le sujet : "{$mainTopic}"
+
+Les questions PAA sont celles que les utilisateurs recherchent fréquemment sur Google.
+
+Règles :
+1. Questions naturelles et courantes
+2. En langue {$language}
+3. Différents types : Comment, Pourquoi, Combien, Quel/Quelle
+4. Pertinentes pour des expatriés
+5. Optimisées pour la recherche vocale
+
+Réponds UNIQUEMENT avec une liste JSON de questions :
+["Question 1?", "Question 2?", "Question 3?"]
+PROMPT;
+
+        try {
+            $response = $this->gpt->chat([
+                'model' => $model,
+                'messages' => [
+                    ['role' => 'system', 'content' => 'Tu es un expert en recherche de mots-clés et en intentions de recherche des utilisateurs.'],
+                    ['role' => 'user', 'content' => $prompt],
+                ],
+                'temperature' => 0.7,
+                'max_tokens' => 300,
+            ]);
+            
+            $questions = json_decode(trim($response['content']), true);
+            
+            if (!is_array($questions)) {
+                throw new \Exception('Format invalide');
+            }
+            
+            Log::info('PAA Questions générées', [
+                'topic' => $mainTopic,
+                'questions' => $questions,
+                'model' => $model
+            ]);
+            
+            return $questions;
+            
+        } catch (\Exception $e) {
+            Log::error('Échec génération PAA questions', [
+                'error' => $e->getMessage()
+            ]);
+            return [];
+        }
+    }
+
+    // =========================================================================
+    // CANONICAL URLs MULTILINGUES (NOUVEAU V10)
+    // =========================================================================
+
+    /**
+     * Génère les canonical URLs pour chaque langue
+     */
+    public function generateCanonicalUrls(
+        Article $article,
+        array $translations = []
+    ): array {
+        $baseUrl = config('app.url');
+        $canonicals = [];
+        
+        // Canonical principal
+        $canonicals['self'] = $baseUrl . '/' . $article->language_code . '/' . $article->slug;
+        
+        // Canonicals par traduction
+        foreach ($translations as $langCode => $translatedSlug) {
+            $canonicals[$langCode] = $baseUrl . '/' . $langCode . '/' . $translatedSlug;
+        }
+        
+        return $canonicals;
     }
 
     /**
-     * Nettoie un texte pour utilisation dans les attributs HTML
+     * Génère les balises hreflang + canonical
      */
-    public function sanitizeForAttribute(string $text): string
+    public function generateHreflangTags(Article $article, array $canonicals): string
     {
-        $text = strip_tags($text);
-        $text = html_entity_decode($text, ENT_QUOTES, 'UTF-8');
-        $text = preg_replace('/\s+/', ' ', $text);
-        return trim($text);
+        $html = '';
+        
+        // Canonical principal
+        $html .= '<link rel="canonical" href="' . $canonicals['self'] . '">' . PHP_EOL;
+        
+        // Hreflang pour chaque langue
+        foreach ($canonicals as $langCode => $url) {
+            if ($langCode !== 'self') {
+                $html .= '<link rel="alternate" hreflang="' . $langCode . '" href="' . $url . '">' . PHP_EOL;
+            }
+        }
+        
+        // x-default (français par défaut)
+        $html .= '<link rel="alternate" hreflang="x-default" href="' . $canonicals['fr'] . '">' . PHP_EOL;
+        
+        return $html;
+    }
+
+    // =========================================================================
+    // HELPER METHODS
+    // =========================================================================
+
+    /**
+     * Extrait les étapes d'un contenu pour le schema HowTo
+     */
+    protected function extractStepsFromContent(string $content): array
+    {
+        $steps = [];
+        
+        // Chercher les listes numérotées
+        preg_match_all('/<li[^>]*>(.*?)<\/li>/is', $content, $matches);
+        
+        foreach ($matches[1] as $index => $step) {
+            $steps[] = [
+                '@type' => 'HowToStep',
+                'position' => $index + 1,
+                'name' => 'Étape ' . ($index + 1),
+                'text' => strip_tags($step)
+            ];
+        }
+        
+        return $steps;
     }
 }

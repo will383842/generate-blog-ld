@@ -1,4 +1,4 @@
-﻿{
+{
   "compilerOptions": {
     // Cible et environnement
     "target": "ES2020",
@@ -43,6 +43,7 @@
       "@/utils/*": ["./resources/js/admin/utils/*"],
       "@/types/*": ["./resources/js/admin/types/*"],
       "@/pages/*": ["./resources/js/admin/pages/*"],
+      "@/layouts/*": ["./resources/js/admin/layouts/*"],
       "@/lib/*": ["./resources/js/admin/lib/*"],
       "@/i18n/*": ["./resources/js/admin/i18n/*"]
     }
